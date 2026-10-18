@@ -6,7 +6,7 @@
 <title>巳泷音乐 · 主页 / 播放器（Mineradio × Folia）</title>
 <meta name="theme-color" content="#07021a">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>a
+<style>
 :root{
   --p1:#b16cff; --p2:#8b48eb; --p3:#ff6ec7; --acc:#00e5ff;
   --bg:#07021a; --bg2:#0c0524; --card:rgba(255,255,255,.028);
@@ -130,6 +130,8 @@ img{display:block}
 .cat .ci{font-size:17px;color:#fff;position:absolute;top:9px;right:10px;opacity:.9;
   filter:drop-shadow(0 1px 6px rgba(0,0,0,.45))}
 .cat .em{position:absolute;top:7px;right:9px;font-size:16px;line-height:1;opacity:.95;filter:drop-shadow(0 1px 6px rgba(0,0,0,.45))}
+.cat .em.emimg{width:calc(24px*var(--k));height:calc(24px*var(--k));opacity:1}
+.cat .em.emimg img{width:100%;height:100%;object-fit:contain;display:block}
 .cat .cn{font-size:13px;font-weight:700;padding-right:22px}
 .cat .cd{font-size:10px;color:rgba(255,255,255,.66);margin-top:2px}
 /* 自定义/新增板块：与内置板块同一配色，文字纯白，右上角是加号图标 */
@@ -238,9 +240,10 @@ img{display:block}
 .b:active{transform:scale(.93)}
 .b.main{width:62px;height:62px;font-size:21px;border:0;background:linear-gradient(135deg,var(--acc),var(--p1),var(--p3));box-shadow:0 0 26px rgba(177,108,255,.6)}
 .b .one{position:absolute;right:4px;bottom:3px;font-size:9px;font-weight:800;color:#fff}
-/* 顺序播放：两个向右箭头并排合并成一个按钮（双箭头） */
-#bMode,#miniMode,#cpMode{display:inline-flex;align-items:center;justify-content:center;gap:0}
-#bMode i+i,#miniMode i+i,#cpMode i+i{margin-left:calc(-4px*var(--k));display:inline-block}
+/* 顺序播放：两个向右箭头【上下叠放】合并成一个按钮（参考图样式） */
+#bMode,#miniMode,#cpMode{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+#bMode i,#miniMode i,#cpMode i{display:block;font-size:.62em;line-height:1}
+#bMode i+i,#miniMode i+i,#cpMode i+i{margin-top:-.18em}
 .b.on{border-color:var(--acc);color:var(--acc)}
 .b.on i{color:var(--acc)}
 .row2{display:flex;gap:6px;justify-content:center;padding-top:7px}
@@ -463,6 +466,10 @@ body.inpip #floatLrc{position:static;left:auto;bottom:auto;width:100%;border:0;b
     <div class="sb" style="padding:0 0 8px"><input id="ncSub" placeholder="如：循环一辈子"></div>
     <div class="setrow"><span class="lb">图标<small>填 FontAwesome 类名（fa-heart / fa-star…）或直接填 emoji / 符号</small></span></div>
     <div class="sb" style="padding:0 0 8px"><input id="ncIcon" placeholder="fa-heart 或 🎧 或 ♬"></div>
+    <div class="setrow"><span class="lb">上传图标图片<small>支持 PNG（推荐透明底），上传后优先使用该图片作为图标</small></span>
+      <span class="btnp" id="ncImgBtn">选择 PNG</span><span class="btnp" id="ncImgDel">清除</span></div>
+    <input type="file" id="ncImg" accept="image/png,image/*" style="display:none">
+    <div class="qa" style="max-width:none;justify-content:flex-start" id="ncImgPrev"></div>
     <div class="setrow"><span class="lb">搜索关键词<small>点击该板块时用它去检索内容；多个关键词用英文/中文逗号隔开 = 多标签检索</small></span></div>
     <div class="sb" style="padding:0 0 8px"><input id="ncKw" placeholder="如：陈奕迅,富士山下,粤语"></div>
     <div class="setrow"><span class="lb"></span><span class="btnp" id="catAdd" style="background:linear-gradient(135deg,var(--acc),var(--p1));border:0;color:#08021a;font-weight:800">保存并添加</span></div>
@@ -496,6 +503,8 @@ body.inpip #floatLrc{position:static;left:auto;bottom:auto;width:100%;border:0;b
     <div class="qa" style="max-width:none;justify-content:flex-start" id="fxChips"></div>
     <div class="setgrp">变声器（人声特效）</div>
     <div class="qa" style="max-width:none;justify-content:flex-start" id="fvChips"></div>
+    <div class="setgrp">音效作用范围</div>
+    <div class="qa" style="max-width:none;justify-content:flex-start" id="fxScope"></div>
     <div class="setgrp">输出音量</div>
     <div class="setrow"><span class="lb">音量</span><input type="range" id="fxVol" min="0" max="100" step="1"><span class="vl" id="fxVolV">100%</span></div>
   </div>
@@ -581,8 +590,6 @@ body.inpip #floatLrc{position:static;left:auto;bottom:auto;width:100%;border:0;b
 <div id="full">
   <button class="x" id="fullX"><i class="fa-solid fa-xmark"></i></button>
   <div class="fl" id="fullLrc"></div>
-  <div class="hint">点任意歌词行 → 从该句开始播放 · 自动跟随</div>
-  <div class="fbar"><div class="pg" id="fpg"><i id="fpgFill"></i><b id="fpgDot"></b></div></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -656,6 +663,8 @@ var VOICES=[['v_loli','萝莉音',1.45],['v_uncle','大叔音',0.72],['v_chip','
 var FXALL=FXS.concat(VOICES.map(function(v){return [v[0],v[1]]}));
 function voiceRate(k){ for(var i=0;i<VOICES.length;i++) if(VOICES[i][0]===k) return VOICES[i][2]; return 1; }
 function labelOfFx(k){ var f=FXALL.filter(function(x){return x[0]===k})[0]; return f?f[1]:'原声'; }
+/* 霍尼音乐板块图标：白色茄子抠图（PNG data URI，透明背景，仅保留白色部分） */
+var IMG_EGG='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAVVSURBVHhe7Zx5iFVlGMZHE9MkGcswVCIKIUpstHKoyKhU0jCIog2siCJSJmwFCcMiAsuyjZAsWuyfgvbFAa2gHY0i/KOUogUqsn2xFG4z/d7zPSNzReeeybnnvN93zw8evvN9Z3mf5x1x7j1zz23zTk9Pzzx0bW9v7ygtVeSBps1Ab9O4DLbv166KPNCwN9W7DOb/oinaXdEImjUL9ah/GUwf1u6KPNCw1epdBvM/GcZrd0UjaNhk9E9oX4B5l3ZX5IGGvaDeZTDfqF0VeaBhC9W7XbB2tHZXNMKahXb/ZbJKuysaQb/aadjO0LoAc3tJsxbdhq5EM1kerlMq+qAxB6GVoW0Dw3Gb0RU6tbWhEZPQfWib+pMbznmVoV2Xaj1owIL/07j+cP4mNFaXbB0IPUc92Ge41su6bGtA4IPRj8o/JHC963T59CHs3co9ZHDNGjpFJdKFkGPRL8o9aDh3JXpJ0zrsuug0lUoTAp6vvHWwbq/3bkC/a2mPsP9UhvGM89GGsFoP6/eiY9lsRyNVOg0I9lyWsh+s7UBz0DGok6Xfwp562GdNPgHZ68AH0TR0IroDfYR26NAM5k+jySodPxYG7X7H5TtkjVukuY2HMX5t8/6wthXZ272a5tbQZ9HFyO5qT0cno7ns7mAcrdJpQKC1FrwP5t1oIpvLw0qAtVsYxjFuDSsB5ivQuZrWwbo1cwuapHJpQcbLQtQs7K/oajYPZ3wlrNbDujXrELTr5Q7b9i91naZ743GVTAMCjST0EkvG+AO6h82jGC9BP9v63mB/F8NsbT+JZtj2QHDMdjRB5eOHMFPQMrSAfNn7VrbfC3Ebw7Ez0SPIrpPrPI5L90424ezlRW44fr3OW6OlhnDsu1mxFCGc/YbMDcf/hV7UNBccb+9KjlTJtCDYhcrZVGq12mKVTAsaeJUyNhXqPK+SaUGwG5WxqVDnW7S/yqYDoVYoYxF0qGw60MAnFK7pUOtylU0HQq1XvqZDrQdUNg3INIxQW0K85kOtDSqdBgSagP5WvqZDrS8Y9lP5+CGQ3QwtDOptZzhU5eOHQEtDtOKg5jSVjx/CvK5chUHNM1Q+bggyEdXdci8Cal4gC3FDkMXKVChWVxbihiAfK1OhUHepLMQLIU5XnjJYLhvxQgPfUpgyiLuBNO8sBSmLeBuI+VE00N4NlAb1b5Wd+MD8ncpRGni4WXbiAuOzlKFU8BHfX+gwfSD6ShlKBR8LZSse8P1MsF8+NHCebMUBhq+Rdy8cJ2v+oXmdKPvklAfwYh+bi+PDRvg9ALOfB+s+wM83DHF8wBKzDwXbfsBTHB/xwOhJ8uwKfK2RRd9gdJM8uwJfi2TRL5g8R37dgbdO2fQLJj+QX1fgaxsaI5s+weDx8usOvK2TTb9gcpX8ugNv18umT/A4HJOfBrv+wNtUWfUJHo/ApJt3Hf3B12aGYbLqE0zOD3b9gbdlsukXTNojCO7Alz1w4/9ro/Ba93SRF2hetyz6BqN3ybMr8HWmLPoGo7fLsxvw9Ins+QezN8m3G/B0nuz5B7OFPO8xCD6UtTjAcEfw7QN+oHF9XwKGR6Pv5b9U8PGYbMUF3kv/65t+iONkKS4wf3aIUR54mCs78YH/EQSoeyy/SKgd7+de+qjVapcqT6HQvKdkIX4I845yFQL1uhlGqHz8EMZubQ34hTlDBXVeQ+k9hUm22QRr6v1Brv8oQ7rfXklA+zqmP0LcoYNr7kRLVCZtCDoVva/s+wzXegNN1+VbA3LbU5ld6MvQhsHDuRvRRbpka0IDxiD7gh37j/8n9WaPsN/uJH+GViOHj2e1tf0HjrtSdP3WvqQAAAAASUVORK5CYII=';
 /* 音乐板块：kws = 该主题的检索关键词（多词合并去重，确保内容不跑题）
    顺序：收藏音乐（第一个）→ 热歌榜 → … → 歌手/VOCALOID → 自定义板块（最末端）→ ＋ 新增 */
 var CATS=[
@@ -668,23 +677,20 @@ var CATS=[
   {k:'欧美热歌',   t:'欧美热单', d:'Billboard',  i:'fa-music',           kws:['欧美热单']},
   {k:'日语',       t:'日系优选', d:'ACG / J-POP',i:'fa-torii-gate',      kws:['日语 动漫']},
   {k:'古典',       t:'古典歌单', d:'古典经典',   i:'fa-guitar',          kws:['古典音乐','古典钢琴','贝多芬']},
-  {k:'广播剧',     t:'广播剧',   d:'主题曲 / ED', i:'fa-headphones',      kws:['广播剧 主题曲','广播剧 ED']},
-  {k:'BL广播剧',   t:'BL 广播剧',d:'耽美向正剧', i:'fa-heart',
-    kws:['撒野 广播剧','魔道祖师 广播剧','天官赐福 广播剧','娘娘腔 广播剧','某某 广播剧','默读 广播剧']},
   {k:'有声书',     t:'有声书',   d:'听书全集',   i:'fa-book-open',       kws:['有声书','有声小说']},
   {k:'古风',       t:'古风国风', d:'国风雅韵',   i:'fa-feather',         kws:['古风']},
   {k:'纯音乐',     t:'纯音乐',   d:'轻音乐',     i:'fa-music',           kws:['纯音乐','轻音乐']},
-  {k:'霍尼音乐',   t:'霍尼音乐', d:'各族儿女霍尼一堂', em:'🍆',           kws:['Cupcake']},
-  /* —— 歌手歌单（统一命名：XXX，副标题统一「站长推荐」）—— */
-  {k:'歌手单依纯', t:'单依纯', d:'站长推荐', i:'fa-user', singer:1, kws:['单依纯']},
-  {k:'歌手周深',   t:'周深',   d:'站长推荐', i:'fa-user', singer:1, kws:['周深']},
-  {k:'歌手MichaelJackson', t:'Michael Jackson', d:'站长推荐', i:'fa-user', singer:1, kws:['Michael Jackson']},
-  {k:'歌手NickiMinaj',     t:'Nicki Minaj',     d:'站长推荐', i:'fa-user', singer:1, kws:['Nicki Minaj']},
-  {k:'歌手CardiB',         t:'Cardi B',         d:'站长推荐', i:'fa-user', singer:1, kws:['Cardi B']},
-  {k:'歌手ArianaGrande',   t:'Ariana Grande',   d:'站长推荐', i:'fa-user', singer:1, kws:['Ariana Grande']},
-  {k:'歌手DojaCat',        t:'Doja Cat',        d:'站长推荐', i:'fa-user', singer:1, kws:['Doja Cat']},
-  {k:'歌手美依礼芽',       t:'美依礼芽',        d:'站长推荐', i:'fa-user', singer:1, kws:['美依礼芽','极乐净土']},
-  {k:'歌手Ado',            t:'Ado',             d:'站长推荐', i:'fa-user', singer:1, kws:['Ado']},
+  {k:'霍尼音乐',   t:'霍尼音乐', d:'各族儿女霍尼一堂', em:'🍆', emImg:IMG_EGG, kws:['Cupcake']},
+  /* —— 歌手歌单（统一命名：歌手-XXX，副标题统一「站长推荐」；外国歌手用中文简称）—— */
+  {k:'歌手单依纯', t:'歌手-单依纯', d:'站长推荐', i:'fa-user', singer:1, kws:['单依纯']},
+  {k:'歌手周深',   t:'歌手-周深',   d:'站长推荐', i:'fa-user', singer:1, kws:['周深']},
+  {k:'歌手MichaelJackson', t:'歌手-迈克·杰克逊', d:'站长推荐', i:'fa-user', singer:1, kws:['Michael Jackson']},
+  {k:'歌手NickiMinaj',     t:'歌手-麻辣鸡',     d:'站长推荐', i:'fa-user', singer:1, kws:['Nicki Minaj']},
+  {k:'歌手CardiB',         t:'歌手-卡姐',       d:'站长推荐', i:'fa-user', singer:1, kws:['Cardi B']},
+  {k:'歌手ArianaGrande',   t:'歌手-A妹',        d:'站长推荐', i:'fa-user', singer:1, kws:['Ariana Grande']},
+  {k:'歌手DojaCat',        t:'歌手-豆荚猫',     d:'站长推荐', i:'fa-user', singer:1, kws:['Doja Cat']},
+  {k:'歌手美依礼芽',       t:'歌手-美依礼芽',        d:'站长推荐', i:'fa-user', singer:1, kws:['美依礼芽','极乐净土']},
+  {k:'歌手Ado',            t:'歌手-Ado',             d:'站长推荐', i:'fa-user', singer:1, kws:['Ado']},
   {k:'虚拟歌手',   t:'虚拟歌手', d:'VOCALOID 人气', i:'fa-robot', singer:1,
     kws:['初音ミク','镜音リン','镜音レン','巡音ルカ','重音テト','洛天依','GUMI','心华','乐正绫']}
 ];
@@ -696,7 +702,8 @@ var DEFAULTS={
   src:'all',mode:'order',snd:'muted',
   lrcGrad:['#00e5ff','#b16cff','#ff6ec7'],
   fwMode:'auto', fwDelay:3,
-  pitch:1, blockSinger:[], blockSong:[], qw:{}, qord:'', qsingle:''
+  pitch:1, blockSinger:[], blockSong:[], qw:{}, qord:'', qsingle:'',
+  fxScope:'global', fxPer:{}
 };
 var S=JSON.parse(JSON.stringify(DEFAULTS));
 try{var sv=JSON.parse(localStorage.getItem('sl_music_set4')||'{}');
@@ -1025,14 +1032,26 @@ function paintCarMode(){
   if($('cpModeOne'))$('cpModeOne').style.display='none';
 }
 var carShuffling=false;
-function setCarList(list,section){
-  carList=list||[]; carSection=section||null; carIdx=0; carShuffling=false; renderCarCard();
+function startCarTimer(){
   clearInterval(carTimer);
   carTimer=setInterval(function(){
     // 若当前卡片这首正在播放中 → 暂停自动翻动
     if(curSong&&carList[carIdx]&&curSong.id===carList[carIdx].id&&!au.paused)return;
     if(carList.length>1)setCarIdx(carIdx+1,true);
   },4200);
+}
+function setCarList(list,section){
+  carList=list||[]; carSection=section||null; carIdx=0; carShuffling=false; renderCarCard();
+  startCarTimer();
+}
+/* 三面板同步：主页/搜索/收藏里点播的任意一首（非歌单来源也支持）→ 同步显示到大播放卡上 */
+function syncCarToQueue(){
+  if(playOrigin==='car')return;
+  if(!queue.length)return;
+  carList=queue.slice(); carIdx=curIdx;
+  carSection={k:curListKey,t:curListTitle,ico:curListIco};
+  playListIco=curListIco||playListIco;
+  renderCarCard(); startCarTimer();
 }
 /* 切换卡片：animate=true 时播放「洗牌」动画（顶片被抽走 → 整叠上移 → 补到最末） */
 function setCarIdx(i,animate){
@@ -1075,13 +1094,14 @@ $('cpInfo').onclick=function(e){ if(e.target.closest&&e.target.closest('button')
 $('cpStack').onclick=function(){ if(curSong)openPlayer(); };
 /* 右上角：选择轮播板块 */
 function allCats(){ return CATS.concat(getCustomCats().map(function(c){
-  return {k:c.kw, t:c.name, d:c.sub||'自定义', i:'', em:c.icon, custom:1, kw:c.kw, kws:splitKw(c.kw)};
+  return {k:c.kw, t:c.name, d:c.sub||'自定义', i:'', em:c.icon, emImg:c.iconImg, custom:1, kw:c.kw, kws:splitKw(c.kw)};
 })); }
 $('cpPick').onclick=function(e){
   e.stopPropagation();
   var box=$('pickList'), list=allCats();
   box.innerHTML=list.map(function(c,i){
-    var ico = c.em? '<span class="em" style="position:static;font-size:18px">'+esc(c.em)+'</span>' : '<i class="fa-solid '+c.i+' ph"></i>';
+    var ico = (c.emImg? '<img src="'+c.emImg+'" style="width:22px;height:22px;object-fit:contain" alt="">' :
+      (c.em? '<span class="em" style="position:static;font-size:18px">'+esc(c.em)+'</span>' : '<i class="fa-solid '+c.i+' ph"></i>'));
     return '<div class="row" data-i="'+i+'"><div class="thumb">'+ico+'</div>'+
       '<div class="info"><div class="t">'+esc(c.t)+'</div><div class="s">'+esc(c.d)+' · 轮播不限数量</div></div>'+
       '<span class="badge">'+(carSection&&carSection.k===c.k?'当前':'选择')+'</span></div>';
@@ -1119,13 +1139,16 @@ function refreshCarCard(){ renderCarCard(); }
 
 /* ---------- 自定义板块 ---------- */
 function getCustomCats(){ return LS.get('sl_music_cats',[]) }
-function catIconHtml(c,cls){
-  if(c.em) return '<span class="em'+(cls?' '+cls:'')+'">'+esc(c.em)+'</span>';
-  return '<i class="ci fa-solid '+(c.i||'fa-music')+'" style="'+(cls==='ph'?'position:static;font-size:16px':'')+'"></i>';
+/* 板块图标：优先「内置/上传的 PNG 图片」→ emoji / 符号 → FontAwesome 类名 */
+function catIconTag(c){
+  var img=c.emImg||c.iconImg||c.img;
+  if(img) return '<span class="em emimg"><img src="'+img+'" alt=""></span>';
+  if(c.em) return '<span class="em">'+esc(c.em)+'</span>';
+  return '<i class="ci fa-solid '+(c.i||'fa-music')+'"></i>';
 }
+function catIconHtml(c){ return catIconTag(c); }
 function catInner(c){
-  var tag = c.em? '<span class="em">'+esc(c.em)+'</span>' : '<i class="ci fa-solid '+c.i+'"></i>';
-  return tag+'<div class="cn">'+esc(c.t)+'</div><div class="cd">'+esc(c.d)+'</div>';
+  return catIconTag(c)+'<div class="cn">'+esc(c.t)+'</div><div class="cd">'+esc(c.d)+'</div>';
 }
 /* 关键词字符串 → 标签数组：逗号（中英）、顿号、分号、竖线 都算一个标签 */
 function splitKw(s){
@@ -1162,7 +1185,7 @@ function catNodeHtml(c){
     '<i class="ci fa-solid fa-plus"></i><div class="cn">自定义</div><div class="cd">添加我的音乐板块</div></div>';
   if(c.custom) return '<div class="cat" data-k="'+esc(c.name)+'" data-t="custom" data-i="'+c.idx+'">'+
     '<span class="kill" title="删除该板块"><i class="fa-solid fa-xmark"></i></span>'+
-    catInner({t:c.name,d:c.sub||'自定义',i:c.i,em:c.icon})+'</div>';
+    catInner({t:c.name,d:c.sub||'自定义',i:c.i,em:c.em,emImg:c.emImg})+'</div>';
   return '<div class="cat'+(c.fav?' fav':'')+'" data-k="'+esc(c.k)+'" data-t="base">'+catInner(c)+'</div>';
 }
 function fillLoop(id,items){
@@ -1183,7 +1206,7 @@ function fillLoop(id,items){
 function buildCats(){
   var cs=getCustomCats();
   var customNodes=cs.map(function(c,i){
-    return {custom:1,idx:i,name:c.name,sub:c.sub,i:c.i,em:c.icon,'class':'custom'};
+    return {custom:1,idx:i,name:c.name,sub:c.sub,i:c.i,em:c.icon,emImg:c.iconImg};
   });
   var addNode={add:1};
   /* 环：收藏音乐（第一个）→ 内置板块 → 自定义板块（最末端）→ ＋；两行都按这个环走，首尾相连无限循环 */
@@ -1223,14 +1246,41 @@ document.querySelector('.catrows').onclick=function(e){
   if(def.fav){ loadFavSection(); return; }
   loadList(k,def.t||k,def.i,def);
 };
+/* 自定义板块图标：支持上传 PNG（压缩到 ≤160px 存 data URI） */
+var NCIMG='';
+function ncPreview(){
+  var box=$('ncImgPrev');
+  box.innerHTML = NCIMG? '<span class="chip on">'+'已选择 PNG 图标 ✕'+'</span><img src="'+NCIMG+'" style="width:34px;height:34px;object-fit:contain;vertical-align:middle" alt="">' : '<span style="font-size:12px;color:var(--mut)">未上传（可用上面的 emoji / FontAwesome 替代）</span>';
+}
+$('ncImgBtn').onclick=function(){ $('ncImg').click(); };
+$('ncImgDel').onclick=function(){ NCIMG=''; $('ncImg').value=''; ncPreview(); toast('已清除图标图片'); };
+$('ncImgPrev').onclick=function(e){ if(e.target.closest&&e.target.closest('.chip')) { NCIMG=''; ncPreview(); } };
+$('ncImg').onchange=function(){
+  var f=this.files&&this.files[0]; if(!f)return; this.value='';
+  var fr=new FileReader();
+  fr.onload=function(){
+    var im=new Image();
+    im.onload=function(){
+      var m=160, sc=Math.min(1,m/Math.max(im.width,im.height));
+      var cv=document.createElement('canvas');
+      cv.width=Math.max(1,Math.round(im.width*sc)); cv.height=Math.max(1,Math.round(im.height*sc));
+      var g=cv.getContext('2d'); g.drawImage(im,0,0,cv.width,cv.height);
+      try{ NCIMG=cv.toDataURL('image/png'); }catch(err){ NCIMG=fr.result; }
+      ncPreview(); toast('图标 PNG 已就绪');
+    };
+    im.onerror=function(){ toast('图片读取失败'); };
+    im.src=fr.result;
+  };
+  fr.readAsDataURL(f);
+};
 $('catAdd').onclick=function(){
   var n=$('ncName').value.trim(), sub=$('ncSub').value.trim(), ic=$('ncIcon').value.trim(), kw=$('ncKw').value.trim();
   if(!n||!kw){ toast('请填写板块名称与搜索关键词'); return; }
   var isFa=/^fa-/.test(ic);
   var arr=getCustomCats();
-  arr.push({name:n, sub:sub||'自定义', kw:kw, kws:splitKw(kw), i:isFa?ic:'fa-music', icon:isFa?'':ic});
+  arr.push({name:n, sub:sub||'自定义', kw:kw, kws:splitKw(kw), i:isFa?ic:'fa-music', icon:isFa?'':ic, iconImg:NCIMG||''});
   LS.put('sl_music_cats',arr);
-  $('ncName').value='';$('ncSub').value='';$('ncIcon').value='';$('ncKw').value='';
+  $('ncName').value='';$('ncSub').value='';$('ncIcon').value='';$('ncKw').value=''; NCIMG=''; ncPreview();
   buildCats(); closeAllSheets(); toast('已添加板块：'+n);
 };
 
@@ -1302,6 +1352,8 @@ function playIdx(i){
   musicStarted=true; manualPaused=false; updateBgAudio();
   applyPlayingUI(s);
   refreshFavUI();
+  applyScopeOnSongChange(s);
+  syncCarToQueue();
   LS.put('sl_music_last',{id:s.id,source:s.source,name:s.name,artist:s.artist,pic:s.pic});
   coverAsync(s,function(u){ if(u){$('cover').src=u;$('coverPh').style.display='none';
     if(S.blur&&!$('bgvid').src)setBgArt(u);} });
@@ -1327,12 +1379,14 @@ function applyPlayingUI(s){
   refreshCarCard();
 }
 function setPlaying(on){
-  $('bPlay').innerHTML='<i class="fa-solid fa-'+(on?'pause':'play')+'"></i>';
-  $('miniPlay').innerHTML='<i class="fa-solid fa-'+(on?'pause':'play')+'"></i>';
-  $('disc').classList.toggle('play',on);
-  $('discWrap').classList.toggle('play',on);
+  var ic='<i class="fa-solid fa-'+(on?'pause':'play')+'"></i>';
+  /* 三处播放按钮图标完全同步：全屏播放器 / 迷你条 / 轮播卡 */
+  if($('bPlay'))$('bPlay').innerHTML=ic;
+  if($('miniPlay'))$('miniPlay').innerHTML=ic;
+  if($('cpPlay'))$('cpPlay').innerHTML=ic;
+  if($('disc'))$('disc').classList.toggle('play',on);
+  if($('discWrap'))$('discWrap').classList.toggle('play',on);
   try{ if($('flPlay'))$('flPlay').textContent=on?'⏸':'▶'; }catch(e){}
-  if(on&&!WF.inited){ WF.inited=true; try{ setTimeout(function(){ floatWinShow(false); },800); }catch(e){} }
   try{ if(window.SLMusicNative&&SLMusicNative.state) SLMusicNative.state(on?0:1,$('sName').textContent,$('sArtist').textContent,au.currentTime||0,au.duration||0) }catch(e){}
 }
 function nextPlay(auto){
@@ -1478,6 +1532,46 @@ function makeCurve(amount){
   for(var i=0;i<n;i++){ var x=i*2/n-1; c[i]=(3+k)*x*20*Math.PI/180/(Math.PI+k*Math.abs(x)); }
   return c;
 }
+/* ---------- 纯音调偏移（只改音色，不改倍速）----------
+   原理：两条交叉延迟线的延迟时间被锯齿波扫动，输出即为「不加速的变调」；
+   span = 每周期延迟扫动量，A = 扫动幅度，速率 = 1 + A/span * … → 正好等于音调倍率 p */
+function makePitchShift(p){
+  p=Math.max(0.25,Math.min(4,p||1));
+  /* 速率 = 1 - 2A/T ，取 A = ∓span/2、T = span/|p-1| → 速率正好等于 p（升调 A 取负=延迟回扫，降调 A 取正） */
+  var span=0.06, A=(p>1?-1:1)*(span/2), T=span/Math.abs(p-1);
+  if(!(T>0)||!isFinite(T)) return null;
+  var inG=AC.createGain(), outG=AC.createGain();
+  inG.gain.value=1;
+  for(var i=0;i<2;i++){
+    var d=AC.createDelay(1); d.delayTime.value=span;
+    var dep=AC.createGain(); dep.gain.value=A;
+    var s=AC.createOscillator(); s.type='sawtooth'; s.frequency.value=1/T;
+    s.connect(dep); dep.connect(d.delayTime);
+    /* 交叉淡入淡出：每条线在「自己锯齿回卷的瞬间」静音，两条线相位相差半周期 → 互补衔接不爆音 */
+    var g=AC.createGain(); g.gain.value=0.5;
+    var gs=AC.createOscillator(); gs.type='sawtooth'; gs.frequency.value=1/T;
+    var gg=AC.createGain(); gg.gain.value=-0.5;
+    gs.connect(gg); gg.connect(g.gain);
+    try{ var off=AC.currentTime+i*T/2; s.start(off); gs.start(off); }catch(e){ try{s.start();gs.start()}catch(_){} }
+    inG.connect(d); d.connect(g); g.connect(outG);
+  }
+  return {in:inG,out:outG};
+}
+/* 当前需要的音调倍率 = 音调设置 × 变声器倍率（两者都是纯音色偏移，与倍速解耦） */
+function pitchFactor(fxName){ return (Math.max(.1,Math.min(10,+S.pitch||1))) * voiceRate(fxName||S.fx); }
+/* ---------- 音效作用范围：全局（所有歌通用）/ 仅本首 ---------- */
+function fxKeyOf(s){ return (s&&s.source?s.source:'')+':'+(s&&s.id?s.id:'') }
+function savePerSong(){
+  if((S.fxScope||'global')!=='single'||!curSong)return;
+  try{ S.fxPer=S.fxPer||{}; S.fxPer[fxKeyOf(curSong)]={fx:S.fx,pitch:S.pitch,speed:S.speed}; LS.set(); }catch(e){}
+}
+function applyScopeOnSongChange(s){
+  if((S.fxScope||'global')!=='single')return;
+  var rec=(S.fxPer||{})[fxKeyOf(s)];
+  if(rec){ S.fx=rec.fx||'none'; S.pitch=+rec.pitch||1; S.speed=+rec.speed||1; }
+  else { S.fx='none'; S.pitch=1; }
+  LS.set(); applyFx(S.fx); applyPlayback(); buildFxUI(); paintPlayerOpts();
+}
 function applyFx(name){
   if(name!=='none' && !ensureGraph()){ toast('当前环境不支持音效'); return; }
   if(!EG){ applyPlayback(); return; }
@@ -1496,6 +1590,12 @@ function applyFx(name){
   }
 }
 function buildFxChain(name,src,out){
+  /* 先按需插入「纯音调偏移」节点：音调与变声器都只改音色，不改播放速度 */
+  var pf=pitchFactor(name);
+  if(Math.abs(pf-1)>0.002){
+    var ps=makePitchShift(pf);
+    if(ps){ try{ src.connect(ps.in); src=ps.out; }catch(e){} }
+  }
   if(name==='none'){ src.connect(out); return; }
   function f(t,freq,q,g){var n=AC.createBiquadFilter();n.type=t;if(freq!=null)n.frequency.value=freq;if(q!=null)n.Q.value=q;if(g!=null)n.gain.value=g;return n;}
   var comp=AC.createDynamicsCompressor();
@@ -1807,7 +1907,7 @@ function buildFxUI(){
   var f=$('fxChips');
   f.innerHTML=FXS.map(function(x){return '<span class="chip'+(S.fx===x[0]?' on':'')+'" data-v="'+x[0]+'">'+x[1]+'</span>'}).join('');
   f.onclick=function(e){var c=e.target.closest?e.target.closest('.chip'):null;if(!c)return;
-    S.fx=c.getAttribute('data-v'); LS.set(); applyFx(S.fx); buildFxUI(); paintPlayerOpts();
+    S.fx=c.getAttribute('data-v'); LS.set(); savePerSong(); applyFx(S.fx); buildFxUI(); paintPlayerOpts();
     toast('音效：'+labelOfFx(S.fx));};
   var pq=$('pitchQuick');
   if(pq){
@@ -1821,27 +1921,36 @@ function buildFxUI(){
   if(v){
     v.innerHTML=VOICES.map(function(x){return '<span class="chip'+(S.fx===x[0]?' on':'')+'" data-v="'+x[0]+'">'+x[1]+'</span>'}).join('');
     v.onclick=function(e){var c=e.target.closest?e.target.closest('.chip'):null;if(!c)return;
-      S.fx=c.getAttribute('data-v'); LS.set(); applyFx(S.fx); buildFxUI(); paintPlayerOpts();
+      S.fx=c.getAttribute('data-v'); LS.set(); savePerSong(); applyFx(S.fx); buildFxUI(); paintPlayerOpts();
       toast('变声器：'+labelOfFx(S.fx));};
+  }
+  var sc=$('fxScope');
+  if(sc){
+    sc.innerHTML=[['global','全局生效'],['single','仅本首']].map(function(x){
+      return '<span class="chip'+((S.fxScope||'global')===x[0]?' on':'')+'" data-v="'+x[0]+'">'+x[1]+'</span>'}).join('');
+    sc.onclick=function(e){var c=e.target.closest?e.target.closest('.chip'):null;if(!c)return;
+      var old=(S.fxScope||'global'); S.fxScope=c.getAttribute('data-v');
+      if(old==='single'&&S.fxScope==='global'){ /* 切到全局：保留当前设置，清掉单曲记录 */ }
+      LS.set(); buildFxUI();
+      toast(S.fxScope==='global'?'音效作用范围：全局（所有歌通用）':'音效作用范围：仅本首（换歌后回到原声）');};
   }
   $('fxSpeed').value=S.speed; $('fxSpeedV').textContent=S.speed.toFixed(1)+'x';
   $('fxVol').value=S.vol; $('fxVolV').textContent=S.vol+'%';
 }
-/* 倍速 / 音调 / 变声器 统一应用（preservesPitch 关闭才能变声） */
+/* 倍速 = 只改速度、音调保持不变（音调由 buildFxChain 的纯音调偏移节点单独处理） */
 function applyPlayback(){
-  var vr=voiceRate(S.fx), pt=+S.pitch||1;
-  var shift=(vr!==1)||(Math.abs(pt-1)>0.001);
   try{
-    au.preservesPitch=!shift;
-    try{au.mozPreservesPitch=!shift}catch(e){}
-    try{au.webkitPreservesPitch=!shift}catch(e){}
-    au.playbackRate=Math.max(.0625,Math.min(16,(+S.speed||1)*pt*vr));
+    au.preservesPitch=true;
+    try{au.mozPreservesPitch=true}catch(e){}
+    try{au.webkitPreservesPitch=true}catch(e){}
+    au.playbackRate=Math.max(.0625,Math.min(16,(+S.speed||1)));
   }catch(e){}
 }
-function setSpeed(v){ S.speed=Math.max(.1,Math.min(10,+v||1)); LS.set(); applyPlayback();
+function setSpeed(v){ S.speed=Math.max(.1,Math.min(10,+v||1)); LS.set(); savePerSong(); applyPlayback();
   var e=$('fxSpeed'); if(e){e.value=S.speed;$('fxSpeedV').textContent=S.speed.toFixed(1)+'x'}
   paintPlayerOpts(); }
-function setPitch(v){ S.pitch=Math.max(.1,Math.min(10,+v||1)); LS.set(); applyPlayback();
+function setPitch(v){ S.pitch=Math.max(.1,Math.min(10,+v||1)); LS.set(); savePerSong();
+  applyFx(S.fx);                       /* 重建链路 → 应用纯音调偏移 */
   var e=$('fxPitch'); if(e){e.value=S.pitch;$('fxPitchV').textContent=(+S.pitch).toFixed(1)}
   paintPlayerOpts(); }
 $('fxSpeed').oninput=function(){ setSpeed(+this.value); buildFxUI(); };
@@ -1988,7 +2097,9 @@ function buildQwUI(){
 $('setFont').oninput=function(){S.font=+this.value;$('setFontV').textContent=S.font;LS.set();renderLrc(au.currentTime,true)};
 $('setBg').oninput=function(){S.bg=+this.value;$('setBgV').textContent=S.bg;LS.set();applyBlurBg(S.blur)};
 $('fwDelay').oninput=function(){S.fwDelay=+this.value;$('fwDelayV').textContent=this.value;LS.set();syncFloatWin()};
-$('fwOn').onclick=function(){ floatWinShow(false); };
+/* 悬浮窗默认关闭：必须由用户主动点击「开启」→ 先请求设备权限，授到权限后才显示
+   （App：跳系统悬浮窗授权页；电脑网页版：请求浏览器窗口置顶/PiP 权限实现跨网页跨应用常驻） */
+$('fwOn').onclick=function(){ floatWinShow(true); };
 $('fwPip').onclick=function(){ floatWinShow(true); };
 $('fwOff').onclick=function(){ floatWinHide(); toast('已关闭悬浮歌词窗'); };
 $('pFloat').onclick=function(){ floatWinShow(true); };
@@ -2222,7 +2333,7 @@ function restoreBg(){
 
 /* ---------- 播放器控件 ---------- */
 function modeIcon(m){ return m==='random'?'shuffle':(m==='single'?'repeat':'angles-right'); }
-/* 写入模式图标：顺序播放 = 两个向右箭头并排（双箭头合并成一个按钮） */
+/* 写入模式图标：顺序播放 = 两个向右箭头【上下叠放】（参考图样式），其余为单图标 */
 function setModeBtn(el,m){
   if(!el)return;
   if(m==='order') el.innerHTML='<i class="fa-solid fa-arrow-right"></i><i class="fa-solid fa-arrow-right"></i>';
@@ -2271,7 +2382,7 @@ function seekFrom(e,bar){
   if(isFinite(au.duration)&&au.duration>0)au.currentTime=ratio*au.duration;
 }
 $('pg').onclick=function(e){seekFrom(e,this)};
-$('fpg').onclick=function(e){seekFrom(e,this)};
+if($('fpg'))$('fpg').onclick=function(e){seekFrom(e,this)};
 
 /* 音频事件 */
 au.onplay=function(){ setPlaying(true); manualPaused=false; updateBgAudio(); refreshCarCard(); };
@@ -2294,7 +2405,8 @@ au.onended=function(){
 au.ontimeupdate=function(){
   var d=au.duration||0,p=d?au.currentTime/d*100:0;
   $('pgFill').style.width=p+'%';$('pgDot').style.left=p+'%';
-  $('fpgFill').style.width=p+'%';$('fpgDot').style.left=p+'%';
+  if($('fpgFill'))$('fpgFill').style.width=p+'%';
+  if($('fpgDot'))$('fpgDot').style.left=p+'%';
   $('miniProg').style.width=p+'%';
   $('tCur').textContent=fmt(au.currentTime);$('tDur').textContent=fmt(d);
   renderLrc(au.currentTime,false);
