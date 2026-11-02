@@ -2540,36 +2540,7 @@ $('srSet').onclick=openSet;
 $('setClose').onclick=function(){$('setSheet').classList.remove('on')};
 $('setChan').onchange=function(){CHAN=this.value;LS.put('sl_search_chan',CHAN);openSet()};
 $('setMag').onchange=function(){MAGMODE=this.value;LS.put('sl_search_mag',MAGMODE)};
-/* ---------- v9.8.1：内置 VPN 加速 ---------- */
-var VPN_ON=false;
-function paintVpn(){
-  var t=$('vpnTxt'); if(!t)return;
-  t.textContent=VPN_ON?'已开启':'已关闭';
-  $('vpnBtn').style.borderColor=VPN_ON?'rgba(255,110,199,.55)':'';
-  $('vpnBtn').style.background=VPN_ON?'linear-gradient(135deg,rgba(157,78,221,.5),rgba(217,70,239,.34))':'';
-}
-function enableVpn(){
-  if(!(window.Android&&Android.enableVpn)){ toast('请在 App 内使用网络加速'); return; }
-  try{ Android.enableVpn(); VPN_ON=true; paintVpn(); toast('正在自动选择最快节点…'); }catch(e){ toast('开启失败：'+e.message); }
-}
-$('vpnBtn').onclick=function(){
-  if(!VPN_ON){ enableVpn(); return; }
-  if(confirm('确定关闭网络加速吗？')){
-    try{ Android.disableVpn(); }catch(e){}
-    VPN_ON=false; paintVpn(); toast('网络加速已关闭');
-  }else if(confirm('是否改为启用加速器？')){
-    enableVpn();
-  }
-};
-try{
-  if(window.Android&&Android.vpnStatus){ VPN_ON=Android.vpnStatus()==='on'; paintVpn(); }
-  if(!LS.get('sl_vpn_notice',false)){
-    LS.put('sl_vpn_notice',true);
-    setTimeout(function(){
-      if(confirm('提示：部分地区的网络访问可能受限。本应用内置 VPN 加速，可自动选择最快节点。是否现在开启？')) enableVpn();
-    },1500);
-  }
-}catch(e){}
+/* v8.0.4：网络加速（VPN）功能已按要求彻底移除，不再出现任何开关或提示 */
 $('setEngines').onclick=function(e){
   var s=e.target.closest?e.target.closest('span[data-e]'):null;if(!s)return;
   var id=s.getAttribute('data-e');
