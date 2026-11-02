@@ -232,7 +232,7 @@ async function ask(m,userText,quoteName,quoteText){
       var target=c.base+'/chat/completions';
       var init={method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+pickKey(c)},body:JSON.stringify(body),signal:ctrl.signal};
       try{
-        if(/^(127\.0\.0\.1|localhost)$/.test(location.hostname||'')){
+        if(location.protocol==='http:' && /^(127\.0\.0\.1|localhost)$/.test(location.hostname||'')){
           var ah=init.headers.Authorization;
           init={method:'POST',headers:{'Content-Type':'application/json','X-SL-Auth':ah},body:init.body,signal:ctrl.signal};
           target='/api?url='+encodeURIComponent(target);
