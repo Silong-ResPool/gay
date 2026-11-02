@@ -20,6 +20,9 @@
 **🚫 年龄限制**：本应用包含大量成人内容，仅限 18 岁及以上用户使用。
 
 * 🔗 [点击前往发布页下载](https://github.com/Silong-ResPool/gay/releases/tag/gay)
+* 🤖 Android：`Silong-ResPool_v8.0.4_Android.apk`
+* 🦋 HarmonyOS：`Silong-ResPool_v8.0.4_Harmony.apk`
+* 🖥️ Windows 电脑版：`Silong-ResPool_v8.0.4_Windows.exe`（单文件，双击即用）
 * 🌐 网页版：[https://silong-respool.github.io/gay/](https://silong-respool.github.io/gay/)
 
 ---
