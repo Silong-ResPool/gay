@@ -95,6 +95,10 @@ const substituteDataURIs = (obj, dirPath, uriMap) => {
 // 巳泷 v9.3.0：支持 ZIP / LPK / WPK 三种模型包格式（本质均为 ZIP 压缩包）
 const isModelArchive = (name) => /\.(zip|lpk|wpk)$/i.test(String(name || ''));
 
+// v8.0.6：很多模型包的 JSON 是哈希命名（如 0401e7be....json），必须按内容识别模型入口
+const looksLikeModelJson = (obj) => !!obj && typeof obj === 'object' &&
+  (obj.FileReferences || obj.Moc || obj.model || obj.version || obj.FileReferences === {});
+
 // v9.9.2：先读文件头，非标准 ZIP 给出可执行的解决提示（很多 WPK/LPK 是加密或专用格式）
 const readMagic = async (file) => {
   try {
@@ -110,13 +114,24 @@ export const processFolderFiles = async (fileList) => {
 
   let modelFile = null;
   let modelPath = '';
-  files.forEach((f) => {
+  let jsonObj = null;
+  // 先按文件名找；找不到再按内容识别（兼容哈希命名的模型 JSON）
+  for (const f of files) {
     const rel = String(f.webkitRelativePath || f.name);
-    if (ZIP_CONFIG.MODEL_JSON_REGEX.test(rel)) { modelFile = f; modelPath = rel; }
-  });
-  if (!modelFile) throw new Error('文件夹里没找到 .model3.json / .model.json');
-
-  const jsonObj = JSON.parse(await modelFile.text());
+    if (ZIP_CONFIG.MODEL_JSON_REGEX.test(rel)) { modelFile = f; modelPath = rel; break; }
+  }
+  if (!modelFile) {
+    for (const f of files) {
+      const rel = String(f.webkitRelativePath || f.name);
+      if (!/\.json$/i.test(rel) || (f.size || 0) > 500000) continue;
+      try {
+        const obj = JSON.parse(await f.text());
+        if (looksLikeModelJson(obj)) { modelFile = f; modelPath = rel; jsonObj = obj; break; }
+      } catch (e) {}
+    }
+  }
+  if (!modelFile) throw new Error('文件夹里没找到模型 JSON（model3.json / model.json 或哈希命名入口）');
+  if (!jsonObj) jsonObj = JSON.parse(await modelFile.text());
   const dirPath = modelPath.includes('/') ? modelPath.slice(0, modelPath.lastIndexOf('/') + 1) : '';
   const referenced = collectPaths(jsonObj, dirPath);
   const uriMap = new Map();
@@ -155,16 +170,27 @@ export const processZipFile = async (file) => {
       }
     });
 
-    if (!modelEntry) throw new Error('No .model3.json / .model.json found in ZIP');
-
-    const jsonText = await modelEntry.async('text');
-    let jsonObj;
-
-    try {
-      jsonObj = JSON.parse(jsonText);
-    } catch (error) {
-      throw new Error(`Invalid JSON in ${modelPath}: ${error.message}`);
+    let jsonObj = null;
+    if (modelEntry) {
+      const jsonText = await modelEntry.async('text');
+      try { jsonObj = JSON.parse(jsonText); }
+      catch (error) { throw new Error(`Invalid JSON in ${modelPath}: ${error.message}`); }
     }
+    /* v8.0.6：哈希命名的模型包没有 model3.json 文件名，遍历 JSON 按内容找入口 */
+    if (!jsonObj) {
+      const candidates = [];
+      zip.forEach((relPath, entry) => {
+        if (!entry.dir && /\.json$/i.test(relPath)) candidates.push([relPath, entry]);
+      });
+      for (const [relPath, entry] of candidates) {
+        if ((entry._data && entry._data.uncompressedSize || 0) > 500000) continue;
+        try {
+          const obj = JSON.parse(await entry.async('text'));
+          if (looksLikeModelJson(obj)) { modelEntry = entry; modelPath = relPath; jsonObj = obj; break; }
+        } catch (e) {}
+      }
+    }
+    if (!modelEntry || !jsonObj) throw new Error('模型包里没有找到可识别的模型 JSON（model3.json 或哈希命名入口）');
 
     const dirPath    = modelPath.includes('/') ? modelPath.slice(0, modelPath.lastIndexOf('/') + 1) : '';
     const referenced = collectPaths(jsonObj, dirPath);

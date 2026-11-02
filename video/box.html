@@ -108,10 +108,1678 @@ body{font-family:'PingFang SC','Microsoft YaHei',system-ui,sans-serif;background
 <div class="tip" id="tip"></div>
 
 <script src="libs/hls.min.js"></script>
-<script src="js/sources_data.js"></script>
-<script src="js/sources.js"></script>
-<script src="js/xpath.js"></script>
-<script src="js/api.js"></script>
+<script>
+﻿/* ==========================================================================
+   影视乐园 · sources_data.js（内置视频源数据）
+   来源：公开 TVBox 接口合集（dlgt7/TVbox-interface、guxiangbin/tvbox2、影视仓接口整理等）
+         + 逐条实测可用的苹果CMS(MacCMS) 采集接口，已去重、已按分类归档。
+   字段：n = 名称，a = 接口地址，c = 分类，v = 1 表示实测可用，t = "m" 表示仓库入口（多仓/JSON，需在源管理里展开导入）
+   ========================================================================== */
+window.VIDEO_SOURCES = [
+  { n: "360资源", a: "https://360zy.com/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "Ck资源", a: "https://ckzy.me/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "iQiyi资源", a: "https://www.iqiyizyapi.com/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "百度资源", a: "https://api.apibdzy.com/api.php/provide/vod/", c: "综合影视", v: 1 },
+  { n: "暴风资源", a: "https://bfzyapi.com/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "电影天堂", a: "http://caiji.dyttzyapi.com/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "豆瓣资源", a: "https://dbzy.tv/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "非凡资源", a: "http://cj.ffzyapi.com/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "官原资源", a: "https://cj.jusj.top/api.php/provide/vod/", c: "综合影视", v: 1 },
+  { n: "虎牙资源", a: "https://www.huyaapi.com/api.php/provide/vod/from/hym3u8", c: "综合影视", v: 1 },
+  { n: "火狐资源", a: "https://hhzyapi.com/api.php/provide/vod/", c: "综合影视", v: 1 },
+  { n: "极速资源", a: "https://jszyapi.com/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "量子资源", a: "https://cj.lziapi.com/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "量子资源(新)", a: "https://lzizy1.com/api.php/provide/vod/", c: "综合影视", v: 1 },
+  { n: "茅台资源", a: "https://caiji.maotaizy.cc/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "魔都资源", a: "https://www.mdzyapi.com/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "森林1", a: "https://slapibf.com/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "索尼多线", a: "https://suoniapi.com/api.php/provide/vod/from/snm3u8/", c: "综合影视", v: 1 },
+  { n: "索尼资源", a: "https://suoniapi.com/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "天堂多线", a: "http://caiji.dyttzyapi.com/api.php/provide/vod/from/dyttm3u8/at/json/", c: "综合影视", v: 1 },
+  { n: "天涯资源", a: "https://tyyszy.com/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "无尽资源", a: "https://api.wujinapi.com/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "最大资源", a: "https://api.zuidapi.com/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "樱花资源", a: "https://m3u8.apiyhzy.com/api.php/provide/vod", c: "动漫", v: 1 },
+  /* ---------- Kazumi 式 XPath 动漫源（规则引擎：xpath.js） ----------
+     t: "x" 表示 XPath 规则源；r 为规则对象（与 Kazumi plugins 格式一致） */
+  { n: "DM84 动漫", c: "动漫", t: "x", r: {
+    name: "DM84", type: "anime", baseURL: "https://dmbus.cc/",
+    searchURL: "https://dmbus.cc/s----------.html?wd=@keyword",
+    searchList: "//div/div[3]/ul/li", searchName: "//div/a[2]", searchResult: "//div/a[2]",
+    chapterRoads: "//div/div[4]/div/ul", chapterResult: "//li/a",
+    muliSources: true, useWebview: true
+  } },
+  { n: "7sefun 动漫", c: "动漫", t: "x", r: {
+    name: "7sefun", type: "anime", baseURL: "https://www.7sefun.top/",
+    searchURL: "https://www.7sefun.top/vodsearch/-------------.html?wd=@keyword",
+    searchList: "//div[2]/div[2]/div[2]/div[2]/div", searchName: "//div[2]/text()", searchResult: "//a",
+    chapterRoads: "//div[2]/div[2]/div[2]/div/div[2]/div[1]//div", chapterResult: "//a",
+    muliSources: true, useWebview: true
+  } },
+  /* ---------- 巳泷 v9.3.0：男同专区（成人分类默认首页） ----------
+     gayagg: 前缀 = 自动爬取聚合源：进入成人分类第一个就是它，
+     自动遍历全部成人接口，按 男同/男同性恋/gay/BL/yaoi/耽美 关键词
+     从源名、分类标签、视频片名与自带标签聚合（排除"男同学"）。 */
+  { n: "男同专区", a: "gayagg:auto", c: "成人（18+）", v: 1 },
+  { n: "155", a: "https://155api.com/api.php/provide/vod", c: "成人（18+）", v: 1 },
+  { n: "AV资源", a: "https://api.souavzy.vip/api.php/provide/vod/at/json", c: "成人（18+）", v: 1 },
+  { n: "souav", a: "https://api.souavzy.vip/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "奥斯卡", a: "https://aosikazy.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "大奶子", a: "https://apidanaizi.com/api.php/provide/vod", c: "成人（18+）", v: 1 },
+  { n: "滴滴", a: "https://api.ddapi.cc/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "番号", a: "http://fhapi9.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "番外", a: "http://fhapi9.com/api.php/provide/vod", c: "成人（18+）", v: 1 },
+  { n: "嘿嘿", a: "https://api.heiapi.cc/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "火速", a: "https://api.huosuapi.cc/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "鸡坤", a: "https://jkunzyapi.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "精东", a: "http://chujia.cc/api.php/provide/vod/from/m3u8", c: "成人（18+）", v: 1 },
+  { n: "乐播", a: "https://lbapi9.com/api.php/provide/vod", c: "成人（18+）", v: 1 },
+  { n: "乐播(新)", a: "https://lbapi9.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "奶香", a: "https://naixxzy.com/api.php/provide/vod/at/json", c: "成人（18+）", v: 1 },
+  { n: "深林", a: "https://slapibf.com/api.php/provide/vod/at/json", c: "成人（18+）", v: 1 },
+  { n: "湿园", a: "https://xxavs.com/api.php/provide/vod/at/json", c: "成人（18+）", v: 1 },
+  { n: "丝袜", a: "https://www.siwazyw.tv/api.php/provide/vod", c: "成人（18+）", v: 1 },
+  { n: "小草1", a: "https://www.caoliuzyw.com/api.php/provide/vod/at/json", c: "成人（18+）", v: 1 },
+  { n: "小丝袜", a: "https://www.siwazyw.tv/api.php/provide/vod/at/json", c: "成人（18+）", v: 1 },
+  { n: "玉兔", a: "https://apiyutu.com/api.php/provide/vod", c: "成人（18+）", v: 1 },
+  { n: "玉兔", a: "https://apiyutu.com/api.php/provide/vod/at/json", c: "成人（18+）", v: 1 },
+  { n: "8天", a: "https://8day.icu/api.php/provide/vod/at/json", c: "成人（18+）" },
+  { n: "橘猫", a: "https://to.to-long.com/api.php/provide/vod/at/json", c: "成人（18+）" },
+  { n: "色猫", a: "https://caiji.semaozy.net/inc/apijson_vod.php", c: "成人（18+）" },
+  { n: "色猫资源💞", a: "https://api.maozyapi.com/inc/apijson_vod.php", c: "成人（18+）" },
+  { n: "色南国", a: "http://api.sexnguon.com/api.php/provide/vod", c: "成人（18+）" },
+  { n: "优异", a: "https://a.uezy.pw/api.php/provide/vod/at/json", c: "成人（18+）" },
+  { n: "月色影视", a: "http://69ty.cc/mogai_api.php/v1.vod", c: "成人（18+）" },
+  /* ---------- 巳泷 v9.3.0：男同专区（成人分类首页） ----------
+     来源：Silong-TVBox / TVBox2 / TVBox3 / TVBox4 四仓库成人接口整合
+     男同内容优先展示，作为成人分类默认首页；点击「成人」Tab 直接进入。 */
+  { n: "花魁", a: "https://caiji.huakuiapi.com/inc/apijson_vod.php", c: "成人（18+）", v: 1 },
+  { n: "辣椒", a: "https://apilj.com/api.php/provide/vod/at/json/", c: "成人（18+）", v: 1 },
+  { n: "芒果", a: "https://mgzyz1.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "玉兔", a: "https://apiyutu.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "森林", a: "https://slapibf.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "155", a: "https://155api.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "草榴", a: "https://www.caoliuzy.com/api.php/provide/vod/at/json/", c: "成人（18+）", v: 1 },
+  { n: "开云", a: "https://kaiyunzy5.com/inc/apijson_vod.php", c: "成人（18+）", v: 1 },
+  { n: "黄瓜", a: "https://www.avre00.com/api.php/Prodao/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "奶香", a: "https://Naixxzy.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "伊人", a: "https://api.yrzyapi.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "奥斯卡", a: "https://aosikazy.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "免費AV線上看", a: "https://legallet.org/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "7000影视", a: "https://hd7000.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "色鸭资源", a: "https://api.seyavod.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "玉兔资源", a: "https://yutuzy3.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "老色逼资源站", a: "https://apilsbzy1.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "羞涩高清", a: "https://xxhd.online//api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "天美AV", a: "https://tmav.art/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "青楼资源", a: "https://qlzy.tv/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "色南国资源", a: "https://api.sexnguon.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "极致资源", a: "https://jizhiapi.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "好片资源", a: "https://haopianapi.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "黄色资源", a: "http://hszy.vip/api.php/provide/vod/?ac=detail", c: "成人（18+）", v: 1 },
+  { n: "开云资源", a: "https://kaiyunzy1.com/inc/apijson_vod.php", c: "成人（18+）", v: 1 },
+  { n: "蛋蛋视频", a: "https://156.249.29.8/inc/apijson_vod.php", c: "成人（18+）", v: 1 },
+  { n: "伊人资源", a: "https://api.yirenziyuan.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "155资源", a: "https://155api.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "滴滴资源", a: "https://api.ddapi.cc/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "橘猫资源", a: "https://to.to-long.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "花色资源", a: "https://api.huasezy.xyz/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "蛋蛋视频", a: "http://156.249.29.8/inc/apijson_vod.php", c: "成人（18+）", v: 1 },
+  { n: "雪豹资源", a: "https://api.xbapi.cc/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "宝塔资源", a: "https://baotazy.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "草榴资源", a: "https://www.caoliuzyw.com/api.php/provide/vod/at/json/", c: "成人（18+）", v: 1 },
+  { n: "老鸭资源", a: "https://api.apilyzy.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "咪咪资源", a: "http://www.caiji25.com/home/cjapi/p0as/mc10/vod/json", c: "成人（18+）", v: 1 },
+  { n: "色鸭资源", a: "https://api.seyavod.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "KOK资源", a: "https://api.vodkok2.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "QQ传媒", a: "https://qqcm.sbs/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "泡芙资源", a: "http://zmcj88.com/api?ac=list", c: "成人（18+）", v: 1 },
+  { n: "森林资源", a: "https://madoucun.com//api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "极速官采", a: "http://gc.zhuijuba.vip/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "玉兔 | 采集", a: "https://apiyutu.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "森林 | 采集", a: "https://slapibf.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "森林", a: "http://slapibf.com/api.php/provide/vod", c: "成人（18+）", v: 1 },
+  { n: "👭豆豆资源👭", a: "https://api.douapi.cc/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "🔞采集.森林资源", a: "https://beiyong.slapibf.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "💕乐播(直连)", a: "https://lbapi9.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "★废柴(直连)", a: "http://fhapi9.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "番号资源(卡切)", a: "http://fhapi9.com/api.php/provide/vod/at/json", c: "成人（18+）", v: 1 },
+  { n: "[486ms|zy] 🍊黄仓", a: "https://hsckzy888.com/api.php/provide/vod/from/hsckm3u8/at/json", c: "成人（18+）", v: 1 },
+  { n: "💞仓库💞", a: "https://hsckzy.vip/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "[625ms|123] 🧿乐播┃资源", a: "https://lbapi9.com/api.php/provide/vod/at/json/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "成人06", a: "http://apilj.com/api.php/provide/vod/at/json/", c: "成人（18+）", v: 1 },
+  { n: "🦋 艾旦影视采集🔞", a: "https://lovedan.net/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "🔞鲨鱼资源", a: "https://shayuapi.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "爱坤", a: "https://ikunzyapi.com/api.php/provide/vod", c: "成人（18+）", v: 1 },
+  { n: "飞速", a: "https://www.feisuzyapi.com/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "甜蜜资源", a: "https://timizy10.cc/api.php/provide/vod/?ac=list", c: "成人（18+）", v: 1 },
+  { n: "成人01", a: "http://51smt4.xyz/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "成人05", a: "http://91md.me/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "成人08", a: "http://api.putaozy.net/inc/apijson_vod.php", c: "成人（18+）", v: 1 },
+  { n: "成人12", a: "http://99zy.pw/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "成人15", a: "http://www.feifei67.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "成人17", a: "http://madouse.la/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "成人26", a: "https://www.888dav.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "成人28", a: "https://mgzyz1.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "成人30", a: "https://kkzy.me/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "成人32", a: "https://siwazyw.cc/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "成人34", a: "https://api.sexnguon.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "成人46", a: "https://apittzy.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "成人47", a: "https://api.xiuseapi.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "成人52", a: "https://hghhh.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "成人53", a: "https://sewozyapi.com/api.php/provide/vod/", c: "成人（18+）", v: 1 },
+  { n: "成人59", a: "https://caiji.caomeiapi.com/inc/apijson_vod.php", c: "成人（18+）", v: 1 },
+  { n: "成人60", a: "https://caiji.523zyw.com/inc/apijson_vod.php", c: "成人（18+）", v: 1 },
+  { n: "成人61", a: "https://caiji.naichaapi.com/inc/apijson_vod.php", c: "成人（18+）", v: 1 },
+  { n: "葡萄资源", a: "https://caiji.putaozy.net/inc/api.php", c: "成人（18+）" },
+  { n: "探探资源", a: "https://apittzy.com/api.php/provide/vod/at/xml", c: "成人（18+）" },
+  { n: "KK资源网", a: "https://kkzy.me/api.php/provide/vod/at/xmlsea", c: "成人（18+）" },
+  { n: "色猫资源", a: "https://api.maozyapi.com/inc/api.php", c: "成人（18+）" },
+  { n: "乐播", a: "https://lbapi9.com/api.php/provide/vod/at/xml", c: "成人（18+）" },
+  { n: "哥哥妹妹", a: "http://www.ggmmzy.com:9999/inc/xml", c: "成人（18+）" },
+  { n: "shayu", a: "https://shayuapi.com/api.php/Seacms/vod/", c: "成人（18+）" },
+  { n: "色屌丝", a: "http://sdszyapi.com/home/cjapi/asbb/mc10/vod/xml", c: "成人（18+）" },
+  { n: "番号资源", a: "http://fhapi9.com/api.php/provide/vod/at/xml", c: "成人（18+）" },
+  { n: "点点娱乐", a: "https://xx55zyapi.com/home/cjapi/ascf/mc10/vod/xml", c: "成人（18+）" },
+  { n: "52AVAV", a: "https://52zyapi.com/home/cjapi/asda/mc10/vod/xml", c: "成人（18+）" },
+  { n: "小姐姐资源", a: "https://xjjzyapi.com/home/cjapi/askl/mc10/vod/xml", c: "成人（18+）" },
+  { n: "色窝资源", a: "https://sewozyapi.com/api.php/provide/vod/at/xml", c: "成人（18+）" },
+  { n: "大地", a: "https://dadiapi.com/api.php", c: "成人（18+）" },
+  { n: "老鸭", a: "https://api.apilyzy.com/api.php/provide/vod/at/xml", c: "成人（18+）" },
+  { n: "大MM资源", a: "https://www.dmmapi.com/home/cjapi/asd2c7/mc10/vod/xml", c: "成人（18+）" },
+  { n: "精工厂资源", a: "https://jgczyapi.com/home/cjapi/kld2/mc10/vod/xml", c: "成人（18+）" },
+  { n: "美少女", a: "https://www.msnii.com/api/xml.php", c: "成人（18+）" },
+  { n: "淫水机", a: "https://www.xrbsp.com/api/xml.php", c: "成人（18+）" },
+  { n: "花椒", a: "https://apihjzy.com/api.php/provide/vod/at/xml/", c: "成人（18+）" },
+  { n: "丝袜", a: "https://www.siwazyw.cc/api.php/provide/vod/at/xml/", c: "成人（18+）" },
+  { n: "黄AV", a: "https://www.pgxdy.com/api/xml.php", c: "成人（18+）" },
+  { n: "香奶儿", a: "https://www.gdlsp.com/api/xml.php", c: "成人（18+）" },
+  { n: "菜云", a: "https://www.caiyunjidi.com/api/vod.php", c: "成人（18+）" },
+  { n: "壹壹资源", a: "https://www.221zyz.vip/inc/api.php", c: "成人（18+）" },
+  { n: "91麻豆", a: "https://91md.me/api.php/provide/vod/at/xml/", c: "成人（18+）" },
+  { n: "白嫖", a: "https://www.kxgav.com/api/xml.php", c: "成人（18+）" },
+  { n: "爱播", a: "https://cj.apiabzy.com/api.php/provide/vod/at/xml/", c: "成人（18+）" },
+  { n: "草莓", a: "https://caiji.caomeiapi.com/inc/api.php", c: "成人（18+）" },
+  { n: "小湿妹", a: "https://www.afasu.com/api/xml.php", c: "成人（18+）" },
+  { n: "久久", a: "http://99zy.pw/api.php/provide/vod/at/xml/", c: "成人（18+）" },
+  { n: "秀色", a: "https://api.xiuseapi.com/api.php/provide/vod/at/xml", c: "成人（18+）" },
+  { n: "芒果", a: "https://www.mgav1.cc/api.php/provide/vod/at/xml/", c: "成人（18+）" },
+  { n: "花椒", a: "https://cj.apihjzy.com/inc/api.php", c: "成人（18+）" },
+  { n: "辣椒2", a: "http://api.11bat.com/api.php/provide/vod/at/xml/", c: "成人（18+）" },
+  { n: "天堂", a: "http://bttcj.com/inc/sapi.php", c: "成人（18+）" },
+  { n: "色色吧", a: "http://secj8.com/inc/sapi.php?ac=videolist", c: "成人（18+）" },
+  { n: "滴滴资源", a: "https://api.ddapi.cc/api.php/provide/vod/at/xml", c: "成人（18+）" },
+  { n: "葡萄资源", a: "https://putaozy19.com/inc/api.php", c: "成人（18+）" },
+  { n: "色色资源", a: "http://secj8.com/inc/sapi.php", c: "成人（18+）" },
+  { n: "辣椒", a: "https://apilj.com/api.php/provide/vod/at/xml/", c: "成人（18+）" },
+  { n: "量子", a: "https://cj.lziapi.com/api.php/provide/vod/at/xml/", c: "成人（18+）" },
+  { n: "非凡", a: "http://cj.ffzyapi.com/api.php/provide/vod/at/xml/", c: "成人（18+）" },
+  { n: "成人02", a: "http://jcspcj8.com/api?ac=videolist", c: "成人（18+）" },
+  { n: "成人04", a: "http://cjmygzy.com/inc/sapi.php?ac=videolist", c: "成人（18+）" },
+  { n: "成人06", a: "http://dadiapi.com/api.php", c: "成人（18+）" },
+  { n: "成人09", a: "http://llzxcj.com/inc/sck.php?ac=videolist", c: "成人（18+）" },
+  { n: "成人11", a: "http://f2dcj6.com/sapi?ac=videolist", c: "成人（18+）" },
+  { n: "成人18", a: "http://xjjzyapi.com/home/cjapi/askl/mc10/vod/xml", c: "成人（18+）" },
+  { n: "成人19", a: "http://www.shabizy.com:777/inc/sea", c: "成人（18+）" },
+  { n: "成人20", a: "http://www.caiji21.com/home/cjapi/klkl/mc10/vod/xml", c: "成人（18+）" },
+  { n: "成人21", a: "http://www.caiji25.com/home/cjapi/p0as/mc10/vod/xml", c: "成人（18+）" },
+  { n: "成人22", a: "http://caiji26.com/home/cjapi/p0g8/mc10/vod/xml", c: "成人（18+）" },
+  { n: "成人23", a: "http://www.caiji24.com/home/cjapi/p0d2/mc10/vod/xml", c: "成人（18+）" },
+  { n: "成人24", a: "http://lbapiby.com/api.php/provide/vod/at/xml", c: "成人（18+）" },
+  { n: "成人27", a: "https://www.mgav1.cc/api.php/provide/vod/at/xml", c: "成人（18+）" },
+  { n: "成人38", a: "https://www.caiji02.com/home/cjapi/cfas/mc10/vod/xml", c: "成人（18+）" },
+  { n: "成人40", a: "https://www.caiji07.com/home/cjapi/cfcf/mc10/vod/xml", c: "成人（18+）" },
+  { n: "成人42", a: "https://www.caiji03.com/home/cjapi/cfg8/mc10/vod/xml", c: "成人（18+）" },
+  { n: "成人43", a: "https://www.caiji08.com/home/cjapi/cfkl/mc10/vod/xml", c: "成人（18+）" },
+  { n: "成人44", a: "https://www.caiji10.com/home/cjapi/cfs6/mc10/vod/xml", c: "成人（18+）" },
+  { n: "成人48", a: "https://www.caiji01.com/home/cjapi/cfd2/mc10/vod/xml", c: "成人（18+）" },
+  { n: "成人49", a: "https://www.caiji22.com/home/cjapi/klp0/mc10/vod/xml", c: "成人（18+）" },
+  { n: "成人50", a: "https://www.caiji23.com/home/cjapi/kls6/mc10/vod/xml", c: "成人（18+）" },
+  { n: "成人55", a: "https://www.caiji04.com/home/cjapi/cfc7/mc10/vod/xml", c: "成人（18+）" },
+  { n: "成人56", a: "https://www.caiji09.com/home/cjapi/cfp0/mc10/vod/xml", c: "成人（18+）" },
+  { n: "成人57", a: "https://www.caiji05.com/home/cjapi/cfda/mc10/vod/xml", c: "成人（18+）" },
+
+
+  { n: "4K影院", a: "http://1api.4kdytv.com/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "913e影视", a: "http://www.913e.net/xgapp.php/v1", c: "其他源（待验证）" },
+  { n: "Ck资源", a: "https://ckzy.me/api.php/provide/vod/?ac=list", c: "其他源（待验证）" },
+  { n: "DC影视", a: "http://chaorenbb.com/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "QC影视", a: "https://www.qcsvip.com/mogai_api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "U5影视", a: "https://appx.uy07.com/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "阿里影视", a: "http://aliys.cn:90/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "爱西西", a: "https://myaixixi.com/xgapp.php/v1", c: "其他源（待验证）" },
+  { n: "爱影视", a: "https://www.hzlff.cn/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "嗷呜影院", a: "http://aowu.pro/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "比邻影视", a: "http://0hzy.cn:9990/mogai_api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "播放呀", a: "https://www.bofangya.com/xgapp.php/v1", c: "其他源（待验证）" },
+  { n: "初心影视", a: "https://www.18mv.club/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "嘀哩嘀哩", a: "http://dilidili.la/api.php/app", c: "其他源（待验证）" },
+  { n: "豆渣影视", a: "http://douzhayss.cc/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "独播社", a: "http://35ys.cc/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "多啦咪PRO", a: "http://yuenos-pro.miyuen.cn/qingdoujiekou.php/v1.vod", c: "其他源（待验证）" },
+  { n: "海胆影视", a: "http://xf123.cc/api.php/app", c: "其他源（待验证）" },
+  { n: "晗先森", a: "https://hantv.top/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "虎猫视频", a: "https://humaosp.com/mogai_api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "黄河影视", a: "http://i.ledu8.cn/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "极光影院", a: "http://app.winxz.cc/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "极酷视频", a: "https://jiku.vip/mogai_api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "久九影视", a: "https://api.58qxk.cn/xgapp.php/v1", c: "其他源（待验证）" },
+  { n: "橘子影视", a: "http://jz.juzidy.vip/mogai_api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "看365", a: "https://www.kan365.xyz/api.php/app", c: "其他源（待验证）" },
+  { n: "看剧吧", a: "http://app.ishen520.com/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "看看剧", a: "https://www.kankanju.cn/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "快云影音", a: "https://www.kuaiyunyy.com/api.php/app", c: "其他源（待验证）" },
+  { n: "蓝光视频", a: "http://vip.91iqiyi.com/mogai_api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "冷视TV", a: "https://len.tv/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "绿豆视频", a: "https://v.lvdoui.cn/mogai_api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "美剧虫", a: "https://meijuchong.com/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "萌蛋蛋", a: "http://app.mengdandan.com/xgapp.php/v1", c: "其他源（待验证）" },
+  { n: "蜜蜂影视", a: "http://app.f8tp.com/lvdou_api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "抹茶猪", a: "https://www.mczdyw.com/api.php/app", c: "其他源（待验证）" },
+  { n: "莫扎兔", a: "http://www.mozhatu.xyz/api.php/app", c: "其他源（待验证）" },
+  { n: "暖光影视", a: "https://app.bl210.com/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "皮皮动漫", a: "http://dm.muying.me/mogai_api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "天空影视", a: "https://www.tkys.tv/xgapp.php/v2", c: "其他源（待验证）" },
+  { n: "天神影视", a: "https://deity.fun/api.php/app", c: "其他源（待验证）" },
+  { n: "天天视频", a: "http://app.qianju.cc/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "吾爱影视", a: "http://app.5lp.net/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "玺心影视", a: "https://tv.arbd.cn/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "小白动漫", a: "http://121.62.60.222:20222/mogai_api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "小蜻蜓", a: "http://3ketv.com/mogai_api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "心鸾影视", a: "http://zhiyutv.xyz/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "星空影视", a: "https://xkys.tv/xgapp.php/v1", c: "其他源（待验证）" },
+  { n: "益达影院", a: "http://luobu.yss6080.com/mogai_api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "樱花动漫", a: "https://www.dmwu.cc/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "柚子视频", a: "http://yz.26ys.cn/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "雨果影视", a: "http://2.yhys63.com/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "月儿影视", a: "https://yue52.xyz/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "云梦影视", a: "https://yun.yunl.xyz/mogai_api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "猪猪影院", a: "http://app.2zdyy.com/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "追剧吧", a: "http://zhuiju8.vip/api.php/v1.vod", c: "其他源（待验证）" },
+  { n: "追剧猫", a: "http://tv.kmtvb.com/api.php/v1.vod", c: "其他源（待验证）" },
+  /* ---------- 巳泷 v9.3.0：Silong-TVBox 四仓库接口合集（纯远程调用，共 68 个） ----------
+     t: "m" = 仓库入口，在源管理里点击展开导入子接口；本地不内置，避免包体过大。
+     已按类型分类：成人仓库 / 综合仓库 */
+  /* --- 成人仓库 --- */
+  { n: "R18.json(TVBox1)", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox/main/R18.json", c: "成人（18+）", t: "m" },
+  { n: "adult.json", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox2/main/adult.json", c: "成人（18+）", t: "m" },
+  { n: "adult_live.json", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox2/main/adult_live.json", c: "成人（18+）", t: "m" },
+  { n: "adult_live_channels.json", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox2/main/adult_live_channels.json", c: "成人（18+）", t: "m" },
+  { n: "18+.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/18+.txt", c: "成人（18+）", t: "m" },
+  { n: "18+1.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/18+1.txt", c: "成人（18+）", t: "m" },
+  { n: "18+2.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/18+2.txt", c: "成人（18+）", t: "m" },
+  { n: "18+3.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/18+3.txt", c: "成人（18+）", t: "m" },
+  { n: "18+35.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/18+35.txt", c: "成人（18+）", t: "m" },
+  { n: "18+36.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/18+36.txt", c: "成人（18+）", t: "m" },
+  { n: "18+37.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/18+37.txt", c: "成人（18+）", t: "m" },
+  { n: "18.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/18.txt", c: "成人（18+）", t: "m" },
+  { n: "9918(H).txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/9918(H).txt", c: "成人（18+）", t: "m" },
+  { n: "Gmmtekamu-18.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/Gmmtekamu-18.txt", c: "成人（18+）", t: "m" },
+  { n: "Guard-H.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/Guard-H.txt", c: "成人（18+）", t: "m" },
+  { n: "Huhujun.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/Huhujun.txt", c: "成人（18+）", t: "m" },
+  { n: "Huhujunxx.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/Huhujunxx.txt", c: "成人（18+）", t: "m" },
+  { n: "Huhujun🈲.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/Huhujun🈲.txt", c: "成人（18+）", t: "m" },
+  { n: "MHQTV.c18.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/MHQTV.c18.txt", c: "成人（18+）", t: "m" },
+  { n: "Peter(H).txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/Peter(H).txt", c: "成人（18+）", t: "m" },
+  { n: "PinkBird.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/PinkBird.txt", c: "成人（18+）", t: "m" },
+  { n: "Sex.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/Sex.txt", c: "成人（18+）", t: "m" },
+  { n: "SexTVBox.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/SexTVBox.txt", c: "成人（18+）", t: "m" },
+  { n: "Sex🈲.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/Sex🈲.txt", c: "成人（18+）", t: "m" },
+  { n: "XXX1.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/XXX1.txt", c: "成人（18+）", t: "m" },
+  { n: "XXX2.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/XXX2.txt", c: "成人（18+）", t: "m" },
+  { n: "XXX3.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/XXX3.txt", c: "成人（18+）", t: "m" },
+  { n: "XXX4.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/XXX4.txt", c: "成人（18+）", t: "m" },
+  { n: "XXX6.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/XXX6.txt", c: "成人（18+）", t: "m" },
+  { n: "XXXXXZ.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/XXXXXZ.txt", c: "成人（18+）", t: "m" },
+  { n: "18a_open.js", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox4/main/18a_open.js", c: "成人（18+）", t: "m" },
+  /* --- 综合仓库 --- */
+  { n: "candidate_upstreams.json", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox2/main/candidate_upstreams.json", t: "m" },
+  { n: "checks.json", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox2/main/checks.json", t: "m" },
+  { n: "1012.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/1012.txt", t: "m" },
+  { n: "2Hacc.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/2Hacc.txt", t: "m" },
+  { n: "4k给力.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/4k给力.txt", t: "m" },
+  { n: "77影视.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/77影视.txt", t: "m" },
+  { n: "ABC.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/ABC.txt", t: "m" },
+  { n: "ABC无敌.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/ABC无敌.txt", t: "m" },
+  { n: "CatT4口.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/CatT4口.txt", t: "m" },
+  { n: "Cat接口.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/Cat接口.txt", t: "m" },
+  { n: "FenWe.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/FenWe.txt", t: "m" },
+  { n: "Gmmtekamu-ss.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/Gmmtekamu-ss.txt", t: "m" },
+  { n: "MHQTV.1130cz.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/MHQTV.1130cz.txt", t: "m" },
+  { n: "MHQTV.nbsy.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/MHQTV.nbsy.txt", t: "m" },
+  { n: "MHQTV.qiaoj.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/MHQTV.qiaoj.txt", t: "m" },
+  { n: "MHQTV.sm.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/MHQTV.sm.txt", t: "m" },
+  { n: "PG.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/PG.txt", t: "m" },
+  { n: "PyramidStore.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/PyramidStore.txt", t: "m" },
+  { n: "QiaoJ.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/QiaoJ.txt", t: "m" },
+  { n: "Ray.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/Ray.txt", t: "m" },
+  { n: "Study520x.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/Study520x.txt", t: "m" },
+  { n: "TT.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/TT.txt", t: "m" },
+  { n: "TTF接口.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/TTF接口.txt", t: "m" },
+  { n: "XC备用库.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/XC备用库.txt", t: "m" },
+  { n: "ZZZ1.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/ZZZ1.txt", t: "m" },
+  { n: "abc影视.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/abc影视.txt", t: "m" },
+  { n: "agit_abc.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/agit_abc.txt", t: "m" },
+  { n: "all.json", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/all.json", t: "m" },
+  { n: "baip1.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/baip1.txt", t: "m" },
+  { n: "baip2.txt", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox3/main/baip2.txt", t: "m" },
+  { n: "555dy_open.js", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox4/main/555dy_open.js", t: "m" },
+  { n: "app.json", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox4/main/app.json", t: "m" },
+  { n: "bulei_open.js", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox4/main/bulei_open.js", t: "m" },
+  { n: "czzy_open.js", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox4/main/czzy_open.js", t: "m" },
+  { n: "duboku_open.js", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox4/main/duboku_open.js", t: "m" },
+  { n: "fan.json", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox4/main/fan.json", t: "m" },
+  { n: "fongmi.json", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox4/main/fongmi.json", t: "m" },
+  { n: "ikanbot_open.js", a: "https://raw.githubusercontent.com/Silong-ResPool/Silong-TVBox4/main/ikanbot_open.js", t: "m" },
+
+  /* ---------- 2026-11-01 新增实测源（来源：TVboxorg/TVbox、shenzengquan/tvbox-clean、
+     h564983541/tvbox-config、cluntop/tvbox、evenbsies/tvbox-harvest、muzheya/tvbox-config、
+     dxyc0922/Tvbox4.x_api 等公开合集；逐条 GET ?ac=list 实测 200 且返回 JSON） ---------- */
+  { n: "无尽CC", a: "https://api.wujinapi.cc/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "红牛资源", a: "https://www.hongniuzy2.com/api.php/provide/vod/", c: "综合影视", v: 1 },
+  { n: "飘零影视", a: "https://p2100.net/api.php/provide/vod/", c: "综合影视", v: 1 },
+  { n: "非凡影视(新线)", a: "https://ffzy5.tv/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "速播资源", a: "https://www.subozy.com/api.php/provide/vod/", c: "综合影视", v: 1 },
+  { n: "速播自营线", a: "https://subocaiji.com/api.php/provide/vod/from/subyun/at/json", c: "综合影视", v: 1 },
+  { n: "金鹰资源", a: "https://jinyingzy.com/api.php/provide/vod/", c: "综合影视", v: 1 },
+  { n: "360资源ZZ", a: "https://360zyzz.com/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "巨量影视", a: "https://api.juliang.live/api/provide/vod", c: "综合影视", v: 1 },
+  { n: "鸭鸭资源", a: "https://cj.yayazy.net/api.php/provide/vod/", c: "综合影视", v: 1 },
+  { n: "新4K采集", a: "http://cmsyun2.qijiyun.vip/api.php/provide/vod/", c: "综合影视", v: 1 },
+  { n: "最大资源(新线)", a: "https://zuida.xyz/api.php/provide/vod/", c: "综合影视", v: 1 },
+  { n: "茅台采集", a: "https://mtzy.me/api.php/provide/vod/", c: "综合影视", v: 1 },
+  { n: "无尽ME", a: "https://api.wujinapi.me/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "建安影视", a: "http://154.219.117.232:9981/jacloudapi.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "优质采集", a: "https://api.yyzy-tv.vip/inc/apijson.php", c: "综合影视", v: 1 },
+  { n: "妞妞影视", a: "https://api.niuniuzy.me/api.php/provide/vod/", c: "综合影视", v: 1 },
+  { n: "量子影视(新线)", a: "https://lzizy.net/api.php/provide/vod/", c: "综合影视", v: 1 },
+  { n: "闪电资源", a: "https://sdzyapi.com/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "快车资源", a: "https://caiji.kuaichezy.org/api.php/provide/vod/", c: "综合影视", v: 1 },
+  { n: "新浪采集", a: "https://api.xinlangapi.com/xinlangapi.php/provide/vod/", c: "综合影视", v: 1 },
+  { n: "金鹰采集", a: "https://jyzyapi.com/provide/vod/", c: "综合影视", v: 1 },
+  { n: "猫眼影视", a: "https://api.maoyanapi.top/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "裤佬资源", a: "https://api.wsyzy.net/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "艾旦影视", a: "https://www.lovedan.net/api.php/provide/vod/", c: "综合影视", v: 1 },
+  { n: "牛牛影视", a: "https://api.niuniuzy.me/api.php/provide/vod/from/nnm3u8/at/json", c: "综合影视", v: 1 },
+  { n: "无尽NET", a: "https://api.wujinapi.net/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "暴风资源(新线)", a: "http://bf.xoxowin86cisyap.com/api.php/provide/vod", c: "综合影视", v: 1 },
+  { n: "淘片采集", a: "https://taopianapi.com/cjapi/mc/vod/json.html", c: "综合影视", v: 1 },
+  { n: "光速资源2", a: "https://api.guangsuapi.com/api.php/provide/vod/", c: "综合影视", v: 1 },
+];
+
+
+
+
+</script>
+<script>
+/* ==========================================================================
+   影视乐园 · sources.js
+   内置视频源的结构定义与源解析工具
+   · 内置源数据在 sources_data.js 里（VIDEO_SOURCES：{n:名称, a:接口, c:分类}）
+   · 支持用户自己添加源：三框添加（分类 / 名称 / 链接），也支持整份 JSON / TVBox 配置 / 多仓
+   ========================================================================== */
+
+(function (w) {
+  'use strict';
+
+  // 内置源的分类顺序（源管理里按这个顺序分块展示）
+  w.VIDEO_CATS = ['综合影视', '动漫', '剧集', '短剧', '综艺', '成人（18+）', '教育', '其他源（待验证）', '失效区', '自定义'];
+  // 主页（首页）分类 Tab：仓库分类 / 综合资源接口 / 成人 / 动漫 / 自定义
+  w.VIDEO_HOME_CATS = ['仓库分类', '综合资源接口', '成人', '动漫', '自定义'];
+  // 「其他源（待验证）」默认不参与全局搜索（源太多、且多数已失效），可在全局搜索里临时打开
+  w.VIDEO_PENDING_CAT = '其他源（待验证）';
+  // 自动检测判为失效的源统一归到这里
+  w.VIDEO_DEAD_CAT = '失效区';
+
+  /* 读取一个 URL 的文本内容（仓库展开 / 多接口自动识别共用） */
+  w.fetchText = function (url) {
+    return fetch(String(url || ''), { cache: 'no-store' }).then(function (res) { return res.text(); });
+  };
+
+  /* 解析一段配置文本，返回可用接口列表 [{name, api}]（空数组 = 没有） */
+  w.interfacesOf = function (text) {
+    var r = w.parseSourceJson(String(text || ''));
+    return (r && r.ok && r.list) ? r.list : [];
+  };
+
+  /* 解析一段配置文本里的接口数量 */
+  w.countInterfaces = function (text) {
+    return w.interfacesOf(text).length;
+  };
+
+  w.VIDEO_SOURCES = w.VIDEO_SOURCES || [];
+
+  /* ---------------------------------------------------------------- 源解析
+     支持格式：
+     ① 单个源：              {"name":"某某资源","api":"https://xxx/api.php/provide/vod/"}
+     ② 源数组：              [{"name":..,"api":..}, ...]
+     ③ TVBox 配置：          {"sites":[{"key":..,"name":..,"type":1,"api":..}, ...]}
+     ④ TVBox 多仓/子配置：    {"urls":[{"name":..,"url":..}]}  → 提示用户填子配置地址
+     返回：{ ok:true, list:[{name, api}], tip:'' } */
+  w.parseSourceJson = function (text) {
+    var out = [], tip = '';
+    var j = null;
+    try { j = JSON.parse(String(text || '')); } catch (e) { return { ok: false, msg: '不是合法的 JSON：' + e.message }; }
+
+    var push = function (name, api) {
+      if (!api || typeof api !== 'string') return;
+      if (!/^https?:\/\//i.test(api)) return;
+      if (/\.(jar|js|py)(\?|;|$)/i.test(api)) return;      // 需要爬虫文件的源，网页版用不了
+      var nm = (name && String(name).trim()) || api.replace(/^https?:\/\//, '').split('/')[0];
+      var base = api.replace(/\s+$/, '');
+      for (var i = 0; i < out.length; i++) if (out[i].api === base) return;
+      out.push({ name: nm, api: base });
+    };
+
+    var fromSite = function (s) {
+      if (!s || typeof s !== 'object') return;
+      var api = s.api || s.ext || '';
+      // type=1 才是 JSON 采集接口；其他类型（3=需要 jar 的爬虫）跳过
+      if (s.type !== undefined && s.type !== null && String(s.type) !== '' && Number(s.type) !== 1) return;
+      push(s.name || s.key, api);
+    };
+
+    if (Array.isArray(j)) { for (var i = 0; i < j.length; i++) fromSite(j[i]); }
+    else if (j && Array.isArray(j.sites)) { for (var k = 0; k < j.sites.length; k++) fromSite(j.sites[k]); }
+    else if (j && Array.isArray(j.urls)) { tip = '这是「多仓」配置，请打开其中一个子配置地址，把子配置里的 JSON 粘进来（或直接填该 JSON 地址）。'; }
+    else if (j && (j.api || j.url)) { fromSite(j); }
+    else tip = '没识别到可用的源（需要 name + api 字段，或 TVBox 的 sites 数组）。';
+
+    // 纯文本（一行一个采集接口地址，常见于 xxx多线.txt）
+    if (!out.length) {
+      var lines = String(text || '').split(/[\r\n]+/);
+      var n = 0;
+      for (var li = 0; li < lines.length && n < 300; li++) {
+        var s2 = lines[li].trim();
+        if (!/^https?:\/\//i.test(s2)) continue;
+        if (/\.(txt|json)$/i.test(s2)) continue;      // 子配置地址交给「仓库展开」处理
+        push(s2.replace(/^https?:\/\//, '').split('/')[0], s2);
+        n++;
+      }
+      if (out.length) return { ok: true, list: out, tip: '来自纯文本列表' };
+    }
+
+    if (!out.length) return { ok: false, msg: tip || '没有解析到 type=1（JSON 接口）的源。' };
+    return { ok: true, list: out, tip: tip };
+  };
+
+  /* 三框添加源时的链接校验：把常见写法补全成标准接口地址 */
+  w.normalizeSourceApi = function (api) {
+    var s = String(api || '').trim();
+    if (!s) return '';
+    if (!/^https?:\/\//i.test(s)) s = 'https://' + s;
+    s = s.replace(/\s+/g, '');
+    // 只填了域名/目录 → 补上苹果CMS 标准路径
+    if (!/\.php|\.json|\.txt|\?/i.test(s)) {
+      s = s.replace(/\/+$/, '') + '/api.php/provide/vod/';
+    }
+    // 去掉结尾多余的 ? 或 ?ac=xxx（本应用会自己拼参数）
+    s = s.replace(/[?&]+$/, '');
+    s = s.replace(/\?(ac=list|ac=class|ac=detail.*)$/i, '');
+    return s;
+  };
+
+})(window);
+</script>
+<script>
+/* ==========================================================================
+   影视乐园 · xpath.js（Kazumi 式 XPath 规则引擎，已吞并 Kazumi 源规则体系）
+   --------------------------------------------------------------------------
+   规则格式（与 Kazumi plugins 完全一致）：
+   {
+     name:  '源名',  type: 'anime',
+     baseURL: 'https://dmbus.cc/',
+     searchURL: 'https://dmbus.cc/s----------.html?wd=@keyword',   // @keyword 占位符
+     searchList:   '//div/div[3]/ul/li',    // 搜索结果列表节点
+     searchName:   '//div/a[2]',            // 条目名称（在 searchList 节点内求值）
+     searchResult: '//div/a[2]',            // 条目链接（href，在 searchList 节点内求值）
+     chapterRoads: '//div/div[4]/div/ul',   // 播放线路容器（在详情页 document 求值）
+     chapterResult: '//li/a',               // 单集链接（在 road 节点内求值）
+     muliSources: true, usePost: false, useWebview: true, userAgent: ''
+   }
+   · 与 Kazumi 逻辑一致：searchName/searchResult 在 searchList 节点上下文求值，
+     chapterResult 在 chapterRoads 节点上下文求值，链接取 href 并基于 baseURL 归一化。
+   · 抓取：Android 端（file:// + allowUniversalAccess）直连 fetch；
+     PC 测试版走本地代理 /proxy?url=…（由 server.ps1 提供），统一环境差异。
+   ========================================================================== */
+
+(function (w) {
+  'use strict';
+
+  var XP = {};
+
+  var BROWSER_UA = 'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36';
+
+  /* ---------------------------------------------------------------- 抓取 */
+  // 抓一段 HTML 文本（带 UA；失败返回空串，由调用方判断）
+  XP.fetchHtml = function (url, ms) {
+    var timeout = ms || 15000;
+    return new Promise(function (resolve) {
+      var done = false;
+      var ctrl = null;
+      var timer = setTimeout(function () { if (!done) { done = true; resolve(''); } }, timeout);
+      var opts = {
+        method: 'GET', cache: 'no-store',
+        headers: { 'User-Agent': BROWSER_UA, 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' }
+      };
+      try {
+        if (typeof AbortController !== 'undefined') { ctrl = new AbortController(); opts.signal = ctrl.signal; }
+      } catch (e) {}
+
+      // 代理检测：页面自身跑在 http(s) 上，且目标跨域 → 走本地代理转发（PC 测试版）
+      var viaProxy = /^https?:/i.test(location.protocol) && !sameHost(url);
+      var target = viaProxy ? '/proxy?url=' + encodeURIComponent(url) : url;
+
+      fetch(target, opts).then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.text();
+      }).then(function (txt) {
+        if (!done) { done = true; clearTimeout(timer); resolve(String(txt || '')); }
+      }).catch(function (e) {
+        if (!done) { done = true; clearTimeout(timer); resolve(''); }
+      });
+    });
+  };
+
+  function sameHost(u) {
+    try {
+      var a = new URL(String(u || ''), location.href);
+      return a.host === location.host;
+    } catch (e) { return false; }
+  }
+  w.xpSameHost = sameHost;
+
+  /* ------------------------------------------------------ 链接归一化 */
+  // 基于 baseURL 把相对/绝对地址拼成完整 URL（与 Kazumi normalizeEpisodeUrl 一致）
+  XP.normalize = function (base, src) {
+    try {
+      var s = String(src || '').trim();
+      if (!s) return '';
+      if (/^https?:/i.test(s)) return s;
+      if (/^\/\//i.test(s)) return (base.indexOf('https:') === 0 ? 'https:' : 'http:') + s;
+      var b = String(base || '').trim();
+      if (!/^https?:/i.test(b)) b = 'https://' + b;
+      if (s.charAt(0) === '/') {
+        var m = b.match(/^(https?:\/\/[^/]+)/i);
+        return (m ? m[1] : b) + s;
+      }
+      if (!/\/$/.test(b) && b.indexOf('/') >= 0) { b = b.replace(/\/[^/]*$/, '/'); }
+      return b + s;
+    } catch (e) { return ''; }
+  };
+
+  /* ------------------------------------------------------ XPath 求值 */
+  // 解析 HTML 为 document，返回根元素；失败返回 null
+  function toDoc(html) {
+    try {
+      var doc = new DOMParser().parseFromString(String(html || ''), 'text/html');
+      return doc;
+    } catch (e) { return null; }
+  }
+
+  // 在 context（Element 或 Document）上求值 XPath，返回节点数组
+  // 兼容 Kazumi XPath 库的相对语义：表达式以 "//" 开头时，若 context 是元素节点
+  // 则自动改为 ".//"（从当前节点开始找后代），避免浏览器标准里 "//" 永远从文档根算
+  XP.nodes = function (context, expr) {
+    try {
+      var list = [];
+      if (!context || !expr || !String(expr).trim()) return list;
+      var e = String(expr).trim();
+      var isElement = (context.nodeType === 1);
+      if (isElement && e.charAt(0) === '/' && e.charAt(1) === '/') e = '.' + e;
+      var r = document.evaluate(e, context, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+      for (var i = 0; i < r.snapshotLength; i++) list.push(r.snapshotItem(i));
+      return list;
+    } catch (e) { return []; }
+  };
+
+  function firstNode(context, expr) {
+    var n = XP.nodes(context, expr);
+    return n.length ? n[0] : null;
+  }
+
+  function nodeText(node) {
+    if (!node) return '';
+    try { return (node.textContent || '').trim(); } catch (e) { return ''; }
+  }
+
+  function nodeHref(node) {
+    if (!node) return '';
+    try { return String(node.getAttribute('href') || '').trim(); } catch (e) { return ''; }
+  }
+
+  /* ------------------------------------------------------ 搜索 */
+  // 返回 [{name, src}] ；失败返回 []
+  XP.search = function (rule, keyword) {
+    if (!rule || !rule.searchURL || !rule.searchList) return Promise.resolve([]);
+    var q = String(keyword || '');
+    if (!q) return Promise.resolve([]);
+    var url = String(rule.searchURL).replace(/@keyword/g, encodeURIComponent(q));
+    return XP.fetchHtml(url).then(function (html) {
+      if (!html) return [];
+      var doc = toDoc(html);
+      if (!doc) return [];
+      var root = doc.documentElement;
+      var listNodes = XP.nodes(root, rule.searchList);
+      var out = [];
+      for (var i = 0; i < listNodes.length; i++) {
+        var node = listNodes[i];
+        try {
+          var nameEl = rule.searchName ? firstNode(node, rule.searchName) : null;
+          var srcEl = rule.searchResult ? firstNode(node, rule.searchResult) : null;
+          var name = nodeText(nameEl);
+          var src = nodeHref(srcEl);
+          if (!name && srcEl) name = nodeText(srcEl);
+          if (!name || !src) continue;
+          out.push({ name: name, src: XP.normalize(rule.baseURL, src) });
+        } catch (e) {}
+      }
+      return out;
+    });
+  };
+
+  /* ------------------------------------------------------ 详情（线路+集数） */
+  // 返回 [{from, eps:[{name,url}]}] ；失败返回 []
+  XP.chapters = function (rule, detailUrl) {
+    if (!rule || !detailUrl) return Promise.resolve([]);
+    return XP.fetchHtml(detailUrl).then(function (html) {
+      if (!html) return [];
+      var doc = toDoc(html);
+      if (!doc) return [];
+      var root = doc.documentElement;
+      if (!rule.chapterRoads || !rule.chapterResult) return [];
+      var roadNodes = XP.nodes(root, rule.chapterRoads);
+      var out = [];
+      for (var r = 0; r < roadNodes.length; r++) {
+        var road = roadNodes[r];
+        try {
+          var eps = [];
+          var epNodes = XP.nodes(road, rule.chapterResult);
+          for (var k = 0; k < epNodes.length; k++) {
+            try {
+              var src = nodeHref(epNodes[k]);
+              if (!src) continue;
+              var nm = String(epNodes[k].textContent || '').replace(/\s+/g, '');
+              if (!nm) nm = '第' + (k + 1) + '集';
+              eps.push({ name: nm, url: XP.normalize(rule.baseURL, src) });
+            } catch (e) {}
+          }
+          if (!eps.length) continue;
+          out.push({ from: '播放线路' + (out.length + 1), eps: eps });
+        } catch (e) {}
+      }
+      return out;
+    });
+  };
+
+  /* ------------------------------------------------------ 嗅探页内视频地址
+     有些源的集数页是播放器页（非直连 m3u8），需在页面 HTML/脚本里找真实视频地址。
+     返回首个匹配的 m3u8/mp4 直连地址；找不到返回 ''。 */
+  XP.sniffInHtml = function (html, baseURL) {
+    try {
+      var h = String(html || '');
+      if (!h) return '';
+      // 常见形态：var url = "xxx.m3u8" / video src= / player_aaaa = "..."
+      var m = h.match(/https?[^"'\s<>]+\.m3u8[^"'\s<>]*/i);
+      if (m) return m[0];
+      m = h.match(/(?:src|url|link|playurl)\s*[:=]\s*["']([^"']+\.m3u8[^"']*)["']/i);
+      if (m) return XP.normalize(baseURL, m[1]);
+      m = h.match(/https?[^"'\s<>]+\.mp4[^"'\s<>]*/i);
+      if (m) return m[0];
+      return '';
+    } catch (e) { return ''; }
+  };
+  w.xpSniffHtml = XP.sniffInHtml;
+
+  /* ------------------------------------------------------ 规则校验 */
+  XP.checkRule = function (rule) {
+    var missing = [];
+    if (!rule || typeof rule !== 'object') return '规则不是对象';
+    if (!rule.baseURL) missing.push('baseURL');
+    if (!rule.searchURL) missing.push('searchURL');
+    if (!rule.searchList) missing.push('searchList');
+    if (!rule.searchName) missing.push('searchName');
+    if (!rule.searchResult) missing.push('searchResult');
+    if (!rule.chapterRoads) missing.push('chapterRoads');
+    if (!rule.chapterResult) missing.push('chapterResult');
+    return missing.length ? ('缺少字段：' + missing.join(' / ')) : '';
+  };
+
+  /* ------------------------------------------------------ 规则解析（文本 → 规则对象）
+     支持：① 直接 JSON 对象  ② {rules:{...}} 包裹  ③ Kazumi 插件 JSON（含 api/type 字段） */
+  XP.parseRuleText = function (text) {
+    try {
+      var j = JSON.parse(String(text || ''));
+      if (!j || typeof j !== 'object') return { ok: false, msg: '不是合法的规则 JSON' };
+      var rule = (j.rules && typeof j.rules === 'object' && (j.rules.searchURL || j.rules.baseURL)) ? j.rules : j;
+      var nm = String(rule.name || j.name || '').trim();
+      var err = XP.checkRule(rule);
+      if (err) return { ok: false, msg: err };
+      return { ok: true, rule: rule, name: nm };
+    } catch (e) { return { ok: false, msg: 'JSON 解析失败：' + e.message }; }
+  };
+
+  w.XP = XP;
+
+})(window);
+
+</script>
+<script>
+/* ==========================================================================
+   影视乐园 · api.js
+   苹果CMS（MacCMS V10）JSON 接口封装：
+   · 分类：?ac=class                    → { class:[{type_id,type_pid,type_name}] }
+   · 列表：?ac=detail&pg=1&t=<分类>      → { list:[...], page, pagecount }
+   · 搜索：?ac=detail&wd=<关键词>        → { list:[...] }
+   · 详情：?ac=detail&ids=<vod_id>       → { list:[ 一条完整数据 ] }
+   ========================================================================== */
+
+(function (w) {
+  'use strict';
+
+  var API = {};
+
+  /* v9.8.0：默认开启接口缓存（下次打开无需重新加载）；设置里可选 7 天 / 30 天 / 从不 / 永久 */
+  var CACHE_KEY = 'video_api_cache_v1';
+  function cacheMode(){ try { return (w.V && w.V.cacheMode) || '7d'; } catch (e) { return '7d'; } }
+  function cacheTTL(){
+    var m = cacheMode();
+    if (m === 'never') return -1;
+    if (m === 'forever') return 0;
+    return (m === '30d' ? 30 : 7) * 24 * 3600 * 1000;
+  }
+  function readCache(url){
+    try {
+      var all = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+      var rec = all[url]; if (!rec) return null;
+      var ttl = cacheTTL(); if (ttl < 0) return null;
+      if (ttl > 0 && (Date.now() - rec.t) > ttl) { delete all[url]; localStorage.setItem(CACHE_KEY, JSON.stringify(all)); return null; }
+      return rec.j;
+    } catch (e) { return null; }
+  }
+  function writeCache(url, j){
+    if (cacheTTL() < 0) return;
+    try {
+      var all = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+      all[url] = { t: Date.now(), j: j };
+      var keys = Object.keys(all);
+      if (keys.length > 1200) { keys.sort(function(a,b){return all[a].t-all[b].t}); keys.slice(0,200).forEach(function(k){delete all[k]}); }
+      localStorage.setItem(CACHE_KEY, JSON.stringify(all));
+    } catch (e) {}
+  }
+  API.clearCache = function(){ try { localStorage.removeItem(CACHE_KEY); } catch (e) {} };
+
+  function join(api, qs) {
+    var a = String(api || '');
+    if (!a) return '';
+    if (a.charAt(a.length - 1) !== '/' && a.indexOf('.php') < 0 && a.indexOf('?') < 0) a += '/';
+    return a + (a.indexOf('?') >= 0 ? '&' : '?') + qs;
+  }
+
+  API.url = join;
+
+  // 带超时与重试的 JSON 请求
+  // 巳泷 v9.1：给请求加浏览器 UA / Accept —— 部分采集站（Cloudflare 等）会拦截无 UA 或
+  // 非浏览器 UA 的请求（返回 503/403/418/521），带 UA 后可用性明显提高。
+  var BROWSER_UA = 'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36';
+  API.fetchJson = function (url, ms, extraOpts) {
+    var isPost = extraOpts && extraOpts.method && String(extraOpts.method).toUpperCase() !== 'GET';
+    var cached = isPost ? null : readCache(url);
+    if (cached) return Promise.resolve(cached);   /* 命中缓存：秒开，不重复爬取 */
+    var timeout = ms || 15000;
+    return new Promise(function (resolve, reject) {
+      var done = false;
+      var ctrl = null;
+      var timer = setTimeout(function () {
+        if (done) return;
+        done = true;
+        try { if (ctrl) ctrl.abort(); } catch (e) {}
+        reject(new Error('请求超时（' + Math.round(timeout / 1000) + ' 秒）：' + url));
+      }, timeout);
+
+      var opts = {
+        method: 'GET', cache: 'no-store',
+        headers: {
+          'User-Agent': BROWSER_UA,
+          'Accept': 'application/json, text/plain, */*'
+        }
+      };
+      // 巳泷 v9.2.1：支持 POST（AdultEmbed get-embed 等）
+      if (extraOpts && extraOpts.method) opts.method = extraOpts.method;
+      // 只有 http(s) 页面才带 Referer（file:// 页面发 file:// 的 Referer 反而会被反盗链拦截）
+      try { if (/^https?:/i.test(location.protocol)) opts.headers['Referer'] = location.href; } catch (e) {}
+      try {
+        if (typeof AbortController !== 'undefined') { ctrl = new AbortController(); opts.signal = ctrl.signal; }
+      } catch (e) {}
+
+      var tryFetch = function (u, attempt) {
+        return fetch(u, opts).then(function (res) {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.text();
+        }).then(function (txt) {
+          if (done) return;
+          done = true; clearTimeout(timer);
+          var j = parseJsonLoose(txt);
+          if (!j) { reject(new Error('返回内容不是 JSON（该源可能已失效）')); return; }
+          if(!isPost) writeCache(url, j);
+          resolve(j);
+        }).catch(function (err) {
+          if (done) return;
+          // 巳泷 v9.1：https 失败自动降级 http 重试一次（部分采集站只有 http 线路）
+          if (attempt === 0 && /^https:/i.test(u)) {
+            var alt = 'http:' + u.slice('https:'.length);
+            tryFetch(alt, 1).catch(function (e2) { settleFail(err); });
+            return;
+          }
+          settleFail(err);
+        });
+      };
+      var settleFail = function (err) {
+        if (done) return;
+        done = true; clearTimeout(timer);
+        reject(err && err.message ? err : new Error(String(err)));
+      };
+      tryFetch(url, 0);
+    });
+  };
+
+  /* 宽松 JSON 解析：去 BOM / 前后空白 / 去掉 "at/json:" 前缀（个别源在 body 前带标记） */
+  function parseJsonLoose(txt) {
+    var s = String(txt || '');
+    s = s.replace(/^\uFEFF/, '');
+    // 去掉类似 at/json: 或 JSON: 的文本前缀
+    s = s.replace(/^\s*(?:at\/json|json)\s*:\s*/i, '');
+    s = s.trim();
+    try { return JSON.parse(s); } catch (e) {}
+    // 个别源在数组/对象前后有额外字符
+    var m = s.match(/[\[{][\s\S]*[\]}]/);
+    if (m) { try { return JSON.parse(m[0]); } catch (e2) {} }
+    return null;
+  }
+
+  /* ---------------------------------------------------------------- 分类
+     苹果CMS 的 ac=list / ac=class / ac=detail 都会返回 class 分类数组，
+     这里依次尝试，取到就返回（兼容不同采集程序的实现差异）。 */
+  function pickClasses(j) {
+    var arr = (j && (j['class'] || j.classes || j.type || j.types)) || [];
+    var out = [];
+    for (var i = 0; i < arr.length; i++) {
+      var c = arr[i] || {};
+      var id = String(c.type_id !== undefined ? c.type_id : (c.id !== undefined ? c.id : ''));
+      if (!id) continue;
+      out.push({
+        id: id,
+        pid: String(c.type_pid !== undefined ? c.type_pid : (c.pid !== undefined ? c.pid : '0')),
+        name: String(c.type_name || c.name || ('分类' + id))
+      });
+    }
+    return out;
+  }
+
+  /* 分类缓存（按接口地址，10 分钟有效）：切换/重进源时秒开，避免重复请求卡顿 */
+  var classCache = {};
+
+  API.classes = function (api) {
+    var now = Date.now(), hit = classCache[api];
+    if (hit && hit.list && (now - hit.at) < 10 * 60 * 1000) return Promise.resolve(hit.list);
+    return API.fetchJson(join(api, 'ac=list&pg=1')).then(function (j) {
+      var out = pickClasses(j);
+      if (out.length) { classCache[api] = { at: Date.now(), list: out }; return out; }
+      // 兜底：个别源只在 ac=class 下给分类
+      return API.fetchJson(join(api, 'ac=class')).then(function (j2) {
+        var out2 = pickClasses(j2);
+        if (out2.length) { classCache[api] = { at: Date.now(), list: out2 }; return out2; }
+        return API.fetchJson(join(api, 'ac=detail&pg=1')).then(function (j3) {
+          var out3 = pickClasses(j3);
+          classCache[api] = { at: Date.now(), list: out3 };
+          return out3;
+        });
+      });
+    });
+  };
+
+  /* ---------------------------------------------------------------- 列表 */
+  API.list = function (api, opt) {
+    opt = opt || {};
+    var qs = 'ac=detail&pg=' + (opt.page || 1);
+    if (opt.typeId) qs += '&t=' + encodeURIComponent(opt.typeId);
+    if (opt.hours) qs += '&h=' + opt.hours;
+    return API.fetchJson(join(api, qs)).then(function (j) {
+      return {
+        items: (j && j.list) || [],
+        page: Number(j && j.page) || (opt.page || 1),
+        pagecount: Number((j && (j.pagecount || j.page_count)) || 1),
+        total: Number((j && j.total) || 0)
+      };
+    });
+  };
+
+  /* ---------------------------------------------------------------- 搜索 */
+  API.search = function (api, wd, page) {
+    var qs = 'ac=detail&wd=' + encodeURIComponent(wd) + '&pg=' + (page || 1);
+    return API.fetchJson(join(api, qs)).then(function (j) {
+      return {
+        items: (j && j.list) || [],
+        page: Number(j && j.page) || 1,
+        pagecount: Number((j && (j.pagecount || j.page_count)) || 1)
+      };
+    }).catch(function (e) {
+      // 少数源只支持 ac=list 搜索
+      return API.fetchJson(join(api, 'ac=list&wd=' + encodeURIComponent(wd) + '&pg=' + (page || 1))).then(function (j) {
+        return { items: (j && j.list) || [], page: Number(j && j.page) || 1, pagecount: Number((j && (j.pagecount || j.page_count)) || 1) };
+      });
+    });
+  };
+
+  /* ---------------------------------------------------------------- 详情 */
+  API.detail = function (api, id) {
+    return API.fetchJson(join(api, 'ac=detail&ids=' + encodeURIComponent(id))).then(function (j) {
+      var list = (j && j.list) || [];
+      return list.length ? list[0] : null;
+    });
+  };
+
+  /* ------------------------------------------------------------ 数据规整 */
+  API.item = function (raw) {
+    var it = raw || {};
+    return {
+      id: String(it.vod_id !== undefined ? it.vod_id : (it.id || '')),
+      name: String(it.vod_name || it.name || '未命名'),
+      pic: String(it.vod_pic || it.pic || ''),
+      remarks: String(it.vod_remarks || it.remarks || ''),
+      year: String(it.vod_year || ''),
+      area: String(it.vod_area || ''),
+      typeName: String(it.type_name || ''),
+      score: String(it.vod_score || ''),
+      content: String(it.vod_content || it.vod_blurb || '').replace(/<[^>]+>/g, ''),
+      raw: it
+    };
+  };
+
+  /* 播放地址解析：
+     vod_play_from: "线路1$$$线路2"  vod_play_url: "第1集$url#第2集$url$$$另一线路..." */
+  API.play = function (raw) {
+    var froms = String((raw && raw.vod_play_from) || '').split('$$$');
+    var urls = String((raw && raw.vod_play_url) || '').split('$$$');
+    var groups = [];
+    for (var i = 0; i < urls.length; i++) {
+      var seg = urls[i];
+      if (!seg) continue;
+      var eps = [];
+      var parts = seg.split('#');
+      for (var k = 0; k < parts.length; k++) {
+        var s = String(parts[k] || '').trim();
+        if (!s) continue;
+        var cut = s.indexOf('$');
+        var nm = (cut > 0) ? s.substring(0, cut) : ('第' + (k + 1) + '集');
+        var u = (cut > 0) ? s.substring(cut + 1) : s;
+        if (!/^https?:\/\//i.test(u)) continue;
+        eps.push({ name: nm, url: u });
+      }
+      if (eps.length) groups.push({ from: froms[i] || ('线路' + (i + 1)), eps: eps });
+    }
+    return groups;
+  };
+
+  w.API = API;
+
+  /* ==========================================================================
+     Kazumi 式 XPath 规则源分流（已吞并 Kazumi 源规则体系）
+     · 源的 api 字段以 "xpath:" 开头，其余为苹果CMS JSON 源
+     · XP_RULES：api → 规则对象 映射（由 sources.js/app.js 在加载源时填充）
+     · 搜索 / 详情 自动分流到 xpath.js 引擎
+     ========================================================================== */
+  w.XP_RULES = w.XP_RULES || {};
+
+  function xpRule(api) {
+    return w.XP_RULES[String(api || '')] || null;
+  }
+  API.isXpath = function (api) { return /^xpath:/i.test(String(api || '')); };
+
+  // 搜索：XPath 源 → [{name, src}] → 包装成苹果CMS item 结构（id=详情页URL，raw.src=真实链接）
+  function xpSearch(api, wd, page) {
+    var rule = xpRule(api);
+    var base = API.xpBase || '';
+    if (!rule) return Promise.reject(new Error('XPath 规则缺失：' + api));
+    return (w.XP ? w.XP.search(rule, wd) : Promise.resolve([])).then(function (list) {
+      var items = [];
+      for (var i = 0; i < list.length; i++) {
+        var it = list[i];
+        items.push({
+          vod_id: 'xp_' + Math.abs(hashStr(it.src)),
+          vod_name: it.name,
+          vod_pic: '',
+          vod_remarks: 'XPath源',
+          vod_year: '',
+          vod_area: '',
+          vod_score: '',
+          vod_content: '',
+          type_name: '动漫',
+          raw: { __xp: true, __src: it.src, __rule: rule }
+        });
+      }
+      return { items: items, page: page || 1, pagecount: 1 };
+    });
+  }
+
+  function hashStr(s) {
+    var h = 0;
+    for (var i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+    return h;
+  }
+
+  // 详情：XPath 源 → 抓详情页 → 解析线路+集数 → 包装成 vod_play_from / vod_play_url
+  function xpDetail(api, raw) {
+    var rule = (raw && raw.__rule) || xpRule(api);
+    var src = (raw && raw.__src) || '';
+    if (!rule || !src) return Promise.reject(new Error('XPath 详情链接缺失'));
+    return (w.XP ? w.XP.chapters(rule, src) : Promise.resolve([])).then(function (groups) {
+      var froms = [], urls = [];
+      for (var i = 0; i < groups.length; i++) {
+        froms.push(groups[i].from);
+        var eps = [];
+        for (var k = 0; k < groups[i].eps.length; k++) {
+          var ep = groups[i].eps[k];
+          eps.push(ep.name + '$' + ep.url);
+        }
+        urls.push(eps.join('#'));
+      }
+      return {
+        vod_id: (raw && raw.vod_id) || '',
+        vod_name: (raw && raw.vod_name) || '',
+        vod_pic: (raw && raw.vod_pic) || '',
+        vod_content: (raw && raw.vod_content) || '',
+        vod_play_from: froms.join('$$$'),
+        vod_play_url: urls.join('$$$'),
+        raw: raw || {}
+      };
+    });
+  }
+
+  // 覆盖：搜索
+  var _origSearch = API.search;
+  API.search = function (api, wd, page) {
+    if (API.isXpath(api)) return xpSearch(api, wd, page);
+    return _origSearch(api, wd, page);
+  };
+
+  // 覆盖：详情（openItem 会先按 it.raw 判断；这里兼容传 raw 的情况）
+  var _origDetail = API.detail;
+  API.detail = function (api, id) {
+    if (API.isXpath(api)) {
+      // id 可能是 "xp_xxx" 哈希，也可能是直接详情 URL；先尝试从当前上下文找 raw
+      // 兼容两层结构：V.detail.item 是 API.item 包装后的对象，其 .raw 可能是苹果CMS item
+      // （真正的 __src 在 .raw.raw.__src），也可能是 XPath 包装结构（.raw.__src 直接可用）
+      var src = id, name = '', pic = '', content = '';
+      if (/^xp_/.test(String(id))) {
+        try {
+          var d = w.V && w.V.detail && w.V.detail.item;
+          var r = d && d.raw;
+          if (r && r.__xp && r.__src) src = r.__src;
+          else if (r && r.raw && r.raw.__xp && r.raw.__src) src = r.raw.__src;
+          else if (r && r.raw && r.raw.__src) src = r.raw.__src;
+          // 带出条目元数据，避免详情页名称显示「未命名」
+          if (d) {
+            name = String(d.name || (d.vod_name) || '');
+            pic = String(d.pic || '');
+            content = String(d.content || (d.vod_content || ''));
+            if (!name && r) name = String(r.vod_name || r.name || '');
+            if (!pic && r) pic = String(r.vod_pic || r.pic || '');
+            if (!content && r) content = String(r.vod_content || '');
+          }
+        } catch (e) {}
+      }
+      var fakeRaw = { __xp: true, __src: src, __rule: xpRule(api), vod_name: name, vod_pic: pic, vod_content: content };
+      return xpDetail(api, fakeRaw);
+    }
+    return _origDetail(api, id);
+  };
+
+  // 覆盖：列表/分类 —— XPath 源不支持分类浏览（只有搜索），返回空
+  API.classes = (function (orig) {
+    return function (api) {
+      if (API.isXpath(api)) return Promise.resolve([]);
+      return orig(api);
+    };
+  })(API.classes);
+
+  API.list = (function (orig) {
+    return function (api, opt) {
+      if (API.isXpath(api)) return Promise.resolve({ items: [], page: 1, pagecount: 1, total: 0 });
+      return orig(api, opt);
+    };
+  })(API.list);
+
+  // 播放解析：兼容 XPath 包装结构（__xp 标记的 raw 直接走 vod_play_from/vod_play_url 字段）
+  var _origPlay = API.play;
+  API.play = function (raw) {
+    if (raw && raw.__xp) {
+      // XPath 源：从 detail 结果拿线路
+      return _origPlay({ vod_play_from: (raw && raw.vod_play_from) || '', vod_play_url: (raw && raw.vod_play_url) || '' });
+    }
+    return _origPlay(raw || {});
+  };
+
+  /* ==========================================================================
+     巳泷 v9.0.9：男同专区适配（api 前缀 gae:）
+     源 api = "gae:https://adultembed.com"（无服务端，WebView 内允许跨域）。
+     主源 AdultEmbed 数据库浏览接口（可达、约 3.4 万条、带封面/简介）；
+     Eporner（gay=2）作为回退。
+     ========================================================================== */
+  function isGae(api) { return /^gae:/i.test(String(api || '')); }
+  function gaeBase(api) { return String(api || '').replace(/^gae:/i, '').replace(/\/+$/, ''); }
+  function gaeGet(url) { return API.fetchJson(url, 18000); }
+
+  var GAE_CLASSES = [
+    { id: 'gay', name: '男同精选', pid: '0' },
+    { id: 'gay-latest', name: '男同最新', pid: '0' },
+    { id: 'gay-4k', name: '高清4K', pid: '0' },
+    { id: 'gay-amateur', name: '业余自拍', pid: '0' },
+    { id: 'gay-threesome', name: '群P', pid: '0' },
+    { id: 'gay-asian', name: '亚洲男同', pid: '0' },
+    { id: 'gay-eu', name: '欧美男同', pid: '0' }
+  ];
+
+  // 男同视频 → 苹果CMS item 结构
+  function gaeItem(v, idx) {
+    var id = String(v.id != null ? v.id : ('g' + Date.now() + '_' + (idx || 0)));
+    var title = String(v.title || v.vod_name || '未命名');
+    var pic = String(v.thumbnail || v.default_thumb && v.default_thumb.src || v.vod_pic || '');
+    var durTxt = '';
+    if (v.duration_seconds) durTxt = Math.floor(Number(v.duration_seconds) / 60) + ' 分钟';
+    else if (v.secs) durTxt = Math.floor(Number(v.secs) / 60) + ' 分钟';
+    if (v.resolution) durTxt += (durTxt ? ' · ' : '') + v.resolution;
+    if (v.view_count != null) durTxt += (durTxt ? ' · ' : '') + Number(v.view_count).toLocaleString() + ' 播放';
+    var tags = [];
+    if (v.categories) Array.prototype.forEach.call(v.categories, function (c) { if (c && c.name) tags.push(c.name); });
+    if (v.tags) Array.prototype.forEach.call(v.tags, function (t) { if (t && (t.name || t.tag_name)) tags.push(t.name || t.tag_name); });
+    if (!tags.length && v.vod_remarks) tags = [v.vod_remarks];
+    var content = String(v.description || v.vod_content || '').replace(/<[^>]+>/g, '').slice(0, 300);
+    return {
+      vod_id: 'gae_' + id,
+      vod_name: title,
+      vod_pic: pic,
+      vod_remarks: durTxt,
+      vod_score: '',
+      vod_content: content,
+      type_name: '男同',
+      raw: { __gae: true, __v: v }
+    };
+  }
+
+  // 播放信息：从视频对象直接取直链（Eporner=mp4/hls 直链；AdultEmbed=观看页网页，播放器会嗅探）
+  function gaePlay(raw) {
+    var v = (raw && raw.__v) ? raw.__v : raw;
+    var eps = [];
+    var url = String(v.vod_play_url || v.url_embed || v.url || '');
+    if (v.hls && v.hls.src) url = v.hls.src;
+    else if (v.mp4) {
+      ['1080p', '720p', '480p', '360p'].forEach(function (k) { if (v.mp4[k] && v.mp4[k].src && !url) url = v.mp4[k].src; });
+    }
+    // 巳泷 v9.2.0：AdultEmbed 类型条目无直链字段 → 用观看页地址（含 slug 更稳，走嗅探）
+    if (!/^https?:\/\//i.test(url)) {
+      var id = String(v.id != null ? v.id : (raw && raw.vod_id));
+      var slug = String(v.slug || '');
+      url = gaeWatchUrl(v, id, slug);
+    }
+    if (/^https?:\/\//i.test(url)) {
+      if (v.hls && v.hls.src) eps.push({ name: '高清HLS', url: v.hls.src });
+      if (v.mp4) {
+        ['1080p', '720p', '480p', '360p'].forEach(function (k) {
+          if (v.mp4[k] && v.mp4[k].src) eps.push({ name: k.toUpperCase(), url: v.mp4[k].src });
+        });
+      }
+      if (!eps.length) eps.push({ name: '播放', url: url });
+      var seen = [];
+      eps = eps.filter(function (e) { if (seen.indexOf(e.url) >= 0) return false; seen.push(e.url); return true; });
+    }
+    return [{ from: '男同专区', eps: eps }];
+  }
+  function gaeWatchUrl(v, id, slug) {
+    try {
+      var base = String(gaeCurBase() || 'https://adultembed.com');
+      if (v && v.url && /^https?:\/\//i.test(String(v.url))) return v.url;
+      if (v && v.watch_url) return v.watch_url;
+      // 巳泷 v9.2.0：优先带 slug 的观看页（服务端真实页面），?v=id 兜底
+      if (slug) return base + '/?v=' + encodeURIComponent(id) + '&s=' + encodeURIComponent(slug);
+      return base + '/?v=' + id;
+    } catch (e) { return 'https://adultembed.com/?v=' + id; }
+  }
+
+  // 当前源 base（列表请求后记录，供详情用）
+  var __gaeBase = '';
+  function gaeCurBase() { return __gaeBase || 'https://adultembed.com'; }
+
+  // 列表/搜索：巳泷 v9.2.0 —— AdultEmbed 优先（国内可达、3.4 万条同性内容、带封面/时长），
+  // 其播放走观看页嗅探（视频在 Doodstream embed 内）；Eporner（gay=2，海外）作回退（国内常超时）
+  function gaeList(api, opt) {
+    opt = opt || {};
+    var base = gaeBase(api);
+    __gaeBase = base;
+    var page = opt.page || 1;
+    var kw = opt.keyword || '';
+    var cls = opt.typeId || 'gay';
+    var adultUrl = base + '/api/database/browse/?orientation=gay' +
+      (kw ? '&search=' + encodeURIComponent(kw) : '') + '&page=' + page;
+    return gaeGet(adultUrl).then(function (j) {
+      var list = (j && j.results) || [];
+      var items = list.map(function (v, i) { return gaeItem(v, i); });
+      var total = Number((j && j.count) || 0);
+      return { items: items, page: page, pagecount: Math.max(1, Math.ceil((total || 1000) / 20)), total: total || items.length };
+    }).catch(function () {
+      // 回退：Eporner（海外源，国内网络可能超时）
+      var q = kw ? encodeURIComponent(kw) : gaeClassQuery(cls);
+      var epoUrl = 'https://www.eporner.com/api/v2/video/search/?query=' + q + '&per_page=20&page=' + page + '&gay=2&format=json' +
+        (cls === 'gay-4k' ? '&quality=hd' : '');
+      return gaeGet(epoUrl).then(function (j2) {
+        var list2 = (j2 && j2.videos) || [];
+        var items2 = list2.map(function (v, i) { return gaeItem(v, i); });
+        var total2 = Number((j2 && j2.total) || 0);
+        return { items: items2, page: page, pagecount: Math.max(1, Math.ceil(total2 / 20)), total: total2 };
+      });
+    });
+  }
+  function gaeClassQuery(cls) {
+    if (cls === 'gay-4k') return 'hd';
+    if (cls === 'gay-amateur') return 'amateur gay';
+    if (cls === 'gay-threesome') return 'threesome gay';
+    if (cls === 'gay-asian') return 'asian gay';
+    if (cls === 'gay-eu') return 'europe gay';
+    if (cls === 'gay-latest') return 'gay';
+    return 'gay';
+  }
+
+  // 分流：gae: 前缀源
+  var _gaeOrigList = API.list;
+  API.list = function (api, opt) {
+    if (isGae(api)) return gaeList(api, opt);
+    return _gaeOrigList(api, opt);
+  };
+  var _gaeOrigSearch = API.search;
+  API.search = function (api, wd, page) {
+    if (isGae(api)) return gaeList(api, { keyword: wd || 'gay', page: page || 1 });
+    return _gaeOrigSearch(api, wd, page);
+  };
+  API.classes = (function (orig2) {
+    return function (api) {
+      if (isGae(api)) return Promise.resolve(GAE_CLASSES);
+      return orig2(api);
+    };
+  })(API.classes);
+  API.detail = (function (orig3) {
+    return function (api, id) {
+      if (isGae(api)) {
+        // 巳泷 v9.2.1：详情 → 尝试 AdultEmbed get-embed 接口拿带签名直链播放器页（可真正播放），失败回退观看页
+        var d = null;
+        try {
+          var det = w.V && w.V.detail && w.V.detail.item;
+          if (det && det.raw && det.raw.__gae && det.raw.__v) d = det;
+          else if (det && det.raw && det.raw.__v) d = det;
+        } catch (e) {}
+        if (!d) return Promise.resolve(null);
+        var v = d.raw.__v || d.raw;
+        var vid = String(v.id != null ? v.id : '');
+        var groups = gaePlay(v);
+        var build = function (groups2) {
+          return {
+            vod_id: String(d.id || d.vod_id || ''),
+            vod_name: String(d.name || d.vod_name || ''),
+            vod_pic: String(d.pic || (v.thumbnail) || ''),
+            vod_content: String(d.content || v.description || ''),
+            vod_play_from: groups2.length ? groups2.map(function (g) { return g.from; }).join('$$$') : '',
+            vod_play_url: groups2.length ? groups2.map(function (g) { return g.eps.map(function (e) { return e.name + '$' + e.url; }).join('#'); }).join('$$$') : '',
+            raw: { __gae: true, __v: v }
+          };
+        };
+        if (!vid) return Promise.resolve(build(groups));
+        // 调用 get-embed：player_url（带签名直链播放器页）作为首选，嗅探播放
+        return API.fetchJson('https://adultembed.com/api/videos/' + vid + '/get-embed/', 12000, { method: 'POST' }).then(function (ej) {
+          try {
+            var pu = ej && ej.player_url;
+            if (pu && /^https?:\/\//i.test(pu)) {
+              var eps = [{ name: '直接播放', url: pu }];
+              // 观看页作第二线路（嗅探/网页）
+              var wg = gaePlay(v);
+              if (wg.length && wg[0].eps.length) eps = eps.concat(wg[0].eps.filter(function (e2) { return e2.url !== pu; }));
+              var seen2 = [];
+              eps = eps.filter(function (e3) { if (seen2.indexOf(e3.url) >= 0) return false; seen2.push(e3.url); return true; });
+              return build([{ from: '男同专区', eps: eps }]);
+            }
+          } catch (e) {}
+          return build(groups);
+        }).catch(function () { return build(groups); });
+      }
+      return orig3(api, id);
+    };
+  })(API.detail);
+
+  // 播放解析：兼容 gae 源（__gae 标记）——点击详情即出线路
+  var _origPlay2 = API.play;
+  API.play = function (raw) {
+    if (raw && raw.__gae) return gaePlay(raw.__v || raw);
+    return _origPlay2(raw || {});
+  };
+
+  /* ==========================================================================
+     巳泷 v9.3.0：男同专区 · 自动爬取聚合（api 前缀 gayagg:）
+     进入「成人」分类默认进入本专区。自动遍历全部成人接口：
+       ① 源名 / 仓库名命中关键词的源 → 整源拉取
+       ② 各源下的分类标签命中关键词 → 直接读取该分类
+       ③ 用关键词在各源搜索 → 命中 片名/标签/简介 的视频才收录
+     关键词：男同 / 男同性恋 / gay / BL / yaoi / 耽美
+     排除：男同学（"男同"后紧跟"学"字不算命中）
+     ========================================================================== */
+  function isGayAgg(api) { return /^gayagg:/i.test(String(api || '')); }
+
+  // 命中判定：片名 / 分类名 / 视频自带标签（vod_class/type_name/vod_tag/vod_keywords/vod_content 等）
+  function gayHitText() {
+    var args = arguments;
+    for (var i = 0; i < args.length; i++) {
+      var t = String(args[i] == null ? '' : args[i]);
+      if (!t) continue;
+      if (t.indexOf('男同性恋') >= 0) return true;
+      if (/男同(?!学)/.test(t)) return true;          // 明确的"男同"，排除"男同学"
+      var low = t.toLowerCase();
+      if (low.indexOf('gay') >= 0) return true;
+      if (low.indexOf('yaoi') >= 0) return true;
+      if (t.indexOf('耽美') >= 0) return true;
+      if (/(?:^|[^a-z])bl(?:[^a-z]|$)/.test(low)) return true;   // 独立的 BL，避免误命中 blue 等
+    }
+    return false;
+  }
+
+  var GAY_CLASSES = [
+    { id: 'all',    name: '男同·全部', pid: '0' },
+    { id: 'nantong', name: '男同', pid: '0' },
+    { id: 'gay',    name: 'Gay', pid: '0' },
+    { id: 'bl',     name: 'BL', pid: '0' },
+    { id: 'yaoi',   name: 'Yaoi', pid: '0' },
+    { id: 'danmei', name: '耽美', pid: '0' }
+  ];
+  var GAY_KW = {
+    all:      ['男同', '男同性恋', 'gay', 'BL', 'yaoi', '耽美'],
+    nantong:  ['男同', '男同性恋'],
+    gay:      ['gay'],
+    bl:       ['BL'],
+    yaoi:     ['yaoi'],
+    danmei:   ['耽美']
+  };
+  var GAY_PAGE_SIZE = 100;
+
+  // 取参与聚合的成人单线源（仓库 t:"m" 不在此直接参与，需要用户自行展开）
+  function gaySources() {
+    var out = [];
+    var seen = {};
+    var list = (w.VIDEO_SOURCES || []);
+    for (var i = 0; i < list.length; i++) {
+      var s = list[i];
+      if (!s || s.t || s.xpath) continue;                       // 跳过仓库入口 / XPath 源
+      if ((s.c || '') !== '成人（18+）') continue;
+      var api = s.a || s.api;
+      if (!/^https?:\/\//i.test(api)) continue;
+      if (seen[api]) continue;
+      seen[api] = 1;
+      out.push({ name: s.n || s.name || api, api: api, v: s.v });
+    }
+    // 已验证可用(v:1) 的排前面
+    out.sort(function (a, b) { return (b.v ? 1 : 0) - (a.v ? 1 : 0); });
+    return out;
+  }
+
+  // 判断一个源本身是否为男同主题（源名命中 → 整源内容都收录，不再逐条过滤）
+  function gaySourceIsThemed(s) {
+    return gayHitText(s.name);
+  }
+
+  function gayItemFields(raw) {
+    try {
+      return [
+        raw.vod_name, raw.vod_class, raw.type_name, raw.vod_tag,
+        raw.vod_keywords, raw.vod_actor, raw.vod_director, raw.vod_content, raw.vod_blurb,
+        (raw.vod_type_name || ''), (raw.tags || '')
+      ];
+    } catch (e) { return [raw.vod_name]; }
+  }
+
+  // 限制并发的批量请求
+  function gayPool(tasks, limit) {
+    limit = limit || 6;
+    return new Promise(function (resolve) {
+      var i = 0, done = 0, results = new Array(tasks.length);
+      if (!tasks.length) return resolve(results);
+      var launch = function () {
+        var idx = i++;
+        if (idx >= tasks.length) return;
+        Promise.resolve().then(function () { return tasks[idx](); })
+          .then(function (r) { results[idx] = r; })
+          .catch(function () { results[idx] = null; })
+          .then(function () {
+            done++;
+            if (done >= tasks.length) resolve(results);
+            else launch();
+          });
+      };
+      for (var k = 0; k < Math.min(limit, tasks.length); k++) launch();
+    });
+  }
+
+  // 聚合结果池：typeId → { items:[], page:1 }（一个分类会话内缓存，避免翻页重复请求）
+  var gayPoolCache = {};
+
+  // 单个关键词在单个源上搜索，返回命中的 raw 列表（已打 __gayApi 标记）
+  function gaySearchOne(s, kw) {
+    return API.fetchJson(join(s.api, 'ac=detail&wd=' + encodeURIComponent(kw) + '&pg=1'), 12000)
+      .then(function (j) {
+        var arr = (j && j.list) || [];
+        var hit = [];
+        for (var i = 0; i < arr.length; i++) {
+          var raw = arr[i];
+          if (!raw) continue;
+          // 整源男同主题 → 全收；否则要求视频片名/标签命中
+          if (gaySourceIsThemed(s) || gayHitText.apply(null, gayItemFields(raw))) {
+            raw.__gayApi = s.api; raw.__gaySrc = s.name;
+            hit.push(raw);
+          }
+        }
+        return hit;
+      })
+      .catch(function () { return []; });
+  }
+
+  // 分类名命中 → 直接读该分类第 1 页（整页都属该男同分类，直接收录）
+  function gayCategoryScan(s) {
+    return API.classes(s.api).then(function (cls) {
+      var hitIds = [];
+      for (var i = 0; i < cls.length; i++) {
+        if (gayHitText(cls[i].name)) hitIds.push(cls[i].id);
+      }
+      if (!hitIds.length) return [];
+      var jobs = hitIds.slice(0, 3).map(function (tid) {
+        return API.fetchJson(join(s.api, 'ac=detail&pg=1&t=' + encodeURIComponent(tid)), 12000)
+          .then(function (j) {
+            var arr = (j && j.list) || [];
+            for (var k = 0; k < arr.length; k++) {
+              if (arr[k]) { arr[k].__gayApi = s.api; arr[k].__gaySrc = s.name; }
+            }
+            return arr;
+          })
+          .catch(function () { return []; });
+      });
+      return Promise.all(jobs).then(function (groups) {
+        var out = [];
+        groups.forEach(function (g) { out = out.concat(g || []); });
+        return out;
+      });
+    }).catch(function () { return []; });
+  }
+
+  // 拉取并聚合（核心）
+  function gayFetch(typeId) {
+    var srcs = gaySources();
+    var kws = GAY_KW[typeId] || GAY_KW.all;
+    // 源名命中关键词的源：直接整源拉取（只读首页列表）
+    var themed = srcs.filter(gaySourceIsThemed);
+    var normal = srcs.filter(function (s) { return !gaySourceIsThemed(s); });
+    // 控制总量：普通源最多参与 14 个，关键词最多 3 个/源（全部分类时），避免请求爆炸
+    normal = normal.slice(0, 14);
+    var useKws = kws.slice(0, typeId === 'all' ? 4 : 2);
+
+    var tasks = [];
+    /* 快速兜底：155api 的「男同」关键词命中量大且接口稳定，先塞一组保证成人区不为空 */
+    tasks.push(function () {
+      var fkw = typeId === 'all' ? '男同' : kws[0];
+      return API.fetchJson(join('https://155api.com/api.php/provide/vod', 'ac=detail&wd=' + encodeURIComponent(fkw) + '&pg=1'), 15000)
+        .then(function (j) {
+          var arr = (j && j.list) || [];
+          for (var k = 0; k < arr.length; k++) {
+            if (arr[k]) { arr[k].__gayApi = 'https://155api.com/api.php/provide/vod'; arr[k].__gaySrc = '男同专区'; }
+          }
+          return arr;
+        }).catch(function () { return []; });
+    });
+    // ① 主题源整源拉取
+    themed.slice(0, 10).forEach(function (s) {
+      tasks.push(function () {
+        return API.fetchJson(join(s.api, 'ac=detail&pg=1'), 12000)
+          .then(function (j) {
+            var arr = (j && j.list) || [];
+            for (var k = 0; k < arr.length; k++) if (arr[k]) { arr[k].__gayApi = s.api; arr[k].__gaySrc = s.name; }
+            return arr;
+          }).catch(function () { return []; });
+      });
+    });
+    // ② 分类名扫描（仅"全部"分类下执行一次，成本较高）
+    if (typeId === 'all') {
+      normal.slice(0, 8).forEach(function (s) {
+        tasks.push(function () { return gayCategoryScan(s); });
+      });
+    }
+    // ③ 关键词搜索
+    normal.forEach(function (s) {
+      useKws.forEach(function (kw) {
+        tasks.push(function () { return gaySearchOne(s, kw); });
+      });
+    });
+
+    return gayPool(tasks, 6).then(function (groups) {
+      var seen = {}, out = [];
+      groups.forEach(function (g) {
+        if (!g || !g.length) return;
+        for (var i = 0; i < g.length; i++) {
+          var raw = g[i];
+          var key = String(raw.vod_id || raw.id || '') + '|' + String(raw.vod_name || '');
+          if (seen[key]) continue;
+          seen[key] = 1;
+          out.push(raw);
+        }
+      });
+      return out;
+    });
+  }
+
+  // 对外：classes / list 分流
+  var _gayOrigClasses = API.classes;
+  API.classes = function (api) {
+    if (isGayAgg(api)) return Promise.resolve(GAY_CLASSES);
+    return _gayOrigClasses(api);
+  };
+
+  var _gayOrigList = API.list;
+  API.list = function (api, opt) {
+    if (isGayAgg(api)) {
+      opt = opt || {};
+      var typeId = String(opt.typeId || 'all');
+      if (GAY_KW[typeId] === undefined) typeId = 'all';
+      var page = opt.page || 1;
+      var cache = gayPoolCache[typeId];
+      var buildResp = function (raws) {
+        var start = (page - 1) * GAY_PAGE_SIZE;
+        var slice = raws.slice(start, start + GAY_PAGE_SIZE);
+        return {
+          items: slice,
+          page: page,
+          pagecount: Math.max(1, Math.ceil(raws.length / GAY_PAGE_SIZE)),
+          total: raws.length
+        };
+      };
+      if (cache && cache.items) return Promise.resolve(buildResp(cache.items));
+      return gayFetch(typeId).then(function (raws) {
+        gayPoolCache[typeId] = { items: raws };
+        return buildResp(raws);
+      });
+    }
+    return _gayOrigList(api, opt);
+  };
+
+  var _gayOrigSearch = API.search;
+  API.search = function (api, wd, page) {
+    if (isGayAgg(api)) {
+      // 专区内搜索：聚合各成人源搜索结果，仍只保留男同关键词命中（保持专区内容纯粹）
+      var srcs = gaySources().slice(0, 12);
+      var tasks = srcs.map(function (s) {
+        return function () {
+          return API.fetchJson(join(s.api, 'ac=detail&wd=' + encodeURIComponent(wd) + '&pg=' + (page || 1)), 12000)
+            .then(function (j) {
+              var arr = (j && j.list) || [];
+              for (var k = 0; k < arr.length; k++) {
+                if (arr[k] && (gaySourceIsThemed(s) || gayHitText.apply(null, gayItemFields(arr[k])))) {
+                  arr[k].__gayApi = s.api; arr[k].__gaySrc = s.name;
+                } else if (arr[k]) arr[k].__gaySkip = 1;
+              }
+              return arr.filter(function (r) { return r && !r.__gaySkip; });
+            }).catch(function () { return []; });
+        };
+      });
+      return gayPool(tasks, 6).then(function (groups) {
+        var seen = {}, out = [];
+        groups.forEach(function (g) {
+          (g || []).forEach(function (raw) {
+            var key = String(raw.vod_id || '') + '|' + String(raw.vod_name || '');
+            if (seen[key]) return;
+            seen[key] = 1; out.push(raw);
+          });
+        });
+        return { items: out, page: page || 1, pagecount: 1 };
+      });
+    }
+    return _gayOrigSearch(api, wd, page);
+  };
+
+  var _gayOrigDetail = API.detail;
+  API.detail = function (api, id) {
+    // 聚合条目详情：用条目自带的源接口回源补全（由 app.js 传入真实源地址；兜底扫描当前列表）
+    if (isGayAgg(api)) {
+      try {
+        var hit = null;
+        var findIn = function (arr) {
+          for (var i = 0; i < (arr || []).length; i++) {
+            if (String(arr[i].vod_id || arr[i].id) === String(id)) return arr[i];
+          }
+          return null;
+        };
+        if (w.V && w.V.items) {
+          for (var j = 0; j < w.V.items.length; j++) {
+            var it = w.V.items[j];
+            if (String(it.id) === String(id) && it.raw && it.raw.__gayApi) { hit = it.raw; break; }
+          }
+        }
+        if (hit && hit.__gayApi) {
+          return _gayOrigDetail(hit.__gayApi, id).then(function (raw) {
+            if (raw) { raw.__gayApi = hit.__gayApi; raw.__gaySrc = hit.__gaySrc; }
+            return raw || hit;
+          }).catch(function () { return hit; });
+        }
+      } catch (e) {}
+      return Promise.resolve(null);
+    }
+    return _gayOrigDetail(api, id);
+  };
+
+  // 男同专区分类切换时清空聚合池（源更新后可重新拉取）
+  API.gayClearPool = function () { gayPoolCache = {}; };
+
+})(window);
+</script>
 <script>
 (function(){
 'use strict';

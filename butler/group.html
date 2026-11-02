@@ -89,14 +89,16 @@ var cards=[],store={},G=null;
 var DEF_BASE='https://api.agnes-ai.cn/v1', DEF_MODEL='agnes-3.0-flash';
 var NV_BASE=(window.SL_API_NV?SL_D(SL_API_NV.b):'https://integrate.api.nvidia.com/v1');
 var NV_KEYS=(window.SL_API_NV&&SL_API_NV.k)?SL_API_NV.k.map(function(x){return SL_D(x)}):[];
-var NV_MODEL=(window.SL_API_NV?SL_D(SL_API_NV.m):'deepseek-ai/deepseek-v4.1-flash');
-var GROUP_POOL=1;
-try{var __gp=parseInt(localStorage.getItem('sl_api_pool')||'1',10);if(__gp>=0&&__gp<2)GROUP_POOL=__gp}catch(e){}
+var NV_MODEL=(window.SL_API_NV?SL_D(SL_API_NV.m):'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning');
+var FREE_BASE='https://text.pollinations.ai/v1';
+var GROUP_POOL=0;
+try{var __gp=parseInt(localStorage.getItem('sl_api_pool')||'0',10);GROUP_POOL=(__gp===2?2:0)}catch(e){}
 function groupPool(){
-  return GROUP_POOL===0
-    ? {base:NV_BASE,keys:NV_KEYS,model:NV_MODEL}
-    : {base:DEF_BASE,keys:(window.SL_API&&SL_API.k)?SL_API.k.map(function(x){return SL_D(x)}):[],model:DEF_MODEL};
+  if(GROUP_POOL===2) return {base:FREE_BASE,keys:[],model:'openai'};
+  return {base:NV_BASE,keys:NV_KEYS,model:NV_MODEL};
 }
+function oldApi(base){ return !base || /api\.agnes-ai\.cn/i.test(base) }
+function deadModel(m){ return !m || /agnes-|deepseek-v4\.1-flash/i.test(m) }
 var TONE='分寸感：正经话题保持得体，不耍黄腔；主人主动暧昧时才温柔暧昧。始终顺从、让主人心情愉快。';
 var TTS_VOICES=[
   {k:'brian',label:'布莱恩',voice:'en-US-BrianMultilingualNeural',pitch:'+0Hz'},
@@ -130,7 +132,8 @@ function load(){
   /* 群聊里 AI 用的默认 API 继承当前默认智能体的配置 */
   if(!G.baseKey){
     var st=(store['yuheng_default']||{}).ai||Object.values(store)[0]&&Object.values(store)[0].ai||{};
-    G.baseKey={base:st.base||DEF_BASE,model:st.model||DEF_MODEL};
+    var gp0=groupPool();
+    G.baseKey={base:(oldApi(st.base)?gp0.base:st.base), keys:gp0.keys.slice(), model:(deadModel(st.model)?gp0.model:st.model)};
   }
 }
 function cardOf(id){return cards.filter(function(c){return c.id===id})[0]||null}
@@ -146,11 +149,12 @@ function keysFrom(v){
 function cfgOf(m){
   var st=(store[m.id]||{}).ai||{};
   var gp=groupPool();
-  var base=(m.base||st.base||gp.base||DEF_BASE).replace(/\/+$/,'');
+  var stBase=(oldApi(st.base)?gp.base:st.base);
+  var base=(m.base||stBase||gp.base||NV_BASE).replace(/\/+$/,'');
   var keys=keysFrom(m.keys&&m.keys.length?m.keys:st.keys);
   if(!keys.length && G.baseKey) keys=keysFrom(G.baseKey.keys);
   if(!keys.length) keys=gp.keys.slice();
-  var model=m.model||st.model||gp.model||DEF_MODEL;
+  var model=(deadModel(m.model)?gp.model:(m.model||(deadModel(st.model)?gp.model:st.model)||gp.model));
   return {base:base,keys:keys,model:model};
 }
 function apiSig(m){var c=cfgOf(m);return c.base+'|'+(c.keys[0]||'')}
@@ -225,12 +229,17 @@ async function ask(m,userText,quoteName,quoteText){
   var content=maskText((quoteName?('【引用 '+quoteName+'：'+String(quoteText||'').slice(0,120)+'】\n'):'')+userText);
   for(var round=0; round<2; round++){
     var c=cfgOf(m);
-    if(!c.keys.length)return null;
+    var isFree=/pollinations/i.test(c.base);
+    if(!c.keys.length && !isFree)return null;
     var body={model:c.model,messages:[{role:'system',content:sysFor(m)}].concat(hist).concat([{role:'user',content:content}]),temperature:.9,max_tokens:320};
+    if(/nemotron/i.test(String(c.model||''))) body.chat_template_kwargs={enable_thinking:false};
     var ctrl=new AbortController();var to=setTimeout(function(){ctrl.abort()},30000);
     try{
       var target=c.base+'/chat/completions';
-      var init={method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+pickKey(c)},body:JSON.stringify(body),signal:ctrl.signal};
+      var key=pickKey(c);
+      var hdr={'Content-Type':'application/json'};
+      if(key) hdr.Authorization='Bearer '+key;
+      var init={method:'POST',headers:hdr,body:JSON.stringify(body),signal:ctrl.signal};
       try{
         if(location.protocol==='http:' && /^(127\.0\.0\.1|localhost)$/.test(location.hostname||'')){
           var ah=init.headers.Authorization;
@@ -248,7 +257,7 @@ async function ask(m,userText,quoteName,quoteText){
     }catch(e){
       clearTimeout(to);
       if(!m.base && !(store[m.id]||{}).ai){
-        GROUP_POOL = GROUP_POOL===0 ? 1 : 0;
+        GROUP_POOL = GROUP_POOL===0 ? 2 : 0;
         try{localStorage.setItem('sl_api_pool',String(GROUP_POOL))}catch(x){}
         continue;
       }
