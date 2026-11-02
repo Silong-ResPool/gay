@@ -156,6 +156,7 @@ body{background:radial-gradient(120% 70% at 50% -10%,#1b0f42,#0b0720 60%,#070413
       <div class="sel"><span id="dropdown-label">模型库</span><i class="fas fa-chevron-down"></i></div>
       <ul class="dropdown-list" id="dropdown-list" role="listbox" aria-label="模型列表"></ul>
       <input type="file" id="zip-upload-input" accept=".zip,.lpk,.wpk,application/zip" style="display:none" aria-hidden="true">
+      <input type="file" id="folder-upload-input" webkitdirectory directory multiple style="display:none" aria-hidden="true">
       <input type="hidden" id="dropdown-value" value="">
     </div>
     <button class="pbtn line" id="load-selected-btn">加载</button>
@@ -201,7 +202,13 @@ body{background:radial-gradient(120% 70% at 50% -10%,#1b0f42,#0b0720 60%,#070413
   </main>
 
   <footer class="sl-foot">巳泷 Live2D · 内核 pixi-live2d-display / live2d-widget | 支持 LPK / WPK / ZIP / *.model3.json ·
-    拖动移动 · 滚轮/双指缩放 · 点击互动</footer>
+    拖动移动 · 滚轮/双指缩放 · 点击互动<br>
+    <span style="opacity:.75">更多第三方查看器：</span>
+    <a href="https://github.com/guansss/pixi-live2d-display" target="_blank" rel="noopener">pixi-live2d-display</a> ·
+    <a href="https://github.com/stevenjoezhang/live2d-widget" target="_blank" rel="noopener">live2d-widget</a> ·
+    <a href="https://github.com/hacxy/oh-my-live2d" target="_blank" rel="noopener">oh-my-live2d</a> ·
+    <a href="https://github.com/Live2D/CubismWebSamples" target="_blank" rel="noopener">CubismWebSamples</a> ·
+    <a href="https://github.com/Eikanya/Live2d-model" target="_blank" rel="noopener">Live2d-model 模型库</a></footer>
 
   <!-- 控制面板开关（移动端） -->
   <button id="sl-panel-toggle" title="控制面板" style="position:fixed;right:14px;bottom:14px;z-index:80;width:46px;height:46px;
@@ -306,6 +313,14 @@ body{background:radial-gradient(120% 70% at 50% -10%,#1b0f42,#0b0720 60%,#070413
       var z=$('zip-upload-input'); if(z) z.click();
     };
     list.appendChild(up);
+    // v9.9.2：导入解包后的模型文件夹（加密 WPK/LPK 用 7-Zip 解压后走这里）
+    var upDir = document.createElement('li');
+    upDir.className='dropdown-option'; upDir.id='upload-folder-btn'; upDir.textContent='导入文件夹（已解包的模型）';
+    upDir.onclick = function (){
+      var dd=$('model-dropdown'); if(dd) dd.classList.remove('open');
+      var f=$('folder-upload-input'); if(f) f.click();
+    };
+    list.appendChild(upDir);
     // 已导入模型
     var imported = [];
     try { if (window.L2DNative && L2DNative.listModels) imported = JSON.parse(String(L2DNative.listModels()||'[]')); } catch(e){ imported=[]; }
