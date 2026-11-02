@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>Live2D 桌宠</title>
+<style>
+html,body{margin:0;padding:0;height:100%;background:transparent;overflow:hidden}
+canvas{display:block;width:100%;height:100%;background:transparent}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script src="libs/pixi.min.js"></script>
+<script src="libs/live2dcubismcore-r5.js"></script>
+<script src="libs/live2d.min.js"></script>
+<script src="libs/pixi-live2d-display.min.js"></script>
+<script>
+(function(){
+  var q=new URLSearchParams(location.search);
+  var src=q.get('m')||'sample/Mark/Mark.model3.json';
+  var canvas=document.getElementById('c');
+  var app=null;
+  try{
+    app=new PIXI.Application({view:canvas,resizeTo:window,backgroundAlpha:0,antialias:true,
+      autoStart:true,resolution:window.devicePixelRatio||1,autoDensity:true});
+  }catch(e){return}
+  var model=null;
+  function fit(){
+    if(!model)return;
+    var w=app.renderer.width/app.renderer.resolution;
+    var h=app.renderer.height/app.renderer.resolution;
+    var bw=model.width||1,bh=model.height||1;
+    var s=Math.min(w/bw,h/bh);
+    model.scale.set(s);
+    model.x=(w-bw*s)/2;
+    model.y=(h-bh*s)/2;
+  }
+  PIXI.live2d.Live2DModel.from(src,{autoInteract:false}).then(function(m){
+    model=m;
+    app.stage.addChild(m);
+    try{m.interactive=false}catch(e){}
+    fit();
+    setTimeout(fit,200);setTimeout(fit,600);
+    window.addEventListener('resize',fit);
+  }).catch(function(){});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>支持打赏 · 巳泷资源库</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;font-family:'PingFang SC','Microsoft YaHei',system-ui,sans-serif;color:#f3e9ff;
+  background:radial-gradient(1100px 600px at 15% -10%,rgba(192,132,252,.28),transparent 60%),radial-gradient(900px 500px at 90% 15%,rgba(232,121,249,.2),transparent 60%),#0a0612}
+body.day{background:radial-gradient(1100px 600px at 15% -10%,rgba(192,132,252,.22),transparent 60%),radial-gradient(900px 500px at 90% 15%,rgba(232,121,249,.16),transparent 60%),#fbf8ff;color:#2a1b3d}
+.page{max-width:540px;margin:0 auto;padding:28px 20px 60px}
+.hero{text-align:center;margin-bottom:22px}
+.hero h1{font-size:26px;margin:0 0 10px;letter-spacing:2px;background:linear-gradient(90deg,#c084fc,#e879f9,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:0;font-size:13px;line-height:1.9;color:#b7a4d3}
+body.day .hero p{color:#6e5a88}
+.card{padding:20px;border-radius:22px;border:1px solid rgba(192,132,252,.32);background:linear-gradient(145deg,rgba(124,58,237,.16),rgba(232,121,249,.08));backdrop-filter:blur(16px);box-shadow:0 18px 60px rgba(88,28,135,.25);margin-bottom:18px}
+body.day .card{background:rgba(255,255,255,.82);border-color:#e5d8f8;box-shadow:0 18px 50px rgba(124,58,237,.12)}
+.card h2{margin:0 0 10px;font-size:16px;color:#e9d5ff}
+body.day .card h2{color:#6d28d9}
+.card p{margin:0 0 8px;font-size:12.8px;line-height:1.9;color:#c9b8e2}
+body.day .card p{color:#5e4b78}
+.free{font-weight:800;color:#ffd6f4}
+.qr-wrap{text-align:center;margin:18px 0 10px}
+.qr{width:min(76vw,300px);border-radius:18px;display:block;margin:0 auto;border:2px solid rgba(232,121,249,.45);box-shadow:0 10px 40px rgba(232,121,249,.2)}
+.qr-tip{font-size:11.5px;color:#a892c4;line-height:1.8;margin-top:10px}
+.btns{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.btn{border:0;border-radius:14px;padding:14px 18px;font-size:14px;font-weight:800;cursor:pointer;
+  background:linear-gradient(135deg,#7c3aed,#a855f7,#e879f9);color:#fff;box-shadow:0 10px 30px rgba(168,85,247,.35)}
+.btn.ghost{background:transparent;border:1px solid rgba(192,132,252,.4);color:#d8bffa;box-shadow:none}
+.foot{text-align:center;margin-top:22px;font-size:11px;color:#8873a4;line-height:1.9}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;padding:11px 20px;border-radius:12px;background:rgba(30,18,48,.97);border:1px solid rgba(232,121,249,.45);color:#fff;font-size:12px;z-index:99;transition:.25s}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="hero">
+    <h1>支持打赏</h1>
+    <p>谢谢您愿意停下脚步，看到这里。<br>巳泷资源库会一直保持免费、干净、无强制收费。</p>
+  </div>
+  <div class="card">
+    <h2>所有资源，永久免费</h2>
+    <p><span class="free">本站所有资源完全免费</span>，不设会员墙、不强制付费、不拿资源做交易。</p>
+    <p>如果这里曾帮到您，喜欢的话可以随缘打赏支持，纯粹自愿；不打赏也完全不影响任何功能。</p>
+    <p>您的每一份支持，都会变成服务器、域名和维护深夜里的一点光。</p>
+  </div>
+  <div class="card">
+    <h2>打赏码</h2>
+    <div class="qr-wrap">
+      <img class="qr" id="payImg" src="./收款码/赞赏码.jpg" onerror="this.style.display='none';document.getElementById('qrFallback').style.display='block'" alt="打赏码">
+      <div class="qr-tip">可长按图片保存，再打开微信「扫一扫」→ 相册选择这张图。<br>或点击下方按钮调用系统扫码。</div>
+    </div>
+    <div class="btns">
+      <button class="btn" id="scanBtn">调用系统扫码</button>
+      <button class="btn ghost" id="saveBtn">保存打赏码到相册</button>
+      <button class="btn ghost" id="backBtn">返回资源库</button>
+    </div>
+  </div>
+  <div class="foot">巳泷资源库 · 因为被喜欢，所以一直亮着</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id)};
+function toast(t){var x=$('toast');x.textContent=t;x.classList.add('on');clearTimeout(window.__tt);window.__tt=setTimeout(function(){x.classList.remove('on')},2400)}
+if(localStorage.getItem('sl_theme')==='day')document.body.classList.add('day');
+$('scanBtn').onclick=function(){
+  try{ if(window.Android&&Android.openSystemScan){ Android.openSystemScan(); return; } }catch(e){}
+  toast('当前环境不支持系统扫码，请长按图片保存后用微信扫一扫');
+};
+$('saveBtn').onclick=function(){
+  try{ if(window.Android&&Android.saveTipImage){ Android.saveTipImage(); toast('已保存到相册'); return; } }catch(e){}
+  var img=$('payImg');
+  try{
+    var a=document.createElement('a');a.href=img.src;a.download='巳泷打赏码.png';a.click();
+    toast('已开始保存图片');
+  }catch(e){ toast('请长按图片选择「保存图片」'); }
+};
+$('backBtn').onclick=function(){ try{history.back()}catch(e){location.href='../index.html'} };
+})();
+</script>
+<script src="../js/fail-scene.js"></script>
+</body>
+</html>

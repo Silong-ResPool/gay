@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>幻影坦克 · 图像处理</title>
+<style>
+:root{--bg:#0b0616;--panel:#160a2a;--line:rgba(177,108,255,.32);--acc:#b16cff;--pink:#ff6ec7;--cyan:#00e5ff;--txt:#efe6ff;--mut:#a593c4}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;font-family:'PingFang SC','Microsoft YaHei',sans-serif;color:var(--txt);
+  background:radial-gradient(circle at 30% -10%,#2a104d,#0b0616 55%,#05010c);padding:16px 14px 90px}
+.hd{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.back{border:1px solid rgba(0,229,255,.45);background:rgba(0,229,255,.08);color:#9ff4ff;padding:8px 13px;border-radius:20px;font-size:12.5px;cursor:pointer}
+h1{font-size:18px;background:linear-gradient(90deg,var(--cyan),var(--acc),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:1px}
+.tip{font-size:11.5px;color:var(--mut);line-height:1.7;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:rgba(20,10,40,.8);border:1px solid var(--line);border-radius:14px;padding:12px}
+.card h2{font-size:12px;color:#dccdff;margin-bottom:8px}
+.drop{height:150px;border:1px dashed rgba(177,108,255,.45);border-radius:10px;display:flex;align-items:center;justify-content:center;
+  text-align:center;font-size:11px;color:var(--mut);cursor:pointer;overflow:hidden;background:rgba(255,255,255,.03)}
+.drop img{max-width:100%;max-height:100%;object-fit:contain}
+preview{display:block}
+.pv{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.pv .box{border-radius:12px;border:1px solid var(--line);overflow:hidden;height:220px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#777}
+.pv .box img{max-width:100%;max-height:100%;object-fit:contain}
+.pv .white{background:#fff;color:#555}
+.pv .black{background:#000}
+.acts{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.acts button{flex:1;min-width:140px;padding:12px;border-radius:11px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:#eadfff;font-size:13px;cursor:pointer}
+.acts button.main{border:0;background:linear-gradient(135deg,var(--acc),var(--pink));color:#fff;font-weight:800}
+.tip2{font-size:10.5px;color:var(--mut);margin-top:10px;line-height:1.7}
+@media(max-width:560px){.grid{grid-template-columns:1fr}.pv{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="hd"><button class="back" id="backBtn">← 返回</button><h1>幻影坦克</h1></div>
+<p class="tip">上传两张图：白底显示图 A、黑底显示图 B。生成一张 PNG，在白色背景上看似 A，在黑色背景上看似 B。适合头像/彩蛋/隐写。</p>
+<div class="grid">
+  <div class="card"><h2>白底显示图 A</h2><div class="drop" id="dropA">点击选择图片<input type="file" id="fileA" accept="image/*" hidden></div></div>
+  <div class="card"><h2>黑底显示图 B</h2><div class="drop" id="dropB">点击选择图片<input type="file" id="fileB" accept="image/*" hidden></div></div>
+</div>
+<div class="pv">
+  <div class="box white" id="pvWhite">白底预览</div>
+  <div class="box black" id="pvBlack">黑底预览</div>
+</div>
+<div class="acts">
+  <button class="main" id="makeBtn">生成幻影坦克 PNG</button>
+  <button id="saveBtn">下载 PNG</button>
+</div>
+<p class="tip2">原理：按 alpha 混合求解每像素颜色与透明度；两张图尺寸会自动裁切到较小的那张。生成结果不含任何外链、全部本地计算。</p>
+<script>
+(function(){
+var $=function(id){return document.getElementById(id)};
+var imgA=null,imgB=null,outUrl='';
+function load(input,which){
+  var f=input.files&&input.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){
+    var im=new Image();
+    im.onload=function(){
+      if(which==='a'){imgA=im;$('dropA').innerHTML='<img src="'+im.src+'" alt="">';}
+      else{imgB=im;$('dropB').innerHTML='<img src="'+im.src+'" alt="">';}
+    };
+    im.src=r.result;
+  };
+  r.readAsDataURL(f);
+}
+$('dropA').onclick=function(){ $('fileA').click(); };
+$('dropB').onclick=function(){ $('fileB').click(); };
+$('fileA').onchange=function(){ load(this,'a'); };
+$('fileB').onchange=function(){ load(this,'b'); };
+function make(){
+  if(!imgA||!imgB){ alert('请先选择两张图片'); return null; }
+  var w=Math.min(imgA.naturalWidth,imgB.naturalWidth),h=Math.min(imgA.naturalHeight,imgB.naturalHeight);
+  if(!w||!h){ alert('图片尺寸无效'); return null; }
+  var ca=document.createElement('canvas'),cb=document.createElement('canvas'),co=document.createElement('canvas');
+  ca.width=cb.width=co.width=w;ca.height=cb.height=co.height=h;
+  var xa=ca.getContext('2d'),xb=cb.getContext('2d'),xo=co.getContext('2d');
+  xa.drawImage(imgA,0,0,w,h);xb.drawImage(imgB,0,0,w,h);
+  var da=xa.getImageData(0,0,w,h).data,db=xb.getImageData(0,0,w,h).data,od=xo.createImageData(w,h);
+  for(var i=0;i<da.length;i+=4){
+    var ar=da[i],ag=da[i+1],ab=da[i+2];
+    var br=db[i],bg=db[i+1],bb=db[i+2];
+    /* A = C*a + 255*(1-a); B = C*a  →  a = 1 + (B-A)/255, C = B/a */
+    var alpha=1+((br-ar)+(bg-ag)+(bb-ab))/(3*255);
+    alpha=Math.max(0.02,Math.min(1,alpha));
+    od.data[i]=Math.max(0,Math.min(255,Math.round(br/alpha)));
+    od.data[i+1]=Math.max(0,Math.min(255,Math.round(bg/alpha)));
+    od.data[i+2]=Math.max(0,Math.min(255,Math.round(bb/alpha)));
+    od.data[i+3]=Math.round(alpha*255);
+  }
+  xo.putImageData(od,0,0);
+  return co.toDataURL('image/png');
+}
+$('makeBtn').onclick=function(){
+  var u=make();if(!u)return;
+  outUrl=u;
+  $('pvWhite').innerHTML='<img src="'+u+'" alt="">';
+  $('pvBlack').innerHTML='<img src="'+u+'" alt="">';
+};
+$('saveBtn').onclick=function(){
+  if(!outUrl)outUrl=make();
+  if(!outUrl){return;}
+  var a=document.createElement('a');a.href=outUrl;a.download='幻影坦克_'+Date.now()+'.png';document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},500);
+};
+$('backBtn').onclick=function(){ history.length>1?history.back():location.href='index.html'; };
+})();
+</script>
+</body>
+</html>

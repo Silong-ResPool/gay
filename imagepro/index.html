@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="x-ua-compatible" content="IE=edge" />
+	<title>图像处理 · 巳泷</title>
+	<meta name="description" content="miniPaint is free online image editor using HTML5. Edit, adjust your images, add effects online in your browser, without installing anything..." />
+	<meta name="keywords" content="photo, image, picture, transparent, layers, free, edit, html5, canvas, javascript, online, photoshop, gimp, effects, sharpen, blur, magic eraser tool, clone tool, rotate, resize, photoshop online, online tools, tilt shift, sprites, keypoints" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0" />
+	<link rel="icon" sizes="192x192" href="images/favicon.png">
+	<!-- <link rel="manifest" href="dist/manifest.json"> -->
+	<!-- Google -->
+	<meta itemprop="name" content="miniPaint" />
+	<meta itemprop="description" content="miniPaint is free online image editor using HTML5. Edit, adjust your images, add effects online in your browser, without installing anything..." />
+	<meta itemprop="image" content="https://viliusle.github.io/miniPaint/images/preview.jpg" />
+	<!-- Twitter -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="miniPaint" />
+	<meta name="twitter:description" content="miniPaint is free online image editor using HTML5. Edit, adjust your images, add effects online in your browser, without installing anything..." />
+	<meta name="twitter:image" content="https://viliusle.github.io/miniPaint/images/preview.jpg" />
+	<meta name="twitter:image:alt" content="miniPaint is free online image editor using HTML5. Edit, adjust your images, add effects online in your browser, without installing anything..." />
+	<!-- Facebook, Pinterest -->
+	<meta property="og:title" content="miniPaint" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="https://viliusle.github.io/miniPaint/" />
+	<meta property="og:image" content="https://viliusle.github.io/miniPaint/images/preview.jpg" />
+	<meta property="og:description" content="miniPaint is free online image editor using HTML5. Edit, adjust your images, add effects online in your browser, without installing anything..." />
+	<meta property="og:site_name" content="miniPaint" />
+	
+	<script>try{document.cookie='language=zh;path=/';}catch(e){}</script>
+	<script src="dist/bundle.js"></script>
+	<style id="sl-purple-theme">
+	:root{
+		--background:#0b0616;
+		--text-color:#efe6ff;
+		--text-color-muted:#b9a8d6;
+		--text-color-red:#ff8aa8;
+		--text-color-green:#9ff4ff;
+		--text-color-blue:#c9b3ff;
+		--link-color:#9ff4ff;
+		--section-background-color:#140a26;
+		--area-background-color:#1a0f2e;
+		--block-background-color:#1a0f2e;
+		--header-background-color:#241445;
+		--button-background-color:#2a1648;
+		--button-background-color-hover:#7c3aed;
+		--button-background-color-active:#3b1f63;
+		--button-text-color-active:#ffffff;
+		--button-toggle-background-color:#3a215e;
+		--button-toggle-background-color-hover:#4a2a78;
+		--input-background-color:#120822;
+		--input-background-color-hover:#1d0f33;
+		--input-text-color:#ffffff;
+		--input-border-color:#3a215e;
+		--input-border-color-active:#b16cff;
+		--input-group-border-color:#2a1648;
+		--menu-background-color:#140a26;
+		--menu-text-color:#d9c9f5;
+		--background-color-active:#b16cff;
+		--background-color-hover:#3a215e;
+		--text-color-active:#ffffff;
+		--border-color:#4a2a78;
+		--scrollbar-track-color:#0b0616;
+		--scrollbar-thumb-color:#3a215e;
+	}
+	body{background:radial-gradient(circle at 28% -10%,#2a104d 0%,#0b0616 55%,#05010c 100%)!important}
+	.submenu,.sidebar_left,.sidebar_right{background:rgba(18,9,35,.94)!important;border-color:#4a2a78!important}
+	.logo{color:#b16cff!important;font-weight:800;letter-spacing:1px}
+	#slBar{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);z-index:99999;display:flex;gap:8px;
+		padding:6px;border-radius:24px;background:rgba(10,4,28,.82);border:1px solid rgba(177,108,255,.35);backdrop-filter:blur(10px)}
+	#slBar button{border:1px solid rgba(177,108,255,.6);background:linear-gradient(135deg,rgba(124,58,237,.9),rgba(217,70,239,.75));
+		color:#fff;font-size:12px;padding:8px 13px;border-radius:18px;box-shadow:0 6px 18px rgba(124,58,237,.28);cursor:pointer;white-space:nowrap}
+	#slTank{background:linear-gradient(135deg,rgba(255,110,199,.4),rgba(124,58,237,.7))!important}
+	#slTool{background:linear-gradient(135deg,rgba(0,229,255,.3),rgba(177,108,255,.6))!important}
+	#slObf{position:fixed;inset:0;z-index:100001;background:#07020f;display:none}
+	#slObf.on{display:block}
+	#slObf iframe{width:100%;height:100%;border:0;background:#07020f}
+	#slObfClose{position:fixed;left:10px;top:10px;z-index:100002;border:1px solid rgba(0,229,255,.5);
+		background:rgba(10,4,28,.9);color:#9ff4ff;font-size:12px;padding:8px 13px;border-radius:20px;cursor:pointer}
+	</style>
+</head>
+<body>
+	<div class="wrapper">
+
+		<nav aria-label="Main Menu" class="main_menu" id="main_menu"></nav>
+		
+		<div class="submenu">
+			<a class="logo" href="#">miniPaint</a>
+			<div class="block attributes" id="action_attributes"></div>
+			<button class="undo_button" id="undo_button" type="button">
+				<span class="sr_only">Undo</span>
+			</button>
+		</div>
+		
+		<div class="sidebar_left" id="tools_container"></div>
+
+
+		<div class="middle_area" id="middle_area">
+
+			<canvas class="ruler_left" id="ruler_left"></canvas>
+			<canvas class="ruler_top" id="ruler_top"></canvas>
+
+			<div class="main_wrapper" id="main_wrapper">
+				<div class="canvas_wrapper" id="canvas_wrapper">
+					<div id="mouse"></div>
+					<div class="transparent-grid" id="canvas_minipaint_background"></div>
+					<canvas id="canvas_minipaint">
+						<div class="trn error">
+							Your browser does not support canvas or JavaScript is not enabled.
+						</div>
+					</canvas>
+				</div>
+			</div>
+		</div>
+
+		<div class="sidebar_right">
+			<div class="preview block">
+				<h2 class="trn toggle" data-target="toggle_preview">Preview</h2>
+				<div id="toggle_preview"></div>
+			</div>
+			
+			<div class="colors block">
+				<h2 class="trn toggle" data-target="toggle_colors">Colors</h2>
+				<div class="content" id="toggle_colors"></div>
+			</div>
+			
+			<div class="block" id="info_base">
+				<h2 class="trn toggle toggle-full" data-target="toggle_info">Information</h2>
+				<div class="content" id="toggle_info"></div>
+			</div>
+			
+			<div class="details block" id="details_base">
+				<h2 class="trn toggle toggle-full" data-target="toggle_details">Layer details</h2>
+				<div class="content details-content" id="toggle_details"></div>
+			</div>
+			
+			<div class="layers block">
+				<h2 class="trn">Layers</h2>
+				<div class="content" id="layers_base"></div>
+			</div>
+		</div>
+	</div>
+	<div class="mobile_menu">
+		<button class="left_mobile_menu" id="left_mobile_menu_button" type="button">
+			<span class="sr_only">Toggle Menu</span>
+		</button>
+		<button class="right_mobile_menu" id="mobile_menu_button" type="button">
+			<span class="sr_only">Toggle Menu</span>
+		</button>
+	</div>
+	<div class="hidden" id="tmp"></div>
+	<div id="popups"></div>
+	<div id="slBar">
+		<button id="slBack" type="button">← 返回主页</button>
+		<button id="slTank" type="button">幻影坦克</button>
+		<button id="slTool" type="button">混淆 / 隐写</button>
+	</div>
+	<div id="slObf"><button id="slObfClose" type="button">← 返回图像处理</button><iframe id="slObfFrame" data-src="../yidu.html"></iframe></div>
+	<script>
+	(function(){
+		var b=document.getElementById('slBack');
+		if(b)b.onclick=function(){ location.href='../index.html'; };
+		var t=document.getElementById('slTool');
+		if(t)t.onclick=function(){
+			var box=document.getElementById('slObf'),fr=document.getElementById('slObfFrame');
+			if(fr&&!fr.src)fr.src=fr.getAttribute('data-src');
+			if(box)box.classList.add('on');
+		};
+		var tc=document.getElementById('slObfClose');
+		if(tc)tc.onclick=function(){
+			var box=document.getElementById('slObf'),fr=document.getElementById('slObfFrame');
+			if(box)box.classList.remove('on');
+			if(fr)fr.src='';
+		};
+		var k=document.getElementById('slTank');
+		if(k)k.onclick=function(){ window.open('tank.html','_blank','noopener'); };
+	})();
+	</script>
+</body>
+</html>

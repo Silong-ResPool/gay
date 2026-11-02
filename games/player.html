@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>巳泷游戏机 · 播放器</title>
+<style>
+  html,body{margin:0;height:100%;background:#05001a;color:#eaf6ff;font-family:'PingFang SC','Microsoft YaHei',sans-serif}
+  #game{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center}
+  #tip{position:fixed;left:0;right:0;top:0;padding:10px 14px;font-size:12px;color:#9fb3d6;
+    background:rgba(10,4,36,.9);z-index:9999;text-align:center}
+  #tip.hide{display:none}
+</style>
+</head>
+<body>
+<div id="tip">正在加载模拟器核心…（首次进入需联网下载核心，稍候片刻）</div>
+<div id="game"></div>
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var core = q.get('core') || 'fceumm';
+  var url  = q.get('url')  || '';
+  var name = q.get('name') || 'game';
+  if(!url){
+    document.getElementById('tip').textContent = '缺少 ROM 地址（url 参数）';
+    return;
+  }
+  window.EJS_player = '#game';
+  window.EJS_core = core;
+  window.EJS_gameUrl = url;
+  window.EJS_gameName = name;
+  // 核心前端走官方 CDN（已内置稳定版；ROM 走免费开源直链）
+  window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+  window.EJS_startOnLoaded = true;
+  window.EJS_backgroundColor = '#05001a';
+  window.EJS_volume = 0.8;
+  window.EJS_language = 'zh-CN';
+  window.EJS_defaultOptions = { 'save-state-location':'browser', 'control-scheme':'gamepad' };
+  window.EJS_ready = function(){
+    var t=document.getElementById('tip'); if(t) t.classList.add('hide');
+  };
+  window.EJS_onGameStart = function(){
+    var t=document.getElementById('tip'); if(t) t.classList.add('hide');
+  };
+  var s = document.createElement('script');
+  s.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+  s.onerror = function(){ document.getElementById('tip').textContent='模拟器核心加载失败，请检查网络后重试'; };
+  document.body.appendChild(s);
+})();
+</script>
+</body>
+</html>

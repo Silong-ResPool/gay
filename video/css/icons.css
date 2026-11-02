@@ -1,0 +1,32 @@
+﻿/* ==========================================================================
+   影视乐园 · icons.css
+   本地图标映射（不再依赖 CDN 的 Font Awesome）
+   只覆盖项目里实际用到的图标类，用系统符号字体渲染，离线 / file:// 可用
+   ========================================================================== */
+
+.fa-solid, .fa-regular, .fa-brands {
+  display: inline-block;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  font-family: "Segoe UI Symbol", "Apple Symbols", "Noto Sans Symbols2", sans-serif;
+  text-align: center;
+}
+
+.fa-arrow-left::before { content: "←"; }
+.fa-caret-down::before { content: "▾"; }
+.fa-caret-up::before { content: "▴"; }
+.fa-chevron-up::before { content: "⌃"; }
+.fa-clock::before { content: "🕘"; }
+.fa-gear::before { content: "⚙"; }
+.fa-layer-group::before { content: "▤"; }
+.fa-list::before { content: "☰"; }
+.fa-list-check::before { content: "☑"; }
+.fa-magnifying-glass::before { content: "🔍"; }
+.fa-maximize::before { content: "⛶"; }
+.fa-minimize::before { content: "⤡"; }
+.fa-play::before { content: "▶"; }
+.fa-star::before { content: "★"; }
+.fa-user::before { content: "👤"; }
+.fa-warehouse::before { content: "🗂"; }
+.fa-xmark::before { content: "✕"; }

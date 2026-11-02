@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0e0e12">
+<title>影视乐园 · TVBox（Box 风格）</title>
+<style>
+:root{--bg:#0a0616;--panel:#171029;--panel2:#221636;--line:#3a2a5c;--txt:#efe9ff;--mut:#a99bc7;
+  --accent:#B16CFF;--accent2:#FF6EC7;--ok:#43d17a;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'PingFang SC','Microsoft YaHei',system-ui,sans-serif;background:var(--bg);color:var(--txt);overflow-x:hidden}
+/* 顶栏 */
+.top{position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:8px;padding:10px 12px;
+  background:linear-gradient(180deg,#1a1030,#120b22);border-bottom:1px solid var(--line)}
+.bk{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--txt);font-size:15px;cursor:pointer}
+.logo{font-weight:800;font-size:17px;letter-spacing:1px;color:#fff;white-space:nowrap}
+.logo b{color:var(--accent)}
+.sbox{flex:1;display:flex;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:0 12px;min-width:0}
+.sbox input{flex:1;background:transparent;border:0;outline:0;color:var(--txt);font-size:13px;padding:9px 0;min-width:0}
+.sbox .go{color:var(--accent);font-weight:700;font-size:13px;cursor:pointer;padding-left:6px}
+/* 分类条（仓库分支分类） */
+.nav{position:sticky;top:57px;z-index:190;background:rgba(10,6,22,.96);border-bottom:1px solid var(--line)}
+.row{display:flex;gap:8px;overflow-x:auto;padding:9px 12px;scrollbar-width:none}
+.row::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;padding:7px 14px;border-radius:9px;font-size:13px;cursor:pointer;white-space:nowrap;
+  background:var(--panel);border:1px solid var(--line);color:#b9c1d4}
+.chip.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent;font-weight:700}
+.chip.sec{font-size:12px;padding:5px 11px;border-radius:16px}
+.chip.sec.on{background:var(--accent);}
+.crumb{font-size:11.5px;color:var(--mut);padding:2px 14px 8px}
+/* 网格 */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px;padding:12px 12px 90px}
+.card{position:relative;border-radius:10px;overflow:hidden;background:var(--panel);cursor:pointer;border:1px solid #1e1e26}
+.card:active{transform:scale(.97)}
+.card .pic{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;background:#1a1a22}
+.card .nt{position:absolute;left:0;right:0;bottom:0;padding:16px 8px 7px;font-size:12px;color:#fff;line-height:1.35;
+  background:linear-gradient(180deg,transparent,rgba(0,0,0,.86));display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card .rm{position:absolute;top:6px;right:6px;font-size:10px;background:rgba(0,0,0,.62);color:#ffd9cf;padding:2px 6px;border-radius:6px;max-width:70%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sect{display:flex;align-items:center;gap:8px;padding:12px 14px 0;font-size:14px;font-weight:700}
+.sect::before{content:"";width:3px;height:15px;border-radius:2px;background:var(--accent)}
+.sect .cnt{font-size:11px;color:var(--mut);font-weight:400}
+.empty,.load{grid-column:1/-1;text-align:center;color:var(--mut);font-size:12.5px;padding:30px 0}
+.load{color:var(--accent2)}
+.more{grid-column:1/-1;text-align:center;padding:10px}
+.more button{background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:9px;padding:9px 20px;font-size:13px;cursor:pointer}
+/* 详情浮层 */
+.ov{position:fixed;inset:0;z-index:900;background:rgba(4,4,7,.86);backdrop-filter:blur(4px);display:none;align-items:flex-end}
+.ov.on{display:flex}
+.sheet{width:100%;max-height:92vh;background:var(--panel);border-radius:16px 16px 0 0;border-top:1px solid var(--line);
+  display:flex;flex-direction:column;animation:up .25s ease}
+@keyframes up{from{transform:translateY(30px);opacity:.6}to{transform:none;opacity:1}}
+.shead{display:flex;gap:12px;padding:14px 14px 8px}
+.shead img{width:104px;height:156px;object-fit:cover;border-radius:10px;background:#1a1a22;flex:0 0 auto}
+.shead .info{flex:1;min-width:0}
+.shead h3{font-size:16px;line-height:1.4;margin-bottom:8px}
+.mtag{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.mtag span{font-size:11px;color:#cfd6e6;background:var(--panel2);border:1px solid var(--line);padding:2px 8px;border-radius:10px}
+.mdesc{font-size:12px;color:var(--mut);line-height:1.7;max-height:96px;overflow-y:auto}
+.epwrap{flex:1;overflow-y:auto;padding:6px 14px 14px}
+.lines{display:flex;gap:8px;overflow-x:auto;padding:6px 0 10px;scrollbar-width:none}
+.lines::-webkit-scrollbar{display:none}
+.eps{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+.ep{font-size:12px;text-align:center;padding:9px 4px;border-radius:8px;background:var(--panel2);border:1px solid var(--line);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ep:active{background:var(--accent);border-color:transparent}
+.sclose{position:absolute;top:10px;right:12px;width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--panel2);color:#fff;font-size:15px;cursor:pointer;z-index:2}
+/* 播放浮层 */
+#play{position:fixed;inset:0;z-index:1000;background:#000;display:none;flex-direction:column}
+#play.on{display:flex}
+.pbar{display:flex;align-items:center;gap:10px;padding:9px 12px;background:#101014}
+.pbar .nm{flex:1;font-size:13px;color:#e9edf5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pbar button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#1c1c24;color:#fff;font-size:15px;cursor:pointer}
+#pv{flex:1;width:100%;background:#000;object-fit:contain}
+.tip{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);z-index:1200;background:rgba(20,20,26,.95);
+  border:1px solid var(--line);color:#fff;font-size:12.5px;padding:9px 16px;border-radius:20px;display:none}
+.sr{position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.9));pointer-events:none}
+</style>
+</head>
+<body>
+<div class="top">
+  <button class="bk" onclick="(window.VideoNative&&VideoNative.exit)?VideoNative.exit():(location.href='../index.html')">←</button>
+  <div class="logo">影视<b>乐园</b></div>
+  <div class="sbox">
+    <input id="kw" placeholder="搜索影片 / 剧集…" onkeydown="if(event.key==='Enter')doSearch()">
+    <span class="go" onclick="doSearch()">搜索</span>
+  </div>
+  <button class="bk" title="源管理" onclick="showMgr()">☰</button>
+</div>
+
+<div class="nav">
+  <div class="row" id="catRow"></div>
+  <div class="row" id="srcRow"></div>
+  <div class="crumb" id="crumb">正在加载内置源…</div>
+</div>
+
+<div id="view"><div class="grid"><div class="load">正在加载…</div></div></div>
+
+<div class="ov" id="detail"><div class="sheet">
+  <button class="sclose" onclick="closeDetail()">✕</button>
+  <div class="shead"><img id="dPic" alt=""><div class="info"><h3 id="dName">—</h3><div class="mtag" id="dTags"></div><div class="mdesc" id="dDesc"></div></div></div>
+  <div class="epwrap"><div class="lines" id="dLines"></div><div class="eps" id="dEps"></div></div>
+</div></div>
+
+<div id="play">
+  <div class="pbar"><span class="nm" id="pName">—</span><button onclick="closePlay()">✕</button></div>
+  <video id="pv" controls playsinline webkit-playsinline></video>
+</div>
+<div class="tip" id="tip"></div>
+
+<script src="libs/hls.min.js"></script>
+<script src="js/sources_data.js"></script>
+<script src="js/sources.js"></script>
+<script src="js/xpath.js"></script>
+<script src="js/api.js"></script>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id)};
+var CATS=(window.VIDEO_CATS||[]).filter(function(c){return c!=='自定义'});
+var state={cat:CATS[0],src:null,api:null,classes:[],cls:null,page:1,pagecount:1,items:[],busy:false,detail:null,playing:null};
+try{ window.__SLBOX=state; }catch(e){}
+var hls=null;
+
+/* CORS 兜底：部分采集接口无跨域头（App 内 file:// WebView 可直连；本地 http 测试走同源 /proxy） */
+(function(){
+  if(!window.API||!API.fetchJson)return;
+  var _fj=API.fetchJson;
+  var onLocalHost=(/^https?:$/i.test(location.protocol))&&/^(localhost|127\.0\.0\.1)$/i.test(location.hostname);
+  API.fetchJson=function(url,ms,opts){
+    var isHttp=/^https?:/i.test(url), canProxy=isHttp&&!/\/proxy\?/i.test(url);
+    if(onLocalHost&&canProxy){ return _fj('/proxy?url='+encodeURIComponent(url),ms||20000,opts).catch(function(e){ return _fj(url,ms||20000,opts); }); }
+    return _fj(url,ms,opts).catch(function(err){
+      if(canProxy) return _fj('/proxy?url='+encodeURIComponent(url),ms||20000,opts);
+      throw err;
+    });
+  };
+})();
+
+function tip(m){var t=$('tip');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(function(){t.style.display='none'},1800)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function sourcesOf(cat){return (window.VIDEO_SOURCES||[]).filter(function(s){return s.c===cat})}
+
+/* ---------- 分类（仓库分支） ---------- */
+function renderCats(){
+  var box=$('catRow');box.innerHTML='';
+  CATS.forEach(function(c){
+    var n=sourcesOf(c).length;
+    var d=document.createElement('div');d.className='chip'+(c===state.cat?' on':'');d.textContent=c+(n?' ('+n+')':'');
+    d.onclick=function(){state.cat=c;renderCats();renderSrcs()};
+    box.appendChild(d);
+  });
+}
+/* ---------- 源条 ---------- */
+function renderSrcs(){
+  var box=$('srcRow');box.innerHTML='';
+  var list=sourcesOf(state.cat);
+  if(!list.length){box.innerHTML='<span class="chip sec">该分类暂无源</span>';return}
+  list.forEach(function(s){
+    var d=document.createElement('div');d.className='chip sec'+(state.src&&state.src.n===s.n?' on':'');d.textContent=s.n;
+    d.onclick=function(){selectSource(s)};
+    box.appendChild(d);
+  });
+  // 默认选第一个
+  if(!state.src||state.src.c!==state.cat&&!list.some(function(x){return x.n===state.src.n})) selectSource(list[0]);
+}
+function selectSource(s){
+  state.src=s;state.api=(s.t==='x')?('xpath:'+s.n):s.a;state.classes=[];state.cls=null;state.page=1;state.items=[];
+  renderSrcs();
+  $('crumb').textContent='当前源：'+s.n+' · 分类 '+state.cat;
+  if(s.t==='x'){ $('view').innerHTML='<div class="grid"><div class="empty">该源为 XPath 动漫源，请用顶部搜索框搜索番剧</div></div>'; return }
+  loadClasses();
+}
+function loadClasses(){
+  var view=$('view');view.innerHTML='<div class="grid"><div class="load">正在读取分类…</div></div>';
+  API.classes(state.api).then(function(list){
+    state.classes=[{id:'',name:'全部'}].concat(list||[]);
+    state.cls='';renderCls();loadList(null);
+  }).catch(function(){
+    state.classes=[{id:'',name:'全部'}];state.cls='';renderCls();loadList(null);
+  });
+}
+function renderCls(){
+  var box=$('view');
+  var head=document.createElement('div');head.className='sect';head.innerHTML='分类 <span class="cnt">'+state.classes.length+' 个</span>';
+  var row=document.createElement('div');row.className='row';row.style.padding='9px 12px';
+  state.classes.forEach(function(c){
+    var d=document.createElement('div');d.className='chip sec'+(c.id===state.cls?' on':'');d.textContent=c.name;
+    d.onclick=function(){state.cls=c.id;state.page=1;state.items=[];renderCls();loadList(null)};
+    row.appendChild(d);
+  });
+  box.innerHTML='';box.appendChild(head);box.appendChild(row);
+  box.appendChild(makeGrid());
+}
+function makeGrid(){var g=document.createElement('div');g.className='grid';g.id='itemGrid';return g}
+
+/* ---------- 列表（分批：每批最多 100，滑到底部才继续加载，避免一次性全加载卡顿） ---------- */
+var BATCH=100;
+function loadList(reset){
+  var grid=$('itemGrid');if(!grid)return;
+  if(state.busy||state.end)return;state.busy=true;
+  if(reset){state.page=1;state.items=[];grid.innerHTML='<div class="load">正在加载影片…</div>'}
+  var target=state.items.length+BATCH;
+  (function step(){
+    if(state.page>state.pagecount || state.items.length>=target){
+      state.busy=false;state.end=(state.page>state.pagecount);paintGrid(grid,state.items);return;
+    }
+    API.list(state.api,{page:state.page,typeId:state.cls}).then(function(res){
+      state.pagecount=res.pagecount||1;
+      var items=(res.items||[]).map(function(r){return API.item(r)});
+      if(!items.length){state.end=true;state.busy=false;paintGrid(grid,state.items);return;}
+      state.items=state.items.concat(items);state.page++;step();
+    }).catch(function(){state.busy=false;if(!state.items.length)grid.innerHTML='<div class="empty">加载失败，请换源或重试</div>';});
+  })();
+}
+function paintGrid(grid,items){
+  grid.innerHTML='';
+  if(!items.length){grid.innerHTML='<div class="empty">该分类暂无内容</div>';return}
+  var frag=document.createDocumentFragment();
+  items.forEach(function(it){
+    var d=document.createElement('div');d.className='card';
+    var pic=it.pic?('<img class="pic" loading="lazy" src="'+esc(it.pic)+'" referrerpolicy="no-referrer" onerror="this.style.visibility=\'hidden\'">'):'<div class="pic"></div>';
+    var rm=it.remarks?('<div class="rm">'+esc(it.remarks)+'</div>'):'';
+    d.innerHTML=pic+rm+'<div class="nt">'+esc(it.name)+'</div>';
+    d.onclick=function(){openDetail(it)};
+    frag.appendChild(d);
+  });
+  grid.appendChild(frag);
+  if(!state.end){
+    var m=document.createElement('div');m.className='more';
+    var b=document.createElement('button');b.textContent='加载更多（已加载 '+items.length+' 个）';b.onclick=nextBatch;
+    m.appendChild(b);grid.appendChild(m);
+  }
+}
+function nextBatch(){var g=$('itemGrid');if(g){var m=g.querySelector('.more');if(m)m.remove()}loadList(false)}
+window.addEventListener('scroll',function(){
+  if(state.busy||state.end)return;
+  if((window.innerHeight+window.scrollY)>=document.body.scrollHeight-320) nextBatch();
+},true);
+
+/* ---------- 详情 ---------- */
+function openDetail(it){
+  state.detail=it;
+  $('dPic').src=it.pic||'';$('dName').textContent=it.name;
+  var tags=[];if(it.typeName)tags.push(it.typeName);if(it.year)tags.push(it.year);if(it.area)tags.push(it.area);if(it.score)tags.push('评分 '+it.score);
+  $('dTags').innerHTML=tags.map(function(t){return '<span>'+esc(t)+'</span>'}).join('');
+  $('dDesc').textContent=it.content||'暂无简介';
+  $('detail').classList.add('on');
+  $('dLines').innerHTML='<span class="chip sec">加载中…</span>';$('dEps').innerHTML='';
+  API.detail(state.api,it.id).then(function(raw){
+    var groups=API.play(raw||it.raw||{});
+    if(!groups.length){$('dLines').innerHTML='<span class="chip sec">暂无播放地址</span>';return}
+    renderLines(groups,0);
+  }).catch(function(){ $('dLines').innerHTML='<span class="chip sec">详情加载失败</span>' });
+}
+function renderLines(groups,gi){
+  var box=$('dLines');box.innerHTML='';
+  groups.forEach(function(g,i){
+    var d=document.createElement('div');d.className='chip sec'+(i===gi?' on':'');d.textContent=g.from;
+    d.onclick=function(){renderLines(groups,i)};box.appendChild(d);
+  });
+  var ebox=$('dEps');ebox.innerHTML='';
+  (groups[gi].eps||[]).forEach(function(ep,i){
+    var d=document.createElement('div');d.className='ep';d.textContent=ep.name;
+    d.onclick=function(){startPlay(ep,state.detail.name)};
+    ebox.appendChild(d);
+  });
+}
+function closeDetail(){$('detail').classList.remove('on')}
+
+/* ---------- 播放 ---------- */
+function startPlay(ep,name){
+  $('pName').textContent=name+' · '+ep.name;
+  $('play').classList.add('on');
+  var v=$('pv');
+  if(hls){try{hls.destroy()}catch(e){}hls=null}
+  var url=ep.url;
+  if(/\.m3u8(\?|$)/i.test(url)){
+    if(window.Hls&&Hls.isSupported()){hls=new Hls();hls.loadSource(url);hls.attachMedia(v);hls.on(Hls.Events.MANIFEST_PARSED,function(){v.play().catch(function(){})});}
+    else v.src=url;
+  } else { v.src=url; }
+  v.play&&v.play().catch(function(){});
+}
+function closePlay(){$('play').classList.remove('on');try{$('pv').pause()}catch(e){}$('pv').removeAttribute('src');$('pv').load();}
+
+/* ---------- 搜索 ---------- */
+function doSearch(){
+  var wd=$('kw').value.trim();if(!wd){tip('请输入关键词');return}
+  var srcs=state.cat? sourcesOf(state.cat):(window.VIDEO_SOURCES||[]).slice(0,6);
+  if(!srcs.length)srcs=(window.VIDEO_SOURCES||[]).slice(0,6);
+  var head=document.createElement('div');head.className='sect';head.innerHTML='搜索 “'+esc(wd)+'” <span class="cnt">'+srcs.length+' 个源</span>';
+  var grid=makeGrid();
+  $('view').innerHTML='';$('view').appendChild(head);$('view').appendChild(grid);
+  grid.innerHTML='<div class="load">正在搜索…</div>';
+  var got=0;
+  srcs.forEach(function(s){
+    var api=(s.t==='x')?('xpath:'+s.n):s.api;
+    API.search(api,wd,1).then(function(res){
+      var items=(res.items||[]).map(function(r){return API.item(r)});
+      if(items.length){
+        if(got===0)grid.innerHTML='';
+        var tag=document.createElement('div');tag.className='sect';tag.innerHTML=s.n+' <span class="cnt">'+items.length+'</span>';
+        grid.appendChild(tag);
+        if(got===0){ // 首个有结果的源，直接把结果渲染
+          items.forEach(function(it){grid.appendChild(cardOf(it,api,s.n))});
+        } else {
+          items.slice(0,20).forEach(function(it){grid.appendChild(cardOf(it,api,s.n))});
+        }
+        got++;
+      }
+    }).catch(function(){});
+  });
+  setTimeout(function(){ if(got===0)grid.innerHTML='<div class="empty">没有搜到结果</div>' },8000);
+}
+function cardOf(it,api,sname){
+  var d=document.createElement('div');d.className='card';
+  var pic=it.pic?('<img class="pic" loading="lazy" src="'+esc(it.pic)+'" referrerpolicy="no-referrer" onerror="this.style.visibility=\'hidden\'">'):'<div class="pic"></div>';
+  d.innerHTML=pic+(it.remarks?('<div class="rm">'+esc(it.remarks)+'</div>'):'')+'<div class="nt">'+esc(it.name)+'</div>';
+  d.onclick=function(){ state.api=api; openDetail(it) };
+  return d;
+}
+
+/* ---------- 源管理（简版） ---------- */
+function showMgr(){
+  var head=document.createElement('div');head.className='sect';head.innerHTML='源管理 <span class="cnt">内置 '+(window.VIDEO_SOURCES||[]).length+' 个源（保留原内置源，仅界面改为 Box 风格）</span>';
+  var grid=makeGrid();
+  $('view').innerHTML='';$('view').appendChild(head);$('view').appendChild(grid);
+  grid.innerHTML='';
+  CATS.forEach(function(c){
+    var list=sourcesOf(c);if(!list.length)return;
+    var t=document.createElement('div');t.className='sect';t.innerHTML=c+' <span class="cnt">'+list.length+'</span>';grid.appendChild(t);
+    list.forEach(function(s){
+      var d=document.createElement('div');d.className='card';d.style.aspectRatio='auto';
+      d.innerHTML='<div style="padding:12px"><div style="font-size:13px;margin-bottom:4px">'+esc(s.n)+'</div><div style="font-size:10.5px;color:#8b93a7;word-break:break-all">'+esc(s.t==='x'?'XPath 动漫源':s.a)+'</div></div>';
+      d.onclick=function(){ state.cat=c;state.src=null;renderCats();selectSource(s);tip('已切换到：'+s.n) };
+      grid.appendChild(d);
+    });
+  });
+}
+
+window.showMgr=showMgr; /* 右上角「☰ 源管理」按钮通过内联 onclick 调用 */
+renderCats();renderSrcs();
+setTimeout(function(){tip('影视乐园 · Box 风格界面已就绪')},700);
+})();
+</script>
+</body>
+</html>

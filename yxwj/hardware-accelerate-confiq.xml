@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+=============================================================================
+硬件加速 & 渲染性能 & 防闪烁 配置文件（完善版）
+适用场景：Android WebView + 网页端 SWF/Flash 游戏、另类游戏机
+存放位置：可与 crossdomain.xml、*.swf 放在同一目录，或 res/xml/、assets/ 下
+作用：统一控制渲染性能、兼容性、视觉效果与防闪烁策略，方便后续快速调整
+=============================================================================
+-->
+
+<render-config>
+
+<!-- ==============================================
+1. 核心渲染开关（影响性能最明显）
+============================================== -->
+<!-- 全局硬件加速开关：true=开启GPU渲染，false=纯CPU渲染（兼容性更强但更慢） -->
+<hardware-acceleration>true</hardware-acceleration>
+
+<!-- 强制GPU渲染：true=绕过系统判断，强制使用GPU（老设备可能闪退）；false=跟随系统默认 -->
+<force-gpu-render>true</force-gpu-render>
+
+<!-- 高帧率模式：true=解锁60fps+，false=限制30fps（更省电） -->
+<high-frame-rate>true</high-frame-rate>
+
+<!-- 渲染线程优先级：HIGH=最高实时性，NORMAL=默认，LOW=后台（建议HIGH保证流畅） -->
+<render-thread-priority>HIGH</render-thread-priority>
+
+<!-- ==============================================
+2. 视觉与流畅度优化
+============================================== -->
+<!-- 平滑渲染：true=启用抗锯齿+过渡动画，false=关闭（减少GPU负载） -->
+<smooth-rendering>true</smooth-rendering>
+
+<!-- 禁用图像模糊：true=关闭缩放模糊（更清晰），false=保留模糊（更柔和） -->
+<disable-blur>true</disable-blur>
+
+<!-- 预渲染离屏内容：true=提前渲染非可见区域（滑动更流畅），false=延迟渲染（省内存） -->
+<offscreen-pre-raster>true</offscreen-pre-raster>
+
+<!-- 平滑过渡动画：true=页面切换更丝滑，false=关闭（减少卡顿） -->
+<enable-smooth-transition>true</enable-smooth-transition>
+
+<!-- 渲染优先级：high=优先渲染游戏，normal=默认，low=后台渲染（不推荐） -->
+<render-priority>high</render-priority>
+
+<!-- 垂直同步（VSync）：true=开启（消除撕裂，但可能轻微增加延迟），false=关闭（帧率更高但可能撕裂）建议开启防闪烁 -->
+<enable-vsync>true</enable-vsync>
+
+<!-- ==============================================
+3. 防闪烁 / 防抖动 专项配置
+============================================== -->
+<!-- 启用防闪烁模式：true=开启双缓冲+帧率锁定，false=关闭（性能优先但可能闪烁） -->
+<anti-flicker>true</anti-flicker>
+
+<!-- 双缓冲渲染：true=使用前后缓冲区避免画面撕裂/闪烁，false=直接渲染（更快但易闪） -->
+<double-buffering>true</double-buffering>
+
+<!-- 三重缓冲（在双缓冲基础上进一步减少闪烁，需要GPU支持）：true=开启，false=关闭 -->
+<triple-buffering>true</triple-buffering>
+
+<!-- 帧率锁定（防闪烁核心）：推荐60，0=不锁定（高帧率但易闪） -->
+<frame-rate-lock>60</frame-rate-lock>
+
+<!-- 禁用视图重绘动画：true=关闭不必要的重绘动画（减少闪烁），false=保留动画（视觉更丰富） -->
+<disable-redraw-animation>true</disable-redraw-animation>
+
+<!-- 固定背景色防闪烁：true=用纯色背景兜底，false=透明背景（易闪） -->
+<fixed-background-color>true</fixed-background-color>
+
+<!-- 背景色值（仅当 fixed-background-color=true 时生效） -->
+<background-color>#0A001A</background-color>
+
+<!-- 启用硬件层更新优化：true=使用硬件层更新策略减少闪烁，false=默认 -->
+<enable-hardware-layer-updates>true</enable-hardware-layer-updates>
+
+<!-- 禁用窗口动画（部分系统窗口动画导致闪烁）：true=禁用，false=保留 -->
+<disable-window-animation>true</disable-window-animation>
+
+<!-- ==============================================
+4. 游戏兼容性与资源控制
+============================================== -->
+<!-- 游戏兼容性模式：ultra=极致性能（可能部分设备不兼容），balanced=平衡，compatible=最大兼容（最慢） -->
+<game-compatibility-mode>ultra</game-compatibility-mode>
+
+<!-- 允许插件（Flash/SWF）：true=启用，false=禁用（安全但无法玩Flash游戏） -->
+<enable-plugins>true</enable-plugins>
+
+<!-- 插件加载策略：auto=自动，on=始终开启，off=关闭（建议on确保Flash及时加载） -->
+<plugin-state>on</plugin-state>
+
+<!-- 允许DOM存储：true=支持游戏存档/本地数据，false=禁用（更安全） -->
+<enable-dom-storage>true</enable-dom-storage>
+
+<!-- 允许文件访问：true=游戏可读取本地资源，false=禁用（安全） -->
+<allow-file-access>true</allow-file-access>
+
+<!-- 启用数据库存储：true=支持Web SQL，false=禁用（部分Flash游戏依赖） -->
+<enable-database>true</enable-database>
+
+<!-- 启用应用程序缓存：true=支持离线缓存，false=禁用 -->
+<enable-app-cache>true</enable-app-cache>
+
+<!-- 允许跨域访问（用于加载远程资源）：true=允许，false=禁止（安全） -->
+<allow-cross-domain>true</allow-cross-domain>
+
+<!-- ==============================================
+5. 内存与性能兜底
+============================================== -->
+<!-- 大堆内存模式：true=申请更大内存（避免OOM），false=默认（更省内存） -->
+<large-heap>true</large-heap>
+
+<!-- 自动暂停后台渲染：true=切后台时暂停（省电），false=持续渲染（更耗电） -->
+<pause-rendering-on-background>true</pause-rendering-on-background>
+
+<!-- 超时隐藏加载动画：单位ms，0=不自动隐藏（避免卡死） -->
+<loader-timeout>5000</loader-timeout>
+
+<!-- 缓存大小（字节）：建议适当增大以减少重复加载造成的卡顿 -->
+<cache-size>41943040</cache-size> <!-- 40MB -->
+
+<!-- 启用GPU缓存：true=缓存纹理等GPU资源（加速），false=不缓存 -->
+<enable-gpu-cache>true</enable-gpu-cache>
+
+<!-- 最大渲染层数限制（部分设备层数过多导致闪烁）：0=无限制，否则指定最大值 -->
+<max-render-layers>0</max-render-layers>
+
+<!-- ==============================================
+6. WebView 特有增强配置（需在代码层配合实现）
+============================================== -->
+<!-- 以下为注释说明，若实际解析器支持可添加对应标签 -->
+<!--
+启用WebView的硬件加速层类型：HARDWARE（硬件层），SOFTWARE（软件层），NONE
+建议HARDWARE并与hardware-acceleration=true配合
+-->
+<webview-layer-type>HARDWARE</webview-layer-type>
+
+<!-- 设置WebView的初始缩放：100表示无缩放，避免缩放导致的闪烁 -->
+<initial-scale>100</initial-scale>
+
+<!-- 启用viewport元标签支持：true=支持页面自适应，false=忽略（游戏通常需要固定视口） -->
+<support-viewport>false</support-viewport>
+
+<!-- 滚动条样式：overlay=覆盖浮动（减少重绘），default=默认 -->
+<scroll-bar-style>overlay</scroll-bar-style>
+
+<!-- 禁用长时间按选择操作（可能引起闪烁）：true=禁用，false=允许 -->
+<disable-longpress-selection>true</disable-longpress-selection>
+
+<!-- 启用安全浏览模式（可能影响插件）：false=禁用，保证插件工作 -->
+<safe-browsing-enabled>false</safe-browsing-enabled>
+
+</render-config>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>巳泷游戏机 · 全类型合一</title>
+<meta name="theme-color" content="#8b48eb">
+<style>
+:root{--neon-blue:#00e5ff;--neon-purple:#b16cff;--neon-pink:#ff6ec7;--bg:#05001a;--line:rgba(177,108,255,.32)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif;min-height:100vh;color:#eaf6ff;background:var(--bg);
+  background-image:radial-gradient(circle at 50% -10%,#1a0b48 0%,#05001a 55%,#02000f 100%);overflow:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,229,255,.028) 3px 4px)}
+.hd{position:fixed;top:0;left:0;right:0;height:54px;z-index:100;display:flex;align-items:center;gap:10px;padding:10px 13px;
+  background:rgba(10,4,36,.9);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);box-shadow:0 2px 18px rgba(0,229,255,.14)}
+.back{border:1px solid rgba(0,229,255,.5);background:rgba(0,229,255,.08);color:#8fefff;padding:8px 14px;border-radius:20px;font-size:13px;cursor:pointer;white-space:nowrap}
+.title{font-size:17px;font-weight:800;letter-spacing:1.5px;background:linear-gradient(90deg,var(--neon-blue),var(--neon-purple) 50%,var(--neon-pink));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 10px rgba(177,108,255,.55));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stage{position:fixed;top:54px;left:0;right:0;bottom:0;background:#000}
+.stage iframe{width:100%;height:100%;border:0;background:#000;display:block}
+.gm-btn{position:fixed;right:14px;bottom:18px;z-index:60;border:1px solid rgba(0,229,255,.55);border-radius:999px;
+  padding:11px 18px;font-size:13px;font-weight:800;color:#fff;background:linear-gradient(135deg,rgba(0,229,255,.35),rgba(177,108,255,.55),rgba(255,110,199,.4));
+  box-shadow:0 8px 28px rgba(177,108,255,.45);cursor:pointer;backdrop-filter:blur(10px)}
+.gm{position:fixed;inset:0;z-index:200;display:none;background:rgba(2,0,12,.78);backdrop-filter:blur(14px)}
+.gm.on{display:flex;flex-direction:column}
+.gm .top{display:flex;align-items:center;gap:10px;padding:14px;border-bottom:1px solid var(--line);background:rgba(10,4,36,.9)}
+.gm .top h2{font-size:17px;flex:1;background:linear-gradient(90deg,#8fefff,#e4ccff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.gm .x{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,110,199,.5);background:rgba(255,110,199,.12);color:#ffd6ef;font-size:17px;cursor:pointer}
+.gm .body{flex:1;overflow-y:auto;padding:12px 12px 100px}
+.grp{margin:14px 0 7px;font-size:12.5px;font-weight:800;color:#b9a4ff;letter-spacing:.5px;display:flex;align-items:center;gap:7px}
+.grp .cnt{margin-left:auto;font-size:10.5px;color:#7f90b3;font-weight:400}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:8px}
+.gsearch{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);background:rgba(10,4,36,.72)}
+.gsearch input{flex:1;min-width:0;background:#0d0622;border:1px solid var(--line);border-radius:12px;color:#fff;padding:10px 13px;font-size:12.5px;outline:0}
+.gsearch input:focus{border-color:var(--neon-purple);box-shadow:0 0 14px rgba(177,108,255,.25)}
+.gsearch .gc{font-size:10.5px;color:#8fa2c4;white-space:nowrap}
+.gcard{position:relative;padding:12px 12px 10px;border-radius:14px;cursor:pointer;background:linear-gradient(150deg,rgba(177,108,255,.13),rgba(0,229,255,.055));
+  border:1px solid rgba(177,108,255,.24);transition:.18s;overflow:hidden;min-height:64px;display:flex;flex-direction:column;justify-content:space-between}
+.gcard:before{content:"";position:absolute;inset:-40% -60% auto auto;width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,110,199,.22),transparent 70%);pointer-events:none}
+.gcard:hover{transform:translateY(-2px);border-color:var(--neon-blue);box-shadow:0 10px 26px rgba(0,229,255,.16),0 0 20px rgba(177,108,255,.2)}
+.gcard .nm{font-size:12px;line-height:1.4;word-break:break-word;color:#f2ecff;font-weight:600}
+.gcard .tag{margin-top:8px;font-size:9.5px;color:#9ff4ff;background:rgba(0,229,255,.12);padding:3px 8px;border-radius:9px;display:inline-block;align-self:flex-start;border:1px solid rgba(0,229,255,.18)}
+.grp{position:sticky;top:0;z-index:2;padding:11px 2px 7px;background:linear-gradient(180deg,rgba(10,4,36,.98),rgba(10,4,36,.8));backdrop-filter:blur(8px)}
+/* v8.4.0：按模拟器分区折叠，展开后显示中文游戏名 */
+.gz{margin:8px 0;border:0;background:transparent}
+.gz>summary{list-style:none;cursor:pointer;padding:12px 14px;font-size:12.5px;font-weight:700;color:#e9ddff;
+  display:flex;align-items:center;gap:8px;background:linear-gradient(90deg,rgba(177,108,255,.16),rgba(0,229,255,.05))}
+.gz>summary::-webkit-details-marker{display:none}
+.gz>summary:before{content:"▸";color:#00e5ff;font-size:13px;transition:.2s}
+.gz[open]>summary:before{transform:rotate(90deg)}
+.gz>summary .cnt{font-size:10.5px;color:#9ff4ff;font-weight:400;margin-left:auto}
+.gz .grid{padding:10px 10px 12px}
+.addbox{padding:12px;border-radius:14px;border:1px dashed rgba(177,108,255,.4);background:rgba(177,108,255,.06);margin-top:8px}
+.addbox label{font-size:11.5px;color:#b9a4ff;display:block;margin-bottom:6px}
+.addbox input[type=text]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#120a26;color:#fff;font-size:12px;outline:0;margin-bottom:8px}
+.addbox .row{display:flex;gap:8px}
+.addbox button{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(0,229,255,.4);background:rgba(0,229,255,.12);color:#8fefff;font-weight:700;font-size:12px;cursor:pointer}
+.addbox .file{display:none}
+.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;padding:10px 18px;border-radius:12px;background:rgba(10,4,36,.96);border:1px solid rgba(177,108,255,.5);color:#fff;font-size:12px;z-index:999;transition:.25s}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="hd">
+  <button class="back" onclick="(window.GameNative&&GameNative.exit)?GameNative.exit():(location.href='../index.html')">← 返回</button>
+  <div class="title">巳泷游戏机 · 全类型合一</div>
+</div>
+<div class="stage"><iframe id="stageFrame" src="../yxj.html" allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write"></iframe></div>
+<button class="gm-btn" id="gmBtn">☰ 游戏菜单</button>
+<div class="gm" id="gm">
+  <div class="top"><h2>游戏菜单</h2><button class="x" id="gmX">✕</button></div>
+  <div class="gsearch"><input id="gmSearch" type="search" placeholder="搜索游戏 / 分类 / 在线小游戏" autocomplete="off"><span class="gc" id="gmCount"></span></div>
+  <div class="body" id="gmBody"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../data/env.js"></script>
+<script src="../data/links-app.js"></script>
+<script src="../data/links-web.js"></script>
+<script src="data/games-data.js"></script>
+<script src="data/game-names-zh.js"></script>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id)};
+var zones=window.SL_ZONES||[];
+function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e}
+function toast(t){var x=$('toast');x.textContent=t;x.classList.add('on');clearTimeout(window.__tt);window.__tt=setTimeout(function(){x.classList.remove('on')},2200)}
+function openUrl(u,name){ $('stageFrame').src=u; if(name)toast('正在打开：'+name); }
+function romUrl(z,g){return window.SL_ROM_BASE+z.repo+'/master/'+g.f}
+function playRom(z,g){ openUrl('player.html?core='+encodeURIComponent(z.core)+'&name='+encodeURIComponent(g.n)+'&url='+encodeURIComponent(romUrl(z,g)),g.n); closeMenu(); }
+function closeMenu(){ $('gm').classList.remove('on'); }
+$('gmBtn').onclick=function(){ $('gm').classList.add('on'); };
+/* v9.9.0：隐藏内层 yxj.html 的重复「游戏菜单」按钮，统一使用外层菜单 */
+var stageFrame=$('stageFrame');
+function syncInnerMenu(){
+  try{
+    var d=stageFrame.contentDocument;
+    if(!d) return;
+    if(!d.getElementById('slHideMenu')){
+      var st=d.createElement('style');st.id='slHideMenu';
+      st.textContent='#menuBtn{display:none!important}';
+      (d.head||d.documentElement).appendChild(st);
+    }
+    var m=d.getElementById('menuModal');
+    if(m) m.classList.remove('show');
+  }catch(e){}
+}
+stageFrame.addEventListener('load',syncInnerMenu);
+setInterval(syncInnerMenu,1200);
+syncInnerMenu();
+$('gmX').onclick=closeMenu;
+$('gm').onclick=function(e){ if(e.target===this)closeMenu(); };
+
+function buildMenu(){
+  var body=$('gmBody'); body.innerHTML='';
+  var q=String(($('gmSearch')&&$('gmSearch').value)||'').trim().toLowerCase();
+  var shown=0;
+  function match(n){ return !q || String(n||'').toLowerCase().indexOf(q)>=0; }
+  function zh(n){ try{ return (window.SL_GAME_ZH&&window.SL_GAME_ZH[n])||n }catch(e){return n} }
+  var ZONE_ZH={'Atari 2600':'雅达利 2600','Commodore 64':'C64 电脑','ColecoVision':'Coleco 视界','ZX Spectrum':'ZX 光谱','SWF 小游戏':'SWF 小游戏'};
+  function group(title,count,grid,open){
+    var det=el('details','gz');det.open=!!open||!!q;
+    det.appendChild(el('summary',null,esc(title)+' <span class="cnt">'+count+' 款</span>'));
+    det.appendChild(grid);body.appendChild(det);
+  }
+  var swf=zones.filter(function(z){return z.type==='swf'})[0];
+  if(swf && match('swf 小游戏')){
+    var g=el('div','grid');
+    var c=el('div','gcard','<div class="nm">打开 SWF 游戏机</div><span class="tag">内置游戏库 / 上传 / 链接</span>');
+    c.onclick=function(){ openUrl('../yxj.html','SWF 游戏机'); closeMenu(); };
+    g.appendChild(c); shown++;
+    (swf.games||[]).forEach(function(game){
+      if(!match(game.n))return;
+      var d=el('div','gcard','<div class="nm">'+esc(zh(game.n||'未命名'))+'</div><span class="tag">SWF</span>');
+      d.onclick=function(){
+        try{ localStorage.setItem('sl_swf_pending',game.f); }catch(e){}
+        openUrl('../yxj.html','SWF 游戏机'); closeMenu();
+      };
+      g.appendChild(d); shown++;
+    });
+    group('SWF 小游戏',(swf.games||[]).length,g,true);
+  }
+  zones.forEach(function(z,idx){
+    if(z.type==='swf'||!z.games||!z.games.length)return;
+    var list=z.games.filter(function(game){return match(game.n)||match(z.name)});
+    if(!list.length)return;
+    var g=el('div','grid');
+    list.forEach(function(game){
+      var d=el('div','gcard','<div class="nm">'+esc(zh(game.n))+'</div><span class="tag">开始</span>');
+      d.onclick=function(){ playRom(z,game); };
+      g.appendChild(d); shown++;
+    });
+    group(ZONE_ZH[z.name]||z.name,list.length,g,idx===0);
+  });
+  var online=[['CrazyGames','https://www.crazygames.com/'],['Poki','https://poki.com/'],['Y8 游戏','https://www.y8.com/'],['itch.io 免费游戏','https://itch.io/games/free'],['4399 小游戏','https://www.4399.com/'],['7k7k 小游戏','https://www.7k7k.com/']];
+  var onlineShown=online.filter(function(o){return match(o[0])});
+  if(onlineShown.length){
+    var og=el('div','grid');
+    onlineShown.forEach(function(o){
+      var a=el('a','gcard','<div class="nm">'+o[0]+'</div><span class="tag">在浏览器打开</span>');
+      a.href=o[1]; a.target='_blank'; a.rel='noopener';
+      og.appendChild(a); shown++;
+    });
+    group('在线小游戏',onlineShown.length,og,false);
+  }
+  if($('gmCount'))$('gmCount').textContent=shown+' 项';
+  var add=el('div','addbox','<label>添加自己的游戏</label>'+
+    '<input type="text" id="gameLink" placeholder="粘贴游戏直链（.swf / .nes / .gba / .zip 等）" autocomplete="off">'+
+    '<div class="row"><button id="playLink">打开链接</button><button id="pickFile">上传文件</button></div>'+
+    '<input class="file" type="file" id="gameFile" accept=".swf,.nes,.sfc,.smc,.gba,.gb,.gbc,.bin,.md,.sms,.d64,.prg,.tap,.tzx,.z80,.zip">');
+  body.appendChild(add);
+  $('playLink').onclick=function(){
+    var u=String($('gameLink').value||'').trim(); if(!u){toast('请先粘贴游戏链接');return;}
+    if(/\.swf(\?|$)/i.test(u)){ openUrl('../yxj.html','SWF 游戏机'); toast('SWF 链接请在游戏机内用「添加」导入'); }
+    else { openUrl('player.html?name='+encodeURIComponent('自定义游戏')+'&url='+encodeURIComponent(u),'自定义游戏'); }
+    closeMenu();
+  };
+  $('pickFile').onclick=function(){ $('gameFile').click(); };
+  $('gameFile').onchange=function(){
+    var f=this.files&&this.files[0]; if(!f)return;
+    var u=URL.createObjectURL(f);
+    if(/\.swf$/i.test(f.name)){ openUrl('../yxj.html','SWF 游戏机'); toast('SWF 文件请点游戏机里的「添加」上传'); }
+    else { openUrl('player.html?name='+encodeURIComponent(f.name)+'&url='+encodeURIComponent(u),f.name); }
+    closeMenu();
+  };
+}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+if($('gmSearch'))$('gmSearch').oninput=buildMenu;
+buildMenu();
+})();
+</script>
+<script src="../js/fail-scene.js"></script>
+</body>
+</html>

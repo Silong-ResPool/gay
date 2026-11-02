@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>L2D Test</title>
+<style>html,body{margin:0;height:100%;background:#1a1a2e;overflow:hidden}#c{width:100%;height:100%;display:block}</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script src="libs/pixi.min.js"></script>
+<script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
+<script src="libs/live2d.min.js"></script>
+<script src="libs/pixi-live2d-display.min.js"></script>
+<script>
+(async function(){
+  try{
+    var app=new PIXI.Application({view:document.getElementById('c'),resizeTo:document.body,backgroundAlpha:1,backgroundColor:0x1a1a2e,antialias:true,autoStart:true});
+    var m=await PIXI.live2d.Live2DModel.from('sample/Mark/Mark.model3.json');
+    app.stage.addChild(m);
+    await new Promise(function(r){setTimeout(r,300)});
+    var w=app.screen.width,h=app.screen.height;
+    var s=Math.min(w*0.9/m.internalModel.width,h*0.9/m.internalModel.height);
+    m.scale.set(s);
+    m.position.set(w/2,h/2);
+    window.__OK='loaded '+w+'x'+h+' scale='+s.toFixed(4)+' size='+m.width.toFixed(0)+'x'+m.height.toFixed(0);
+    document.title='L2D OK';
+  }catch(e){
+    window.__OK='ERR '+(e&&e.message||e);
+    document.title='L2D ERR';
+    try{window.chrome.webview.postMessage('JS TESTERR '+String(e&&e.stack||e))}catch(x){}
+  }
+})();
+</script>
+</body>
+</html>

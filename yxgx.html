@@ -3,120 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>最近更新游戏</title>
+    <title>巳泷资源库·最近更新</title>
     <style>
-        /* 这里可以留空，样式由主页面继承 */
+        /* ===== 赛博朋克深空霓虹 ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'PingFang SC', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            background: #05001a;
+            background-image: radial-gradient(circle at 50% -20%, #180a48 0%, #05001a 60%, #02000f 100%);
+            color: #eaf6ff;
+            padding-bottom: 40px;
+            overflow-x: hidden;
+        }
+        .page-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 16px;
+            background: rgba(18,6,48,0.85);
+            backdrop-filter: blur(25px);
+            border-bottom: 1px solid rgba(0,229,255,0.35);
+            box-shadow: 0 2px 16px rgba(0,229,255,0.15);
+        }
+        .back-btn {
+            position: absolute;
+            left: 14px;
+            border: 1px solid rgba(0,229,255,0.5);
+            background: rgba(0,229,255,0.08);
+            color: #7deeff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0,229,255,0.25);
+        }
+        .back-btn:active { background: rgba(0,229,255,0.25); color: #02000f; }
+        .page-title {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            background: linear-gradient(90deg, #00e5ff 0%, #b16cff 50%, #ff6ec7 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0 0 10px rgba(177,108,255,0.7));
+        }
+        #game-list-container {
+            padding: 16px;
+        }
         .game-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(0,229,255,0.3);
+            border-radius: 14px;
+            transition: all 0.25s ease;
         }
+        .game-item:hover {
+            border-color: #00e5ff;
+            box-shadow: 0 0 16px rgba(0,229,255,0.35), 0 0 6px rgba(255,110,199,0.2);
+            background: rgba(0,229,255,0.06);
+            transform: translateX(4px);
+        }
+        .game-item-left { flex: 1; min-width: 0; }
         .game-item-left span {
             font-size: 0.95rem;
-            color: var(--text-color, #fff);
+            color: #eaf6ff;
+            word-break: break-all;
         }
-        .game-item-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .game-item-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .status-icon {
-            font-size: 0.85rem;
-            color: #4CAF50;
+            font-size: 0.75rem;
+            color: #7deeff;
+            background: rgba(0,229,255,0.12);
+            padding: 3px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
         }
         .edit-btn {
             background: none;
-            border: none;
-            color: var(--text-color, #fff);
+            border: 1px solid rgba(0,229,255,0.35);
+            color: #7deeff;
             font-size: 1.2rem;
             cursor: pointer;
-            padding: 0;
+            padding: 2px 8px;
+            border-radius: 8px;
         }
+        /* 霓虹滚动条 */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #00e5ff, #b16cff, #ff6ec7); border-radius: 6px; }
+        ::-webkit-scrollbar-thumb:hover { box-shadow: 0 0 8px rgba(0,229,255,0.6); }
+        * { scrollbar-width: thin; scrollbar-color: #b16cff rgba(255,255,255,0.06); }
     </style>
 </head>
 <body>
 
-<div class="game-item" data-url="yxwj/yx-33.swf" data-builtin="true">
-    <div class="game-item-left"><span>《怪物猎人》</span></div>
-    <div class="game-item-right">
-        <span class="status-icon">已缓存</span>
-        <button class="edit-btn" onclick="openEditModal(event, this)">⋮</button>
-    </div>
+<div class="page-header">
+    <button class="back-btn" onclick="history.back()">← 返回</button>
+    <h1 class="page-title">最近更新</h1>
 </div>
 
-<div class="game-item" data-url="yxwj/yx-34.swf" data-builtin="true">
-    <div class="game-item-left"><span>《测试34》</span></div>
-    <div class="game-item-right">
-        <span class="status-icon">已缓存</span>
-        <button class="edit-btn" onclick="openEditModal(event, this)">⋮</button>
-    </div>
-</div>
+<!-- 游戏列表会自动从仓库加载到这里 -->
+<div id="game-list-container"></div>
 
-<div class="game-item" data-url="yxwj/yx-35.swf" data-builtin="true">
-    <div class="game-item-left"><span>《河边自慰》</span></div>
-    <div class="game-item-right">
-        <span class="status-icon">已缓存</span>
-        <button class="edit-btn" onclick="openEditModal(event, this)">⋮</button>
-    </div>
-</div>
+<script>
+// yxgx.html 自己去拉 GitHub 仓库的游戏列表
+const REMOTE_REPO_URL = "https://silong-respool.github.io/gay/yxgx.html";
 
-<div class="game-item" data-url="yxwj/yx-36.swf" data-builtin="true">
-    <div class="game-item-left"><span>《测试36》</span></div>
-    <div class="game-item-right">
-        <span class="status-icon">已缓存</span>
-        <button class="edit-btn" onclick="openEditModal(event, this)">⋮</button>
-    </div>
-</div>
+async function loadGamesFromRepo() {
+  try {
+    const res = await fetch(REMOTE_REPO_URL, { cache: "no-cache" });
+    const html = await res.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+    const items = doc.querySelectorAll(".game-item");
+    
+    const container = document.getElementById("game-list-container");
+    container.innerHTML = "";
+    items.forEach(item => {
+      item.removeAttribute("onclick");
+      item.querySelectorAll("[onclick]").forEach(el => el.removeAttribute("onclick"));
+      container.appendChild(item);
+    });
+  } catch (e) {
+    console.error("拉取仓库游戏失败", e);
+  }
+}
 
-<div class="game-item" data-url="yxwj/yx-37.swf" data-builtin="true">
-    <div class="game-item-left"><span>《安检门》</span></div>
-    <div class="game-item-right">
-        <span class="status-icon">已缓存</span>
-        <button class="edit-btn" onclick="openEditModal(event, this)">⋮</button>
-    </div>
-</div>
-
-<div class="game-item" data-url="yxwj/yx-38.swf" data-builtin="true">
-    <div class="game-item-left"><span>《测试38》</span></div>
-    <div class="game-item-right">
-        <span class="status-icon">已缓存</span>
-        <button class="edit-btn" onclick="openEditModal(event, this)">⋮</button>
-    </div>
-</div>
-
-<div class="game-item" data-url="yxwj/yx-39.swf" data-builtin="true">
-    <div class="game-item-left"><span>《樱花站台》</span></div>
-    <div class="game-item-right">
-        <span class="status-icon">已缓存</span>
-        <button class="edit-btn" onclick="openEditModal(event, this)">⋮</button>
-    </div>
-</div>
-
-<div class="game-item" data-url="yxwj/yx-40.swf" data-builtin="true">
-    <div class="game-item-left"><span>《利威尔♂艾伦》</span></div>
-    <div class="game-item-right">
-        <span class="status-icon">已缓存</span>
-        <button class="edit-btn" onclick="openEditModal(event, this)">⋮</button>
-    </div>
-</div>
-
-<div class="game-item" data-url="yxwj/yx-41.swf" data-builtin="true">
-    <div class="game-item-left"><span>《X战警：夜幕降临》</span></div>
-    <div class="game-item-right">
-        <span class="status-icon">已缓存</span>
-        <button class="edit-btn" onclick="openEditModal(event, this)">⋮</button>
-    </div>
-</div>
-
-<div class="game-item" data-url="yxwj/yx-42.swf" data-builtin="true">
-    <div class="game-item-left"><span>《妖妓男【动画】》</span></div>
-    <div class="game-item-right">
-        <span class="status-icon">已缓存</span>
-        <button class="edit-btn" onclick="openEditModal(event, this)">⋮</button>
-    </div>
-</div>
+// 页面一打开就拉远程
+loadGamesFromRepo();
+</script>
 
 </body>
 </html>

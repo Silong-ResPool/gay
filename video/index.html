@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#9B4DE8">
+  <title>影视乐园 · 巳泷</title>
+  <link rel="stylesheet" href="css/icons.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+
+<body>
+
+  <!-- 自定义背景图（可在「主题」里上传，浓度可调） -->
+  <div id="bgLayer" class="bg-layer"></div>
+
+  <div class="v-app">
+    <header class="v-head">
+      <button id="backBtn" class="icon-btn" title="返回"><i class="fa-solid fa-arrow-left"></i></button>
+      <div class="logo">影视乐园</div>
+      <div class="search-box">
+        <span class="search-ic"><i class="fa-solid fa-magnifying-glass"></i></span>
+        <input id="searchInput" type="search" placeholder="搜索电影 / 连续剧 / 动漫…" autocomplete="off">
+      </div>
+      <button id="srcBtn" class="icon-btn" title="仓库 / 换源"><i class="fa-solid fa-warehouse"></i></button>
+      <button id="themeBtn" class="icon-btn" title="设置"><i class="fa-solid fa-gear"></i></button>
+    </header>
+
+    <!-- 巳泷 v9.2.0：自带导航移至顶部（紧贴顶栏下方），底部固定主页 Java 导航栏 -->
+  <nav id="vTabs" class="v-tabs">
+    <button class="vt" data-tab="com"><span class="vt-ic"><i class="fa-solid fa-layer-group"></i></span><span class="vt-tx">综合资源</span></button>
+    <button class="vt" data-tab="mgr"><span class="vt-ic"><i class="fa-solid fa-list-check"></i></span><span class="vt-tx">源管理</span></button>
+    <button class="vt" data-tab="fav"><span class="vt-ic"><i class="fa-regular fa-star"></i></span><span class="vt-tx">追番</span></button>
+    <button class="vt" data-tab="sett"><span class="vt-ic"><i class="fa-solid fa-gear"></i></span><span class="vt-tx">设置</span></button>
+  </nav>
+
+  <!-- 视频源仓库条（可折叠，上滑自动隐藏，水平滑动） -->
+  <div id="srcBar" class="src-bar">
+      <div class="src-bar-head">
+        <span id="sbTitle" class="sb-title">接口仓库</span>
+        <button id="catsFold" class="sb-fold" data-act="catsfold"><i class="fa-solid fa-chevron-up"></i> 收起</button>
+      </div>
+      <div id="srcCrumb" class="src-crumb"></div>
+      <div id="srcCats" class="src-cats"></div>
+      <div id="srcChips" class="src-chips"></div>
+    </div>
+
+    <!-- 主内容区（首页 / 搜索 / 详情 / 播放 / 源管理 / 主题） -->
+    <main id="app" class="v-main">
+      <div class="loading"><div class="spinner"></div><p>正在启动影视乐园…</p></div>
+    </main>
+
+    <!-- 源筛选 / 测速 / 重排（PC 固定在右侧，移动端折叠在底部） -->
+    <aside id="srcDock" class="src-dock">
+      <div class="dock-head">
+        <span class="dock-title">源筛选</span>
+        <span id="dockStatus" class="dock-status">加载中…</span>
+        <button class="dock-toggle" data-act="docktoggle" title="展开 / 收起">▾</button>
+      </div>
+      <div class="dock-body">
+        <div id="dockCats" class="dock-cats"></div>
+        <div id="dockList" class="dock-list"></div>
+      </div>
+      <div class="dock-actions">
+        <button class="mini" data-act="docktest">测速</button>
+        <button class="mini" data-act="docksort">重排</button>
+        <button class="mini" data-act="remoteupdate">更新源</button>
+      </div>
+    </aside>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <!-- HLS 播放内核（m3u8，本地内置，无需联网加载） -->
+  <script src="libs/hls.min.js"></script>
+  <script src="js/sources_data.js"></script>
+  <script src="js/sources_manifest.js"></script>
+  <script src="js/sources.js"></script>
+  <script src="js/sources_update.js"></script>
+  <script src="js/xpath.js"></script>
+  <script src="js/bangumi.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/danmaku.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+<script src="../js/fail-scene.js"></script>
+</body>
+
+</html>

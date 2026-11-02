@@ -1,0 +1,193 @@
+/*=============================================
+  CHANGELOG MODAL
+=============================================*/
+.changelog-modal {
+  position: fixed;
+  inset: var(--pad);
+  z-index: 1000;
+  display: none;
+  flex-direction: column;
+  padding: calc(var(--pad) * 1.2);
+  color: var(--text-main);
+  background-color: rgba(var(--bg-secondary-rgb), 0.65);
+  border: 1px solid rgba(var(--text-main-rgb), 0.12);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(var(--bg-primary-rgb), 0.4);
+  overflow: hidden;
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+
+  &.active {
+    display: flex;
+  }
+}
+
+.changelog-close-btn {
+  position: absolute;
+  top: var(--pad);
+  right: var(--pad);
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--text-muted);
+  background: rgba(var(--bg-element-rgb), 0.7);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: var(--transition);
+
+  &:is(:hover, :focus-visible) {
+    color: var(--text-main);
+    background: var(--accent-main);
+    box-shadow: var(--glow-main);
+    transform: scale(1.1) rotate(90deg);
+  }
+}
+
+.changelog-body {
+  flex-grow: 1;
+  padding-inline-end: 1rem;
+  padding-block-start: var(--pad);
+  overflow-y: auto;
+
+  h2 {
+    margin-block-end: var(--gap);
+    padding-block-end: var(--pad);
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-align: center;
+    background: linear-gradient(45deg, var(--accent-main), var(--accent-alt));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    border-block-end: 1px solid var(--border);
+  }
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    margin-block-start: calc(var(--pad) + 1.5rem);
+    margin-block-end: var(--pad);
+    background: rgba(var(--bg-element-rgb), 0.3);
+    border-radius: var(--radius-sm);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--accent-main), var(--accent-alt));
+    border-radius: var(--radius-sm);
+
+    &:hover {
+      background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--accent-main) 85%, white),
+        color-mix(in srgb, var(--accent-alt) 85%, white)
+      );
+    }
+  }
+}
+
+/*=============================================
+  CHANGELOG ENTRY
+=============================================*/
+.changelog-entry {
+  padding: var(--pad);
+  margin-block-end: var(--gap);
+  background-color: rgba(var(--bg-primary-rgb), 0.5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2px 4px rgba(var(--bg-primary-rgb), 0.3);
+  transition: border-color var(--duration);
+
+  &:hover {
+    border-color: var(--accent-main);
+  }
+
+  h3.changelog-version {
+    margin-block-end: 0.35rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--accent-main);
+  }
+
+  .changelog-date {
+    margin-block-end: var(--pad);
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--text-muted);
+    opacity: 0.8;
+  }
+
+  ul {
+    padding-inline-start: 0.5rem;
+    list-style-type: none;
+  }
+
+  li {
+    position: relative;
+    margin-block-end: 0.6rem;
+    padding-inline-start: 1.5em;
+    line-height: 1.6;
+    color: var(--text-muted);
+
+    &::before {
+      content: '\f005';
+      position: absolute;
+      inset-inline-start: 0;
+      top: 0.1em;
+      font-family: "Font Awesome 7 Free";
+      font-weight: 900;
+      font-size: 0.9em;
+      color: var(--accent-alt);
+    }
+
+    strong {
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    a {
+      color: var(--accent-main);
+      transition: color var(--duration);
+
+      &:hover {
+        color: var(--accent-alt);
+      }
+    }
+  }
+}
+
+/*=============================================
+  RESPONSIVE
+=============================================*/
+@media (max-width: 768px) {
+  .changelog-close-btn {
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    font-size: 1rem;
+  }
+
+  .changelog-body h2 {
+    font-size: 1.4rem;
+  }
+
+  .changelog-entry {
+    padding: var(--pad);
+
+    h3.changelog-version {
+      font-size: 1.1rem;
+    }
+
+    ul li {
+      font-size: 0.9rem;
+    }
+  }
+}

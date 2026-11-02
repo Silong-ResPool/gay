@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0b0720">
+<meta name="description" content="巳泷 Live2D · 模型展示（支持导入 LPK / WPK / ZIP / *.model3.json）">
+<title>巳泷 Live2D</title>
+<link rel="icon" type="image/svg+xml" href="assets/icon.svg" sizes="any">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/repoexplorer.css">
+<link rel="stylesheet" href="css/newsmodal.css">
+<link rel="stylesheet" href="css/context.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* ===== 巳泷 v9.4.1 整洁布局覆盖 ===== */
+:root{--sl-acc:#B16CFF;--sl-acc2:#FF6EC7;--sl-bg:#0b0720;--sl-line:rgba(177,108,255,.35)}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:radial-gradient(120% 70% at 50% -10%,#1b0f42,#0b0720 60%,#070413 100%);color:#eaf6ff;
+  font-family:'PingFang SC','Microsoft YaHei',system-ui,sans-serif;overflow:hidden}
+.app-wrap{display:flex;flex-direction:column;height:100%;max-width:900px;margin:0 auto}
+/* 顶栏 */
+.sl-top{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--sl-line);
+  background:rgba(16,8,40,.85);backdrop-filter:blur(14px)}
+.sl-top .bk{border:1px solid rgba(196,164,255,.5);background:rgba(124,58,237,.2);color:#fff;border-radius:9px;
+  padding:8px 13px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.sl-top .bk:active{background:rgba(124,58,237,.4)}
+.sl-top .ttl{flex:1;text-align:center;font-size:17px;font-weight:800;letter-spacing:1px;
+  background:linear-gradient(90deg,#00e5ff,#b16cff 55%,#ff6ec7);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 10px rgba(177,108,255,.5));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sl-top .ic{width:38px;height:38px;border-radius:9px;border:1px solid rgba(196,164,255,.4);background:rgba(124,58,237,.16);
+  color:#fff;font-size:15px;cursor:pointer;flex:0 0 auto}
+/* 工具条（两行，窄屏自动换行） */
+.sl-bar{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border-bottom:1px solid rgba(177,108,255,.18);align-items:center}
+.sl-bar .url{flex:1 1 200px;min-width:150px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.05);
+  border:1px solid var(--sl-line);border-radius:20px;padding:0 12px}
+.sl-bar .url input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:#eaf6ff;font-size:13px;padding:10px 0}
+.sl-bar .pbtn{border:0;border-radius:18px;padding:9px 16px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;
+  background:linear-gradient(135deg,#7c3aed,#a855f7);white-space:nowrap}
+.sl-bar .pbtn:active{transform:scale(.96)}
+.sl-bar .pbtn.line{background:transparent;border:1px solid var(--sl-line);color:#d9c6ff;font-weight:600}
+/* 模型库下拉（自绘，替代原件样式） */
+.sl-dd{position:relative;flex:1 1 150px;min-width:130px}
+.sl-dd>.sel{display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(255,255,255,.05);
+  border:1px solid var(--sl-line);border-radius:10px;padding:10px 12px;font-size:13px;color:#eaf6ff;cursor:pointer}
+.sl-dd>.sel i{color:var(--sl-acc)}
+.sl-dd .dropdown-list{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:60;max-height:280px;overflow-y:auto;
+  background:#180d3a;border:1px solid var(--sl-line);border-radius:12px;padding:6px;display:none;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.sl-dd.open .dropdown-list{display:block}
+.sl-dd .dropdown-option{padding:10px 12px;border-radius:8px;font-size:13px;color:#e2d6ff;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sl-dd .dropdown-option:hover{background:rgba(177,108,255,.18)}
+.sl-dd .dd-grp{padding:8px 12px 4px;font-size:11px;color:#9fb3d6}
+.sl-dd .dropdown-option .who{float:right;color:#8fefff;font-size:11px}
+/* 主区 */
+.sl-main{flex:1;min-height:0;display:flex;position:relative}
+.sl-canvaswrap{flex:1;position:relative;min-width:0}
+#live2d-canvas{width:100%;height:100%;display:block;touch-action:none}
+/* 控制面板：移动端底部抽屉，桌面端右侧 */
+.sl-panel{width:230px;flex:0 0 auto;border-left:1px solid rgba(177,108,255,.2);background:rgba(14,7,34,.6);
+  overflow-y:auto;padding:12px}
+@media(max-width:760px){
+  .sl-panel{position:absolute;left:0;right:0;bottom:0;width:auto;height:46%;border-left:0;border-top:1px solid var(--sl-line);
+    border-radius:16px 16px 0 0;transform:translateY(calc(100% - 46px));transition:transform .25s;z-index:50}
+  body.sl-open .sl-panel{transform:none}
+  .sl-panel::before{content:'⌃  控制面板';display:block;text-align:center;font-size:12px;color:#c9b6ff;padding:6px 0 10px}
+}
+.sl-panel h3{margin:0 0 8px;font-size:13px;color:#cbb8ff}
+.panel-section{margin-bottom:14px}
+.feature-list{display:flex;flex-wrap:wrap;gap:6px}
+.feature-btn{border:1px solid var(--sl-line);background:rgba(124,58,237,.16);color:#efe6ff;border-radius:8px;
+  padding:7px 10px;font-size:12px;cursor:pointer}
+.feature-btn:hover{border-color:var(--sl-acc)}
+.feature-btn.active{background:linear-gradient(135deg,#7c3aed,#ff6ec7);color:#fff}
+.empty-msg{font-size:12px;color:#9fb3d6}
+.sl-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:12.5px;color:#d9cdf2}
+.sl-row button{margin-left:auto;border:1px solid var(--sl-line);background:rgba(255,110,199,.12);color:#ffd6ef;border-radius:8px;padding:6px 10px;cursor:pointer}
+/* 空态/加载 */
+#empty-message{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#9fb3d6;font-size:13px;pointer-events:none;text-align:center;padding:0 24px}
+#empty-message i{font-size:38px;opacity:.6}
+#loading-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:rgba(11,7,32,.72);z-index:40}
+#loading-overlay .spinner{width:44px;height:44px;border-radius:50%;border:5px solid rgba(177,108,255,.25);border-top-color:var(--sl-acc2);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.model-label{position:absolute;left:10px;bottom:10px;max-width:70%;font-size:11px;color:#cbd6f0;background:rgba(10,6,28,.6);
+  padding:5px 10px;border-radius:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 全屏 */
+.l2d-fullscreen{position:fixed;inset:0;z-index:4000;background:#05030f;display:flex;align-items:center;justify-content:center}
+.l2d-fullscreen[hidden]{display:none!important}
+.l2d-fullscreen #live2d-canvas{position:fixed;inset:0;width:100vw!important;height:100vh!important;z-index:3990}
+.l2d-fullscreen .l2d-fs-close{position:fixed;top:max(14px,env(safe-area-inset-top));right:14px;z-index:4010;width:34px;height:34px;
+  border-radius:50%;background:rgba(10,6,28,.6);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.l2d-fullscreen .l2d-fs-model-label{position:fixed;bottom:max(14px,env(safe-area-inset-bottom));left:14px;z-index:4010;color:rgba(255,255,255,.85);font-size:12px;max-width:70vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.l2d-fullscreen .l2d-fs-empty{position:fixed;inset:0;z-index:3995;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:rgba(255,255,255,.75);font-size:14px;pointer-events:none;text-align:center}
+.l2d-fullscreen .l2d-fs-empty[hidden]{display:none!important}
+.sl-foot{text-align:center;font-size:11px;color:#7f90b3;padding:8px}
+.sl-foot a{color:#8fefff;text-decoration:none}
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);z-index:7000;background:rgba(18,10,44,.96);
+    border:1px solid var(--sl-line);color:#eaf6ff;font-size:12.5px;padding:9px 16px;border-radius:20px;display:none}
+/* ===== 渲染内核切换条 ===== */
+.sl-engines{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 12px;
+  border-bottom:1px solid rgba(177,108,255,.18);background:rgba(14,7,34,.42)}
+.sl-engines .elbl{font-size:12px;color:#c9b6ff;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.sl-engines .elbl i{color:var(--sl-acc)}
+.sl-engines .ebtn{border:1px solid var(--sl-line);background:rgba(124,58,237,.14);color:#dcd0ff;
+  border-radius:16px;padding:6px 13px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.sl-engines .ebtn:hover{border-color:var(--sl-acc)}
+.sl-engines .ebtn.on{background:linear-gradient(135deg,#7c3aed,#ff6ec7);color:#fff;border-color:transparent;
+  box-shadow:0 0 14px rgba(177,108,255,.35)}
+.sl-engines .enote{flex:1 1 150px;min-width:110px;font-size:11px;color:#9fb3d6;text-align:right}
+@media(max-width:520px){.sl-engines .enote{text-align:left;flex-basis:100%}}
+/* ===== 内核不兼容提示 ===== */
+.sl-kwarn{position:fixed;inset:0;z-index:6000;display:flex;align-items:center;justify-content:center;
+  background:rgba(4,2,14,.72);backdrop-filter:blur(6px);padding:22px}
+.sl-kwarn[hidden]{display:none!important}
+.sl-kwarn-card{max-width:400px;width:100%;background:linear-gradient(180deg,#1b0f42,#0e0722);
+  border:1px solid var(--sl-line);border-radius:16px;padding:20px;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+.sl-kwarn-card h3{margin:0 0 10px;font-size:15px;color:#ffd6ef;display:flex;align-items:center;gap:8px}
+.sl-kwarn-card p{margin:0 0 16px;font-size:12.5px;line-height:1.75;color:#cbbce8}
+.sl-kwarn-actions{display:flex;gap:8px;flex-wrap:wrap}
+.sl-kwarn-actions button{flex:1;min-width:130px;border-radius:18px;padding:10px 14px;font-size:13px;font-weight:700;
+  cursor:pointer;border:1px solid var(--sl-line);background:transparent;color:#d9c6ff}
+.sl-kwarn-actions button.primary{border:0;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff}
+  /* 巳泷 v9.6.4：hidden 属性优先级修复 —— 否则 #loading-overlay / #empty-message 的 display:flex 会覆盖 hidden，遮罩永远不消失 */
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="app-wrap">
+
+  <!-- 顶栏 -->
+  <header class="sl-top">
+    <button class="bk" id="sl-l2d-home" title="返回主页"><i class="fas fa-arrow-left"></i> 返回</button>
+    <div class="ttl">巳泷 Live2D <span style="font-size:10px;color:#9be7c4;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.35);padding:2px 7px;border-radius:999px;margin-left:7px;vertical-align:middle;white-space:nowrap">免费导入 · 无广告</span></div>
+    <button class="ic" id="fsz-toggle" title="全屏展示"><i class="fas fa-expand"></i></button>
+  </header>
+
+  <!-- 渲染内核切换条 -->
+  <div class="sl-engines" id="sl-engine-bar" role="toolbar" aria-label="渲染内核切换">
+    <span class="elbl"><i class="fas fa-microchip"></i> 渲染内核</span>
+    <button type="button" class="ebtn on" data-engine="recommend" aria-pressed="true">推荐</button>
+    <button type="button" class="ebtn" data-engine="starred" aria-pressed="false">星标最高</button>
+    <button type="button" class="ebtn" data-engine="auto" aria-pressed="false">自动</button>
+    <span class="enote" id="sl-engine-note">全量内核 · Cubism 2/3/4/5 · 上传即玩</span>
+  </div>
+
+  <!-- 工具条 -->
+  <div class="sl-bar">
+    <div class="url">
+      <i class="fas fa-link" style="color:#9fb3d6"></i>
+      <input type="text" id="model-url-input" placeholder="粘贴模型链接（*.model3.json / *.model.json）">
+    </div>
+    <button class="pbtn line" id="load-url-btn">加载链接</button>
+    <button class="pbtn" id="sl-import-lpk" title="导入 LPK / WPK / ZIP 模型"><i class="fas fa-file-import"></i> 导入模型</button>
+
+    <div class="sl-dd" id="model-dropdown">
+      <div class="sel"><span id="dropdown-label">模型库</span><i class="fas fa-chevron-down"></i></div>
+      <ul class="dropdown-list" id="dropdown-list" role="listbox" aria-label="模型列表"></ul>
+      <input type="file" id="zip-upload-input" accept=".zip,.lpk,.wpk,application/zip" style="display:none" aria-hidden="true">
+      <input type="hidden" id="dropdown-value" value="">
+    </div>
+    <button class="pbtn line" id="load-selected-btn">加载</button>
+    <button class="pbtn line" id="open-fe-btn" title="浏览线上模型仓库"><i class="fas fa-cloud"></i> 仓库</button>
+  </div>
+
+  <!-- 主区 -->
+  <main class="sl-main">
+    <div class="sl-canvaswrap">
+      <canvas id="live2d-canvas" aria-label="Live2D 模型展示区"></canvas>
+
+      <div id="empty-message">
+        <i class="fas fa-circle-user" aria-hidden="true"></i>
+        <p>正在准备模型…<br>可从「模型库」选择内置/已导入模型，或点「导入模型」添加</p>
+      </div>
+
+      <div id="loading-overlay" hidden>
+        <div class="spinner"></div><p class="loading-text">正在加载模型…</p>
+      </div>
+
+      <div id="model-label" class="model-label" title="点击复制文件名"></div>
+
+      <!-- 全屏层 -->
+      <div id="l2d-fullscreen" class="l2d-fullscreen" hidden>
+        <button id="l2d-fs-close" class="l2d-fs-close" title="退出全屏"><i class="fas fa-times"></i></button>
+        <div class="l2d-fs-model-label" id="l2d-fs-model-label"></div>
+        <div id="l2d-fs-empty" class="l2d-fs-empty" hidden>
+          <i class="fas fa-circle-user"></i><p>还没有模型可展示<br>返回后点击「导入模型」即可添加</p>
+        </div>
+      </div>
+    </div>
+
+    <aside class="sl-panel panel-section" id="control-panel" aria-labelledby="control-panel-heading">
+      <div class="sl-row">
+        <input type="checkbox" id="hitareas-toggle" disabled>
+        <label for="hitareas-toggle" title="显示模型上的交互触发区">显示触发区</label>
+        <button id="delete-model-btn" disabled title="删除当前选中的模型"><i class="fas fa-trash"></i></button>
+      </div>
+      <div class="panel-section"><h3>表情</h3><div id="expressions-panel" class="feature-list"><p class="empty-msg">暂无表情</p></div></div>
+      <div class="panel-section"><h3>动作</h3><div id="motions-panel" class="feature-list"><p class="empty-msg">暂无动作</p></div></div>
+      <div class="panel-section"><h3>触发区</h3><div id="hitareas-panel" class="feature-list"><p class="empty-msg">暂无触发区</p></div></div>
+    </aside>
+  </main>
+
+  <footer class="sl-foot">巳泷 Live2D · 内核 pixi-live2d-display / live2d-widget | 支持 LPK / WPK / ZIP / *.model3.json ·
+    拖动移动 · 滚轮/双指缩放 · 点击互动</footer>
+
+  <!-- 控制面板开关（移动端） -->
+  <button id="sl-panel-toggle" title="控制面板" style="position:fixed;right:14px;bottom:14px;z-index:80;width:46px;height:46px;
+    border-radius:50%;border:1px solid var(--sl-line);background:linear-gradient(135deg,#7c3aed,#ff6ec7);color:#fff;font-size:18px;display:none">
+    <i class="fas fa-sliders"></i>
+  </button>
+
+  <!-- Changelog / 仓库浏览 -->
+  <div id="changelog-target"></div>
+  <div id="fe-modal" class="explorer-modal" role="dialog" aria-modal="true" aria-labelledby="explorer-heading">
+    <button id="fe-close-btn" class="modal-close-btn" title="关闭" aria-label="Close File Explorer"><i class="fas fa-xmark"></i></button>
+    <div class="explorer-header">
+      <h2 id="explorer-heading">模型仓库浏览</h2>
+      <div class="repo-inputs">
+        <input type="text" id="fe-owner-input" placeholder="GitHub 所有者" value="Eikanya">
+        <span>/</span>
+        <input type="text" id="fe-repo-input" placeholder="仓库名称" value="Live2d-model">
+        <button id="fe-load-repo-btn" title="加载仓库内容">加载仓库</button>
+      </div>
+    </div>
+    <div class="explorer-body">
+      <div class="explorer-nav"><nav id="fe-breadcrumbs" class="breadcrumbs" aria-label="文件路径导航"></nav></div>
+      <div class="explorer-content">
+        <div id="fe-file-listing-container" class="file-listing scrollable"><p class="fe-placeholder-text">加载仓库后可浏览其内容。</p></div>
+        <div id="fe-file-preview-container" class="file-preview" hidden>
+          <div class="preview-header">
+            <h4 id="fe-preview-filename"></h4>
+            <button id="fe-close-preview-btn" class="icon-btn explorer-icon-btn" title="关闭预览"><i class="fas fa-xmark"></i></button>
+          </div>
+          <div id="fe-preview-content" class="preview-content scrollable"></div>
+          <div id="fe-preview-actions" class="preview-actions"></div>
+        </div>
+      </div>
+    </div>
+    <footer class="explorer-footer"><p>状态：<span id="fe-status-message" aria-live="polite">空闲</span></p></footer>
+  </div>
+  <div id="fe-loader" class="loader-overlay" hidden role="status" style="display:none"><div class="spinner"></div><p>正在加载仓库数据...</p></div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- 内核不兼容提示（星标最高 → 推荐） -->
+<div id="sl-kernel-warn" class="sl-kwarn" hidden role="dialog" aria-modal="true" aria-labelledby="sl-kwarn-title">
+  <div class="sl-kwarn-card">
+    <h3 id="sl-kwarn-title"><i class="fas fa-triangle-exclamation"></i> 该内核仅支持 Cubism 2</h3>
+    <p id="sl-kwarn-text">当前模型是 Cubism3/4/5（model3.json / moc3）。「星标最高」内核仅支持 Cubism2（model.json），请切换到「推荐」内核。</p>
+    <div class="sl-kwarn-actions">
+      <button type="button" class="primary" id="sl-kwarn-switch">一键切到「推荐」内核</button>
+      <button type="button" id="sl-kwarn-cancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- 渲染内核调度：按模式装载 pixi / live2d-widget 脚本（兼容 file://） -->
+<script src="js/engine.js"></script>
+
+<script>
+(function () {
+  var fullscreenOn = false;
+  var canvas = document.getElementById('live2d-canvas');
+  var canvasParent = null;
+  function $(id){ return document.getElementById(id); }
+  function toast(msg){
+    var t = document.getElementById('toast'); if(!t){ try{ window.L2DNative&&L2DNative.toast&&L2DNative.toast(String(msg)); }catch(e){} return; }
+    t.textContent = msg; t.style.display='block'; clearTimeout(t._h); t._h=setTimeout(function(){ t.style.display='none'; },2000);
+  }
+  // 内置模型（巳泷保留官方样例：红衣 Mark / 男角色 Natori；骇客少年 Ren 为 moc3 v6，当前 Web 内核不支持）
+  var BUILTINS = [
+    { name:'红衣 Mark（Q版）', who:'内置', url:'sample/Mark/Mark.model3.json' },
+    { name:'男角色 Natori',    who:'内置', url:'sample/Natori/Natori.model3.json' },
+    { name:'骇客少年 Ren',     who:'v6·需新内核', url:'sample/Ren/Ren.model3.json' }
+  ];
+  var KEY_LAST = 'sl_l2d_last_model';
+
+  function addOption(label, value, who){
+    var li = document.createElement('li');
+    li.className = 'dropdown-option';
+    li.dataset.value = value;
+    li.textContent = label;
+    if (who){ var s=document.createElement('span'); s.className='who'; s.textContent=who; li.appendChild(s); }
+    li.onclick = function (){
+      var lb = $('dropdown-label'); if (lb) lb.textContent = label;
+      var dv = $('dropdown-value'); if (dv) dv.value = value;
+      var dd = $('model-dropdown'); if (dd) dd.classList.remove('open');
+      loadModelUrl(value);
+      try { localStorage.setItem(KEY_LAST, value); } catch (e) {}
+    };
+    return li;
+  }
+
+  function buildDropdown(){
+    var list = $('dropdown-list'); if (!list) return;
+    list.innerHTML = '';
+    var g1 = document.createElement('div'); g1.className='dd-grp'; g1.textContent='内置模型'; list.appendChild(g1);
+    BUILTINS.forEach(function (b){ list.appendChild(addOption(b.name, b.url, b.who)); });
+    // 导入项
+    var up = document.createElement('li');
+    up.className='dropdown-option'; up.id='upload-btn'; up.textContent='导入本地模型（LPK/WPK/ZIP）';
+    up.onclick = function (){
+      var dd=$('model-dropdown'); if(dd) dd.classList.remove('open');
+      try { if (window.L2DNative && L2DNative.importModel){ L2DNative.importModel(); return; } } catch(e){}
+      var z=$('zip-upload-input'); if(z) z.click();
+    };
+    list.appendChild(up);
+    // 已导入模型
+    var imported = [];
+    try { if (window.L2DNative && L2DNative.listModels) imported = JSON.parse(String(L2DNative.listModels()||'[]')); } catch(e){ imported=[]; }
+    if (imported.length){
+      var g2 = document.createElement('div'); g2.className='dd-grp'; g2.textContent='已导入模型'; list.appendChild(g2);
+      imported.forEach(function (m){
+        if (!m || !m.name) return;
+        list.appendChild(addOption(m.name, encodeURI(m.url || ('/live2duser/' + encodeURIComponent(m.name) + '/')), '导入'));
+      });
+      var lb=$('dropdown-label'); if(lb) lb.textContent = '模型库（'+ (BUILTINS.length + imported.length) +'）';
+    } else {
+      var lb=$('dropdown-label'); if(lb) lb.textContent = '模型库（内置 '+BUILTINS.length+'）';
+    }
+  }
+
+  function loadModelUrl(url){
+    try {
+      if (window.loadLive2DModel){ window.loadLive2DModel(decodeURI ? decodeURI(url) : url); return; }
+      window.__sl_l2d_pending = url;
+    } catch (e) {}
+  }
+
+  function autoLoadFirst(){
+    // 内核切换后待加载的模型（sessionStorage 跨刷新保留）
+    var pending = null;
+    try {
+      pending = sessionStorage.getItem('sl_l2d_pending_src');
+      if (pending) sessionStorage.removeItem('sl_l2d_pending_src');
+    } catch(e){}
+    if (pending){ loadModelUrl(pending); return; }
+
+    // 优先「上次使用」，其次内置第一个（红衣 Mark）
+    var last = null; try { last = localStorage.getItem(KEY_LAST); } catch(e){}
+    var engine = window.SL_L2D && window.SL_L2D.engine;
+
+    // 星标内核只支持 Cubism2：默认模型是 model3 时不强行加载，给出明确提示
+    if (engine === 'starred' && (!last || /model3[-\w]*\.json/i.test(last))){
+      var em = $('empty-message');
+      if (em){
+        em.innerHTML = '<i class="fas fa-circle-user" aria-hidden="true"></i>' +
+          '<p>「星标最高」内核仅支持 Cubism 2（model.json）<br>请导入 Cubism2 模型，或点上方「推荐」切换全量内核</p>';
+        em.hidden = false;
+      }
+      return;
+    }
+
+    var url = last || BUILTINS[0].url;
+    if (location.protocol !== 'http:' && location.protocol !== 'https:'){
+      // file:// 模式：内置模型需原生桥（回退）
+      try {
+        if (window.L2DNative && L2DNative.loadAssetModel){
+          var b64 = String(L2DNative.loadAssetModel('live2d/sample') || '');
+          if (b64 && b64.length > 100){ loadModelUrl('data:application/zip;base64,' + b64); return; }
+        }
+      } catch(e){}
+    }
+    loadModelUrl(url);
+  }
+
+  /* ===== 全屏 ===== */
+  function setFs(on){
+    try { if (window.L2DNative && L2DNative.setFullscreen) L2DNative.setFullscreen(on); } catch (e) {}
+    var fs = $('l2d-fullscreen'); if (!fs) return;
+    if (on){
+      fs.hidden = false; document.body.classList.add('l2d-fullscreen-mode');
+      try {
+        if (canvas && !canvas.dataset.moved){
+          canvasParent = canvas.parentElement; fs.appendChild(canvas); canvas.dataset.moved='1';
+        }
+      } catch(e){}
+      var l = $('model-label'); $('l2d-fs-model-label').textContent = (l && l.textContent) || '';
+    } else {
+      fs.hidden = true; document.body.classList.remove('l2d-fullscreen-mode');
+      try { if (canvas && canvas.dataset.moved && canvasParent){ canvasParent.appendChild(canvas); canvas.dataset.moved=''; } } catch(e){}
+      try { if (window.L2DRefresh) L2DRefresh(); } catch(e){}
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function (){
+    // 返回
+    var hb=$('sl-l2d-home'); if(hb) hb.onclick=function(){
+      try { if (window.L2DNative && L2DNative.goHome){ L2DNative.goHome(); return; } } catch(e){}
+      location.href='../index.html';
+    };
+    // 全屏
+    var fsz=$('fsz-toggle'); if(fsz) fsz.onclick=function(){
+      fullscreenOn=!fullscreenOn; setFs(fullscreenOn);
+      fsz.innerHTML = fullscreenOn ? '<i class="fas fa-compress"></i>' : '<i class="fas fa-expand"></i>';
+    };
+    var fc=$('l2d-fs-close'); if(fc) fc.onclick=function(){ fullscreenOn=false; setFs(false); var f2=$('fsz-toggle'); if(f2) f2.innerHTML='<i class="fas fa-expand"></i>'; };
+    // 导入模型
+    var imp=$('sl-import-lpk'); if(imp) imp.onclick=function(){
+      try { if (window.L2DNative && L2DNative.importModel){ L2DNative.importModel(); return; } } catch(e){}
+      var z=$('zip-upload-input'); if(z) z.click();
+    };
+    // ZIP 由 js/importzip.js 统一处理；这里不再重复绑定 change，避免两个 handler 同时触发
+    // 下拉展开（点击整条 .sel 或标签）
+    var dd=$('model-dropdown');
+    if (dd){
+      var sel=dd.querySelector('.sel');
+      if (sel) sel.onclick=function(e){ e.stopPropagation(); dd.classList.toggle('open'); };
+    }
+    document.addEventListener('click', function(e){ if(dd && !dd.contains(e.target)) dd.classList.remove('open'); });
+    // 移动端控制面板抽屉
+    var pt=$('sl-panel-toggle');
+    if (pt){
+      if (window.matchMedia('(max-width:760px)').matches) pt.style.display='flex';
+      pt.onclick=function(){ document.body.classList.toggle('sl-open'); };
+    }
+
+    buildDropdown();
+    // 等引擎就绪后自动加载
+    var tries=0;
+    var t=setInterval(function(){
+      tries++;
+      if ((window.loadLive2DModel && window.__L2D_READY_FLAG) || tries>60){
+        clearInterval(t);
+        if (window.__sl_l2d_started) return;
+        window.__sl_l2d_started = true;
+        buildDropdown(); autoLoadFirst();
+        /* 18 秒看门狗：避免本地服务/模型失败时永久转圈 */
+        setTimeout(function(){
+          var lo=$('loading-overlay');
+          if(!lo || lo.hidden) return;
+          if(document.getElementById('l2dTimeout')) return;
+          var d=document.createElement('div');
+          d.id='l2dTimeout';
+          d.style.cssText='position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9999;background:rgba(18,10,34,.96);border:1px solid rgba(139,92,246,.55);border-radius:14px;padding:20px 22px;color:#eee9f8;text-align:center;max-width:82vw;box-shadow:0 18px 50px rgba(0,0,0,.5)';
+          d.innerHTML='<div style="font-size:14px;font-weight:700;margin-bottom:6px">模型加载超时</div>'+
+            '<div style="font-size:12px;color:#a79fbe;line-height:1.7;margin-bottom:12px">可能是本地页面服务未启动，或模型文件不完整。</div>'+
+            '<button id="l2dRetry" style="border:0;border-radius:9px;padding:9px 18px;background:linear-gradient(135deg,#8b5cf6,#d946ef);color:#fff;font-weight:700">重试加载</button>';
+          document.body.appendChild(d);
+          var rb=document.getElementById('l2dRetry');
+          if(rb)rb.onclick=function(){ d.remove(); autoLoadFirst(); };
+        },18000);
+      }
+    },200);
+    if (!('__L2D_READY_FLAG' in window)){ try{ Object.defineProperty(window,'__L2D_READY_FLAG',{writable:true,configurable:true,value:false}); }catch(e){} }
+  });
+
+  // 原生导入完成回调
+  window.L2DRefresh = function (){ try { buildDropdown(); } catch(e){} };
+  window.L2DLoad = function (u){ loadModelUrl(u); };
+  window.SL_L2D_TOAST = function (m){ toast(m); };
+  window.L2DToast = window.SL_L2D_TOAST;
+})();
+</script>
+</body>
+</html>

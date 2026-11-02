@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
+<title>我的电脑 · 巳泷资源库</title>
+<style>
+:root{
+  --v:#9d4edd;--vg:#c77dff;--soft:#7b2fbe;--ink:#e0c3ff;--mut:#9a85b8;
+  --bg:#060210;--card:#160927;--line:rgba(157,78,221,.26);--text:#f2eaff;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{min-height:100%;background:var(--bg);color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif}
+body{background-image:radial-gradient(ellipse at 12% 4%,rgba(157,78,221,.34),transparent 52%),
+  radial-gradient(ellipse at 88% 96%,rgba(217,70,239,.2),transparent 52%);background-attachment:fixed}
+body.day{--bg:#f6f1ff;--card:#fff;--text:#2a1740;--mut:#7a6796;--line:#e3d7f7;
+  background-image:radial-gradient(ellipse at 12% 4%,rgba(157,78,221,.13),transparent 52%),
+  radial-gradient(ellipse at 88% 96%,rgba(217,70,239,.1),transparent 52%)}
+a{color:inherit;text-decoration:none}
+.top{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:10px;padding:12px 14px;
+  background:rgba(14,6,28,.72);backdrop-filter:blur(20px);border-bottom:1px solid var(--line)}
+body.day .top{background:rgba(255,255,255,.8)}
+.back{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:rgba(157,78,221,.12);
+  color:var(--ink);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+body.day .back{color:#6d28d9}
+.top h1{font-size:16px;font-weight:800;letter-spacing:1px;flex:1}
+.top .ver{font-size:10.5px;color:var(--mut)}
+.wrap{max-width:720px;margin:0 auto;padding:16px 14px 40px}
+.hero{padding:16px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(150deg,rgba(157,78,221,.16),rgba(217,70,239,.06));
+  margin-bottom:14px}
+.hero h2{font-size:15px;margin-bottom:6px}
+.hero p{font-size:12px;line-height:1.85;color:var(--mut)}
+.cards{display:flex;flex-direction:column;gap:12px}
+.opt{position:relative;display:flex;gap:12px;padding:14px;border-radius:16px;border:1px solid var(--line);
+  background:var(--card);cursor:pointer;transition:.2s}
+.opt:active{transform:scale(.995)}
+.opt.on{border-color:rgba(199,125,255,.6);box-shadow:0 0 0 1px rgba(199,125,255,.25),0 10px 30px rgba(157,78,221,.18)}
+.opt .ico{width:44px;height:44px;border-radius:12px;flex:0 0 44px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--v),#d946ef);color:#fff;font-size:18px}
+.opt .info{flex:1;min-width:0}
+.opt h3{font-size:14px;margin-bottom:3px}
+.opt .size{font-size:11px;color:var(--vg);margin-bottom:5px}
+.opt p{font-size:11.5px;line-height:1.7;color:var(--mut)}
+.opt .tick{position:absolute;top:12px;right:12px;width:20px;height:20px;border-radius:50%;border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:11px;color:transparent}
+.opt.on .tick{background:linear-gradient(135deg,var(--v),#d946ef);border:0;color:#fff}
+.panel{margin-top:16px;padding:14px;border-radius:16px;border:1px solid var(--line);background:var(--card)}
+.panel h4{font-size:12.5px;margin-bottom:8px;color:var(--vg)}
+.bar{height:8px;border-radius:6px;background:rgba(157,78,221,.16);overflow:hidden;margin:10px 0 6px}
+.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--v),#d946ef);transition:width .3s}
+.status{font-size:11px;color:var(--mut);line-height:1.7;min-height:18px}
+.btns{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.btn{border:0;border-radius:12px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;
+  background:rgba(157,78,221,.16);color:var(--ink);border:1px solid var(--line)}
+.btn.primary{background:linear-gradient(135deg,var(--v),#d946ef);color:#fff;border:0;box-shadow:0 8px 26px rgba(157,78,221,.35)}
+.btn.ghost{background:transparent;color:var(--mut)}
+.btn:disabled{opacity:.45}
+.note{font-size:10.5px;color:var(--mut);line-height:1.8;margin-top:12px}
+.toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(10px);opacity:0;transition:.25s;
+  background:rgba(30,15,50,.96);color:#e9dcff;padding:10px 18px;border-radius:20px;font-size:12px;z-index:99;
+  border:1px solid rgba(157,78,221,.35);max-width:86vw}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="top">
+  <a class="back" href="../index.html">‹</a>
+  <h1>我的电脑</h1>
+  <span class="ver">Tiny Container</span>
+</div>
+<div class="wrap">
+  <div class="hero">
+    <h2>选择你的电脑配置</h2>
+    <p>Tiny Container 官方引擎，完整运行 Linux 桌面。数据直接下载到本机，不经过第三方网盘；下载完成后即可在「我的电脑」里启动。</p>
+  </div>
+
+  <div class="cards" id="cards">
+    <div class="opt on" data-mode="xfce">
+      <div class="ico"><i>❖</i></div>
+      <div class="info">
+        <h3>XFCE 轻量版</h3>
+        <div class="size">约 911 MB</div>
+        <p>轻量流畅、占用低，适合日常上网、写文档、跑终端命令；老设备也能顺畅运行。</p>
+      </div>
+      <div class="tick">✓</div>
+    </div>
+    <div class="opt" data-mode="gxde">
+      <div class="ico"><i>◈</i></div>
+      <div class="info">
+        <h3>GXDE 完整版</h3>
+        <div class="size">约 2 GB</div>
+        <p>桌面组件更完整、预装工具更丰富，适合需要图形化操作和完整桌面体验的用户。</p>
+      </div>
+      <div class="tick">✓</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h4>本机数据</h4>
+    <div class="status" id="status">正在检测运行组件…</div>
+    <div class="bar"><i id="bar"></i></div>
+    <div class="btns">
+      <button class="btn primary" id="downloadBtn">下载所选配置的数据</button>
+      <button class="btn" id="startBtn">启动我的电脑</button>
+      <button class="btn ghost" id="deleteBtn">删除已下载数据</button>
+    </div>
+    <div class="note">提示：数据体积较大，建议在 Wi-Fi 环境下下载。下载与启动都在 App 内完成，不产生额外桌面图标。</div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+  var LS=window.localStorage;
+  var KEY='sl_computer_cfg_v1';
+  var cfg=null;
+  try{ cfg=JSON.parse(LS.getItem(KEY)||'null'); }catch(e){}
+  if(!cfg) cfg={mode:'xfce', downloaded:{}};
+  var mode=cfg.mode||'xfce';
+  var downloaded=cfg.downloaded||{};
+  function save(){ LS.setItem(KEY, JSON.stringify({mode:mode,downloaded:downloaded})); }
+  function $(id){return document.getElementById(id);}
+  function toast(m){var t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('on')},2200);}
+  var bridge=(window.Android&&typeof Android.tinyComputerStatus==='function')?window.Android:null;
+
+  function paint(){
+    document.querySelectorAll('.opt').forEach(function(o){ o.classList.toggle('on', o.getAttribute('data-mode')===mode); });
+    var st=$('status');
+    if(downloaded[mode]) st.textContent='已下载完成，可以直接启动（'+mode.toUpperCase()+'）。';
+    else if(bridge) st.textContent='尚未下载 '+mode.toUpperCase()+' 数据。';
+    else st.textContent='当前为网页预览模式：下载与启动需要在本 App 内进行。';
+    $('startBtn').disabled=!downloaded[mode];
+    $('downloadBtn').textContent=downloaded[mode]?'重新下载所选配置':'下载所选配置的数据';
+  }
+  document.querySelectorAll('.opt').forEach(function(o){
+    o.onclick=function(){ mode=o.getAttribute('data-mode'); save(); paint(); };
+  });
+  $('downloadBtn').onclick=function(){
+    if(!bridge){ toast('请在 App 内使用下载功能'); return; }
+    try{
+      var r=Android.downloadTinyImage(mode);
+      if(r==='started'){ $('status').textContent='正在后台下载 '+mode.toUpperCase()+' 数据，请保持网络连接…'; }
+      else toast(String(r||'下载请求已发送'));
+    }catch(e){ toast('下载失败：'+e.message); }
+  };
+  $('startBtn').onclick=function(){
+    if(!downloaded[mode]){ toast('请先下载数据'); return; }
+    if(!bridge){ toast('请在 App 内启动'); return; }
+    try{ Android.startTinyComputer(mode); }catch(e){ toast('启动失败：'+e.message); }
+  };
+  $('deleteBtn').onclick=function(){
+    if(!downloaded[mode]){ toast('还没有下载数据'); return; }
+    if(!confirm('确定删除 '+mode.toUpperCase()+' 的已下载数据？')) return;
+    if(bridge){ try{ Android.deleteTinyImage(mode); }catch(e){} }
+    downloaded[mode]=false; save(); paint(); toast('已删除数据');
+  };
+  window.addEventListener('message',function(e){
+    try{
+      var d=e.data||{};
+      if(d.type==='sl_tiny_progress'){
+        var p=Math.max(0,Math.min(100,+d.percent||0));
+        $('bar').style.width=p+'%';
+        $('status').textContent='下载中 '+p+'%（'+(d.mode||mode).toUpperCase()+'）';
+      }else if(d.type==='sl_tiny_done'){
+        downloaded[d.mode||mode]=true; save(); $('bar').style.width='100%';
+        paint(); toast('下载完成，可以启动我的电脑了');
+      }else if(d.type==='sl_tiny_error'){
+        $('status').textContent='下载失败：'+(d.msg||'未知错误'); toast('下载失败');
+      }
+    }catch(err){}
+  });
+  if(bridge){ try{ var s=Android.tinyComputerStatus(); if(s){ try{ var j=JSON.parse(s); if(j.downloaded) downloaded=Object.assign(downloaded,j.downloaded); if(j.mode) mode=j.mode; }catch(e2){} } }catch(e){} }
+  paint();
+})();
+</script>
+<script src="../js/fail-scene.js"></script>
+</body>
+</html>

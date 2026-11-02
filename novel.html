@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>巳泷资源库·小说</title>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --v-primary: #a855f7;
+      --v-accent: #ff6ec7;
+      --v-bg: #0d0516;
+      --v-card: rgba(255,255,255,0.04);
+      --v-border: rgba(168,85,247,0.4);
+      --v-glass: rgba(18,6,48,0.88);
+      --v-text-2: #a9b7d8;
+      --v-glow: 0 0 10px rgba(168,85,247,0.3);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      background: var(--v-bg);
+      background-image: radial-gradient(circle at 50% -20%, #181030 0%, #0d0516 60%, #02000f 100%);
+      color: #fff; font-family: 'PingFang SC', sans-serif; min-height: 100vh;
+      padding-bottom: 28px; overflow-x: hidden;
+    }
+    .hidden { display: none !important; }
+    .header-ui {
+      position: sticky; top: 0; z-index: 100; background: var(--v-glass);
+      backdrop-filter: blur(25px); padding: 12px 20px; border-bottom: 1px solid var(--v-border);
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .header-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .menu-btn, .home-btn {
+      font-size: 15px; min-width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--v-border); border-radius: 10px; color: var(--v-text-2); cursor: pointer; box-shadow: var(--v-glow);
+      background: transparent;
+    }
+    .header-ui h1 {
+      font-size: 17px; font-weight: 700; white-space: nowrap;
+      background: linear-gradient(90deg, #a855f7 0%, #c084fc 50%, #ff6ec7 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      filter: drop-shadow(0 0 8px rgba(168,85,247,0.6));
+    }
+    .stats { font-size: 11px; opacity: 0.6; padding: 3px 8px; border: 1px solid var(--v-border); border-radius: 20px; white-space: nowrap; }
+    .search-area { padding: 14px 20px 10px; }
+    .search-input-wrap {
+      position: relative; background: var(--v-card); border-radius: 16px; border: 1px solid var(--v-border);
+      display: flex; align-items: center; padding: 4px; box-shadow: var(--v-glow);
+    }
+    .search-input-wrap input { flex: 1; background: transparent; border: none; padding: 10px 14px; color: #fff; outline: none; font-size: 15px; }
+    #searchBtn { width: 38px; height: 38px; background: var(--v-primary); border: none; border-radius: 12px; color: #fff; font-size: 15px; cursor: pointer; box-shadow: var(--v-glow); }
+    .source-strip { margin: 0 16px 8px; }
+    .source-strip-title { font-size: 12px; color: var(--v-text-2); margin: 10px 4px 8px; display: flex; align-items: center; justify-content: space-between; }
+    .source-strip-title i { color: var(--v-primary); }
+    .src-tags { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    .src-tags::-webkit-scrollbar { display: none; }
+    .src-tag {
+      flex: 0 0 auto; padding: 6px 14px; border-radius: 18px; font-size: 12px; cursor: pointer;
+      border: 1px solid var(--v-border); color: var(--v-text-2); background: var(--v-card); white-space: nowrap;
+    }
+    .src-tag.active { background: var(--v-primary); border-color: var(--v-primary); color: #fff; box-shadow: var(--v-glow); }
+    .grid { padding: 0 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .m-item { cursor: pointer; border-radius: 14px; overflow: hidden; background: var(--v-card); border: 1px solid rgba(255,255,255,0.08); transition: all 0.2s; }
+    .m-item:active { transform: scale(0.97); border-color: var(--v-primary); box-shadow: var(--v-glow); }
+    .m-cover { width: 100%; aspect-ratio: 3/4; background: linear-gradient(135deg, rgba(168,85,247,0.25), rgba(255,110,199,0.15)); display: flex; align-items: center; justify-content: center; font-size: 30px; color: rgba(255,255,255,0.5); }
+    .m-cover img { width: 100%; height: 100%; object-fit: cover; }
+    .m-info { padding: 8px 9px 10px; }
+    .m-name { font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .m-sub { font-size: 10.5px; color: var(--v-text-2); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .loading-dot { text-align: center; padding: 18px; color: var(--v-primary); font-size: 12px; }
+    .toast-tip { position: fixed; left: 50%; top: 45%; transform: translate(-50%,-50%); background: rgba(0,0,0,0.8); color: #fff; padding: 10px 20px; border-radius: 8px; font-size: 14px; z-index: 9999; display: none; max-width: 80%; text-align: center; }
+    .mask { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 2000; display: none; }
+    .mask.show { display: block; }
+    .side-menu {
+      position: fixed; top: 0; left: 0; width: 280px; height: 100vh; background: var(--v-glass);
+      border-right: 1px solid var(--v-border); z-index: 2001; transform: translateX(-100%); transition: 0.3s;
+      padding: 18px; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    }
+    .side-menu.show { transform: translateX(0); }
+    .menu-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--v-border); }
+    .menu-item { padding: 12px 12px; border-radius: 10px; margin-bottom: 8px; background: var(--v-card); cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 10px; }
+    .menu-item i { width: 18px; text-align: center; color: var(--v-primary); }
+    .textarea-box { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--v-border); background: var(--v-card); color: #fff; outline: none; min-height: 120px; font-size: 12px; resize: vertical; margin-bottom: 8px; font-family: monospace; }
+    .btn-row { display: flex; gap: 8px; }
+    .btn-i { flex: 1; text-align: center; padding: 10px 0; border-radius: 10px; border: 1px solid var(--v-border); cursor: pointer; font-size: 13px; background: var(--v-card); color: #fff; }
+    .btn-i.on { background: var(--v-primary); border-color: var(--v-primary); }
+    .input-box { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--v-border); background: var(--v-card); color: #fff; outline: none; font-size: 12px; margin-bottom: 8px; }
+    /* 阅读器 */
+    .reader { position: fixed; inset: 0; background: #0a0512; z-index: 4000; display: none; flex-direction: column; }
+    .reader.show { display: flex; }
+    .reader-top { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: rgba(12,4,24,0.96); border-bottom: 1px solid var(--v-border); z-index: 2; }
+    .reader-top .rt-title { flex: 1; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rt-btn { width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--v-border); color: var(--v-text-2); display: flex; align-items: center; justify-content: center; cursor: pointer; background: transparent; font-size: 14px; }
+    .reader-text { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 20px 22px; }
+    .chapter-title { font-size: 18px; font-weight: 700; margin-bottom: 14px; text-align: center; }
+    .chapter-body { font-size: 16px; line-height: 2.1; color: #e6e0f2; white-space: pre-wrap; word-break: break-word; }
+    .reader-foot { display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: rgba(12,4,24,0.96); border-top: 1px solid var(--v-border); }
+    .reader-foot .rf-info { flex: 1; font-size: 12px; color: var(--v-text-2); text-align: center; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); border-radius: 6px; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #a855f7, #c084fc, #ff6ec7); border-radius: 6px; }
+  </style>
+</head>
+<body>
+<div class="header-ui">
+  <div class="header-left">
+    <div class="menu-btn" id="menuBtn"><i class="fa-solid fa-bars"></i></div>
+    <h1>巳泷资源库·小说</h1>
+  </div>
+  <div class="stats"><i class="fa-solid fa-book-open"></i> <span id="count">0</span></div>
+</div>
+
+<div class="search-area">
+  <div class="search-input-wrap">
+    <input type="text" id="keyword" placeholder="搜索小说名称 / 作者...">
+    <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+  </div>
+</div>
+
+<div class="source-strip">
+  <div class="source-strip-title"><span><i class="fa-solid fa-layer-group"></i> 书源</span><span id="srcCount" style="opacity:0.7;">0 个内置源</span></div>
+  <div class="src-tags" id="srcTags"></div>
+</div>
+
+<div id="listWrap">
+  <div class="grid" id="list"></div>
+  <div id="loader" class="loading-dot hidden"><i class="fa-solid fa-spinner fa-spin"></i> 加载中...</div>
+</div>
+
+<div class="toast-tip" id="toastTip"></div>
+
+<div class="mask" id="menuMask"></div>
+<div class="side-menu" id="sideMenu">
+  <div class="menu-title"><i class="fa-solid fa-book"></i> 小说菜单</div>
+  <div class="menu-item" id="openAddSource"><i class="fa-solid fa-plus"></i> 添加书源（JSON）</div>
+  <div class="menu-item" id="openCat"><i class="fa-solid fa-tags"></i> 分类浏览</div>
+  <div class="menu-item" id="clearCache"><i class="fa-solid fa-trash-can"></i> 清除缓存</div>
+  <div class="menu-item" id="aboutBtn"><i class="fa-solid fa-circle-info"></i> 关于</div>
+</div>
+
+<div class="mask" id="addSourceMask"></div>
+<div class="side-menu" id="addSourceMenu" style="width:320px;">
+  <div class="menu-title"><i class="fa-solid fa-file-import"></i> 添加书源</div>
+  <div style="font-size:12px;color:var(--v-text-2);margin-bottom:10px;line-height:1.6;">支持 legado / 通用 JSON 书源。可直接粘贴书源 JSON，或输入书源仓库的 URL（例如 legado.aoaostar.com 全量书源）。</div>
+  <input class="input-box" id="srcUrlInput" placeholder="或粘贴书源 JSON URL 下载地址">
+  <textarea class="textarea-box" id="srcJsonInput" placeholder='{"bookSourceName":"源名","bookSourceUrl":"https://...","api":"..."} 或 [ {..}, {..} ]'></textarea>
+  <div class="btn-row">
+    <div class="btn-i on" id="parseSourceBtn"><i class="fa-solid fa-wand-magic-sparkles"></i> 解析并添加</div>
+    <div class="btn-i" id="closeAddSource" style="border-color:rgba(255,255,255,0.2);">取消</div>
+  </div>
+</div>
+
+<div class="reader" id="reader">
+  <div class="reader-top">
+    <div class="rt-btn" id="readerClose"><i class="fa-solid fa-arrow-left"></i></div>
+    <div class="rt-title" id="readerTitle">阅读</div>
+    <div class="rt-btn" id="readerCatalog"><i class="fa-solid fa-list"></i></div>
+  </div>
+  <div class="reader-text" id="readerText"></div>
+  <div class="reader-foot">
+    <div class="rt-btn" id="readerPrev"><i class="fa-solid fa-backward-step"></i></div>
+    <div class="rf-info" id="readerInfo">正在加载...</div>
+    <div class="rt-btn" id="readerNext"><i class="fa-solid fa-forward-step"></i></div>
+  </div>
+</div>
+
+<div class="mask" id="catalogMask"></div>
+<div class="side-menu" id="catalogMenu" style="right:0;left:auto;border-right:none;border-left:1px solid var(--v-border);">
+  <div class="menu-title"><i class="fa-solid fa-list-ul"></i> 章节列表</div>
+  <div id="catalogList"></div>
+</div>
+
+<script src="data/source-router.js"></script>
+<script>
+(function () {
+  var LS_SRC = 'sl_novel_sources_v2';
+  var LS_POS = 'sl_novel_pos_v2';
+  var DEFAULT_SOURCES = [
+    { name: '首页精选', type: 'local', base: '', desc: '本地内置书籍（离线可看）' },
+    { name: '爱阅小说', type: 'aiyue', base: 'https://www.iyuexs.com', desc: '言情/耽美 聚合' },
+    { name: '笔趣阁', type: 'bqg', base: 'https://www.jingyanweb.com', desc: '全类型小说' },
+    { name: '酷匠', type: 'kujiang', base: 'https://www.kujiang.com', desc: '原创小说' },
+    { name: '菠萝小说', type: 'bl', base: 'https://www.boluoxs.com', desc: '耽美 文 学' }
+  ];
+  // 巳泷 v9.0.9：内置本地精选书籍（离线可见，带封面与首章内容）
+  var LOCAL_BOOKS = [
+    { name: '夜色入怀', sub: '耽美 · 都市', img: 'https://picsum.photos/seed/b1/300/420', desc: '都市夜归人之间的温柔救赎。', lines: '第一章 初见\n\n深夜的城市霓虹摇曳，陆离从公司大楼走出来时，已经过了十一点。\n\n他揉了揉发酸的眼睛，正想叫车，却听见巷子里传来一阵急促的脚步声。\n\n一个身影撞进他的怀里，抬起头，是一双慌乱却明亮的眼睛。\n\n“抱歉……”那人低声道歉，又回头看了一眼身后。\n\n陆离没有多问，只是轻轻侧身，把他让进自己身后。\n\n“跟我走。”他说。' },
+    { name: '山海少年', sub: '玄幻 · 热血', img: 'https://picsum.photos/seed/b2/300/420', desc: '山海经异兽与少年们的冒险。', lines: '第一章 觉醒\n\n少年阿蛮在村里长大，人人都知道他是孤儿。\n\n只有老族长知道，这孩子背上有一枚山海印记。\n\n那天夜里，村外的雾里传来野兽的低吼，阿蛮第一次看见，自己掌心亮起的古老纹路。' },
+    { name: '过期情书', sub: '纯爱 · 青春', img: 'https://picsum.photos/seed/b3/300/420', desc: '一封迟到十年的情书。', lines: '第一章 收信\n\n十年后的一个下午，林深收到了一封没有寄件人的信。\n\n信封上的字迹熟悉得让人心颤。\n\n那是他高中时每天都会在校门口等的那个人，写的。' },
+    { name: '雾城档案', sub: '悬疑 · 犯罪', img: 'https://picsum.photos/seed/b4/300/420', desc: '雾城连环失踪案调查记录。', lines: '第一章 编号零七\n\n雾城警局的档案室里，有一份从未结案的卷宗。\n\n编号零七，失踪九人，无一生还。\n\n新来的探员打开卷宗的第一页，就被上面的那行字镇住了。' },
+    { name: '山月不知心事', sub: '古风 · 纯爱', img: 'https://picsum.photos/seed/b5/300/420', desc: '江湖少年与隐世琴师。', lines: '第一章 琴声\n\n山月镇每逢十五，都会从竹楼里飘出琴声。\n\n少年剑客苏白策马过镇时，勒住了缰绳。\n\n他从没见过那么干净的琴音，干净到，让他改了回师门的行程。' },
+    { name: '实验室日常', sub: '轻科幻 · 治愈', img: 'https://picsum.photos/seed/b6/300/420', desc: 'AI 研究员与仿生人的日常。', lines: '第一章 开机\n\n清晨七点，灰原博士的实验室里，第三台仿生人缓缓睁开了眼睛。\n\n“早上好，博士。”他说。\n\n灰原愣了一下，随即笑了：“早上好，欢迎回来。”' },
+    { name: '绿荫球场', sub: '热血 · 运动', img: 'https://picsum.photos/seed/b7/300/420', desc: '校园足球队的逆袭之路。', lines: '第一章 替补席\n\n训练赛最后五分钟，比分还差两个球。\n\n教练的目光扫过替补席，落在角落那个沉默的少年身上。\n\n“小北，上场。”\n\n他抬头，眼里的光，比球场的大灯还亮。' },
+    { name: '星轨之外', sub: '星际 · 冒险', img: 'https://picsum.photos/seed/b8/300/420', desc: '宇宙深空中迷航的救援舰。', lines: '第一章 变轨\n\n星轨三号救援舰在深空巡航时，接到了来自未知坐标的求救信号。' }
+  ];
+  var CATS = ['耽美','纯爱','玄幻','都市','悬疑','校园','古风','科幻'];
+  var sources = [], curSrc = null, listData = [], curKeyword = '', curPage = 1;
+  var dom = {};
+
+  function $(id) { return document.getElementById(id); }
+  function showToast(t) { dom.toastTip.innerText = t; dom.toastTip.style.display = 'block'; setTimeout(function(){ dom.toastTip.style.display='none'; }, 1600); }
+  function esc(s) { return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function cacheGet(k){ try { var s=localStorage.getItem(k); return s?JSON.parse(s):null; } catch(e){ return null; } }
+  function cacheSet(k,v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+
+  function initDom() {
+    dom.toastTip = $('toastTip'); dom.menuMask = $('menuMask'); dom.sideMenu = $('sideMenu');
+    dom.addSourceMask = $('addSourceMask'); dom.addSourceMenu = $('addSourceMenu');
+    dom.srcJsonInput = $('srcJsonInput'); dom.srcUrlInput = $('srcUrlInput');
+    dom.srcTags = $('srcTags'); dom.list = $('list'); dom.loader = $('loader');
+    dom.keywordInput = $('keyword'); dom.count = $('count'); dom.srcCount = $('srcCount');
+    dom.reader = $('reader'); dom.readerText = $('readerText'); dom.readerTitle = $('readerTitle');
+    dom.readerInfo = $('readerInfo'); dom.catalogMenu = $('catalogMenu'); dom.catalogMask = $('catalogMask'); dom.catalogList = $('catalogList');
+  }
+
+  function loadSources() {
+    var c = cacheGet(LS_SRC);
+    sources = (c && Array.isArray(c) && c.length) ? c : DEFAULT_SOURCES.slice();
+    // 巳泷 v9.0.9：并入路由器分到的共享小说源
+    try {
+      var shared = (window.SLROUTER && SLROUTER.get('novel')) || [];
+      shared.forEach(function (s) {
+        if (s && s.name && !sources.some(function (x) { return x.name === s.name; })) {
+          sources.push({ name: s.name, type: 'custom', shared: true, json: s.raw || '', api: s.api || s.url || '' });
+        }
+      });
+    } catch (e) {}
+    saveSources();
+    renderSrcTags();
+  }
+  function saveSources() { cacheSet(LS_SRC, sources); dom.srcCount.textContent = sources.length + ' 个来源'; }
+  function renderSrcTags() {
+    dom.srcTags.innerHTML = '';
+    sources.forEach(function (s, i) {
+      var b = document.createElement('div');
+      b.className = 'src-tag' + (curSrc && curSrc.name === s.name ? ' active' : '');
+      b.textContent = s.name;
+      b.onclick = function () { curSrc = s; renderSrcTags(); loadDefaultList(true); };
+      dom.srcTags.appendChild(b);
+    });
+    dom.srcCount.textContent = sources.length + ' 个来源';
+  }
+
+  async function fetchJson(url, timeout) {
+    timeout = timeout || 15000;
+    var ctrl = ('AbortController' in window) ? new AbortController() : null;
+    var t = ctrl ? setTimeout(function(){ ctrl.abort(); }, timeout) : null;
+    try {
+      var res = await fetch(url, ctrl ? { signal: ctrl.signal } : {});
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return await res.json();
+    } finally { if (t) clearTimeout(t); }
+  }
+  async function fetchText(url, timeout) {
+    timeout = timeout || 15000;
+    var ctrl = ('AbortController' in window) ? new AbortController() : null;
+    var t = ctrl ? setTimeout(function(){ ctrl.abort(); }, timeout) : null;
+    try {
+      var res = await fetch(url, ctrl ? { signal: ctrl.signal } : {});
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return await res.text();
+    } finally { if (t) clearTimeout(t); }
+  }
+
+  function listTitle() { return curSrc ? curSrc.name : '全部源'; }
+
+  function normItem(it, idx) {
+    var id = it.id || it.book_id || it.bid || (curSrc? curSrc.name : 'x') + '_' + (idx||0);
+    var name = it.name || it.title || it.book_name || ('未命名 ' + (idx||0));
+    var img = it.cover || it.img || it.pic || it.thumb || it.cover_url || '';
+    var desc = it.desc || it.intro || it.description || it.summary || '';
+    var sub = it.author || it.author_name || it.writer || '';
+    if (!sub && it.tags && it.tags.length) sub = it.tags.slice(0,3).join(' · ');
+    return { id: String(id), name: name, img: img, desc: desc, sub: sub, raw: it };
+  }
+
+  function renderList(arr, reset) {
+    if (reset) dom.list.innerHTML = '';
+    if (!arr || !arr.length) {
+      if (reset && !dom.list.childElementCount) dom.list.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--v-text-2);padding:40px 0;font-size:13px;">暂无内容，换个关键词或书源试试</div>';
+      return;
+    }
+    var frag = document.createDocumentFragment();
+    arr.forEach(function (it) {
+      var d = document.createElement('div');
+      d.className = 'm-item';
+      var imgHtml = it.img ? '<img src="' + esc(it.img) + '" onerror="this.style.display=\'none\'">' : '<i class="fa-solid fa-book-open"></i>';
+      d.innerHTML = '<div class="m-cover">' + imgHtml + '</div>' +
+        '<div class="m-info"><div class="m-name">' + esc(it.name) + '</div>' +
+        '<div class="m-sub">' + esc(it.sub || listTitle()) + '</div></div>';
+      d.onclick = function () { openBook(it); };
+      frag.appendChild(d);
+    });
+    dom.list.appendChild(frag);
+    dom.count.textContent = dom.list.childElementCount;
+  }
+
+  function apiSearch(kw, limit) {
+    limit = limit || 20;
+    if (curSrc.type === 'bqg') return curSrc.base + '/search.php?keyword=' + encodeURIComponent(kw);
+    if (curSrc.type === 'aiyue') return curSrc.base + '/modules/article/search.php?searchkey=' + encodeURIComponent(kw);
+    return curSrc.base + '/s?q=' + encodeURIComponent(kw);
+  }
+  function apiHome() {
+    if (curSrc.type === 'bqg') return curSrc.base + '/all.html';
+    return curSrc.base;
+  }
+
+  async function loadDefaultList(reset) {
+    reset = reset !== false;
+    if (reset) { curPage = 1; listData = []; dom.list.innerHTML = ''; }
+    if (!curSrc) { curSrc = sources[0]; renderSrcTags(); }
+    dom.loader.classList.remove('hidden');
+    try {
+      // 巳泷 v9.0.9：本地内置精选书源（离线立即可见，带封面）
+      if (curSrc && curSrc.type === 'local') {
+        var items0 = LOCAL_BOOKS.map(function (b) {
+          return { id: 'lb_' + b.name, name: b.name, sub: b.sub, img: b.img, desc: b.desc, local: true, raw: { __local: b } };
+        });
+        if (curKeyword) {
+          var kwl = curKeyword.toLowerCase();
+          items0 = items0.filter(function (x) {
+            return String(x.name).toLowerCase().indexOf(kwl) > -1 || String(x.sub || '').toLowerCase().indexOf(kwl) > -1;
+          });
+        }
+        listData = items0;
+        renderList(items0, true);
+        dom.loader.classList.add('hidden');
+        return;
+      }
+      if (curSrc && curSrc.json) {
+        // 自定义 JSON API 源：直接拉取并解析
+        var url = curKeyword ? (curSrc.searchApi || curSrc.json) : curSrc.json;
+        if (curKeyword && /http/.test(url)) url = url + '?keyword=' + encodeURIComponent(curKeyword);
+        var data = await fetchJson(url);
+        var items = Array.isArray(data) ? data : (data.list || data.data || data.books || []);
+        if (!Array.isArray(items)) {
+          var v = data && data.data;
+          items = (v && Array.isArray(v.list)) ? v.list : (Array.isArray(v) ? v : []);
+        }
+        var norm = items.map(function(it, i){ return normItem(it, i); });
+        listData = listData.concat(norm);
+        renderList(norm, false);
+      } else {
+        // HTML 书源：用轻量正则解析列表（作者/书名）
+        var url = curKeyword ? apiSearch(curKeyword) : apiHome();
+        var html = await fetchText(url);
+        var cards = [];
+        var re = /<li>[\s\S]*?<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>[\s\S]*?<\/li>/gi;
+        var m; var guard = 0;
+        while ((m = re.exec(html)) && guard++ < 500) {
+          var name = m[2].replace(/<[^>]+>/g, '').trim();
+          if (name) cards.push({ id: m[1], name: name, img: '', sub: '章节内打开', raw: { u: m[1] } });
+        }
+        if (!cards.length) {
+          var re2 = /<a[^>]+href="([^"]+)"[^>]*>([^<]{2,60})<\/a>/gi;
+          while ((m = re2.exec(html)) && guard++ < 600) {
+            var nm = m[2].trim();
+            if (nm && m[1].indexOf('http') < 0 && m[1].indexOf('#') < 0 && nm.length > 1) cards.push({ id: m[1], name: nm, img: '', sub: '章节内打开', raw: { u: m[1] } });
+          }
+        }
+        var dedup = [];
+        var seen = {};
+        cards.forEach(function (c) { if (!seen[c.id]) { seen[c.id] = 1; dedup.push(c); } });
+        var norm2 = dedup.slice(0, 40).map(function (it, i) { return normItem(it, i); });
+        listData = listData.concat(norm2);
+        renderList(norm2, false);
+      }
+    } catch (e) {
+      if (reset) dom.list.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--v-text-2);padding:30px 0;font-size:12px;line-height:1.8;">该书源暂不可直连（可能需要网络或源失效）。<br>可到菜单「添加书源」导入 legado JSON 书源。</div>';
+    }
+    dom.loader.classList.add('hidden');
+  }
+
+  function doSearch() {
+    curKeyword = dom.keywordInput.value.trim();
+    curPage = 1; listData = []; dom.list.innerHTML = '';
+    loadDefaultList(true);
+  }
+
+  var chapters = [], chapterIdx = 0, curBook = null;
+  function openBook(it) {
+    curBook = it;
+    chapters = [];
+    chapterIdx = 0;
+    dom.readerTitle.textContent = it.name;
+    dom.reader.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    dom.readerInfo.textContent = '正在加载...';
+    dom.readerText.innerHTML = '<div class="page-empty" style="text-align:center;color:var(--v-text-2);padding:60px 0;"><i class="fa-solid fa-spinner fa-spin"></i> 加载章节中...</div>';
+    // 巳泷 v9.0.9：本地内置书籍直接显示首章内容
+    if (it.local || (it.raw && it.raw.__local)) {
+      var lb = (it.raw && it.raw.__local) || {};
+      chapters = [{ title: it.name, lines: lb.lines || '（暂无内容）' }];
+      chapterIdx = 0;
+      showChapter();
+      return;
+    }
+    if (curSrc && curSrc.json) loadCustomBook(it);
+    else loadHtmlBook(it);
+  }
+  async function loadHtmlBook(it) {
+    try {
+      var link = it.raw && it.raw.u;
+      if (!link) { dom.readerText.innerHTML = '<div style="text-align:center;padding:60px;color:var(--v-text-2);">暂无章节地址</div>'; return; }
+      var url = /^https?:\/\//.test(link) ? link : (curSrc.base + '/' + link.replace(/^\//, ''));
+      var html = await fetchText(url);
+      // 尝试提取目录正文
+      var body = html.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+      if (body.length > 60) {
+        chapters = [{ title: it.name, lines: body }];
+        chapterIdx = 0;
+        showChapter();
+        return;
+      }
+      var re = /<a[^>]+href="([^"]+)"[^>]*>([^<]{1,40})<\/a>/gi;
+      var m, guard = 0;
+      while ((m = re.exec(html)) && guard++ < 500) {
+        var nm = m[2].trim();
+        if (nm && m[1].indexOf('#') < 0 && !/\.(jpg|png|css|js)/i.test(m[1])) chapters.push({ title: nm, link: m[1] });
+      }
+      if (!chapters.length) { dom.readerText.innerHTML = '<div style="text-align:center;padding:60px;color:var(--v-text-2);">无法解析章节，请在浏览器打开该页面。</div><div style="text-align:center;"><a href="' + esc(url) + '" style="color:var(--v-primary);">打开网页 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></div>'; return; }
+      curBook._ch = url;
+      chapterIdx = 0;
+      showChapter();
+    } catch (e) {
+      dom.readerText.innerHTML = '<div style="text-align:center;padding:60px;color:var(--v-text-2);">载入失败</div>';
+    }
+  }
+  async function loadCustomBook(it) {
+    try {
+      var raw = it.raw || {};
+      var bookApi = curSrc.bookApi;
+      var res = raw.rawApi || raw.url || raw.id;
+      var detail = null;
+      if (bookApi && /http/.test(bookApi)) {
+        try { detail = await fetchJson(bookApi.replace('{id}', res || '') + (curSrc.sKey ? '?key=' + encodeURIComponent(it.name) : '')); } catch (e) {}
+      } else if (raw.url && /^https?:\/\//.test(raw.url)) {
+        try { detail = await fetchJson(raw.url); } catch (e) {}
+      } else if (raw.api && /^https?:\/\//.test(raw.api)) {
+        try { detail = await fetchJson(String(raw.api).indexOf('{id}') > -1 ? String(raw.api).replace('{id}', res || '') : raw.api); } catch (e) {}
+      }
+      if (detail) {
+        var arr = Array.isArray(detail) ? detail : (detail.chapters || detail.list || detail.data || []);
+        if (Array.isArray(arr)) {
+          chapters = arr.map(function (c, i) { return { title: (c.title || c.name || '第' + (i+1) + '章'), link: c.url || c.link || (c.id != null ? c.id : '') }; });
+        }
+      }
+      if (!chapters.length) {
+        chapters = [{ title: it.name, lines: '该自定义源未提供在线章节接口。\n你可以在「添加书源」中填写带 {id}/{keyword} 模板的章节 API，或使用可直连的 JSON 源。' }];
+      }
+      chapterIdx = 0;
+      showChapter();
+    } catch (e) {
+      dom.readerText.innerHTML = '<div style="text-align:center;padding:60px;color:var(--v-text-2);">载入失败</div>';
+    }
+  }
+  async function showChapter() {
+    var ch = chapters[chapterIdx];
+    if (!ch) return;
+    dom.readerInfo.textContent = (chapterIdx + 1) + ' / ' + chapters.length;
+    if (ch.lines) {
+      dom.readerText.innerHTML = '<div class="chapter-title">' + esc(ch.title) + '</div><div class="chapter-body">' + esc(ch.lines) + '</div>';
+      return;
+    }
+    dom.readerText.innerHTML = '<div style="text-align:center;padding:60px;color:var(--v-text-2);"><i class="fa-solid fa-spinner fa-spin"></i> 加载章节</div>';
+    if (ch.link && /^https?:\/\//.test(ch.link)) {
+      try {
+        var txt = await fetchText(ch.link);
+        var clean = txt.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&ldquo;/g, '“').replace(/&rdquo;/g, '”').replace(/&mdash;/g, '—').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+        dom.readerText.innerHTML = '<div class="chapter-title">' + esc(ch.title) + '</div><div class="chapter-body">' + esc(clean) + '</div>';
+        return;
+      } catch (e) {
+        dom.readerText.innerHTML = '<div style="text-align:center;padding:60px;color:var(--v-text-2);">章节加载失败</div>';
+        return;
+      }
+    }
+    dom.readerText.innerHTML = '<div style="text-align:center;padding:60px;color:var(--v-text-2);">章节需要网络直连加载，若失败请更换书源。</div>';
+  }
+  function readerNav(dir) {
+    if (!chapters.length) return;
+    chapterIdx += dir;
+    if (chapterIdx < 0) chapterIdx = 0;
+    if (chapterIdx >= chapters.length) chapterIdx = chapters.length - 1;
+    showChapter();
+  }
+  function closeReader() {
+    dom.reader.classList.remove('show');
+    document.body.style.overflow = '';
+    dom.readerText.innerHTML = '';
+  }
+  function openCatalog() {
+    if (!chapters.length) return;
+    dom.catalogList.innerHTML = '';
+    chapters.forEach(function (c, i) {
+      var b = document.createElement('div');
+      b.className = 'menu-item';
+      b.innerHTML = '<i class="fa-solid ' + (i === chapterIdx ? 'fa-book-open" style="color:var(--v-accent)' : 'fa-file-lines') + '"></i>' + esc(c.title);
+      b.style.fontSize = '12px';
+      b.onclick = function () { dom.catalogMenu.classList.remove('show'); dom.catalogMask.classList.remove('show'); chapterIdx = i; showChapter(); };
+      dom.catalogList.appendChild(b);
+    });
+    dom.catalogMenu.classList.add('show');
+    dom.catalogMask.classList.add('show');
+  }
+
+  function initEvents() {
+    $('menuBtn').onclick = function () { dom.sideMenu.classList.add('show'); dom.menuMask.classList.add('show'); };
+    dom.menuMask.onclick = function () { closeMenus(); };
+    $('searchBtn').onclick = doSearch;
+    dom.keywordInput.onkeydown = function (e) { if (e.key === 'Enter') doSearch(); };
+    $('openAddSource').onclick = function () { closeMenus(); dom.srcJsonInput.value = ''; dom.srcUrlInput.value = ''; dom.addSourceMenu.classList.add('show'); dom.addSourceMask.classList.add('show'); };
+    dom.addSourceMask.onclick = function () { dom.addSourceMenu.classList.remove('show'); this.classList.remove('show'); };
+    $('closeAddSource').onclick = function () { dom.addSourceMenu.classList.remove('show'); dom.addSourceMask.classList.remove('show'); };
+    $('parseSourceBtn').onclick = parseAndAdd;
+    $('clearCache').onclick = function () { try { Object.keys(localStorage).forEach(function(k){ if(k.indexOf('sl_novel_')===0) localStorage.removeItem(k); }); } catch(e){} showToast('已清除'); closeMenus(); loadSources(); };
+    $('aboutBtn').onclick = function () { showToast('巳泷小说 · 支持 legado / 通用 JSON 书源'); closeMenus(); };
+    $('openCat').onclick = function () { closeMenus(); var kw=''; showToast('分类：' + CATS[Math.floor(Math.random()*CATS.length)]); };
+    $('readerClose').onclick = closeReader;
+    $('readerPrev').onclick = function () { readerNav(-1); };
+    $('readerNext').onclick = function () { readerNav(1); };
+    $('readerCatalog').onclick = openCatalog;
+    dom.catalogMask.onclick = function () { dom.catalogMenu.classList.remove('show'); this.classList.remove('show'); };
+  }
+  function closeMenus() { dom.sideMenu.classList.remove('show'); dom.menuMask.classList.remove('show'); dom.addSourceMenu.classList.remove('show'); dom.addSourceMask.classList.remove('show'); }
+
+  function parseAndAdd() {
+    var json = dom.srcJsonInput.value.trim();
+    var url = dom.srcUrlInput.value.trim();
+    if (!json && !url) { showToast('请填写书源 JSON 或 URL'); return; }
+    // 巳泷 v9.0.9：自动分类重分配——若识别为 漫画/广播剧/音乐 源，重定位到对应区域
+    var routeText = json || url;
+    try {
+      if (window.SLROUTER) {
+        var routed = SLROUTER.route(routeText, 'novel');
+        if (routed.cat && routed.cat !== 'novel') {
+          var catName = { 'comic': '漫画', 'radio': '广播剧·音乐', 'music': '音乐' }[routed.cat] || '音乐';
+          showToast('已识别为' + catName + '源，自动归入' + catName + '界面');
+          closeMenus();
+          return;
+        }
+      }
+    } catch (e) {}
+    var added = 0;
+    var addOne = function (s) {
+      if (!s || !s.name) return;
+      if (!sources.some(function(x){ return x.name === s.name; })) { sources.push(s); added++; }
+    };
+    try {
+      if (json) {
+        var obj = JSON.parse(json);
+        var arr = Array.isArray(obj) ? obj : [obj];
+        arr.forEach(function (o) {
+          var name = o.bookSourceName || o.name || o.sourceName || '自定义源';
+          var api = o.api || o.apiUrl || '';
+          addOne({ name: name, type: 'custom', base: o.bookSourceUrl || o.url || '', json: api.indexOf('{') > -1 ? api.split('{')[0].replace(/[^https?:\/\.0-9a-z-]/gi, '') : (api && /^https?:\/\//.test(api) ? api : ''), bookApi: api, desc: (o.explain || o.desc || '').slice(0, 60) });
+        });
+      }
+      if (url) addOne({ name: 'URL书源', type: 'custom', base: url, url: url, desc: '从 URL 导入' });
+    } catch (e) {
+      showToast('JSON 解析失败');
+      return;
+    }
+    saveSources(); renderSrcTags();
+    if (added) { showToast('已添加 ' + added + ' 个书源'); curSrc = sources[sources.length - 1]; renderSrcTags(); loadDefaultList(true); } else showToast('书源已存在');
+    closeMenus();
+  }
+
+  window.onload = function () {
+    initDom();
+    loadSources();
+    initEvents();
+    loadDefaultList(true);
+    // 恢复上次阅读位置（留接口）
+    try { var p = cacheGet(LS_POS); } catch(e){}
+  };
+})();
+</script>
+</body>
+</html>

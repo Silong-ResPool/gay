@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>巳泷资源库·漫画</title>
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --v-primary: #a855f7;
+      --v-accent: #ff6ec7;
+      --v-purple: #c084fc;
+      --v-bg: #0d0516;
+      --v-card: rgba(255,255,255,0.04);
+      --v-border: rgba(168,85,247,0.4);
+      --v-glass: rgba(18,6,48,0.88);
+      --v-text-2: #a9b7d8;
+      --v-red: #ff6b8a;
+      --v-glow: 0 0 10px rgba(168,85,247,0.3);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      background: var(--v-bg);
+      background-image: radial-gradient(circle at 50% -20%, #181030 0%, #0d0516 60%, #02000f 100%);
+      color: #fff; font-family: 'PingFang SC', sans-serif; min-height: 100vh;
+      padding-bottom: 28px; overflow-x: hidden;
+    }
+    .hidden { display: none !important; }
+    .header-ui {
+      position: sticky; top: 0; z-index: 100; background: var(--v-glass);
+      backdrop-filter: blur(25px); padding: 12px 20px; border-bottom: 1px solid var(--v-border);
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .header-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .menu-btn, .home-btn {
+      font-size: 15px; min-width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--v-border); border-radius: 10px; color: var(--v-text-2); cursor: pointer; box-shadow: var(--v-glow);
+      background: transparent;
+    }
+    .header-ui h1 {
+      font-size: 17px; font-weight: 700; white-space: nowrap;
+      background: linear-gradient(90deg, #a855f7 0%, #c084fc 50%, #ff6ec7 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      filter: drop-shadow(0 0 8px rgba(168,85,247,0.6));
+    }
+    .stats { font-size: 11px; opacity: 0.6; padding: 3px 8px; border: 1px solid var(--v-border); border-radius: 20px; white-space: nowrap; }
+    .search-area { padding: 14px 20px 10px; }
+    .search-input-wrap {
+      position: relative; background: var(--v-card); border-radius: 16px; border: 1px solid var(--v-border);
+      display: flex; align-items: center; padding: 4px; box-shadow: var(--v-glow);
+    }
+    .search-input-wrap input { flex: 1; background: transparent; border: none; padding: 10px 14px; color: #fff; outline: none; font-size: 15px; }
+    #searchBtn { width: 38px; height: 38px; background: var(--v-primary); border: none; border-radius: 12px; color: #fff; font-size: 15px; cursor: pointer; box-shadow: var(--v-glow); }
+    .source-strip { margin: 0 16px 8px; }
+    .source-strip-title { font-size: 12px; color: var(--v-text-2); margin: 10px 4px 8px; display: flex; align-items: center; justify-content: space-between; }
+    .source-strip-title i { color: var(--v-primary); }
+    .src-tags { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    .src-tags::-webkit-scrollbar { display: none; }
+    .src-tag {
+      flex: 0 0 auto; padding: 6px 14px; border-radius: 18px; font-size: 12px; cursor: pointer;
+      border: 1px solid var(--v-border); color: var(--v-text-2); background: var(--v-card); white-space: nowrap;
+    }
+    .src-tag.active { background: var(--v-primary); border-color: var(--v-primary); color: #fff; box-shadow: var(--v-glow); }
+    .grid { padding: 0 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .m-item { cursor: pointer; border-radius: 14px; overflow: hidden; background: var(--v-card); border: 1px solid rgba(255,255,255,0.08); transition: all 0.2s; }
+    .m-item:active { transform: scale(0.97); border-color: var(--v-primary); box-shadow: var(--v-glow); }
+    .m-cover { width: 100%; aspect-ratio: 3/4; background: linear-gradient(135deg, rgba(168,85,247,0.25), rgba(255,110,199,0.15)); display: flex; align-items: center; justify-content: center; font-size: 30px; color: rgba(255,255,255,0.5); }
+    .m-cover img { width: 100%; height: 100%; object-fit: cover; }
+    .m-info { padding: 8px 9px 10px; }
+    .m-name { font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .m-sub { font-size: 10.5px; color: var(--v-text-2); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .loading-dot { text-align: center; padding: 18px; color: var(--v-primary); font-size: 12px; }
+    .toast-tip { position: fixed; left: 50%; top: 45%; transform: translate(-50%,-50%); background: rgba(0,0,0,0.8); color: #fff; padding: 10px 20px; border-radius: 8px; font-size: 14px; z-index: 9999; display: none; max-width: 80%; text-align: center; }
+    /* 详情弹窗 */
+    .mask { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 2000; display: none; }
+    .mask.show { display: block; }
+    .side-menu {
+      position: fixed; top: 0; left: 0; width: 280px; height: 100vh; background: var(--v-glass);
+      border-right: 1px solid var(--v-border); z-index: 2001; transform: translateX(-100%); transition: 0.3s;
+      padding: 18px; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    }
+    .side-menu.show { transform: translateX(0); }
+    .menu-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--v-border); }
+    .menu-item { padding: 12px 12px; border-radius: 10px; margin-bottom: 8px; background: var(--v-card); cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 10px; }
+    .menu-item i { width: 18px; text-align: center; color: var(--v-primary); }
+    .textarea-box { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--v-border); background: var(--v-card); color: #fff; outline: none; min-height: 120px; font-size: 12px; resize: vertical; margin-bottom: 8px; font-family: monospace; }
+    .btn-row { display: flex; gap: 8px; }
+    .btn-i { flex: 1; text-align: center; padding: 10px 0; border-radius: 10px; border: 1px solid var(--v-border); cursor: pointer; font-size: 13px; background: var(--v-card); color: #fff; }
+    .btn-i.on { background: var(--v-primary); border-color: var(--v-primary); }
+    /* 阅读视图 */
+    .reader { position: fixed; inset: 0; background: #05000d; z-index: 4000; display: none; flex-direction: column; }
+    .reader.show { display: flex; }
+    .reader-top { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: rgba(10,3,20,0.95); border-bottom: 1px solid var(--v-border); z-index: 2; }
+    .reader-top .rt-title { flex: 1; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rt-btn { width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--v-border); color: var(--v-text-2); display: flex; align-items: center; justify-content: center; cursor: pointer; background: transparent; font-size: 14px; }
+    .reader-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px; }
+    .page-img { width: 100%; border-radius: 10px; margin-bottom: 10px; background: rgba(255,255,255,0.04); }
+    .page-empty { color: var(--v-text-2); padding: 40px 0; text-align: center; font-size: 13px; }
+    .reader-foot { display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: rgba(10,3,20,0.95); border-top: 1px solid var(--v-border); }
+    .reader-foot .rf-info { flex: 1; font-size: 12px; color: var(--v-text-2); text-align: center; }
+    .rt-btn.on { background: var(--v-primary); border-color: var(--v-primary); color: #fff; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); border-radius: 6px; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #a855f7, #c084fc, #ff6ec7); border-radius: 6px; }
+  </style>
+</head>
+<body>
+<div class="header-ui">
+  <div class="header-left">
+    <div class="menu-btn" id="menuBtn"><i class="fa-solid fa-bars"></i></div>
+    <div class="home-btn hidden" id="homeBtn"><i class="fa-solid fa-house"></i></div>
+    <h1>巳泷资源库·漫画</h1>
+  </div>
+  <div class="stats"><i class="fa-regular fa-bookmark"></i> <span id="count">0</span></div>
+</div>
+
+<div class="search-area">
+  <div class="search-input-wrap">
+    <input type="text" id="keyword" placeholder="搜索漫画名称 / 标签...">
+    <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+  </div>
+</div>
+
+<div class="source-strip">
+  <div class="source-strip-title"><span><i class="fa-solid fa-layer-group"></i> 漫画源</span><span id="srcCount" style="opacity:0.7;">0 个内置源</span></div>
+  <div class="src-tags" id="srcTags"></div>
+</div>
+
+<div id="listWrap">
+  <div class="grid" id="list"></div>
+  <div id="loader" class="loading-dot hidden"><i class="fa-solid fa-spinner fa-spin"></i> 加载中...</div>
+</div>
+
+<div class="toast-tip" id="toastTip"></div>
+
+<div class="mask" id="menuMask"></div>
+<div class="side-menu" id="sideMenu">
+  <div class="menu-title"><i class="fa-solid fa-book-open"></i> 漫画菜单</div>
+  <div class="menu-item" id="openAddSource"><i class="fa-solid fa-plus"></i> 添加漫画源（JSON）</div>
+  <div class="menu-item" id="openAddToList"><i class="fa-solid fa-heart"></i> 我的收藏</div>
+  <div class="menu-item" id="clearCache"><i class="fa-solid fa-trash-can"></i> 清除缓存</div>
+  <div class="menu-item" id="aboutBtn"><i class="fa-solid fa-circle-info"></i> 关于</div>
+</div>
+
+<div class="mask" id="addSourceMask"></div>
+<div class="side-menu" id="addSourceMenu" style="width:320px;">
+  <div class="menu-title"><i class="fa-solid fa-file-import"></i> 添加漫画源</div>
+  <div style="font-size:12px;color:var(--v-text-2);margin-bottom:10px;line-height:1.6;">粘贴 JSON 源文件内容（支持 Aidoku 社区源索引 / 自定义源），或输入源 URL。点击「解析并添加」自动识别。</div>
+  <div class="input-wrap" style="margin-bottom:8px;">
+    <input class="input-box" id="srcUrlInput" placeholder="或粘贴 JSON 源 URL，例如 https://xxx/index.min.json" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--v-border);background:var(--v-card);color:#fff;outline:none;font-size:12px;">
+  </div>
+  <textarea class="textarea-box" id="srcJsonInput" placeholder='{"sources":[…] 或 Aidoku 索引格式 [{...}] 或 {"name":"源名","url":"API地址","listPath":"data.list",...}'></textarea>
+  <div class="btn-row">
+    <div class="btn-i" id="parseSourceBtn"><i class="fa-solid fa-wand-magic-sparkles"></i> 解析并添加</div>
+    <div class="btn-i" id="closeAddSource" style="border-color:rgba(255,255,255,0.2);">取消</div>
+  </div>
+</div>
+
+<div class="reader" id="reader">
+  <div class="reader-top">
+    <div class="rt-btn" id="readerClose"><i class="fa-solid fa-arrow-left"></i></div>
+    <div class="rt-title" id="readerTitle">阅读</div>
+    <div class="rt-btn" id="readerMode"><i class="fa-solid fa-table-cells-large"></i></div>
+  </div>
+  <div class="reader-body" id="readerBody"></div>
+  <div class="reader-foot">
+    <div class="rt-btn" id="readerPrev"><i class="fa-solid fa-backward-step"></i></div>
+    <div class="rf-info" id="readerInfo">正在加载...</div>
+    <div class="rt-btn" id="readerNext"><i class="fa-solid fa-forward-step"></i></div>
+  </div>
+</div>
+
+<script src="data/source-router.js"></script>
+<script>
+(function () {
+  var LS_SRC = 'sl_comic_sources_v2';
+  var LS_FAV = 'sl_comic_fav_v2';
+  var coverFallback = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+  var TAG_NAMES = ['吾爱漫画','站酷漫游','MangaDex','nhentai','动漫之家','腾讯动漫'];
+  var FAV_CATS = ['耽美','纯爱','治愈','悬疑','热血','校园'];
+  // 巳泷 v9.0.9：内置本地漫画精选（离线可见，封面经 picsum 占位图服务，接口失败时可浏览）
+  var LOCAL_COMICS = [
+    { name: '银翼饭团', sub: '治愈系 · 日常', img: 'https://picsum.photos/seed/c1/300/420', desc: '都市青年与银发少年的温暖日常。', cat: '治愈' },
+    { name: '深海心跳', sub: '冒险 · 悬疑', img: 'https://picsum.photos/seed/c2/300/420', desc: '深海探险队的神秘调查之旅。', cat: '悬疑' },
+    { name: '少年与猫', sub: '纯爱 · 青春', img: 'https://picsum.photos/seed/c3/300/420', desc: '少年与流浪猫的青春物语。', cat: '纯爱' },
+    { name: '月光游戏', sub: '悬疑 · 心理', img: 'https://picsum.photos/seed/c4/300/420', desc: '午夜校园的神秘游戏。', cat: '悬疑' },
+    { name: '云端之恋', sub: '纯爱 · 校园', img: 'https://picsum.photos/seed/c5/300/420', desc: '校园广播站的双向暗恋。', cat: '纯爱' },
+    { name: '神隐之森', sub: '奇幻 · 治愈', img: 'https://picsum.photos/seed/c6/300/420', desc: '迷失森林中的神明与人类。', cat: '治愈' },
+    { name: '热血球场', sub: '热血 · 体育', img: 'https://picsum.photos/seed/c7/300/420', desc: '为了梦想挥洒汗水的少年们。', cat: '热血' },
+    { name: '深夜食堂外传', sub: '治愈 · 美食', img: 'https://picsum.photos/seed/c8/300/420', desc: '深夜食堂里的奇妙邂逅。', cat: '治愈' }
+  ];
+  var DEFAULT_SOURCES = [
+    { name: '首页精选', type: 'local', base: '', desc: '本地内置漫画（离线可看）' },
+    { name: 'MangaDex', type: 'md', base: 'https://api.mangadex.org', desc: '全球最大开源漫画库' },
+    { name: 'Nhentai', type: 'nh', base: 'https://nhentai.net', desc: '日系漫画/本子聚合' },
+    { name: '动漫之家', type: 'dmzj', base: 'https://np.dmzj1.com', desc: '国漫汉化聚合' },
+    { name: '站酷漫游', type: 'dmzj', base: 'https://www.zcool.com.cn', desc: '原创漫画精选' }
+  ];
+  var sources = [], curSrc = null, listData = [], curKeyword = '', curPage = 1;
+  var favStore = [];
+  var dom = {};
+
+  function $(id) { return document.getElementById(id); }
+  function showToast(t) { dom.toastTip.innerText = t; dom.toastTip.style.display = 'block'; setTimeout(function(){ dom.toastTip.style.display='none'; }, 1600); }
+  function esc(s) { return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function cacheGet(k){ try { var s=localStorage.getItem(k); return s?JSON.parse(s):null; } catch(e){ return null; } }
+  function cacheSet(k,v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+
+  function initDom() {
+    dom.toastTip = $('toastTip'); dom.menuMask = $('menuMask'); dom.sideMenu = $('sideMenu');
+    dom.addSourceMask = $('addSourceMask'); dom.addSourceMenu = $('addSourceMenu');
+    dom.srcJsonInput = $('srcJsonInput'); dom.srcUrlInput = $('srcUrlInput');
+    dom.srcTags = $('srcTags'); dom.list = $('list'); dom.loader = $('loader');
+    dom.keywordInput = $('keyword'); dom.count = $('count'); dom.srcCount = $('srcCount');
+    dom.reader = $('reader'); dom.readerBody = $('readerBody'); dom.readerTitle = $('readerTitle');
+    dom.readerInfo = $('readerInfo');
+  }
+
+  function loadSources() {
+    var c = cacheGet(LS_SRC);
+    if (c && Array.isArray(c) && c.length) sources = c;
+    else { sources = DEFAULT_SOURCES.slice(); saveSources(); }
+    // 巳泷 v9.0.9：并入路由器分到的共享漫画源
+    try {
+      var shared = (window.SLROUTER && SLROUTER.get('comic')) || [];
+      shared.forEach(function (s) {
+        if (s && s.name && !sources.some(function (x) { return x.name === s.name; })) {
+          sources.push({ name: s.name, type: 'custom', shared: true, rawJson: s.raw || '', api: s.api || '', base: s.url || s.api || '' });
+        }
+      });
+    } catch (e) {}
+    renderSrcTags();
+  }
+  function saveSources() { cacheSet(LS_SRC, sources); dom.srcCount.textContent = sources.length + ' 个内置源'; }
+  function renderSrcTags() {
+    dom.srcTags.innerHTML = '';
+    sources.forEach(function (s, i) {
+      var b = document.createElement('div');
+      b.className = 'src-tag' + (curSrc && curSrc.name === s.name ? ' active' : '');
+      b.textContent = s.name;
+      b.onclick = function () { curSrc = s; renderSrcTags(); loadDefaultList(); };
+      dom.srcTags.appendChild(b);
+    });
+    dom.srcCount.textContent = sources.length + ' 个来源';
+  }
+
+  function listTitle() { return curSrc ? curSrc.name : '全部源'; }
+
+  async function fetchJson(url, timeout) {
+    timeout = timeout || 15000;
+    var ctrl = ('AbortController' in window) ? new AbortController() : null;
+    var t = ctrl ? setTimeout(function(){ ctrl.abort(); }, timeout) : null;
+    try {
+      var res = await fetch(url, ctrl ? { signal: ctrl.signal } : {});
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return await res.json();
+    } finally { if (t) clearTimeout(t); }
+  }
+
+  function dedupName(id) { return !id ? ('m_' + Math.random().toString(36).slice(2, 8)) : String(id); }
+
+  function apiHome(limit) {
+    limit = limit || 20;
+    var url = '';
+    if (curSrc.type === 'nh') {
+      url = 'https://nhentai.net/api/galleries/search?query=shemale%20gay&page=' + curPage;
+    } else if (curSrc.type === 'md') {
+      url = curSrc.base + '/manga?limit=' + limit + '&offset=' + ((curPage - 1) * limit) + '&includes[]=cover_art&includes[]=author';
+    } else {
+      url = curSrc.base;
+    }
+    return url;
+  }
+  function apiSearch(kw, limit) {
+    limit = limit || 20;
+    if (curSrc.type === 'nh') return 'https://nhentai.net/api/galleries/search?query=' + encodeURIComponent(kw) + '&page=' + curPage;
+    if (curSrc.type === 'md') return curSrc.base + '/manga?limit=' + limit + '&offset=' + ((curPage-1)*limit) + '&title=' + encodeURIComponent(kw) + '&includes[]=cover_art';
+    return curSrc.base + '?keyword=' + encodeURIComponent(kw) + '&page=' + curPage;
+  }
+
+  function normItem(it, idx) {
+    var id = dedupName(it.id || it.manga_id || it.gid || (curSrc? curSrc.name : 'x') + '_' + (idx||0));
+    var name = it.name || it.title || it.vod_name || it.manga_name || ('未命名 ' + (idx||0));
+    if (it.titles && it.titles.length) name = (it.titles[0].title || it.titles[0].name || name);
+    var img = it.cover || it.img || it.pic || it.vod_pic || it.thumb || it.thumbnail || it.cover_url || '';
+    var desc = it.desc || it.intro || it.description || it.content || it.summary || it.des || '';
+    var sub = it.author || it.artist || it.author_name || it.user || '';
+    if (!sub && it.tags && it.tags.length) {
+      var tg = it.tags.map(function(t){ return (t.name || t.tag_name || (typeof t === 'string' ? t : '')); }).filter(Boolean).slice(0,3).join(' · ');
+      sub = tg;
+    }
+    var pages = parseInt(it.pages || it.page_count || it.image_count || it.chapters || 0, 10) || 0;
+    return { id: id, name: name, img: img, desc: desc, sub: sub, pages: pages, raw: it };
+  }
+
+  function renderList(arr, reset) {
+    if (reset) dom.list.innerHTML = '';
+    if (!arr || !arr.length) {
+      if (reset && !dom.list.childElementCount) dom.list.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--v-text-2);padding:40px 0;font-size:13px;">没有找到内容，换个关键词或源试试</div>';
+      return;
+    }
+    var frag = document.createDocumentFragment();
+    arr.forEach(function (it) {
+      var d = document.createElement('div');
+      d.className = 'm-item';
+      var imgHtml = it.img ? '<img src="' + esc(it.img) + '" onerror="this.style.display=\'none\'">' : '<i class="fa-solid fa-book-open"></i>';
+      var favBtn = favStore.indexOf(it.id) > -1 ? '<i class="fa-solid fa-heart" style="color:var(--v-red)"></i>' : '<i class="fa-regular fa-heart"></i>';
+      d.innerHTML = '<div class="m-cover" data-fav="' + esc(it.id) + '">' + imgHtml + '</div>' +
+        '<div class="m-info"><div class="m-name">' + esc(it.name) + '</div>' +
+        '<div class="m-sub">' + esc(it.sub || (it.pages ? it.pages + ' 页' : listTitle())) + '</div></div>';
+      d.onclick = function (e) {
+        var f = e.target.closest('[data-fav]');
+        if (!f) { openDetail(it); return; }
+        toggleFav(it.id);
+      };
+      frag.appendChild(d);
+    });
+    dom.list.appendChild(frag);
+    dom.count.textContent = dom.list.childElementCount;
+  }
+
+  function toggleFav(id) {
+    var i = favStore.indexOf(id);
+    if (i > -1) favStore.splice(i, 1); else favStore.push(id);
+    cacheSet(LS_FAV, favStore);
+    showToast(i > -1 ? '已取消收藏' : '已收藏');
+    renderList(listData, true);
+  }
+
+  async function loadDefaultList(reset) {
+    reset = reset !== false;
+    if (reset) { curPage = 1; listData = []; dom.list.innerHTML = ''; }
+    if (!curSrc) { curSrc = sources[0]; renderSrcTags(); }
+    dom.loader.classList.remove('hidden');
+    try {
+      // 巳泷 v9.0.9：本地内置精选源（离线立即可见，有封面）
+      if (curSrc.type === 'local') {
+        var nrm = LOCAL_COMICS.map(function (c) {
+          return { id: 'lc_' + c.name, name: c.name, img: c.img, sub: c.sub, desc: c.desc, pages: 0, raw: { local: true } };
+        });
+        listData = curKeyword
+          ? nrm.filter(function (x) { return String(x.name).toLowerCase().indexOf(curKeyword.toLowerCase()) > -1; })
+          : nrm;
+        renderList(listData, true);
+        dom.loader.classList.add('hidden');
+        return;
+      }
+      var url = curKeyword ? apiSearch(curKeyword) : apiHome();
+      var data = await fetchJson(url);
+      var items = [];
+      if (Array.isArray(data)) items = data;
+      else if (data && Array.isArray(data.data) && curSrc.type === 'md') items = data.data;
+      else if (data && Array.isArray(data.result)) items = data.result;
+      else if (data && Array.isArray(data.list)) items = data.list;
+      else if (data && data.data && typeof data.data === 'object') items = data.data.list || [];
+      var norm = items.map(function(it, i){ return normItem(it, i); });
+      listData = listData.concat(norm);
+      renderList(norm, false);
+    } catch (e) {
+      if (reset) dom.list.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--v-text-2);padding:30px 0;font-size:12px;line-height:1.8;">该源暂不可直连（可能需要网络或源失效）。<br>可到菜单「添加漫画源」导入其他 JSON 源。</div>';
+    }
+    dom.loader.classList.add('hidden');
+  }
+
+  function doSearch() {
+    var v = dom.keywordInput.value.trim();
+    curKeyword = v;
+    curPage = 1; listData = []; dom.list.innerHTML = '';
+    if (curSrc) loadDefaultList(true); else saveSources();
+  }
+
+  function openDetail(it) {
+    var box = document.createElement('div');
+    box.className = 'mask';
+    box.style.cssText = 'display:flex;align-items:center;justify-content:center;z-index:3000;';
+    var inner = document.createElement('div');
+    inner.style.cssText = 'width:88%;max-width:420px;max-height:82vh;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--v-glass);border:1px solid var(--v-border);border-radius:18px;padding:20px;backdrop-filter:blur(20px);';
+    inner.innerHTML =
+      '<div style="font-weight:700;font-size:17px;margin-bottom:10px;padding-right:24px;position:relative;">' + esc(it.name) +
+      '<span onclick="this.closest(\'.mask\').remove()" style="position:absolute;right:0;top:0;font-size:20px;color:var(--v-text-2);cursor:pointer;width:30px;text-align:center;"><i class="fa-solid fa-xmark"></i></span></div>' +
+      '<div style="display:flex;gap:12px;margin-bottom:12px;">' +
+      '<div style="width:96px;height:128px;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,rgba(168,85,247,.3),rgba(255,110,199,.15));flex-shrink:0;display:flex;align-items:center;justify-content:center;">' + (it.img ? '<img src="' + esc(it.img) + '" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display=\'none\'">' : '<i class="fa-solid fa-book-open"></i>') + '</div>' +
+      '<div style="flex:1;font-size:12.5px;color:var(--v-text-2);line-height:1.9;">' + (it.sub ? '<div><i class="fa-solid fa-user"></i> ' + esc(it.sub) + '</div>' : '') + (it.pages ? '<div><i class="fa-solid fa-file"></i> ' + it.pages + ' 页</div>' : '') + '<div><i class="fa-solid fa-layer-group"></i> ' + esc(listTitle()) + '</div></div></div>' +
+      '<div style="font-size:13px;line-height:1.7;color:#e6dcff;margin-bottom:14px;max-height:110px;overflow-y:auto;">' + esc(it.desc || '暂无简介') + '</div>' +
+      '<div class="btn-row">' +
+      '<div class="btn-i on" id="readNowBtn" style="margin-right:8px;"><i class="fa-solid fa-book-open-reader"></i> 开始阅读</div>' +
+      '<div class="btn-i" id="favDetailBtn">' + (favStore.indexOf(it.id) > -1 ? '<i class="fa-solid fa-heart"></i> 已收藏' : '<i class="fa-regular fa-heart"></i> 收藏') + '</div>' +
+      '</div>';
+    box.appendChild(inner);
+    document.body.appendChild(box);
+    inner.querySelector('#readNowBtn').onclick = function () { box.remove(); openReader(it); };
+    inner.querySelector('#favDetailBtn').onclick = function (e) {
+      var i = favStore.indexOf(it.id);
+      if (i > -1) favStore.splice(i,1); else favStore.push(it.id);
+      cacheSet(LS_FAV, favStore);
+      this.innerHTML = favStore.indexOf(it.id) > -1 ? '<i class="fa-solid fa-heart"></i> 已收藏' : '<i class="fa-regular fa-heart"></i> 收藏';
+      showToast('已更新收藏');
+    };
+  }
+
+  var readerIndex = 0, readerChapters = [], readerModeGrid = false, readerNovel = false;
+  function openReader(it) {
+    readerChapters = [];
+    readerIndex = 0;
+    dom.readerTitle.textContent = it.name;
+    dom.reader.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    dom.readerInfo.textContent = '正在加载目录...';
+    if (curSrc && (curSrc.type === 'nh')) {
+      buildNhReader(it);
+    } else {
+      buildGenericReader(it);
+    }
+  }
+  function buildGenericReader(it) {
+    try {
+      var ch = it.raw && (it.raw.chapters || it.raw.chapter || it.raw.directory);
+      var list = [];
+      if (Array.isArray(ch)) list = ch;
+      else if (ch && Array.isArray(ch.list)) list = ch.list;
+      if (!list.length && it.pages) {
+        for (var i = 1; i <= Math.min(it.pages, 60); i++) list.push({ title: '第' + i + '话', url: '' });
+      }
+      readerChapters = list.length ? list : [{ title: it.name, url: '' }];
+      readerIndex = 0;
+      showChapter();
+    } catch (e) { dom.readerInfo.textContent = '目录加载失败'; }
+  }
+  function buildNhReader(it) {
+    try {
+      var gid = String(it.id);
+      var mid = gid;
+      fetchJson('https://nhentai.net/api/gallery/' + encodeURIComponent(gid)).then(function (g) {
+        readerChapters = (g && g.images && g.images.pages) ? g.images.pages.map(function (p, i) { return { title: '第' + (i+1) + '页', url: gid, i: i }; }) : [];
+        if (readerChapters.length) {
+          readerIndex = 0; showChapter();
+        } else dom.readerInfo.textContent = '无页面';
+      }).catch(function () { dom.readerInfo.textContent = '获取失败'; });
+    } catch (e) { dom.readerInfo.textContent = '获取失败'; }
+  }
+  function showChapter() {
+    var ch = readerChapters[readerIndex];
+    if (!ch) { dom.readerBody.innerHTML = '<div class="page-empty">暂无内容</div>'; dom.readerInfo.textContent = '无内容'; return; }
+    dom.readerInfo.textContent = (readerIndex + 1) + ' / ' + readerChapters.length + (ch.title ? ' · ' + ch.title : '');
+    if (ch.url && ch.i !== undefined) {
+      var page = ch.i + 1;
+      dom.readerBody.innerHTML = '<div class="page-empty" style="padding-bottom:6px;"><i class="fa-solid fa-spinner fa-spin"></i> 加载第 ' + page + ' 页...</div>';
+      fetchJson('https://nhentai.net/api/gallery/' + encodeURIComponent(ch.url)).then(function (g) {
+        dom.readerBody.innerHTML = '<img class="page-img" src="https://i.nhentai.net/galleries/' + g.media_id + '/' + page + '.' + (g.images.pages[ch.i].t === 'p' ? 'png' : 'jpg') + '" onload="" onerror="this.outerHTML=\'<div class=page-empty>图片加载失败</div>\'">';
+      }).catch(function(){ dom.readerBody.innerHTML = '<div class="page-empty">加载失败</div>'; });
+      return;
+    }
+    if (ch.url && /^https?:\/\//.test(ch.url)) {
+      dom.readerBody.innerHTML = '<div class="page-empty">漫画站：' + esc(ch.url) + '</div><div style="text-align:center;padding:10px;"><a href="' + esc(ch.url) + '" style="color:var(--v-primary);font-size:13px;">在浏览器打开 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></div>';
+      return;
+    }
+    dom.readerBody.innerHTML = '<div class="page-empty">该源暂不支持在线直读，<br>请更换漫画源或到菜单添加新的 JSON 源。</div>';
+  }
+  function readerNav(dir) {
+    if (!readerChapters.length) return;
+    readerIndex += dir;
+    if (readerIndex < 0) readerIndex = 0;
+    if (readerIndex >= readerChapters.length) readerIndex = readerChapters.length - 1;
+    showChapter();
+  }
+  function closeReader() {
+    dom.reader.classList.remove('show');
+    document.body.style.overflow = '';
+    dom.readerBody.innerHTML = '';
+  }
+
+  function initEvents() {
+    $('menuBtn').onclick = function () { dom.sideMenu.classList.add('show'); dom.menuMask.classList.add('show'); };
+    $('homeBtn').onclick = function () { closeReader(); };  // WebView 壳底部导航已有首页，此钮保持
+    dom.menuMask.onclick = function () { dom.sideMenu.classList.remove('show'); dom.addSourceMenu.classList.remove('show'); this.classList.remove('show'); };
+    $('searchBtn').onclick = doSearch;
+    dom.keywordInput.onkeydown = function (e) { if (e.key === 'Enter') doSearch(); };
+    $('openAddSource').onclick = function () { dom.sideMenu.classList.remove('show'); dom.menuMask.classList.remove('show'); dom.srcJsonInput.value = ''; dom.srcUrlInput.value = ''; dom.addSourceMenu.classList.add('show'); dom.addSourceMask.classList.add('show'); };
+    $('closeAddSource').onclick = function () { dom.addSourceMenu.classList.remove('show'); dom.addSourceMask.classList.remove('show'); };
+    dom.addSourceMask.onclick = function () { dom.addSourceMenu.classList.remove('show'); this.classList.remove('show'); };
+    $('parseSourceBtn').onclick = parseAndAdd;
+    $('clearCache').onclick = function () { var c = ['sl_comic_']; try { Object.keys(localStorage).forEach(function(k){ if(k.indexOf('sl_comic_')===0) localStorage.removeItem(k); }); loadSources(); } catch(e){} showToast('已清除'); dom.sideMenu.classList.remove('show'); dom.menuMask.classList.remove('show'); };
+    $('openAddToList').onclick = function () { dom.sideMenu.classList.remove('show'); dom.menuMask.classList.remove('show'); showToast('收藏功能直接点漫画卡片右下角 ♥ 即可'); };
+    $('aboutBtn').onclick = function () { showToast('巳泷漫画 · 支持自定义 JSON 源'); dom.sideMenu.classList.remove('show'); dom.menuMask.classList.remove('show'); };
+    $('readerClose').onclick = closeReader;
+    $('readerPrev').onclick = function () { readerNav(-1); };
+    $('readerNext').onclick = function () { readerNav(1); };
+    $('readerMode').onclick = function () { readerModeGrid = !readerModeGrid; this.classList.toggle('on', readerModeGrid); showChapter(); };
+    // 无限滚动
+    window.addEventListener('scroll', function () {
+      if (window.innerHeight + window.pageYOffset >= document.documentElement.scrollHeight - 400) {
+        curPage++;
+        loadDefaultList(false);
+      }
+    });
+  }
+
+  function parseAndAdd() {
+    var url = dom.srcUrlInput.value.trim();
+    var json = dom.srcJsonInput.value.trim();
+    if (!url && !json) { showToast('请输入 JSON 或 URL'); return; }
+    // 巳泷 v9.0.9：自动分类重分配——若识别为 小说/广播剧/音乐 源，重定位到对应区域
+    var routeText = json || url;
+    try {
+      if (window.SLROUTER) {
+        var routed = SLROUTER.route(routeText, 'comic');
+        if (routed.cat && routed.cat !== 'comic') {
+          var catName = { 'novel': '小说', 'radio': '广播剧·音乐', 'music': '音乐' }[routed.cat] || '音乐';
+          showToast('已识别为' + catName + '源，自动归入' + catName + '界面');
+          dom.addSourceMenu.classList.remove('show'); dom.addSourceMask.classList.remove('show');
+          return;
+        }
+      }
+    } catch (e) {}
+    var added = 0;
+    var addOne = function (s) { if (!s || !s.name) return; if (!sources.some(function(x){ return x.name === s.name || (s.url && x.url === s.url); })) { sources.push(s); added++; } };
+    try {
+      if (json) {
+        var obj = JSON.parse(json);
+        var arr = Array.isArray(obj) ? obj : (obj.sources || obj.list || obj.items || []);
+        if (!arr.length && !Array.isArray(obj)) arr = [obj];
+        if (Array.isArray(arr)) {
+          arr.forEach(function (o) {
+            var src = { name: o.name || o.sourceName || o.title || '自定义源', type: 'custom', url: o.url || o.api || o.home || '', base: o.base || o.url || o.api || '', desc: o.desc || o.description || '' };
+            if (typeof o === 'string') src = { name: '自定义源', type: 'custom', url: o, base: o };
+            addOne(src);
+          });
+        } else addOne({ name: (obj.name || obj.sourceName || '自定义源'), type: 'custom', base: obj.url || obj.api || obj.home || '', desc: obj.desc || '' });
+      }
+      if (url) addOne({ name: 'URL源 ' + (sources.length + 1), type: 'custom', base: url, url: url, desc: '从 URL 导入' });
+    } catch (e) {
+      showToast('JSON 解析失败，请检查格式');
+      return;
+    }
+    saveSources(); renderSrcTags();
+    if (added) { showToast('已添加 ' + added + ' 个源'); curSrc = sources[sources.length - 1]; renderSrcTags(); loadDefaultList(true); } else showToast('源已存在');
+    dom.addSourceMenu.classList.remove('show'); dom.addSourceMask.classList.remove('show');
+  }
+
+  window.onload = function () {
+    initDom();
+    favStore = cacheGet(LS_FAV) || [];
+    loadSources();
+    initEvents();
+    loadDefaultList(true);
+  };
+})();
+</script>
+</body>
+</html>
