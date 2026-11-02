@@ -229,7 +229,16 @@ async function ask(m,userText,quoteName,quoteText){
     var body={model:c.model,messages:[{role:'system',content:sysFor(m)}].concat(hist).concat([{role:'user',content:content}]),temperature:.9,max_tokens:320};
     var ctrl=new AbortController();var to=setTimeout(function(){ctrl.abort()},30000);
     try{
-      var res=await fetch(c.base+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+pickKey(c)},body:JSON.stringify(body),signal:ctrl.signal});
+      var target=c.base+'/chat/completions';
+      var init={method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+pickKey(c)},body:JSON.stringify(body),signal:ctrl.signal};
+      try{
+        if(/^(127\.0\.0\.1|localhost)$/.test(location.hostname||'')){
+          var ah=init.headers.Authorization;
+          init={method:'POST',headers:{'Content-Type':'application/json','X-SL-Auth':ah},body:init.body,signal:ctrl.signal};
+          target='/api?url='+encodeURIComponent(target);
+        }
+      }catch(e){}
+      var res=await fetch(target,init);
       if(!res.ok) throw new Error('HTTP '+res.status);
       var j=await res.json();
       var t=j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
