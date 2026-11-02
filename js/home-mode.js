@@ -26,25 +26,13 @@ window.SLMODE=(function(){
     if(GAY_KW.test(t))return 'gay';
     return 'mixed';
   }
-  function cycle(){ return Math.max(0,Math.min(1,+g('sl_cycle',0))); }
-  function eff(){
-    var c=cycle();
-    return c===1?'adult':'daily';
-  }
-  function visible(s,sec){
-    var k=kindOf(s,sec),e=eff();
-    if(e==='daily')return k!=='adult';
-    if(k!=='adult')return false;
-    /* 黑夜只保留男同/未标注的成人内容 */
-    var o=oriOf(s);
-    return o==='gay'||o==='mixed';
-  }
+  function cycle(){ return 1; }   /* v8.0.4：统一黑夜模式，取消日夜切换 */
+  function eff(){ return 'adult'; }
+  function visible(s,sec){ return true; }  /* v8.0.4：所有板块全部展示，不再隐藏 */
   function apply(){
-    var e=eff();
-    document.body.classList.remove('mode-kids','mode-adult','mode-daily','mode-dusk');
-    document.body.classList.toggle('day', e==='daily');
-    if(e==='daily')document.body.classList.add('mode-daily');
-    else document.body.classList.add('mode-adult');
+    document.body.classList.remove('mode-kids','mode-daily','mode-dusk');
+    document.body.classList.remove('day');
+    document.body.classList.add('mode-adult');
     var ob=document.getElementById('oriBtn'); if(ob)ob.style.display='none';
   }
   var KIDS=[
@@ -83,13 +71,10 @@ window.SLMODE=(function(){
     setKidsLimit:function(v){kidsLimit=Math.max(5,Math.min(600,+v||60));p('sl_kids_limit',kidsLimit)},
     setKind:function(sec,k){over[sec]=k;p('sl_sect_kind',over)},
     getKind:function(sec){return over[sec]||''},
-    day:function(){return cycle()===0},
-    setDay:function(v){p('sl_cycle',v?0:1)},
-    setNight:function(v){p('sl_cycle',v?1:0)},
+    day:function(){return false},
+    setDay:function(v){},
+    setNight:function(v){},
     cycle:cycle,
-    dragToggle:function(){
-      var c=cycle();
-      p('sl_cycle', (c===1)?0:1);
-    }
+    dragToggle:function(){}
   };
 })();
