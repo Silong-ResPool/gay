@@ -8,7 +8,7 @@
 <link rel="icon" href="logo.png">
 <link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="css/home.css?v=804b">
+<link rel="stylesheet" href="css/home.css?v=805">
 </head>
 <body>
 <script>
@@ -30,9 +30,9 @@
     <img class="nav-logo" src="logo.png" alt="巳泷资源库">
     <span class="nav-title">巳泷资源库</span>
   </div>
-  <div class="lamp-wrap">
-    <button class="theme-toggle" id="themeToggle" title="点击切换日间 / 夜间；拉灯绳切日夜"><span class="ico"><span class="moon"></span><span class="sun"></span></span></button>
-    <div class="lamp-cord" id="lampCord" title="下拉灯绳切换日间 / 夜间">
+  <div class="lamp-wrap" style="display:none">
+    <button class="theme-toggle" id="themeToggle" title="已统一为黑夜模式"><span class="ico"><span class="moon"></span><span class="sun"></span></span></button>
+    <div class="lamp-cord" id="lampCord" title="已统一为黑夜模式">
       <span class="cord-line"></span><span class="cord-handle"></span>
     </div>
   </div>
@@ -124,10 +124,6 @@
     <span class="lb">国际源代理出口<small>可选，用于 Yandex / Google / DuckDuckGo 等。支持 HTTP / SOCKS5，例如 http://127.0.0.1:7890 或 socks5://127.0.0.1:7891；留空会自动尝试 7890 / 10809 / 7891 / 1080。</small></span>
     <input id="setYProxy" type="text" placeholder="http://127.0.0.1:7890" autocomplete="off">
   </div>
-  <div class="row">
-    <span class="lb">网络加速（VPN）<small>自动选择最快节点，只加速本应用内的网络请求；首次开启会注册临时加速账号，不收集个人资料。</small></span>
-    <button class="sr-tool" id="vpnBtn" style="padding:9px 16px"><i class="fa-solid fa-shield-halved"></i> <span id="vpnTxt">已关闭</span></button>
-  </div>
   <div class="hint" id="setDiag"></div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
     <button class="sr-tool" id="setTest" style="padding:8px 14px"><i class="fa-solid fa-plug-circle-check"></i> 检测本地代理</button>
@@ -189,12 +185,12 @@
 <script src="data/api-app.js"></script>
 <script src="data/api-web.js"></script>
 <script src="data/index.js"></script>
-<script src="js/home-mode.js?v=804b"></script>
-<script src="js/home-core.js?v=804b"></script>
-<script src="js/home-theme.js?v=804b"></script>
+<script src="js/home-mode.js?v=805"></script>
+<script src="js/home-core.js?v=805"></script>
+<script src="js/home-theme.js?v=805"></script>
 
 
-<script src="js/home-pet.js?v=804b"></script>
+<script src="js/home-pet.js?v=805"></script>
 
 
 <script>(function(){function send(){try{var c=0;try{c=Number(window.SLMODE?window.SLMODE.cycle():0)||0}catch(e){}var fs=document.querySelectorAll('iframe');for(var i=0;i<fs.length;i++){try{fs[i].contentWindow.postMessage('sl_mode:'+c,'*')}catch(e){}}}catch(e){}}
@@ -202,8 +198,9 @@ try{new MutationObserver(send).observe(document.body,{attributes:true,attributeF
 setInterval(send,4000);
 try{if(localStorage.getItem('sl_noimg')==='1')document.body.classList.add('sl-noimg')}catch(e){}
 })();</script><script>(function(){var b=document.getElementById('dkChatIcon');if(!b)return;b.onclick=function(e){e.preventDefault();e.stopPropagation();try{if(typeof openButler==='function'){openButler('','chat');}else{location.href='butler/index.html?mode=chat';}}catch(err){location.href='butler/index.html?mode=chat';}};})();</script>
-<script src="js/char-alpha.js?v=804b"></script>
-<script src="js/home-hint.js?v=804b"></script>
+<script src="js/char-fallback.js?v=805"></script>
+<script src="js/char-alpha.js?v=805"></script>
+
 <script>
 /* v8.0.4：基础防查看源码（禁用右键与 F12 快捷键；前端代码无法绝对隐藏，仅增加窃取成本） */
 (function(){
