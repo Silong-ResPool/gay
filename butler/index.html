@@ -826,7 +826,8 @@ const AI_NV = {
   keys: (window.SL_API_NV && SL_API_NV.k) ? SL_API_NV.k.map(function(x){return SL_D(x)}) : [],
   model: (window.SL_API_NV ? SL_D(SL_API_NV.m) : 'deepseek-ai/deepseek-v4.1-flash')
 };
-const BUILTIN_POOLS = [AI_NV, AI_DEFAULT];
+const AI_FREE = { base: 'https://text.pollinations.ai/v1', keys: [], model: 'openai', free: true, lim: [20, 5] };
+const BUILTIN_POOLS = [AI_NV, AI_DEFAULT, AI_FREE];
 try{
   if(!localStorage.getItem('sl_api_pool_v3')){
     localStorage.setItem('sl_api_pool','0');
@@ -850,7 +851,7 @@ function setBuiltinPool(i){
 function apiIsCustom(){
   if(typeof aiCfg.customApi !== 'undefined') return !!aiCfg.customApi;
   var b = String(aiCfg.base || '');
-  if(b && b !== AI_DEFAULT.base && b !== AI_NV.base) return true;
+  if(b && b !== AI_DEFAULT.base && b !== AI_NV.base && b !== AI_FREE.base) return true;
   var k = (Array.isArray(aiCfg.keys) ? aiCfg.keys : []).join('|');
   return !!k && k !== AI_DEFAULT.keys.join('|') && k !== AI_NV.keys.join('|');
 }
@@ -1481,7 +1482,29 @@ function scheduleTokenDecay(start){
 }
 async function fetchT(url, opts, ms, outer){
   const ctrl = new AbortController();
-  const to = setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, ms || 15000);
+  let useMs = ms || 15000;
+  let init = Object.assign({}, opts || {});
+  const hdrs = Object.assign({}, init.headers || {});
+  Object.keys(hdrs).forEach(function(k){
+    var v = String(hdrs[k] || '');
+    if(/^authorization$/i.test(k) && (/^Bearer\s*$/i.test(v) || v === 'Bearer undefined')) delete hdrs[k];
+  });
+  init.headers = hdrs;
+  /* v9.9.2：APP/本地页面走 /api 原生转发，绕开 WebView 的 CORS；放宽超时 */
+  try{
+    var isLocal = /^(127\.0\.0\.1|localhost)$/.test(location.hostname || '');
+    var isApiHost = /^https:\/\/(integrate\.api\.nvidia\.com|api\.agnes-ai\.cn|text\.pollinations\.ai)/.test(String(url));
+    if(isLocal && isApiHost){
+      var auth = hdrs.Authorization || hdrs.authorization || '';
+      var h2 = {};
+      if(auth) h2['X-SL-Auth'] = auth;
+      if(String(init.method || '').toUpperCase() === 'POST') h2['Content-Type'] = 'application/json';
+      init.headers = h2;
+      url = '/api?url=' + encodeURIComponent(url);
+      useMs = Math.max(useMs, 90000);
+    }
+  }catch(e){}
+  const to = setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, useMs);
   try{
     if(outer && outer.signal){
       if(outer.signal.aborted) ctrl.abort();
@@ -1489,12 +1512,12 @@ async function fetchT(url, opts, ms, outer){
     }
   }catch(e){}
   try{
-    return await fetch(url, Object.assign({}, opts || {}, {signal: ctrl.signal}));
+    return await fetch(url, Object.assign({}, init, {signal: ctrl.signal}));
   } finally { clearTimeout(to); }
 }
 async function callAIStream(text, onDelta, extra){
   if(!takeRateLimit()) throw rateLimitError();
-  if(!parseKeys().length) throw new Error('没有可用 API Key');
+  if(!parseKeys().length && !builtinPool().free) throw new Error('没有可用 API Key');
   const messages = [{role:'system', content:buildSystemPrompt(extra)}];
   if(ctxMemory) messages.push(...ctxSlice());
   messages.push({role:'user', content:userContent(text)});
@@ -1502,7 +1525,7 @@ async function callAIStream(text, onDelta, extra){
   let lastErr=null;
   let switchedPool=false;
   for(let attempt=0; attempt<4; attempt++){
-    const keys=parseKeys(); if(!keys.length) break;
+    const keys=parseKeys(); if(!keys.length && !builtinPool().free) break;
     const body = Object.assign(requestBody(messages), {stream:true});
     const key=pickKey(keys), start=Date.now(), timers=scheduleTokenDecay(start);
     try{
@@ -1548,7 +1571,7 @@ async function callAIStream(text, onDelta, extra){
       timers.forEach(t=>clearTimeout(t));
       if(e && e.name==='AbortError' && abortCtrl && abortCtrl.signal.aborted) throw e;
       lastErr=e;
-      if(!apiIsCustom() && !switchedPool){ switchedPool=true; setBuiltinPool(builtinPoolIdx===0?1:0); }
+      if(!apiIsCustom() && !switchedPool){ switchedPool=true; setBuiltinPool((builtinPoolIdx+1)%BUILTIN_POOLS.length); }
     }
   }
   throw lastErr||new Error('生成失败');
@@ -1559,7 +1582,7 @@ async function quickComplete(prompt, maxTokens){
   let switchedPool = false;
   for(let round=0; round<2; round++){
     try{
-      const keys=parseKeys(); if(!keys.length) throw new Error('没有可用 API Key');
+      const keys=parseKeys(); if(!keys.length && !builtinPool().free) throw new Error('没有可用 API Key');
       const res=await fetchT(apiBase()+'/chat/completions',{
         method:'POST',
         headers:{'Content-Type':'application/json','Authorization':'Bearer '+pickKey(keys)},
@@ -1572,7 +1595,7 @@ async function quickComplete(prompt, maxTokens){
       return String(c||'').trim();
     }catch(e){
       lastErr=e;
-      if(!apiIsCustom() && !switchedPool){ switchedPool=true; setBuiltinPool(builtinPoolIdx===0?1:0); continue; }
+      if(!apiIsCustom() && !switchedPool){ switchedPool=true; setBuiltinPool((builtinPoolIdx+1)%BUILTIN_POOLS.length); continue; }
       throw e;
     }
   }
@@ -1580,14 +1603,14 @@ async function quickComplete(prompt, maxTokens){
 }
 async function callAI(text){
   if(!takeRateLimit()) throw rateLimitError();
-  if(!parseKeys().length) return null;
+  if(!parseKeys().length && !builtinPool().free) return null;
   const messages=[{role:'system',content:buildSystemPrompt()}];
   if(ctxMemory) messages.push(...ctxSlice());
   messages.push({role:'user',content:userContent(text)});
   abortCtrl=new AbortController();
   let switchedPool=false;
   for(let attempt=0;attempt<4;attempt++){
-    const keys=parseKeys(); if(!keys.length) break;
+    const keys=parseKeys(); if(!keys.length && !builtinPool().free) break;
     try{
       const res=await fetchT(apiBase()+'/chat/completions',{
         method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+pickKey(keys)},
@@ -1600,7 +1623,7 @@ async function callAI(text){
       content=content.trim();
       if(content) return content;
     }catch(e){ if(e&&e.name==='AbortError' && abortCtrl && abortCtrl.signal.aborted) throw e; }
-    if(!apiIsCustom() && !switchedPool){ switchedPool=true; setBuiltinPool(builtinPoolIdx===0?1:0); }
+    if(!apiIsCustom() && !switchedPool){ switchedPool=true; setBuiltinPool((builtinPoolIdx+1)%BUILTIN_POOLS.length); }
   }
   return null;
 }
@@ -2782,11 +2805,12 @@ async function loadModels(){
   sel.disabled = true;
   let list = MODEL_FALLBACK.slice();
   try{
-    if(cfg.keys.length && cfg.base){
-      const res = await fetchT(cfg.base+'/models',{headers:{'Authorization':'Bearer '+cfg.keys[0]}}, 6000, null);
+    if(cfg.base && (cfg.keys.length || builtinPool().free)){
+      const mh = cfg.keys.length ? {'Authorization':'Bearer '+cfg.keys[0]} : {};
+      const res = await fetchT(cfg.base+'/models',{headers:mh}, 8000, null);
       if(res.ok){
         const j = await res.json();
-        const arr = (j && (j.data||j.models)) || [];
+        const arr = (j && (j.data||j.models)) || (Array.isArray(j)?j:[]);
         const ids = arr.map(x=>x.id||x.name).filter(Boolean);
         ids.forEach(id=>{ if(!list.includes(id)) list.push(id); });
       }
@@ -3361,11 +3385,14 @@ function bindEvents(){
   if($('apiPoolAuto')) $('apiPoolAuto').onclick=function(){ choosePool('auto'); };
   syncPoolUI();
   async function probePools(){
-    /* v9.9.2：改用 GET /models 探测（秒级返回，避免模型推理卡住导致一直等） */
+    /* v9.9.2：真实 chat ping（8 秒），不可用的池会被跳过；公共备用池随 BUILTIN_POOLS 一起探测 */
+    var body = function(p){ return JSON.stringify({model:p.model, messages:[{role:'user',content:'ping'}], max_tokens:4, temperature:0, stream:false}); };
     var jobs = BUILTIN_POOLS.map(function(p, i){
-      return fetchT(p.base.replace(/\/+$/,'')+'/models',{
-        method:'GET', headers:{'Authorization':'Bearer '+p.keys[0]}
-      }, 6000, null).then(function(r){ return {i:i, ok:r.ok}; }).catch(function(){ return {i:i, ok:false}; });
+      var h = {'Content-Type':'application/json'};
+      if(p.keys && p.keys[0]) h.Authorization = 'Bearer ' + p.keys[0];
+      return fetchT(p.base.replace(/\/+$/,'')+'/chat/completions',{
+        method:'POST', headers:h, body: body(p)
+      }, 8000, null).then(function(r){ return {i:i, ok:r.ok}; }).catch(function(){ return {i:i, ok:false}; });
     });
     var rs = await Promise.all(jobs);
     var ok = rs.filter(function(x){return x.ok}).map(function(x){return x.i});
@@ -3375,9 +3402,9 @@ function bindEvents(){
       try{ localStorage.setItem('sl_api_auto','1'); }catch(e){}
       syncPoolUI();
       try{ loadModels(); }catch(e){}
-      showToast('内置 API 自动选择：' + (builtinPoolIdx===0 ? 'NVIDIA/DeepSeek' : '原有 API'));
+      showToast('内置 API 自动选择：' + (builtinPoolIdx===0 ? 'NVIDIA/DeepSeek' : (builtinPoolIdx===1 ? '原有 API' : '公共备用通道')));
     }else{
-      showToast('两个内置 API 均不可用（密钥失效或网络受限），请在 API 配置里填写自己的地址与密钥');
+      showToast('内置 API 暂不可用，请在 API 配置里填写自己的地址与密钥');
     }
   }
   setTimeout(probePools, 800);
