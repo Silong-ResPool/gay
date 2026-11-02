@@ -176,5 +176,188 @@
 		if(k)k.onclick=function(){ window.open('tank.html','_blank','noopener'); };
 	})();
 	</script>
+<style id="sl-skeleton">
+/* ============================================================
+   巳泷资源库 · 前端骨架 Token 体系（v8.0.7）
+   统一：颜色 / 字体 / 圆角 / 间距 / 阴影 / 层级
+   所有页面通过构建脚本内联本文件，页面运行时不额外请求 CSS。
+   ============================================================ */
+:root{
+  /* 颜色 */
+  --sl-bg:#08050f;
+  --sl-bg-2:#0e0819;
+  --sl-surface:#151024;
+  --sl-surface-2:#1d1533;
+  --sl-glass:rgba(16,10,30,.72);
+  --sl-glass-strong:rgba(20,12,36,.92);
+  --sl-primary:#8b5cf6;
+  --sl-primary-2:#7c3aed;
+  --sl-accent:#22d3ee;
+  --sl-pink:#ff6ec7;
+  --sl-glow:rgba(139,92,246,.45);
+  --sl-text:#f5f3ff;
+  --sl-text-2:#d8cfe9;
+  --sl-muted:#a99bc4;
+  --sl-line:rgba(139,92,246,.26);
+  --sl-line-strong:rgba(139,92,246,.42);
+  --sl-success:#34d399;
+  --sl-danger:#f87171;
+  --sl-warning:#fbbf24;
+  /* 字体 */
+  --sl-font:'PingFang SC','Microsoft YaHei',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --sl-font-mono:'JetBrains Mono','Consolas','Courier New',monospace;
+  /* 圆角 */
+  --sl-r-sm:8px;
+  --sl-r-md:12px;
+  --sl-r-lg:18px;
+  --sl-r-xl:24px;
+  --sl-r-pill:999px;
+  /* 间距 */
+  --sl-sp-1:4px;
+  --sl-sp-2:8px;
+  --sl-sp-3:12px;
+  --sl-sp-4:16px;
+  --sl-sp-5:24px;
+  --sl-sp-6:32px;
+  /* 阴影 */
+  --sl-shadow-sm:0 2px 10px rgba(0,0,0,.35);
+  --sl-shadow:0 8px 30px rgba(0,0,0,.45);
+  --sl-shadow-lg:0 18px 60px rgba(0,0,0,.55);
+  --sl-glow-line:0 0 0 1px rgba(139,92,246,.18),0 0 24px rgba(139,92,246,.18);
+  /* 层级 */
+  --sl-z-nav:100;
+  --sl-z-panel:300;
+  --sl-z-modal:1000;
+  --sl-z-toast:2000;
+  /* 兼容旧页面变量名 */
+  --acc:var(--sl-primary);
+  --acc2:var(--sl-accent);
+  --pink:var(--sl-pink);
+  --border:var(--sl-line);
+  --bg:var(--sl-bg);
+  --txt:var(--sl-text);
+  --v-glow:var(--sl-primary);
+  --v-ink:var(--sl-text);
+  --v-soft:var(--sl-line);
+  --text-muted:var(--sl-muted);
+}
+
+html,body{
+  background:var(--sl-bg);
+  color:var(--sl-text);
+  font-family:var(--sl-font);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+body{min-height:100vh}
+::selection{background:rgba(139,92,246,.38);color:#fff}
+*{scrollbar-width:thin;scrollbar-color:rgba(139,92,246,.55) transparent}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:rgba(139,92,246,.45);border-radius:var(--sl-r-pill)}
+::-webkit-scrollbar-track{background:transparent}
+*:focus-visible{outline:2px solid rgba(34,211,238,.55);outline-offset:2px}
+
+/* 顶部栏：统一深色玻璃 + 紫罗兰描边（不改各页面原有高度与排布） */
+.navbar,.v-head,.sl-top,.topbar,.top-bar,#topbar,.app-header,.header{
+  background:linear-gradient(180deg,var(--sl-glass-strong),var(--sl-glass))!important;
+  border-color:var(--sl-line)!important;
+  box-shadow:var(--sl-shadow-sm)!important;
+  backdrop-filter:blur(18px) saturate(160%);
+  -webkit-backdrop-filter:blur(18px) saturate(160%);
+}
+/* 侧栏 / 抽屉 / 面板统一 */
+.side,.side-panel,.side-pane,.src-dock,.panel,.drawer{
+  border-color:var(--sl-line)!important;
+}
+.side-header,.side-hd,.dock-head{
+  border-bottom-color:var(--sl-line)!important;
+}
+.side-header h3,.side-hd h3,.dock-title{
+  color:var(--sl-text)!important;letter-spacing:.4px;
+}
+
+/* 通用按钮：统一字体、圆角、动效；保留各页面自己的配色 */
+.btn,.pbtn,.mini,.sr-tool,.tab-btn,.api-pool-btn,.rate-btn,.mbtn,.card-edit,.dk-tts,.icon-btn,.sl-top .bk{
+  font-family:var(--sl-font);
+  border-radius:var(--sl-r-md);
+  transition:transform .16s ease,box-shadow .16s ease,background .16s ease,border-color .16s ease;
+}
+.btn:active,.pbtn:active,.mini:active,.sr-tool:active,.tab-btn:active,.api-pool-btn:active,.rate-btn:active,.mbtn:active,.card-edit:active,.dk-tts:active,.icon-btn:active,.sl-top .bk:active{
+  transform:scale(.97);
+}
+.primary,.pbtn{
+  background-image:linear-gradient(135deg,var(--sl-primary-2),var(--sl-primary))!important;
+  border-color:transparent!important;
+  color:#fff!important;
+  box-shadow:0 6px 18px rgba(124,58,237,.32);
+}
+
+/* 输入类：统一深色底、占位色与聚焦光环（排除勾选/滑杆/取色/文件） */
+input,textarea,select{font-family:var(--sl-font)}
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),textarea,select{
+  background:var(--sl-surface-2)!important;
+  color:var(--sl-text)!important;
+  border:1px solid var(--sl-line)!important;
+  border-radius:var(--sl-r-md)!important;
+}
+input::placeholder,textarea::placeholder{color:var(--sl-muted)}
+input:focus,textarea:focus,select:focus{
+  border-color:var(--sl-primary)!important;
+  box-shadow:0 0 0 3px rgba(139,92,246,.16);
+}
+
+/* 区块标题与正文层级 */
+.hd h2,.side-section h4,.side-header h3,.bubble-name,.v-bubble-name{
+  color:var(--sl-text);
+}
+.hd,.side-section h4{
+  letter-spacing:.3px;
+}
+.msg-time,.sub,.hint,.brand-status,.meta,.ds{
+  color:var(--sl-muted);
+}
+
+/* 弹窗 / 浮层统一描边与阴影 */
+.modal,.rate-card,.pet-card,.sl-kwarn,.dt,.dt-head,.context-menu{
+  border-color:var(--sl-line)!important;
+  box-shadow:var(--sl-shadow-lg)!important;
+}
+
+/* 兼容旧的白日/黄昏蓝白覆盖：即使旧 class 残留，也保持统一紫罗兰暗色 */
+html.sl-day,html.sl-dusk{
+  --bg:var(--sl-bg);--card:var(--sl-surface);--line:var(--sl-line);
+  --txt:var(--sl-text);--mut:var(--sl-muted);--acc:var(--sl-primary);--acc2:var(--sl-accent);
+}
+html.sl-day body,html.sl-dusk body{
+  background:radial-gradient(ellipse at 12% 6%,rgba(139,92,246,.20),transparent 55%),
+             radial-gradient(ellipse at 88% 94%,rgba(255,110,199,.12),transparent 55%),
+             var(--sl-bg)!important;
+  color:var(--sl-text)!important;
+}
+html.sl-day .navbar,html.sl-dusk .navbar,body.mode-daily .nav{
+  background:linear-gradient(180deg,var(--sl-glass-strong),var(--sl-glass))!important;
+  border-color:var(--sl-line)!important;
+  background-image:none!important;
+}
+html.sl-day .side-header h3,body.mode-daily .hd h2,body.mode-daily .about-site h2{
+  color:var(--sl-text)!important;
+}
+html.sl-day .side,body.mode-daily .side{
+  background:var(--sl-glass-strong)!important;
+  border-color:var(--sl-line)!important;
+}
+body.mode-daily .side a:hover,body.mode-daily .side a.on{
+  color:var(--sl-text)!important;
+  border-left-color:var(--sl-primary)!important;
+}
+
+/* 移动端安全区与间距基线 */
+@supports(padding:max(0px)){
+  .navbar,.v-head,.sl-top,.topbar,.top-bar,#topbar,.app-header,.header{
+    padding-top:max(8px,env(safe-area-inset-top));
+  }
+}
+
+</style>
 </body>
 </html>
