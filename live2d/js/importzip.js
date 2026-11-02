@@ -95,11 +95,53 @@ const substituteDataURIs = (obj, dirPath, uriMap) => {
 // 巳泷 v9.3.0：支持 ZIP / LPK / WPK 三种模型包格式（本质均为 ZIP 压缩包）
 const isModelArchive = (name) => /\.(zip|lpk|wpk)$/i.test(String(name || ''));
 
+// v9.9.2：先读文件头，非标准 ZIP 给出可执行的解决提示（很多 WPK/LPK 是加密或专用格式）
+const readMagic = async (file) => {
+  try {
+    const buf = new Uint8Array(await file.slice(0, 4).arrayBuffer());
+    return String.fromCharCode.apply(null, Array.from(buf));
+  } catch (e) { return ''; }
+};
+
+// v9.9.2：支持「导入文件夹」——任何解包后的模型目录（含 .model3.json 与纹理）
+export const processFolderFiles = async (fileList) => {
+  const files = Array.from(fileList || []);
+  if (!files.length) throw new Error('文件夹里没有文件');
+
+  let modelFile = null;
+  let modelPath = '';
+  files.forEach((f) => {
+    const rel = String(f.webkitRelativePath || f.name);
+    if (ZIP_CONFIG.MODEL_JSON_REGEX.test(rel)) { modelFile = f; modelPath = rel; }
+  });
+  if (!modelFile) throw new Error('文件夹里没找到 .model3.json / .model.json');
+
+  const jsonObj = JSON.parse(await modelFile.text());
+  const dirPath = modelPath.includes('/') ? modelPath.slice(0, modelPath.lastIndexOf('/') + 1) : '';
+  const referenced = collectPaths(jsonObj, dirPath);
+  const uriMap = new Map();
+
+  await Promise.all(files.map(async (f) => {
+    const rel = String(f.webkitRelativePath || f.name);
+    if (!referenced.has(rel)) return;
+    const typed = new Blob([await f.arrayBuffer()], { type: getMimeType(rel) });
+    uriMap.set(rel, await blobToDataURL(typed));
+  }));
+
+  substituteDataURIs(jsonObj, dirPath, uriMap);
+  const base64 = btoa(unescape(encodeURIComponent(JSON.stringify(jsonObj))));
+  return `data:application/json;base64,${base64}`;
+};
+
 // Reads a ZIP archive, finds the model JSON and converts all referenced assets to data URIs.
 export const processZipFile = async (file) => {
   if (!file) return;
 
   try {
+    const magic = await readMagic(file);
+    if (!magic.startsWith('PK')) {
+      throw new Error('该文件不是标准 ZIP 包（' + (file.name || '') + ' 可能是加密包或专用格式）。请先用 7-Zip 等工具解压成文件夹，再用「导入文件夹」');
+    }
     const zip = await JSZip.loadAsync(file);
 
     // Find the model JSON entry; last match wins if multiple exist.
@@ -239,4 +281,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   attachDropHandlers();
+
+  // v9.9.2：导入已解包的模型文件夹（适配加密 WPK/LPK / 7-Zip 解包后的目录）
+  const folderInput = document.getElementById('folder-upload-input');
+  if (folderInput) {
+    folderInput.addEventListener('change', async () => {
+      if (!folderInput.files || !folderInput.files.length) return;
+      try {
+        try { window.SL_L2D_TOAST && window.SL_L2D_TOAST('正在解析模型文件夹…'); } catch (e) {}
+        const url = await processFolderFiles(folderInput.files);
+        window.loadLive2DModel?.(url);
+        try { window.SL_L2D_TOAST && window.SL_L2D_TOAST('模型已载入（文件夹导入）'); } catch (e) {}
+      } catch (error) {
+        try { window.SL_L2D_TOAST && window.SL_L2D_TOAST('文件夹解析失败：' + (error.message ?? error)); } catch (e) {}
+      }
+      folderInput.value = '';
+    });
+  }
 });
