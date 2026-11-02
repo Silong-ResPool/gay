@@ -1492,7 +1492,7 @@ async function fetchT(url, opts, ms, outer){
   init.headers = hdrs;
   /* v9.9.2：APP/本地页面走 /api 原生转发，绕开 WebView 的 CORS；放宽超时 */
   try{
-    var isLocal = /^(127\.0\.0\.1|localhost)$/.test(location.hostname || '');
+    var isLocal = location.protocol === 'http:' && /^(127\.0\.0\.1|localhost)$/.test(location.hostname || '');
     var isApiHost = /^https:\/\/(integrate\.api\.nvidia\.com|api\.agnes-ai\.cn|text\.pollinations\.ai)/.test(String(url));
     if(isLocal && isApiHost){
       var auth = hdrs.Authorization || hdrs.authorization || '';
