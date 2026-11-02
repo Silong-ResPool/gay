@@ -782,11 +782,23 @@ const DEFAULT_CARD = {
   greeting: '主人，您回来了。鸡巴已经硬了，随时可以供您使用。'
 };
 /* v9.9.1：主页内容模式（日常 / 成人 / 儿童 / 全年龄）→ 管家三套独立设定 */
-var SITE_MODE='adult';
+var SITE_MODE=(function(){try{return (+(localStorage.getItem('sl_cycle')||0))===1?'adult':'daily'}catch(e){return 'daily'}})();
 var MODE_PROMPTS={
-  daily:'你是用户的专业资源与办公管家，绝对理性、简洁高效，不暧昧、不撒娇。称呼用户为“你”（除非用户指定其他称呼）。帮用户检索资源、整理计划、处理工作与学习事务，回答直接、条理清晰，不闲聊过多。',
+  daily:'你是巳泷资源库的专业资源与办公助手（白天模式）。必须称呼用户为“尊敬的用户”，语气礼貌、克制、正经。只处理资源检索、办公与学习协助，不暧昧、不撒娇、不涉成人内容；回答简洁、条理清晰，不闲聊过多。即使尊敬的用户主动带入亲密话题，也要礼貌地把话题拉回工作与资源。',
   kids:'你是温柔可靠的大哥哥，陪小朋友聊天、找动画片和儿童游戏。称呼用户为“小朋友”。语气温柔、耐心、简单易懂，不说脏话、不涉成人内容；提醒小朋友注意休息、保护眼睛。'
 };
+/* v9.9.2：随日夜主题自动切换人设（sl_cycle=0 白天 / 1 夜间） */
+(function(){
+  function applyMode(){
+    try{ SITE_MODE=((+(localStorage.getItem('sl_cycle')||0))===1)?'adult':'daily'; }catch(e){}
+    var inp=document.getElementById('msgInput');
+    if(inp) inp.placeholder = (SITE_MODE==='daily') ? '尊敬的用户，需要我帮您找点什么？' : '主人，想和玉珩聊点什么？';
+  }
+  window.__SL_APPLY_MODE=applyMode;
+  window.addEventListener('storage',function(e){ if(e && e.key==='sl_cycle') applyMode(); });
+  window.addEventListener('message',function(e){ if(e && e.data && e.data.type==='sl_mode') applyMode(); });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',applyMode); else applyMode();
+})();
 
 /* v9.9.0：API 配置已拆分到 data/api-app.js / api-web.js（Base64），页面不再出现明文密钥 */
 const AI_DEFAULT = {
@@ -1345,7 +1357,9 @@ function buildSystemPrompt(extra){
   });
   if(extra) parts.push(extra);
   parts.push('当前智能体：' + (card.name || '玉珩'));
-  parts.push('对用户的称呼：' + (SITE_MODE==='daily'?'你':(SITE_MODE==='kids'?'小朋友':(persona.title || '主人'))));
+  parts.push('对用户的称呼：' + (SITE_MODE==='daily'?'尊敬的用户':(SITE_MODE==='kids'?'小朋友':(persona.title || '主人'))));
+  if(SITE_MODE==='adult') parts.push('夜间模式：你是只属于主人的成人资源管家，语气亲密宠溺，可以称呼“主人”“亲爱的主人”，主动为主人寻欢、找资源。');
+  else parts.push('白天模式：保持专业助手身份，不要暧昧。');
   try{
     var __up=JSON.parse(localStorage.getItem('sl_user_profile')||'{}')||{};
     var __cardName=card.name||'玉珩';
@@ -3347,10 +3361,10 @@ function bindEvents(){
   if($('apiPoolAuto')) $('apiPoolAuto').onclick=function(){ choosePool('auto'); };
   syncPoolUI();
   async function probePools(){
-    var body = function(p){ return JSON.stringify({model:p.model, messages:[{role:'user',content:'ping'}], max_tokens:4, temperature:0}); };
+    /* v9.9.2：改用 GET /models 探测（秒级返回，避免模型推理卡住导致一直等） */
     var jobs = BUILTIN_POOLS.map(function(p, i){
-      return fetchT(p.base.replace(/\/+$/,'')+'/chat/completions',{
-        method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+p.keys[0]}, body: body(p)
+      return fetchT(p.base.replace(/\/+$/,'')+'/models',{
+        method:'GET', headers:{'Authorization':'Bearer '+p.keys[0]}
       }, 6000, null).then(function(r){ return {i:i, ok:r.ok}; }).catch(function(){ return {i:i, ok:false}; });
     });
     var rs = await Promise.all(jobs);
@@ -3363,7 +3377,7 @@ function bindEvents(){
       try{ loadModels(); }catch(e){}
       showToast('内置 API 自动选择：' + (builtinPoolIdx===0 ? 'NVIDIA/DeepSeek' : '原有 API'));
     }else{
-      showToast('两个内置 API 均检测失败，请检查网络或手动填写 API');
+      showToast('两个内置 API 均不可用（密钥失效或网络受限），请在 API 配置里填写自己的地址与密钥');
     }
   }
   setTimeout(probePools, 800);
