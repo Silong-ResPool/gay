@@ -1466,7 +1466,7 @@ function requestBody(messages, maxTokens){
   };
   if(!aiCfg.unlimited){
     const mt = Math.max(1, Math.min(1000000, Number(maxTokens || aiCfg.max_tokens || 1024)));
-    body.max_tokens = mt;
+    body.max_tokens = (!apiIsCustom() && builtinPool().free) ? Math.max(mt, 2048) : mt;
   }
   return body;
 }
@@ -1536,6 +1536,7 @@ async function callAIStream(text, onDelta, extra){
       }, 18000, abortCtrl);
       if(!res.ok) throw new Error('HTTP '+res.status);
       let content='';
+      let reasoningText='';
       const ctype=(res.headers.get('content-type')||'').toLowerCase();
       if(res.body && res.body.getReader && ctype.includes('event-stream')){
         const reader=res.body.getReader(), dec=new TextDecoder();
@@ -1551,7 +1552,9 @@ async function callAIStream(text, onDelta, extra){
             try{
               const j=JSON.parse(data);
               const d=j.choices&&j.choices[0]&&j.choices[0].delta;
-              const piece=d&&(d.content||(d.reasoning_content?'':''));
+              const piece=d&&(d.content||'');
+              const rs=d&&(d.reasoning||d.reasoning_content||'');
+              if(rs){ reasoningText+=rs; }
               if(piece){ content+=piece; try{ onDelta&&onDelta(piece); }catch(e){} }
             }catch(e){}
           }
@@ -1560,9 +1563,14 @@ async function callAIStream(text, onDelta, extra){
         const j=await res.json();
         let c=j&&j.choices&&j.choices[0]&&j.choices[0].message?j.choices[0].message.content:'';
         if(typeof c!=='string') c=Array.isArray(c)?c.map(x=>x.text||'').join(''):'';
+        if(!c){
+          const rr=j&&j.choices&&j.choices[0]&&j.choices[0].message&&(j.choices[0].message.reasoning||j.choices[0].message.reasoning_content);
+          if(rr) c=String(rr);
+        }
         content=c;
         if(content) try{ onDelta&&onDelta(content); }catch(e){}
       }
+      if(!content) content=reasoningText;
       timers.forEach(t=>clearTimeout(t));
       content=String(content||'').trim();
       if(!content) throw new Error('空回复');
