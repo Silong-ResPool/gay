@@ -378,7 +378,7 @@ button{flex:0 0 auto}
   .msg-item{max-width:94%}
   .input-area{padding:6px 8px 10px}
   .search-bar{margin-left:8px;margin-right:8px}
-}#chatCharWrap{position:fixed;left:50%;bottom:8px;transform:translateX(-50%);z-index:6;touch-action:none;cursor:grab}
+}#chatCharWrap{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:6;touch-action:none;cursor:grab}
 #chatChar{height:96px;width:auto;max-width:40vw;object-fit:contain;background:transparent!important;filter:drop-shadow(0 4px 8px rgba(0,0,0,.45));pointer-events:none}
 #emojiRain{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
 .emoji-drop{position:absolute;top:-34px;will-change:transform;animation:emojiFall linear forwards}
@@ -782,7 +782,7 @@ const DEFAULT_CARD = {
   greeting: '主人，您回来了。鸡巴已经硬了，随时可以供您使用。'
 };
 /* v9.9.1：主页内容模式（日常 / 成人 / 儿童 / 全年龄）→ 管家三套独立设定 */
-var SITE_MODE=(function(){try{return (+(localStorage.getItem('sl_cycle')||0))===1?'adult':'daily'}catch(e){return 'daily'}})();
+var SITE_MODE='adult';   /* v8.0.4：统一黑夜模式，管家始终为主人向成人设定 */
 var MODE_PROMPTS={
   daily:'你是巳泷资源库的专业资源与办公助手（白天模式）。必须称呼用户为“尊敬的用户”，语气礼貌、克制、正经。只处理资源检索、办公与学习协助，不暧昧、不撒娇、不涉成人内容；回答简洁、条理清晰，不闲聊过多。即使尊敬的用户主动带入亲密话题，也要礼貌地把话题拉回工作与资源。',
   kids:'你是温柔可靠的大哥哥，陪小朋友聊天、找动画片和儿童游戏。称呼用户为“小朋友”。语气温柔、耐心、简单易懂，不说脏话、不涉成人内容；提醒小朋友注意休息、保护眼睛。'
@@ -790,9 +790,9 @@ var MODE_PROMPTS={
 /* v9.9.2：随日夜主题自动切换人设（sl_cycle=0 白天 / 1 夜间） */
 (function(){
   function applyMode(){
-    try{ SITE_MODE=((+(localStorage.getItem('sl_cycle')||0))===1)?'adult':'daily'; }catch(e){}
+    SITE_MODE='adult';
     var inp=document.getElementById('msgInput');
-    if(inp) inp.placeholder = (SITE_MODE==='daily') ? '尊敬的用户，需要我帮您找点什么？' : '主人，想和玉珩聊点什么？';
+    if(inp) inp.placeholder='主人，想和玉珩聊点什么？';
   }
   window.__SL_APPLY_MODE=applyMode;
   window.addEventListener('storage',function(e){ if(e && e.key==='sl_cycle') applyMode(); });
@@ -1371,7 +1371,8 @@ function buildSystemPrompt(extra){
   parts.push('你能正常聊天，也能协助主人找网站和资源。找资源由系统代码检索，不要声称自己不能搜索。');
   parts.push('资源库就是你身体的一部分。主人聊到任何站内网站时，你要主动介绍它的用途、适合做什么、特点、优点与限制，并给出链接；不要说不了解、不要只报名字。');
   parts.push('站内资源库共 ' + SITE_INDEX.length + ' 个网站，分布如下（具体链接由系统检索提供）：');
-  parts.push(siteKnowledge());
+  var __sk=siteKnowledge();
+  parts.push(__sk.length>2600 ? __sk.slice(0,2600)+'\n（其余站点由系统按需检索提供）' : __sk);
   const mem = memoryTop(10);
   if(mem.length) parts.push('长期记忆（越靠前越重要）：' + mem.map(x=>x.k+'×'+x.hits).join('、'));
   if(memory.custom) parts.push('主人指定的长期记忆（务必牢记）：' + String(memory.custom).slice(0,1200));
@@ -1504,6 +1505,14 @@ async function fetchT(url, opts, ms, outer){
       useMs = Math.max(useMs, 90000);
     }
   }catch(e){}
+  /* 公共备用通道限速：匿名接口约 3 秒 1 次，避免连续请求 429 导致续写失败 */
+  try{
+    if(/text\.pollinations\.ai/i.test(String(url))){
+      var wait = Math.max(0, 3500 - (Date.now() - (window.__slFreeAt || 0)));
+      window.__slFreeAt = Date.now() + wait;
+      if(wait) await new Promise(function(r){ setTimeout(r, wait); });
+    }
+  }catch(e){}
   const to = setTimeout(function(){ try{ ctrl.abort(); }catch(e){} }, useMs);
   try{
     if(outer && outer.signal){
@@ -1580,6 +1589,7 @@ async function callAIStream(text, onDelta, extra){
       if(e && e.name==='AbortError' && abortCtrl && abortCtrl.signal.aborted) throw e;
       lastErr=e;
       if(!apiIsCustom() && !switchedPool){ switchedPool=true; setBuiltinPool((builtinPoolIdx+1)%BUILTIN_POOLS.length); }
+      await new Promise(function(r){ setTimeout(r, 1200); });
     }
   }
   throw lastErr||new Error('生成失败');
@@ -3964,6 +3974,7 @@ function mount(){
   }catch(e){}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount);else mount();
 })();</script>
-<script src="../js/char-alpha.js?v=804b"></script>
+<script src="../js/char-fallback.js?v=805"></script>
+<script src="../js/char-alpha.js?v=805"></script>
 </body>
 </html>
