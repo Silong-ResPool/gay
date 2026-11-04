@@ -86,14 +86,24 @@
    用 MutationObserver 防止旧页面脚本再次加回 sl-day / mode-daily。 */
 (function(){
   function force(){
+    /* v8.1.0 卡死修复：classList.remove/add 即使无实际变化也会产生 class 变更记录，
+       本函数由 MutationObserver 回调，无脑 remove+add 会造成无限观察者风暴（主线程卡死）。
+       改为「先检查、确有差异才写」。 */
     var d=document.documentElement;
     if(d){
-      d.classList.remove('sl-day','sl-dusk','day');
-      d.classList.add('sl-night');
+      var dNeed=!d.classList.contains('sl-night')||d.classList.contains('sl-day')||d.classList.contains('sl-dusk')||d.classList.contains('day');
+      if(dNeed){
+        d.classList.remove('sl-day','sl-dusk','day');
+        d.classList.add('sl-night');
+      }
     }
-    if(document.body){
-      document.body.classList.remove('mode-daily','mode-dusk','day');
-      document.body.classList.add('mode-night','mode-adult');
+    var b=document.body;
+    if(b){
+      var bNeed=!b.classList.contains('mode-night')||!b.classList.contains('mode-adult')||b.classList.contains('mode-daily')||b.classList.contains('mode-dusk')||b.classList.contains('day');
+      if(bNeed){
+        b.classList.remove('mode-daily','mode-dusk','day');
+        b.classList.add('mode-night','mode-adult');
+      }
     }
   }
   try{

@@ -3,7 +3,7 @@
     <version>8.0.4</version>
     <log>
 📋 巳泷资源库 v8.0.4 更新公告
-本次版本大幅优化首页加载性能，采用资源按需加载，极大提升启动速度并节省流量。新增NVIDIA DeepSeek AI接口，支持多接口自动择优、超时保护、人设绑定与群聊功能优化。重构影视板块布局、扩充资源源并修复跨域报错。升级Live2D解析内核，修复模型异常并支持多格式模型上传。新增Windows单文件客户端，统一多端UI，优化聊天界面样式，精简主题配色，同时修复多项界面显示BUG。首次启动异常可清理缓存重试。
+本次版本彻底修复全平台页面卡死/无响应问题（移除了会无限自我触发的主题观察者循环），首页与管家页均可秒开；同时完成数据按需加载、图片压缩、HLS 内核按需注入等瘦身优化。安卓 / 鸿蒙 / 电脑三平台资源已完全同步。
     </log>
-<url>https://github.com/Silong-ResPool/gay/releases/download/gay/Silong-ResPool_v8.0.4.apk</url>
+    <url>https://github.com/Silong-ResPool/gay/releases/download/gay/Silong-ResPool_v8.0.4_Android.apk</url>
 </update>
