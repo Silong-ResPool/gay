@@ -1677,7 +1677,7 @@ function homeSearch(q,opts){
 function routeHomeQuery(q){
   q=String(q||'').trim();
   if(!q)return;
-  if(!allDataReady()){ ensureAllData(function(){ routeHomeQuery(q); }); return; }
+  if(!allDataReady()){ toast('正在整理资源库，马上就好…'); ensureAllData(function(){ routeHomeQuery(q); }); return; }
   dockOpen();
   if(/^(https?:\/\/|www\.)/i.test(q)){
     var url=/^www\./i.test(q)?('https://'+q):q;
@@ -1789,17 +1789,37 @@ function loadAllData(cb){
   if(cb) __allDataPromise.then(function(){ try{cb()}catch(e){} });
   return __allDataPromise;
 }
-function allDataReady(){ return order.every(function(o){return !!DATA[o.id]}) }
-function ensureAllData(cb){
-  if(allDataReady()){ cb(); return; }
-  toast('正在加载资源库，请稍候…');
-  loadAllData(cb);
-}
+function allDataReady(){ return __sitesWarm }
+function ensureAllData(cb){ warmSiteIndex(cb); }
+/* v8.0.4：站点索引分片预热 + 按分类缓存。原实现对同一个分类重复解析 3~4 次，
+   底部小窗一搜索就同步解析 1.3MB JSON，主线程会明显停顿（就是“查资源卡一下”的来源）。 */
+var __secSitesCache={}, __sitesWarm=false, __siteWarming=false, __warmQ=[];
 function sectionSites(id){
-  var d=DATA[id]; if(!d||!d.cards)return [];
+  if(__secSitesCache[id]) return __secSitesCache[id];
+  var d=DATA[id];
   var out=[];
-  d.cards.forEach(function(c){(c.sites||[]).forEach(function(s){out.push(s)})});
+  if(d&&d.cards){ d.cards.forEach(function(c){(c.sites||[]).forEach(function(s){out.push(s)})}); }
+  __secSitesCache[id]=out;
   return out;
+}
+function warmSiteIndex(cb){
+  if(cb){ if(__sitesWarm){ try{cb()}catch(e){} } else __warmQ.push(cb); }
+  if(__sitesWarm || __siteWarming) return;
+  __siteWarming=true;
+  var ids=order.map(function(o){return o.id}), i=0;
+  var idle=(window.requestIdleCallback?function(f){window.requestIdleCallback(f,{timeout:600})}:function(f){setTimeout(f,1)});
+  (function step(){
+    var t0=(performance&&performance.now)?performance.now():Date.now();
+    while(i<ids.length){
+      sectionSites(ids[i++]);
+      var now=(performance&&performance.now)?performance.now():Date.now();
+      if(now-t0>8) break;
+    }
+    if(i<ids.length){ idle(step); return; }
+    __sitesWarm=true; __siteWarming=false;
+    var q=__warmQ.slice(); __warmQ=[];
+    q.forEach(function(f){ try{f()}catch(e){} });
+  })();
 }
 function allSites(){var a=[];order.forEach(function(o){a=a.concat(sectionSites(o.id))});return a}
 function cardHtml(s,hero){
@@ -3901,6 +3921,7 @@ window.__slRerender=function(){render()};
 window.__slRefreshTheme=function(){if(MODE)MODE.apply()};
 /* v8.0.6：首屏直接渲染框架，可见分类按可见区域懒加载，不再等 43 个数据文件 */
 render();
+  setTimeout(function(){ try{ warmSiteIndex(); }catch(e){} }, 800);;
 })();
 
 
