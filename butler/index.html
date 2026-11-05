@@ -623,8 +623,8 @@ button{flex:0 0 auto}
           <div style="font-size:10px;color:var(--text-muted);margin-top:4px" id="apiPoolTip">当前：NVIDIA（4 Key）</div>
           <div id="apiDualInfo" style="font-size:10px;line-height:1.75;color:var(--text-muted);margin-top:6px;padding:8px 10px;border-radius:10px;background:rgba(124,58,237,.10);border:1px solid rgba(124,58,237,.28)">
             内置双 API（两个都在用，可手动切换）：<br>
-            ① NVIDIA：https://integrate.api.nvidia.com/v1<br>
-            ② 公共免费：https://text.pollinations.ai/v1<br>
+            ① NVIDIA：https://integrate.api.nvidia.com/v1（4 Key）<br>
+            ② 公共免费：https://api.agnes-ai.cn/v1（1 Key）<br>
             <span style="color:#c4b5fd">固定选择某个 API 失败时会自动切到另一个重试。</span>
           </div>
         </div>
@@ -635,7 +635,6 @@ button{flex:0 0 auto}
           <p style="font-size:11px;color:var(--text-muted);line-height:1.7;margin:2px 0 8px">内置 Key 是公开共享池，每天很多人同时使用，容易出现限流、排队或 403。自己注册的免费 Key 额度独占、速度更快，几分钟就能拿到。</p>
           <div class="row" style="display:flex;gap:6px;flex-wrap:wrap">
             <a class="btn" href="https://build.nvidia.com/" target="_blank" style="flex:1;text-align:center;text-decoration:none">NVIDIA 免费申请</a>
-            <a class="btn" href="https://pollinations.ai/" target="_blank" style="flex:1;text-align:center;text-decoration:none">Pollinations 免费申请</a>
           </div>
         </div>
         <div class="form-group"><label>Key 池模式</label>
@@ -1003,13 +1002,21 @@ const AI_DEFAULT = {
   frequency_penalty: 0
 };
 
-/* 内置 API 池：NVIDIA（4 Key 轮换）/ 公共免费通道；旧的 agnes 接口已失效，不再参与自动选择 */
+/* 内置 API 池（按主人提供的 API接口.txt）：
+   ① NVIDIA：https://integrate.api.nvidia.com/v1（4 Key 轮换）
+   ② 公共免费通道：https://api.agnes-ai.cn/v1（1 Key，即 agnes）
+   之前的 Pollinations 地址是错的，已彻底移除。 */
 const AI_NV = {
   base: (window.SL_API_NV ? SL_D(SL_API_NV.b) : 'https://integrate.api.nvidia.com/v1'),
   keys: (window.SL_API_NV && SL_API_NV.k) ? SL_API_NV.k.map(function(x){return SL_D(x)}) : [],
   model: (window.SL_API_NV ? SL_D(SL_API_NV.m) : 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning')
 };
-const AI_FREE = { base: 'https://text.pollinations.ai/v1', keys: [], model: 'openai', free: true, lim: [20, 5] };
+const AI_FREE = {
+  base: (window.SL_API ? SL_D(SL_API.b) : 'https://api.agnes-ai.cn/v1'),
+  keys: (window.SL_API && SL_API.k) ? SL_API.k.map(function(x){return SL_D(x)}) : [],
+  model: (window.SL_API ? SL_D(SL_API.m) : 'agnes-3.0-flash'),
+  free: true, lim: [20, 5]
+};
 const BUILTIN_POOLS = [AI_NV, AI_DEFAULT, AI_FREE];
 try{
   if(!localStorage.getItem('sl_api_pool_v3')){
@@ -1037,8 +1044,8 @@ try{
   builtinAuto = localStorage.getItem('sl_api_auto') === '1';
 }catch(e){}
 function webRuntime(){ try{ return window.SL_ENV==='web'; }catch(e){ return false; } }
-/* 网页版浏览器无法直连 NVIDIA（没有 CORS 头，必失败），因此网页环境一律优先公共免费通道；
-   APP 内（localhost + 原生 /api 转发）才走 NVIDIA 池。这样网页聊天不会先撞 18 秒超时再切换。 */
+/* 网页版浏览器无法直连 NVIDIA（没有 CORS 头，必失败），因此网页环境一律优先公共免费通道（agnes，CORS 已实测为 *）；
+   APP 内（localhost + 原生 /api 转发）才走 NVIDIA 池。 */
 function activePoolIdx(){ return (webRuntime() && builtinPoolIdx===0) ? 2 : builtinPoolIdx; }
 function builtinPool(){ return BUILTIN_POOLS[activePoolIdx()] || AI_FREE; }
 function poolName(i){ return i===0 ? 'NVIDIA（4 Key）' : '公共免费通道'; }
@@ -1060,7 +1067,7 @@ function apiIsCustom(){
 /* 各 API 的兜底模型列表分开维护：NVIDIA 只列 NVIDIA 系，公共通道只列公共系，
    自定义 API 不塞任何内置模型，避免「保存后满屏都是 DeepSeek」的误会。 */
 const MODEL_FALLBACK_NV = ['nvidia/nemotron-3-nano-omni-30b-a3b-reasoning','deepseek-ai/deepseek-v4.1-flash','deepseek-ai/deepseek-coder-6.7b-instruct','meta/llama-3.2-11b-vision-instruct','meta/llama-3.2-90b-vision-instruct','mistralai/mistral-large-2-instruct'];
-const MODEL_FALLBACK_FREE = ['openai'];
+const MODEL_FALLBACK_FREE = ['agnes-3.0-flash','agnes-2.5-flash'];
 const MODEL_FALLBACK = MODEL_FALLBACK_NV.concat(MODEL_FALLBACK_FREE);
 
 const LOCAL_KB = [
@@ -1817,7 +1824,7 @@ async function callAIStream(text, onDelta, extra){
         method:'POST',
         headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
         body:JSON.stringify(body)
-      }, 18000, abortCtrl);
+      }, 60000, abortCtrl);
       if(!res.ok){
         var er=new Error('HTTP '+res.status); er.status=res.status;
         try{ er.retryAfter=parseInt(res.headers.get('retry-after')||'0',10)||0; }catch(_){}
@@ -1900,7 +1907,7 @@ async function quickComplete(prompt, maxTokens){
         method:'POST',
         headers:{'Content-Type':'application/json','Authorization':'Bearer '+pickKey(keys)},
         body:JSON.stringify(requestBody([{role:'user',content:prompt}], maxTokens||200))
-      }, 15000, null);
+      }, 45000, null);
       if(!res.ok) throw new Error('HTTP '+res.status);
       const j=await res.json();
       let c=j&&j.choices&&j.choices[0]&&j.choices[0].message?j.choices[0].message.content:'';
@@ -1928,7 +1935,7 @@ async function callAI(text){
       const res=await fetchT(apiBase()+'/chat/completions',{
         method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer '+pickKey(keys)},
         body:JSON.stringify(requestBody(messages))
-      }, 18000, abortCtrl);
+      }, 60000, abortCtrl);
       if(!res.ok) throw new Error('HTTP '+res.status);
       const j=await res.json();
       let content=j&&j.choices&&j.choices[0]&&j.choices[0].message?j.choices[0].message.content:'';

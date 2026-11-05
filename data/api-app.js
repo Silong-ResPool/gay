@@ -12,7 +12,7 @@
 if (window.SL_ENV === 'app') {
   window.SL_API = {
     b: 'aHR0cHM6Ly9hcGkuYWduZXMtYWkuY24vdjE=',
-    k: ['c2stcmZSbmZ1bG11eHhvUjFzMmxyb0RoWTFOQlZUREdzeXU2dmc5bUk3Uks4d0Vyekcy'],
+    k: ['c2stcmZSbmZ1bG11eHhvUjFzMmxyb0RsWTFOQlZUREdzeXU2dmc5bUk3Uks4d0Vyekcy'],
     m: 'YWduZXMtMy4wLWZsYXNo',
     lim: [20, 5]
   };

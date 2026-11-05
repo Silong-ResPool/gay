@@ -6940,9 +6940,9 @@ document.addEventListener('touchstart',function once(){ if(AC&&AC.state==='suspe
 })();
 </script>
 <style id="sl-lyric-3d">
-/* v8.0.4 修色：仅非当前行使用 text-shadow 立体感；当前行是渐变裁字，
-   text-shadow 会画在背景裁字之上把人彩色盖成灰，必须禁止。 */
-#full .fn:not(.cur){letter-spacing:.4px;text-shadow:-1px -1px 0 rgba(255,255,255,.26),0 1px 0 rgba(8,2,18,.92),0 2px 0 rgba(8,2,18,.84),1px 3px 0 rgba(8,2,18,.74),2px 5px 6px rgba(0,0,0,.58),0 0 16px rgba(177,108,255,.26)!important}
+/* v8.0.4 修色 + 防眼花：只有亮起的当前行（渐变彩色）才有 3D 投影；
+   未亮起的灰色歌词一律不投影、不加文字阴影。 */
+#full .fn:not(.cur){letter-spacing:.4px;text-shadow:none!important;filter:none!important}
 #full .fn.cur{text-shadow:none!important;filter:drop-shadow(1px 2px 0 rgba(9,2,20,.96)) drop-shadow(3px 5px 0 rgba(9,2,20,.82)) drop-shadow(5px 8px 8px rgba(0,0,0,.55)) drop-shadow(0 0 20px rgba(177,108,255,.4))!important}
 </style><style id="sl-skeleton">
 /* ============================================================
