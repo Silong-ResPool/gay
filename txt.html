@@ -4,50 +4,66 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>文本编辑器</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='3' y='3' width='18' height='18' rx='3' fill='%230f766e'/%3E%3Cpath d='M7 8h10M7 12h10M7 16h6' stroke='%23fff' stroke-width='1.6'/%3E%3C/svg%3E">
 <style>
 :root{
   --bg:#f4f4f2; --panel:#fff; --line:#dcdcd6; --ink:#1c1c1a; --mute:#71716c;
   --accent:#0f766e; --accent-weak:#e6f2f0; --danger:#a13a2e;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--ink);min-height:100vh;
-  font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;padding:14px}
+body{
+  background:var(--bg); color:var(--ink); min-height:100vh;
+  font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",sans-serif;
+  padding:14px;
+}
 .wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
 header{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 h1{font-size:19px;font-weight:600;letter-spacing:.02em}
 .fileName{font-size:13px;color:var(--mute);word-break:break-all}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px}
 .tools{display:flex;gap:8px;flex-wrap:wrap}
-button{font:inherit;font-size:14px;min-height:44px;padding:0 14px;border:1px solid var(--line);
+button{
+  font:inherit;font-size:14px;min-height:44px;padding:0 14px;border:1px solid var(--line);
   background:#fbfbfa;color:var(--ink);border-radius:8px;cursor:pointer;
-  display:inline-flex;align-items:center;gap:6px;transition:background .12s,border-color .12s}
+  display:inline-flex;align-items:center;gap:6px;transition:background .12s,border-color .12s;
+}
 button:hover{background:#f1f1ee;border-color:#c6c6bf}
+button:active{transform:translateY(1px)}
 button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
 button.primary:hover{background:#0d6a62}
 button.danger{color:var(--danger);border-color:#e3c8c3}
 button.danger:hover{background:#fbf1ef}
-.uploadLabel{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:6px;
+button svg{width:16px;height:16px;flex:none}
+.uploadLabel{
+  position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:6px;
   min-height:44px;padding:0 14px;border:1px dashed #b9b9b2;border-radius:8px;
-  background:#fbfbfa;font-size:14px;cursor:pointer}
+  background:#fbfbfa;font-size:14px;cursor:pointer;
+}
 .uploadLabel:hover{background:#f1f1ee}
 .uploadLabel input{position:absolute;inset:0;opacity:0;cursor:pointer}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-input[type=text]{font:inherit;font-size:16px;padding:0 12px;height:44px;min-width:0;flex:1 1 140px;
-  border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+input[type=text]{
+  font:inherit;font-size:16px;padding:0 12px;height:44px;min-width:0;flex:1 1 140px;
+  border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)
+}
 input[type=text]:focus,textarea:focus{outline:2px solid var(--accent-weak);border-color:var(--accent)}
-textarea{width:100%;height:46vh;min-height:260px;resize:vertical;padding:14px;
+textarea{
+  width:100%;height:46vh;min-height:260px;resize:vertical;padding:14px;
   font:16px/1.7 "SFMono-Regular",Consolas,"Courier New",monospace;
   border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);
-  white-space:pre;overflow:auto}
+  white-space:pre;overflow-wrap:normal;overflow:auto;
+}
 textarea.drag{border-color:var(--accent);background:var(--accent-weak)}
 .status{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mute)}
 .status b{color:var(--ink);font-weight:600}
 .opt{display:flex;gap:14px;align-items:center;font-size:13px;color:var(--mute);flex-wrap:wrap}
 .opt label{display:inline-flex;gap:6px;align-items:center;min-height:32px;cursor:pointer}
 .hint{font-size:12px;color:var(--mute);line-height:1.7}
-.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,14px);
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translate(-50%,14px);
   background:#1c1c1a;color:#fff;font-size:14px;padding:10px 18px;border-radius:8px;
-  opacity:0;pointer-events:none;transition:.22s;z-index:99;max-width:80vw}
+  opacity:0;pointer-events:none;transition:.22s;z-index:99;max-width:80vw
+}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:520px){
   body{padding:10px}
@@ -67,12 +83,19 @@ textarea.drag{border-color:var(--accent);background:var(--accent-weak)}
   <div class="card">
     <div class="tools">
       <label class="uploadLabel">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4M7 9l5-5 5 5M4 17v2a1 1 0 001 1h14a1 1 0 001-1v-2"/></svg>
         上传 TXT
         <input type="file" id="fileInput" accept=".txt,text/plain,.md,.log,.csv,.json,.ini,.xml,text/*">
       </label>
-      <button class="primary" id="btnSave">保存</button>
+      <button class="primary" id="btnSave">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4v12M7 11l5 5 5-5M4 19h16"/></svg>
+        保存
+      </button>
       <button id="btnSelectAll">全选</button>
-      <button id="btnCopy">复制</button>
+      <button id="btnCopy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5h10"/></svg>
+        复制
+      </button>
       <button id="btnCut">剪切</button>
       <button id="btnPaste">粘贴</button>
       <button id="btnUndo">撤销</button>
@@ -114,8 +137,9 @@ textarea.drag{border-color:var(--accent);background:var(--accent-weak)}
 <script>
 const $ = id => document.getElementById(id);
 const ed = $('editor');
-let curName = '未命名.txt', undoStack = [], redoStack = [], lastVal = '', timer = null;
+let curName = '未命名.txt', undoStack = [], redoStack = [], lastVal = '', timer = null, dragFile = null;
 
+/* ---------- 提示 ---------- */
 let toastTimer;
 function toast(msg){
   const t = $('toast');
@@ -124,6 +148,7 @@ function toast(msg){
   toastTimer = setTimeout(() => t.classList.remove('show'), 1600);
 }
 
+/* ---------- 状态栏 ---------- */
 function stats(){
   const v = ed.value;
   $('stChar').textContent = v.length;
@@ -135,6 +160,7 @@ function fileName(n){
   $('fileName').textContent = curName;
 }
 
+/* ---------- 撤销 / 重做 ---------- */
 function pushUndo(){
   if(lastVal === ed.value) return;
   undoStack.push(lastVal);
@@ -168,6 +194,7 @@ $('btnRedo').onclick = () => {
   toast('已重做');
 };
 
+/* ---------- 全选 / 复制 / 剪切 / 粘贴 ---------- */
 $('btnSelectAll').onclick = () => { ed.focus(); ed.select(); stats(); toast('已全选'); };
 
 async function writeClip(text){
@@ -209,6 +236,7 @@ $('btnPaste').onclick = async () => {
   let text = '';
   try{
     if(navigator.clipboard && navigator.clipboard.readText){
+      if(navigator.clipboard.readText.length === 0) throw 0;
       text = await navigator.clipboard.readText();
     } else throw 0;
   }catch(err){
@@ -222,6 +250,7 @@ $('btnPaste').onclick = async () => {
   toast('已粘贴');
 };
 
+/* ---------- 清空 ---------- */
 $('btnClear').onclick = () => {
   if(!ed.value) return toast('已经是空的了');
   if(!confirm('确定清空全部内容？此操作可以撤销。')) return;
@@ -230,13 +259,14 @@ $('btnClear').onclick = () => {
   toast('已清空');
 };
 
+/* ---------- 查找 / 替换 ---------- */
 function findFrom(start){
   const key = $('findInput').value;
   if(!key) { toast('请输入要查找的内容'); $('findInput').focus(); return -1; }
   let hay = ed.value, needle = key;
   if(!$('optCase').checked){ hay = hay.toLowerCase(); needle = needle.toLowerCase(); }
   let i = hay.indexOf(needle, start);
-  if(i === -1 && start > 0) i = hay.indexOf(needle, 0);
+  if(i === -1 && start > 0) i = hay.indexOf(needle, 0);   // 回环
   return i;
 }
 $('btnFindNext').onclick = () => {
@@ -263,13 +293,14 @@ $('btnReplaceOne').onclick = () => {
 $('btnReplaceAll').onclick = () => {
   const key = $('findInput').value, rep = $('replaceInput').value;
   if(!key) return toast('请输入要查找的内容');
-  let src = ed.value, count = 0;
+  let src = ed.value, pat = '', count = 0;
+  if($('optCase').checked) src = src.split(key).join(rep);
+  else {
+    const re = new RegExp(key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    src = src.replace(re, () => { count++; return rep; });
+  }
   if($('optCase').checked){
     count = ed.value.split(key).length - 1;
-    src = ed.value.split(key).join(rep);
-  }else{
-    const re = new RegExp(key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-    src = ed.value.replace(re, () => { count++; return rep; });
   }
   if(!count) return toast('没有找到「' + key + '」');
   pushUndo();
@@ -277,12 +308,18 @@ $('btnReplaceAll').onclick = () => {
   toast('已替换 ' + count + ' 处');
 };
 
+/* ---------- 上传 TXT ---------- */
 function decode(buf){
   const bytes = new Uint8Array(buf);
+  // 去 BOM
   let data = bytes;
   if(bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF) data = bytes.slice(3);
-  try{ return { text: new TextDecoder('utf-8', {fatal:true}).decode(data), enc:'UTF-8' }; }catch(e){}
-  try{ return { text: new TextDecoder('gbk').decode(data), enc:'GBK' }; }catch(e){}
+  try{
+    return { text: new TextDecoder('utf-8', {fatal:true}).decode(data), enc:'UTF-8' };
+  }catch(e){}
+  try{
+    return { text: new TextDecoder('gbk').decode(data), enc:'GBK' };
+  }catch(e){}
   return { text: new TextDecoder('utf-8').decode(data), enc:'UTF-8（含无法识别字符）' };
 }
 function loadFile(file){
@@ -303,6 +340,7 @@ function loadFile(file){
 }
 $('fileInput').onchange = e => { loadFile(e.target.files[0]); e.target.value = ''; };
 
+/* 拖拽导入 */
 ['dragenter','dragover'].forEach(t => ed.addEventListener(t, e => { e.preventDefault(); ed.classList.add('drag'); }));
 ['dragleave','drop'].forEach(t => ed.addEventListener(t, e => { e.preventDefault(); ed.classList.remove('drag'); }));
 ed.addEventListener('drop', e => {
@@ -310,6 +348,7 @@ ed.addEventListener('drop', e => {
   if(f) loadFile(f);
 });
 
+/* ---------- 保存 ---------- */
 $('btnSave').onclick = () => {
   const name = (curName && curName !== '未命名.txt') ? curName : (prompt('保存文件名（可不带 .txt）', '未命名') || '');
   if(!name) return;
@@ -325,8 +364,10 @@ $('btnSave').onclick = () => {
   toast('已保存 ' + fn);
 };
 
+/* ---------- 自动换行 ---------- */
 $('optWrap').onchange = e => { ed.style.whiteSpace = e.target.checked ? 'pre-wrap' : 'pre'; };
 
+/* ---------- 快捷键 ---------- */
 document.addEventListener('keydown', e => {
   const ctrl = e.ctrlKey || e.metaKey;
   if(!ctrl) return;
@@ -338,8 +379,10 @@ document.addEventListener('keydown', e => {
   else if(k === 'z'){ e.preventDefault(); $('btnUndo').click(); }
 });
 
+/* ---------- 选中变化时刷新选中数 ---------- */
 ['click','keyup','select','mouseup'].forEach(t => ed.addEventListener(t, stats));
 
+/* ---------- 初始化 ---------- */
 lastVal = ''; ed.value = ''; stats();
 ed.addEventListener('blur', () => { clearTimeout(timer); pushUndo(); });
 </script>
