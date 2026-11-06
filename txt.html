@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>文本编辑器</title>
+<style>
+:root{
+  --bg:#f4f4f2; --panel:#fff; --line:#dcdcd6; --ink:#1c1c1a; --mute:#71716c;
+  --accent:#0f766e; --accent-weak:#e6f2f0; --danger:#a13a2e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);min-height:100vh;
+  font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;padding:14px}
+.wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+header{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+h1{font-size:19px;font-weight:600;letter-spacing:.02em}
+.fileName{font-size:13px;color:var(--mute);word-break:break-all}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;font-size:14px;min-height:44px;padding:0 14px;border:1px solid var(--line);
+  background:#fbfbfa;color:var(--ink);border-radius:8px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;transition:background .12s,border-color .12s}
+button:hover{background:#f1f1ee;border-color:#c6c6bf}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button.primary:hover{background:#0d6a62}
+button.danger{color:var(--danger);border-color:#e3c8c3}
+button.danger:hover{background:#fbf1ef}
+.uploadLabel{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:6px;
+  min-height:44px;padding:0 14px;border:1px dashed #b9b9b2;border-radius:8px;
+  background:#fbfbfa;font-size:14px;cursor:pointer}
+.uploadLabel:hover{background:#f1f1ee}
+.uploadLabel input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input[type=text]{font:inherit;font-size:16px;padding:0 12px;height:44px;min-width:0;flex:1 1 140px;
+  border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+input[type=text]:focus,textarea:focus{outline:2px solid var(--accent-weak);border-color:var(--accent)}
+textarea{width:100%;height:46vh;min-height:260px;resize:vertical;padding:14px;
+  font:16px/1.7 "SFMono-Regular",Consolas,"Courier New",monospace;
+  border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);
+  white-space:pre;overflow:auto}
+textarea.drag{border-color:var(--accent);background:var(--accent-weak)}
+.status{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mute)}
+.status b{color:var(--ink);font-weight:600}
+.opt{display:flex;gap:14px;align-items:center;font-size:13px;color:var(--mute);flex-wrap:wrap}
+.opt label{display:inline-flex;gap:6px;align-items:center;min-height:32px;cursor:pointer}
+.hint{font-size:12px;color:var(--mute);line-height:1.7}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,14px);
+  background:#1c1c1a;color:#fff;font-size:14px;padding:10px 18px;border-radius:8px;
+  opacity:0;pointer-events:none;transition:.22s;z-index:99;max-width:80vw}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:520px){
+  body{padding:10px}
+  h1{font-size:17px}
+  .tools button,.uploadLabel{flex:1 1 calc(33.33% - 8px);justify-content:center;padding:0 8px;font-size:13px}
+  textarea{height:42vh}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>文本编辑器</h1>
+    <span class="fileName" id="fileName">未打开文件</span>
+  </header>
+
+  <div class="card">
+    <div class="tools">
+      <label class="uploadLabel">
+        上传 TXT
+        <input type="file" id="fileInput" accept=".txt,text/plain,.md,.log,.csv,.json,.ini,.xml,text/*">
+      </label>
+      <button class="primary" id="btnSave">保存</button>
+      <button id="btnSelectAll">全选</button>
+      <button id="btnCopy">复制</button>
+      <button id="btnCut">剪切</button>
+      <button id="btnPaste">粘贴</button>
+      <button id="btnUndo">撤销</button>
+      <button id="btnRedo">重做</button>
+      <button class="danger" id="btnClear">清空</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <input type="text" id="findInput" placeholder="查找内容">
+      <input type="text" id="replaceInput" placeholder="替换为">
+      <button id="btnFindNext">查找下一处</button>
+      <button id="btnReplaceOne">替换当前</button>
+      <button id="btnReplaceAll">全部替换</button>
+    </div>
+    <div class="opt" style="margin-top:10px">
+      <label><input type="checkbox" id="optCase"> 区分大小写</label>
+      <label><input type="checkbox" id="optBom" checked> 保存带 BOM（Windows 记事本兼容）</label>
+      <label><input type="checkbox" id="optWrap"> 自动换行</label>
+    </div>
+  </div>
+
+  <div class="card" style="padding:10px">
+    <textarea id="editor" placeholder="在此输入文本，或点击上方「上传 TXT」读取本地文件，也可以把 .txt 文件直接拖到这里……" spellcheck="false"></textarea>
+  </div>
+
+  <div class="status">
+    <span>字符 <b id="stChar">0</b></span>
+    <span>行数 <b id="stLine">1</b></span>
+    <span>选中 <b id="stSel">0</b></span>
+    <span>编码 <b id="stEnc">—</b></span>
+  </div>
+  <div class="hint">快捷键：Ctrl+A 全选　Ctrl+C 复制　Ctrl+X 剪切　Ctrl+V 粘贴　Ctrl+Z 撤销　Ctrl+Shift+Z 重做　Ctrl+S 保存　Ctrl+F 定位查找框</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const ed = $('editor');
+let curName = '未命名.txt', undoStack = [], redoStack = [], lastVal = '', timer = null;
+
+let toastTimer;
+function toast(msg){
+  const t = $('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1600);
+}
+
+function stats(){
+  const v = ed.value;
+  $('stChar').textContent = v.length;
+  $('stLine').textContent = v ? v.split('\n').length : 1;
+  $('stSel').textContent = Math.max(0, ed.selectionEnd - ed.selectionStart);
+}
+function fileName(n){
+  curName = n || '未命名.txt';
+  $('fileName').textContent = curName;
+}
+
+function pushUndo(){
+  if(lastVal === ed.value) return;
+  undoStack.push(lastVal);
+  if(undoStack.length > 120) undoStack.shift();
+  redoStack = [];
+  lastVal = ed.value;
+}
+function applyState(v){
+  const s = ed.selectionStart, e = ed.selectionEnd;
+  ed.value = v;
+  ed.setSelectionRange(Math.min(s, v.length), Math.min(e, v.length));
+  stats();
+}
+ed.addEventListener('input', () => {
+  clearTimeout(timer);
+  timer = setTimeout(pushUndo, 350);
+  stats();
+});
+$('btnUndo').onclick = () => {
+  clearTimeout(timer); pushUndo();
+  if(!undoStack.length) return toast('没有可撤销的操作');
+  redoStack.push(ed.value);
+  applyState(undoStack.pop());
+  toast('已撤销');
+};
+$('btnRedo').onclick = () => {
+  if(!redoStack.length) return toast('没有可重做的操作');
+  const cur = ed.value;
+  applyState(redoStack.pop());
+  undoStack.push(cur);
+  toast('已重做');
+};
+
+$('btnSelectAll').onclick = () => { ed.focus(); ed.select(); stats(); toast('已全选'); };
+
+async function writeClip(text){
+  try{
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    const ok = document.execCommand('copy');
+    ta.remove();
+    return ok;
+  }catch(e){ return false; }
+}
+
+$('btnCopy').onclick = async () => {
+  const s = ed.selectionStart, e = ed.selectionEnd;
+  const text = s === e ? ed.value : ed.value.slice(s, e);
+  if(!text) return toast('没有可复制的内容');
+  if(await writeClip(text)) toast(s === e ? '已复制全文' : '已复制选中内容');
+  else { ed.focus(); ed.select(); document.execCommand('copy'); toast('已复制'); }
+};
+
+$('btnCut').onclick = async () => {
+  const s = ed.selectionStart, e = ed.selectionEnd;
+  if(s === e) return toast('请先选中要剪切的内容');
+  const text = ed.value.slice(s, e);
+  pushUndo();
+  ed.value = ed.value.slice(0, s) + ed.value.slice(e);
+  ed.focus(); ed.setSelectionRange(s, s);
+  pushUndo(); stats();
+  if(await writeClip(text)) toast('已剪切'); else toast('已剪切（复制到剪贴板失败，请手动复制）');
+};
+
+$('btnPaste').onclick = async () => {
+  const s = ed.selectionStart, e = ed.selectionEnd;
+  let text = '';
+  try{
+    if(navigator.clipboard && navigator.clipboard.readText){
+      text = await navigator.clipboard.readText();
+    } else throw 0;
+  }catch(err){
+    return toast('浏览器限制读取剪贴板，请直接在编辑区按 Ctrl+V 粘贴');
+  }
+  if(!text) return toast('剪贴板是空的');
+  pushUndo();
+  ed.value = ed.value.slice(0, s) + text + ed.value.slice(e);
+  ed.focus(); ed.setSelectionRange(s + text.length, s + text.length);
+  pushUndo(); stats();
+  toast('已粘贴');
+};
+
+$('btnClear').onclick = () => {
+  if(!ed.value) return toast('已经是空的了');
+  if(!confirm('确定清空全部内容？此操作可以撤销。')) return;
+  pushUndo();
+  ed.value = ''; pushUndo(); stats();
+  toast('已清空');
+};
+
+function findFrom(start){
+  const key = $('findInput').value;
+  if(!key) { toast('请输入要查找的内容'); $('findInput').focus(); return -1; }
+  let hay = ed.value, needle = key;
+  if(!$('optCase').checked){ hay = hay.toLowerCase(); needle = needle.toLowerCase(); }
+  let i = hay.indexOf(needle, start);
+  if(i === -1 && start > 0) i = hay.indexOf(needle, 0);
+  return i;
+}
+$('btnFindNext').onclick = () => {
+  const key = $('findInput').value;
+  const i = findFrom(ed.selectionEnd);
+  if(i === -1) return toast('没有找到「' + key + '」');
+  ed.focus(); ed.setSelectionRange(i, i + key.length); stats();
+  toast('已定位到第 ' + (ed.value.slice(0, i).split('\n').length) + ' 行');
+};
+$('btnReplaceOne').onclick = () => {
+  const key = $('findInput').value, rep = $('replaceInput').value;
+  if(!key) return toast('请输入要查找的内容');
+  const s = ed.selectionStart, e = ed.selectionEnd;
+  const selected = ed.value.slice(s, e);
+  const same = $('optCase').checked ? selected === key : selected.toLowerCase() === key.toLowerCase();
+  let target = same ? s : findFrom(e);
+  if(target === -1) return toast('没有找到「' + key + '」');
+  pushUndo();
+  ed.value = ed.value.slice(0, target) + rep + ed.value.slice(target + key.length);
+  ed.focus(); ed.setSelectionRange(target + rep.length, target + rep.length);
+  pushUndo(); stats();
+  toast('已替换 1 处');
+};
+$('btnReplaceAll').onclick = () => {
+  const key = $('findInput').value, rep = $('replaceInput').value;
+  if(!key) return toast('请输入要查找的内容');
+  let src = ed.value, count = 0;
+  if($('optCase').checked){
+    count = ed.value.split(key).length - 1;
+    src = ed.value.split(key).join(rep);
+  }else{
+    const re = new RegExp(key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    src = ed.value.replace(re, () => { count++; return rep; });
+  }
+  if(!count) return toast('没有找到「' + key + '」');
+  pushUndo();
+  ed.value = src; pushUndo(); stats();
+  toast('已替换 ' + count + ' 处');
+};
+
+function decode(buf){
+  const bytes = new Uint8Array(buf);
+  let data = bytes;
+  if(bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF) data = bytes.slice(3);
+  try{ return { text: new TextDecoder('utf-8', {fatal:true}).decode(data), enc:'UTF-8' }; }catch(e){}
+  try{ return { text: new TextDecoder('gbk').decode(data), enc:'GBK' }; }catch(e){}
+  return { text: new TextDecoder('utf-8').decode(data), enc:'UTF-8（含无法识别字符）' };
+}
+function loadFile(file){
+  if(!file) return;
+  if(file.size > 20 * 1024 * 1024) return toast('文件超过 20MB，建议用专业编辑器打开');
+  const fr = new FileReader();
+  fr.onload = () => {
+    const r = decode(fr.result);
+    pushUndo();
+    ed.value = r.text; pushUndo();
+    fileName(file.name);
+    $('stEnc').textContent = r.enc;
+    stats();
+    toast('已读取 ' + file.name + '（' + r.enc + '）');
+  };
+  fr.onerror = () => toast('读取失败，请重试');
+  fr.readAsArrayBuffer(file);
+}
+$('fileInput').onchange = e => { loadFile(e.target.files[0]); e.target.value = ''; };
+
+['dragenter','dragover'].forEach(t => ed.addEventListener(t, e => { e.preventDefault(); ed.classList.add('drag'); }));
+['dragleave','drop'].forEach(t => ed.addEventListener(t, e => { e.preventDefault(); ed.classList.remove('drag'); }));
+ed.addEventListener('drop', e => {
+  const f = e.dataTransfer.files && e.dataTransfer.files[0];
+  if(f) loadFile(f);
+});
+
+$('btnSave').onclick = () => {
+  const name = (curName && curName !== '未命名.txt') ? curName : (prompt('保存文件名（可不带 .txt）', '未命名') || '');
+  if(!name) return;
+  const fn = /\.(txt|md|log|csv|json|ini|xml)$/i.test(name) ? name : name + '.txt';
+  const text = ($('optBom').checked ? '\uFEFF' : '') + ed.value;
+  const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = fn;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+  fileName(fn);
+  toast('已保存 ' + fn);
+};
+
+$('optWrap').onchange = e => { ed.style.whiteSpace = e.target.checked ? 'pre-wrap' : 'pre'; };
+
+document.addEventListener('keydown', e => {
+  const ctrl = e.ctrlKey || e.metaKey;
+  if(!ctrl) return;
+  const k = e.key.toLowerCase();
+  if(k === 's'){ e.preventDefault(); $('btnSave').click(); }
+  else if(k === 'a'){ e.preventDefault(); ed.focus(); ed.select(); stats(); }
+  else if(k === 'f'){ e.preventDefault(); $('findInput').focus(); }
+  else if(k === 'z' && e.shiftKey){ e.preventDefault(); $('btnRedo').click(); }
+  else if(k === 'z'){ e.preventDefault(); $('btnUndo').click(); }
+});
+
+['click','keyup','select','mouseup'].forEach(t => ed.addEventListener(t, stats));
+
+lastVal = ''; ed.value = ''; stats();
+ed.addEventListener('blur', () => { clearTimeout(timer); pushUndo(); });
+</script>
+</body>
+</html>
