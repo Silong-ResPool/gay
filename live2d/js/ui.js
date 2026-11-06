@@ -62,6 +62,7 @@ const populators = {
 
     const items = Object.entries(definitions).flatMap(([group, list]) =>
       list.map((motion, idx) => ({
+        group,
         name: motion.Name
           || motion.File?.split('/').pop().replace(/\.(motion3\.json|mtn)$/i, '')
           || group,
@@ -80,10 +81,12 @@ const populators = {
     }, {});
 
     const seen = {};
+    const groupCount = new Set(items.map((i) => i.group).filter(Boolean)).size;
     for (const item of items) {
-      item.displayName = counts[item.name] > 1
+      const base = counts[item.name] > 1
         ? `${item.name} ${(seen[item.name] = (seen[item.name] ?? 0) + 1)}`
         : item.name;
+      item.displayName = (groupCount > 1 && item.group) ? `${item.group} · ${base}` : base;
     }
 
     return items;
@@ -112,15 +115,33 @@ const populatePanel = (type, model) => {
     (a.displayName ?? a.name).localeCompare(b.displayName ?? b.name)
   );
 
+  let box = container.parentElement.querySelector('.panel-filter');
+  if (!box) {
+    box = document.createElement('input');
+    box.className = 'panel-filter';
+    box.placeholder = '搜索' + ({ expressions: '表情', motions: '动作', hitareas: '触发区' }[type] || '');
+    box.style.cssText = 'width:100%;margin:0 0 8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(177,108,255,.35);background:rgba(20,10,40,.65);color:#f3e8ff;font-size:12px;outline:none';
+    container.parentElement.insertBefore(box, container);
+  }
+  const buttons = [];
   if (items.length > 0) {
     log('UI', `Populating ${items.length} ${type} controls.`);
     for (const item of items) {
-      container.appendChild(createControlButton(item.displayName ?? item.name, type, item.action));
+      const btn = createControlButton(item.displayName ?? item.name, type, item.action);
+      btn.dataset.kw = String(item.displayName ?? item.name).toLowerCase();
+      container.appendChild(btn);
+      buttons.push(btn);
     }
   } else {
     log('UI', `No ${type} found for this model.`);
     setEmptyMessage(container, type);
   }
+  box.oninput = function () {
+    const q = this.value.trim().toLowerCase();
+    buttons.forEach((b) => {
+      b.style.display = (!q || b.dataset.kw.includes(q)) ? '' : 'none';
+    });
+  };
 };
 
 // ===========================================================================

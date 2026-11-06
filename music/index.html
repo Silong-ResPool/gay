@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<style id="sl-color-lock">html,body,:root{color-scheme:dark!important}html,body{forced-color-adjust:none!important}</style>
 <meta charset="UTF-8">
+<meta name="color-scheme" content="dark">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
 <title>巳泷资源库·音律</title>
 <meta name="theme-color" content="#08050f">
@@ -592,12 +594,39 @@ body.inpip #floatLrc{position:static;left:auto;bottom:auto;width:100%;border:0;b
 .clipin span{font-size:11px;color:var(--mut);flex:0 0 auto}
 /* ===== 歌词 3D 效果：彩色渐变字面 + 右下斜投影 / 粒子 / 打字机 ===== */
 .lyr .ln.cur,#full .fn.cur{position:relative;
-  filter:drop-shadow(2px 4px 0 rgba(9,2,20,.96)) drop-shadow(4px 8px 5px rgba(0,0,0,.48))}
+  filter:drop-shadow(1px 2px 0 rgba(66,62,78,.55)) drop-shadow(3px 5px 4px rgba(8,6,14,.28))}
 body.lrc-fx-type .lyr .ln.cur{animation:slLrcType 1.35s steps(30,end) both,sweep 6.5s linear infinite}
-body.lrc-fx-type #full .fn.cur{animation:slLrcType 1.35s steps(30,end) both}
-@keyframes slLrcType{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
-body.lrc-fx-particle .lyr .ln.cur,body.lrc-fx-particle #full .fn.cur{opacity:0}
+body.lrc-fx-type #full .fn.cur{animation:slLrcType 1.35s steps(30,end) both,sweep 6.5s linear infinite}
+/* 粒子模式：文字透明但仍保留盒子，粒子画布才能显示 */
+body.lrc-fx-particle .lyr .ln.cur,body.lrc-fx-particle #full .fn.cur{
+  opacity:1!important;color:transparent!important;-webkit-text-fill-color:transparent!important;
+  background:none!important;text-shadow:none!important;filter:none!important;animation:none!important}
+/* 穿梭模式：歌词从远方迎面飞到眼前，星流粒子向外掠过 */
+body.lrc-fx-warp .lyr .ln.cur,body.lrc-fx-warp #full .fn.cur{
+  animation:warpIn 1.15s cubic-bezier(.18,.82,.3,1) both,sweep 6.5s linear infinite!important}
+@keyframes warpIn{0%{transform:perspective(760px) translateZ(-420px) scale(.32);opacity:0;filter:blur(7px)}
+  65%{opacity:1;filter:blur(0)}100%{transform:none;opacity:1}}
+/* 打字机光标 */
+body.lrc-fx-type .lyr .ln.cur::after,body.lrc-fx-type #full .fn.cur::after{
+  content:"";display:inline-block;width:2px;height:.9em;margin-left:2px;vertical-align:-.08em;
+  background:linear-gradient(180deg,#00e5ff,#ff6ec7);box-shadow:0 0 8px rgba(255,110,199,.85);
+  animation:slCaret .7s steps(2,end) infinite}
+@keyframes slCaret{0%,49%{opacity:1}50%,100%{opacity:0}}
+#lyr,#fullLrc{position:relative}
 .lrc-pcv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
+</style>
+<style id="sl-set-acc">
+.setsearch{position:sticky;top:0;z-index:6;display:flex;align-items:center;gap:8px;padding:8px 11px;margin:0 0 9px;border:1px solid rgba(177,108,255,.38);border-radius:12px;background:rgba(16,8,34,.97);box-shadow:0 6px 18px rgba(0,0,0,.45)}
+.setsearch input{flex:1;background:transparent;border:0;outline:0;color:#fff;font-size:13px}
+.setsearch input::placeholder{color:#8f86a8}
+.setsearch i{color:#c084fc}
+.setsearch span{font-size:10.5px;color:#a99cc4;flex:0 0 auto}
+.setsec{margin:0 0 9px;border:1px solid rgba(177,108,255,.20);border-radius:12px;overflow:hidden;background:linear-gradient(160deg,rgba(40,20,70,.55),rgba(22,12,44,.35))}
+.setsec-h{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 13px;background:linear-gradient(135deg,rgba(124,58,237,.26),rgba(236,72,153,.14));border:0;color:#f5edff;font-size:13px;font-weight:800;text-align:left;cursor:pointer}
+.setsec-h i{transition:.2s;color:#c4b5fd;flex:0 0 auto}
+.setsec.closed .setsec-b{display:none}
+.setsec.closed .setsec-h i{transform:rotate(-90deg)}
+.setsec-b{padding:2px 11px 9px}
 </style>
 </head>
 <body>
@@ -977,7 +1006,7 @@ body.lrc-fx-particle .lyr .ln.cur,body.lrc-fx-particle #full .fn.cur{opacity:0}
       <div class="qa" id="lrcFxBox">
         <span class="chip" data-fx="shadow">投影</span>
         <span class="chip" data-fx="particle">粒子</span>
-        <span class="chip" data-fx="typewriter">打字机</span>
+        <span class="chip" data-fx="typewriter">打字机</span><span class="chip" data-fx="warp">穿梭</span>
       </div>
     </div>
     <div class="setrow"><span class="lb">频谱粒子</span><div class="sw" id="swViz"></div></div>
@@ -2136,8 +2165,21 @@ function hsl2hex(h,s,l){h=((h%360)+360)%360; s=Math.max(0,Math.min(100,s))/100; 
   else if(h<240){r=0;g=x;b=c}else if(h<300){r=x;g=0;b=c}else{r=c;g=0;b=x}
   return rgb2hex((r+m)*255,(g+m)*255,(b+m)*255);}
 function cl0(v,a,b){return Math.max(a,Math.min(b,v))}
+function lrcGradColors(){
+  var arr=(S.lrcGrad&&S.lrcGrad.length?S.lrcGrad:DEFAULTS.lrcGrad).slice(0,6);
+  var out=[];
+  arr.forEach(function(c){
+    var hex=String(c||'').replace('#','');
+    if(hex.length===3) hex=hex.split('').map(function(x){return x+x}).join('');
+    if(hex.length<6) return;
+    var r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);
+    if((r+g+b)/3>=48) out.push('#'+hex);   /* 过滤近黑色，只保留紫/粉/青/白 */
+  });
+  if(out.length<2) out=DEFAULTS.lrcGrad.slice();
+  return out;
+}
 function lrcGradCss(){
-  var g=(S.lrcGrad&&S.lrcGrad.length?S.lrcGrad:DEFAULTS.lrcGrad).slice(0,6);
+  var g=lrcGradColors();
   if(g.length<2)g=[g[0]||'#00e5ff','#b16cff'];
   return 'linear-gradient(100deg,'+g.concat([g[0]]).join(',')+')';
 }
@@ -2149,12 +2191,13 @@ function lrcFxStop(){
 }
 function lrcFxClass(){
   var b=document.body;
-  b.classList.remove('lrc-fx-particle','lrc-fx-type');
+  b.classList.remove('lrc-fx-particle','lrc-fx-type','lrc-fx-warp');
   if(S.lrcFx==='particle') b.classList.add('lrc-fx-particle');
   else if(S.lrcFx==='typewriter') b.classList.add('lrc-fx-type');
+  else if(S.lrcFx==='warp') b.classList.add('lrc-fx-warp');
 }
 function lrcFxColorAt(frac){
-  var g=(S.lrcGrad&&S.lrcGrad.length?S.lrcGrad:DEFAULTS.lrcGrad);
+  var g=lrcGradColors();
   if(g.length<2)g=[g[0]||'#00e5ff','#b16cff'];
   var n=g.length-1, pos=Math.max(0,Math.min(1,frac))*n, i=Math.floor(pos), t=pos-i;
   var a=hex2rgb(g[i]), b=hex2rgb(g[Math.min(n,i+1)]);
@@ -2162,44 +2205,84 @@ function lrcFxColorAt(frac){
 }
 function lrcFxRun(){
   lrcFxStop(); lrcFxClass();
-  if(S.lrcFx!=='particle') return;
+  if(S.lrcFx!=='particle' && S.lrcFx!=='warp') return;
   var line=document.querySelector('#full.on #fullLrc .fn.cur')||document.querySelector('.lyr .ln.cur');
   if(!line) return;
   var txt=(lrc[curLine]&&lrc[curLine].txt)||String(line.textContent||'').trim();
   if(!txt) return;
-  var rect=line.getBoundingClientRect(); if(rect.width<20||rect.height<10) return;
-  var W=Math.round(rect.width), H=Math.round(rect.height);
+  /* 用布局尺寸（offsetWidth/Height），不受 3D 动画缩放影响；画布挂到父容器，
+     即使歌词行被重建/缩放也不会丢 */
+  var W=Math.round(line.offsetWidth||0), H=Math.round(line.offsetHeight||0);
+  if(W<20||H<10) return;
   var dpr=Math.min(2,window.devicePixelRatio||1);
   var cv=document.createElement('canvas'); cv.className='lrc-pcv';
   cv.width=W*dpr; cv.height=H*dpr;
   var ctx=cv.getContext('2d'); if(!ctx) return;
+  var host=line.parentElement||document.querySelector('#lyr');
+  if(host && getComputedStyle(host).position==='static') host.style.position='relative';
+  cv.style.cssText='position:absolute;left:'+(line.offsetLeft||0)+'px;top:'+(line.offsetTop||0)+'px;width:'+W+'px;height:'+H+'px';
+  host.appendChild(cv);
+  if(S.lrcFx==='warp'){ runWarpFx(ctx,cv,W,H,dpr); return; }
   var cs=getComputedStyle(line), fs=parseFloat(cs.fontSize)||22, fam=cs.fontFamily||'sans-serif';
   var off=document.createElement('canvas'); off.width=cv.width; off.height=cv.height;
   var o=off.getContext('2d'); if(!o) return;
   o.font=(cs.fontWeight||'800')+' '+(fs*dpr)+'px '+fam;
   o.textAlign='center'; o.textBaseline='middle'; o.fillStyle='#fff';
   o.fillText(txt,off.width/2,off.height/2);
-  var data=o.getImageData(0,0,off.width,off.height).data, pts=[], step=Math.max(4,Math.round(4*dpr));
+  var data=o.getImageData(0,0,off.width,off.height).data, pts=[], step=Math.max(3,Math.round(3*dpr));
   for(var y=0;y<off.height;y+=step) for(var x=0;x<off.width;x+=step){
-    if(data[(y*off.width+x)*4+3]>110) pts.push({x:x,y:y});
+    if(data[(y*off.width+x)*4+3]>90) pts.push({x:x,y:y});
   }
-  if(pts.length>2400){ var sk=Math.ceil(pts.length/2400); pts=pts.filter(function(_,i){return i%sk===0}); }
+  if(pts.length>3200){ var sk=Math.ceil(pts.length/3200); pts=pts.filter(function(_,i){return i%sk===0}); }
   if(!pts.length) return;
-  line.appendChild(cv);
   var parts=pts.map(function(p){
-    return {tx:p.x,ty:p.y,x:Math.random()*cv.width,y:Math.random()*cv.height,r:(1+Math.random()*1.5)*dpr,c:lrcFxColorAt(p.x/cv.width)};
+    return {tx:p.x,ty:p.y,x:Math.random()*cv.width,y:Math.random()*cv.height,
+      r:(2+Math.random()*2.4)*dpr,c:lrcFxColorAt(p.x/cv.width),ph:Math.random()*6.28};
   });
   var t0=performance.now();
   function frame(now){
-    var t=(now-t0)/1000, alpha=Math.min(1,(now-t0)/700);
+    var t=(now-t0)/1000, alpha=Math.min(1,(now-t0)/600);
     ctx.clearRect(0,0,cv.width,cv.height);
+    ctx.globalCompositeOperation='lighter';
     for(var i=0;i<parts.length;i++){
       var p=parts[i];
-      p.x+=(p.tx-p.x)*0.11; p.y+=(p.ty-p.y)*0.11;
-      var wy=Math.sin(t*3.2+p.tx*0.02)*3*dpr;
-      ctx.globalAlpha=alpha; ctx.fillStyle=p.c;
-      ctx.beginPath(); ctx.arc(p.x,p.y+wy,p.r,0,6.2832); ctx.fill();
+      p.x+=(p.tx-p.x)*0.12; p.y+=(p.ty-p.y)*0.12;
+      var wy=Math.sin(t*4.2+p.ph)*4.5*dpr, wx=Math.cos(t*2.6+p.ph)*2.2*dpr;
+      ctx.globalAlpha=alpha*(0.72+0.28*Math.sin(t*5+p.ph));
+      ctx.fillStyle=p.c; ctx.shadowColor=p.c; ctx.shadowBlur=7*dpr;
+      ctx.beginPath(); ctx.arc(p.x+wx,p.y+wy,p.r,0,6.2832); ctx.fill();
     }
+    ctx.shadowBlur=0; ctx.globalCompositeOperation='source-over';
+    __lrcFxRAF=requestAnimationFrame(frame);
+  }
+  __lrcFxRAF=requestAnimationFrame(frame);
+}
+/* 穿梭：星流从画面中心向外掠过，歌词从远方迎面飞到眼前 */
+function runWarpFx(ctx,cv,W,H,dpr){
+  var N=Math.min(170,Math.max(90,Math.round(W/6)));
+  var parts=[];
+  function reset(p,far){
+    p.x=(Math.random()-0.5)*W*dpr*1.5; p.y=(Math.random()-0.5)*H*dpr*1.5;
+    p.z=far?Math.random()*900+650:Math.random()*260+650;
+    p.sp=1.0+Math.random()*2.6; p.c=lrcFxColorAt(Math.random()); p.w=0.7+Math.random()*1.5;
+  }
+  for(var i=0;i<N;i++){var q={};reset(q,true);parts.push(q);}
+  var t0=performance.now();
+  function frame(now){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    ctx.globalCompositeOperation='lighter';
+    var cx=cv.width/2, cy=cv.height/2;
+    for(var i=0;i<parts.length;i++){
+      var p=parts[i];
+      p.z-=p.sp*16*dpr;
+      if(p.z<90){ reset(p,false); continue; }
+      var k=520/(p.z+120), k2=520/(p.z+120+22*dpr);
+      var sx=cx+p.x*k, sy=cy+p.y*k, px=cx+p.x*k2, py=cy+p.y*k2;
+      ctx.globalAlpha=Math.min(1,(900-p.z)/700)*0.95;
+      ctx.strokeStyle=p.c; ctx.lineWidth=p.w*dpr; ctx.shadowColor=p.c; ctx.shadowBlur=8*dpr;
+      ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(sx,sy); ctx.stroke();
+    }
+    ctx.shadowBlur=0; ctx.globalCompositeOperation='source-over';
     __lrcFxRAF=requestAnimationFrame(frame);
   }
   __lrcFxRAF=requestAnimationFrame(frame);
@@ -6104,6 +6187,7 @@ if($('lrcFxBox')) [].forEach.call($('lrcFxBox').querySelectorAll('.chip'),functi
   c.onclick=function(){
     S.lrcFx=c.getAttribute('data-fx')||'shadow'; LS.set();
     lrcFxSyncChips(); lrcFxRun(); renderLrc(au.currentTime,true);
+    setTimeout(function(){ try{ lrcFxRun(); }catch(e){} }, 60);
     var nm={shadow:'右下斜线投影',particle:'随机粒子波动',typewriter:'打字机逐字'}[S.lrcFx]||S.lrcFx;
     toast('歌词 3D 效果：'+nm+' ✧(≖ ◡ ≖✿)');
   };
@@ -6854,10 +6938,53 @@ function restoreSand(){
 }
 
 
+function initSetAccordion(){
+  var bd=document.querySelector('#shSet .bd'); if(!bd||bd.getAttribute('data-acc')) return;
+  bd.setAttribute('data-acc','1');
+  var bar=document.createElement('div'); bar.className='setsearch';
+  bar.innerHTML='<i class="fa-solid fa-magnifying-glass"></i><input id="setSearch" placeholder="搜索设置项：歌词 / 背景 / 音质 / 屏蔽 / 音效…"><span id="setSearchCnt"></span>';
+  bd.insertBefore(bar, bd.firstChild);
+  var groups=[], cur=null;
+  [].slice.call(bd.children).forEach(function(el){
+    if(el===bar) return;
+    if(el.classList.contains('setgrp')){
+      var sec=document.createElement('section'); sec.className='setsec';
+      var head=document.createElement('button'); head.type='button'; head.className='setsec-h';
+      head.innerHTML='<span>'+el.textContent+'</span><i class="fa-solid fa-chevron-down"></i>';
+      var body=document.createElement('div'); body.className='setsec-b';
+      sec.appendChild(head); sec.appendChild(body); bd.appendChild(sec);
+      el.style.display='none'; body.appendChild(el);
+      cur=body; groups.push({sec:sec,head:head,body:body,title:el.textContent});
+    } else if(cur){ cur.appendChild(el); }
+  });
+  groups.forEach(function(g){ g.head.onclick=function(){ g.sec.classList.toggle('closed'); }; });
+  var inp=$('setSearch');
+  if(inp){
+    inp.addEventListener('input',function(){
+      var q=this.value.trim().toLowerCase(), total=0;
+      groups.forEach(function(g){
+        g.sec.style.display='';
+        var titleHit=q && g.title.toLowerCase().indexOf(q)>=0;
+        var shown=0;
+        [].slice.call(g.body.children).forEach(function(row){
+          if(row.classList.contains('setgrp')) return;
+          var hit=!q||titleHit||row.textContent.toLowerCase().indexOf(q)>=0;
+          row.style.display=hit?'':'none';
+          if(hit && row.classList.contains('setrow')) shown++;
+        });
+        if(q && !titleHit && !shown){ g.sec.style.display='none'; }
+        else if(q){ g.sec.classList.remove('closed'); total+=shown; }
+      });
+      var cnt=$('setSearchCnt'); if(cnt) cnt.textContent=q?(total+' 项'):'';
+    });
+  }
+}
+
 function boot(){
   applyTheme();
   buildCats();
   buildSetUI();
+  try{ initSetAccordion(); }catch(e){}
   renderCustomSources();
   buildFxUI();
   buildTimerUI();
@@ -6943,7 +7070,7 @@ document.addEventListener('touchstart',function once(){ if(AC&&AC.state==='suspe
 /* v8.0.4 修色 + 防眼花：只有亮起的当前行（渐变彩色）才有 3D 投影；
    未亮起的灰色歌词一律不投影、不加文字阴影。 */
 #full .fn:not(.cur){letter-spacing:.4px;text-shadow:none!important;filter:none!important}
-#full .fn.cur{text-shadow:none!important;filter:drop-shadow(1px 2px 0 rgba(9,2,20,.96)) drop-shadow(3px 5px 0 rgba(9,2,20,.82)) drop-shadow(5px 8px 8px rgba(0,0,0,.55)) drop-shadow(0 0 20px rgba(177,108,255,.4))!important}
+#full .fn.cur{text-shadow:none!important;animation:sweep 6.5s linear infinite!important;filter:drop-shadow(1px 2px 0 rgba(66,62,78,.55)) drop-shadow(3px 5px 4px rgba(8,6,14,.28))!important}
 </style><style id="sl-skeleton">
 /* ============================================================
    巳泷资源库 · 前端骨架 Token 体系（v8.0.7）
