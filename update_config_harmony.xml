@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update>
+    <version>8.2.0</version>
+    <log>
+📋 巳泷资源库 鸿蒙版 v8.2.0 更新公告
+1. 影视乐园：LibreTV 开源壳 + 357 个接口，新增热门推荐与海报化界面。
+2. 游戏机：新大厅 + EmulatorJS 本地核心，离线可玩。
+3. AI 文游：新增 OC 世界工坊（角色/关系网/势力/地点/时间线/百科/世界书），OC 世界一键开局。
+4. 鸿蒙版与安卓版共用同一套网页资源，本次同步更新。
+    </log>
+    <url>https://github.com/Silong-ResPool/gay/releases/download/gay/Silong-ResPool_v8.2.0_Harmony.apk</url>
+</update>
