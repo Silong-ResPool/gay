@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <update>
-    <version>8.0.4</version>
+    <version>8.2.0</version>
     <log>
-📋 巳泷资源库 v8.0.4 更新公告
-本次版本彻底修复全平台页面卡死/无响应问题（移除了会无限自我触发的主题观察者循环），首页与管家页均可秒开；同时完成数据按需加载、图片压缩、HLS 内核按需注入等瘦身优化。安卓 / 鸿蒙 / 电脑三平台资源已完全同步。
+📋 巳泷资源库 v8.2.0 更新公告
+1. 影视乐园：改用 LibreTV 开源壳，357 个接口全部保留，新增热门推荐、海报化结果与紫罗兰界面。
+2. 游戏机：全新游戏大厅，EmulatorJS 核心本地化，9 平台 ROM 与 32 个 SWF 保留，离线可启动。
+3. AI 文游：新增 OC 世界工坊（角色档案、可视化关系网、势力、地点、时间线、世界百科、世界书），可用 OC 世界一键开局；内置两张世界卡独立文件管理。
+4. 三平台资源同步更新，版本检测改为分平台 XML。
     </log>
-    <url>https://github.com/Silong-ResPool/gay/releases/download/gay/Silong-ResPool_v8.0.4_Android.apk</url>
+    <url>https://github.com/Silong-ResPool/gay/releases/download/gay/Silong-ResPool_v8.2.0_Android.apk</url>
 </update>
