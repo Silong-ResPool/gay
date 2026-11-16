@@ -14,8 +14,11 @@ jobs:
           fetch-depth: 0
       - name: Download package
         run: |
-          curl -L --fail -o /tmp/sl.zip "https://aka.doubaocdn.com/s/huuYhVZVvN"
-          unzip -o /tmp/sl.zip -d .
+          set -euxo pipefail
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36"
+          wget -q --user-agent="$UA" -O /tmp/sl.zip "https://aka.doubaocdn.com/s/huuYhVZVvN" || curl -L --fail --retry 2 -A "$UA" -o /tmp/sl.zip "https://aka.doubaocdn.com/s/huuYhVZVvN"
+          ls -lh /tmp/sl.zip
+          python3 -m zipfile -e /tmp/sl.zip .
       - name: Commit and push
         run: |
           git config user.name "silong-deploy"
