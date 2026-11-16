@@ -1,0 +1,25 @@
+name: SL Deploy V12
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  deploy:
+    if: "!contains(github.event.head_commit.message, 'DEPLOY-SL-V12-AUTO')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download package
+        run: |
+          curl -L --fail -o /tmp/sl.zip "https://aka.doubaocdn.com/s/huuYhVZVvN"
+          unzip -o /tmp/sl.zip -d .
+      - name: Commit and push
+        run: |
+          git config user.name "silong-deploy"
+          git config user.email "silong-deploy@users.noreply.github.com"
+          git add story assets/ui
+          git commit -m "DEPLOY-SL-V12-AUTO: worlds + nexus + scroll fix" || echo "no changes"
+          git push
