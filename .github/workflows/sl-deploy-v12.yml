@@ -21,12 +21,10 @@ jobs:
           unzip -o /tmp/sl.zip
           echo '### Extracted' >> $GITHUB_STEP_SUMMARY
           ls -lh story/index.html >> $GITHUB_STEP_SUMMARY
-          grep -o 'worlds/index.js?v=[0-9]*' story/index.html >> $GITHUB_STEP_SUMMARY || true
-          git status --short >> $GITHUB_STEP_SUMMARY
       - name: Commit and push
         run: |
           git config user.name "silong-deploy"
           git config user.email "silong-deploy@users.noreply.github.com"
-          git add story assets/ui
+          git add -A
           git commit -m "DEPLOY-SL-V12-AUTO: worlds + nexus + scroll fix" || echo "no changes"
           git push
