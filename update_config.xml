@@ -8,6 +8,7 @@
 3. AI 文游与创世工坊：10 页创建世界、45 个中枢模块、地图地形笔刷、状态面板、世界推演。
 4. 三端自动翻译：非中文页面自动译为中文，在线优先 + 离线词库兜底，可一键恢复原文。
 5. 内置 API 统一限流：每 5 分钟最多 20 次，聊天 / 文游 / 代码助手 / 群聊共享额度。
+6. Web 版全量更新：新增 11 个双男主独立世界与世界观中枢，修复 AI 文游垂直滚动，主页与移动端布局重构。
     </log>
     <url>https://github.com/Silong-ResPool/gay/releases/download/gay/Silong-ResPool_v8.4.0_Android.apk</url>
 </update>
