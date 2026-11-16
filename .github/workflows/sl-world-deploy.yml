@@ -37,4 +37,10 @@ jobs:
           git config user.name "silong-deploy"
           git config user.email "silong-deploy@users.noreply.github.com"
           git add -A
-          if git diff --cached --quiet; then echo 'NO_CHANGES'; else git commit -m "DEPLOY-SL-WORLD-AUTO: 11 worlds + nexus + scroll fix"; git push; fi
+          if git diff --cached --quiet; then echo 'NO_CHANGES'; exit 0; fi
+          git commit -m "DEPLOY-SL-WORLD-AUTO: 11 worlds + nexus + scroll fix"
+          for i in 1 2 3; do
+            git pull --rebase origin main || true
+            if git push origin HEAD:main; then echo PUSH_OK; break; fi
+            sleep 3
+          done
