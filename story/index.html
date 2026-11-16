@@ -317,7 +317,7 @@ main{flex:1;overflow-y:auto;overflow-x:hidden;padding:16px 14px calc(32px + env(
 <script src="../data/api-app.js"></script>
 <script src="../data/api-web.js"></script>
 <script src="../data/ai-limit.js"></script>
-<script src="worlds/index.js?v=14"></script>
+<script src="worlds/index.js?v=15"></script>
 <script src="oc-sim.js"></script>
 <script>
 (function(){
@@ -1764,9 +1764,22 @@ body.mode-daily .side a:hover,body.mode-daily .side a.on{color:var(--sl-text)!im
 
 </style>
 <link rel="stylesheet" href="neo.css?v=10">
-<link rel="stylesheet" href="assets/ui/theme-lock.css?v=11">
+<link rel="stylesheet" href="../assets/ui/theme-lock.css?v=11">
 <style id="v12-story-final">
 /* V12 · 与资源库主页统一深空视觉 */
+/* 修复 neo.css 把 #app 改回 relative 后导致的整页无法垂直滚动 */
+#app{
+  position:fixed!important;inset:0!important;
+  height:100vh!important;height:100dvh!important;
+  max-height:100vh!important;max-height:100dvh!important;
+  display:flex!important;flex-direction:column!important;
+  min-height:0!important;z-index:1;overflow:hidden;
+}
+main{
+  flex:1 1 0!important;min-height:0!important;height:auto!important;
+  overflow-y:auto!important;overflow-x:hidden!important;
+  -webkit-overflow-scrolling:touch!important;overscroll-behavior:contain;
+}
 :root{
   --bg:#04060c;--panel:rgba(12,18,30,.82);--panel2:rgba(8,12,20,.95);
   --line:rgba(126,196,255,.22);--line2:rgba(255,255,255,.075);
