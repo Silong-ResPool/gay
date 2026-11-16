@@ -19,11 +19,11 @@ jobs:
           set -euxo pipefail
           UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36"
           for i in 1 2 3 4 5; do
-            if curl -L --fail --retry 3 --max-time 90 -A "$UA" -o /tmp/sl_text.tar.gz "https://aka.doubaocdn.com/s/qY0EYFAW70"; then break; fi
+            if curl -L --fail --retry 3 --max-time 90 -A "$UA" -o /tmp/sl_covers.tar.gz "https://aka.doubaocdn.com/s/di5Ns2eYC2"; then break; fi
             sleep 3
           done
-          ls -lh /tmp/sl_text.tar.gz
-          tar -xzf /tmp/sl_text.tar.gz
+          ls -lh /tmp/sl_covers.tar.gz
+          tar -xzf /tmp/sl_covers.tar.gz
       - name: Inspect changes
         run: |
           set -euxo pipefail
@@ -38,7 +38,7 @@ jobs:
           git config user.email "silong-deploy@users.noreply.github.com"
           git add -A
           if git diff --cached --quiet; then echo 'NO_CHANGES'; exit 0; fi
-          git commit -m "DEPLOY-SL-TEXT-AUTO: scroll fix + worlds + nexus"
+          git commit -m "DEPLOY-SL-COVERS-AUTO: 11 world cover images"
           for i in 1 2 3; do
             git pull --rebase origin main || true
             if git push origin HEAD:main; then echo PUSH_OK; break; fi
