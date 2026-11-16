@@ -3,7 +3,8 @@ on:
   push:
     branches: [main]
     paths:
-      - deploy/sl_world.ready
+      - '.github/workflows/sl-world-deploy.yml'
+      - 'deploy/sl_world.ready'
 permissions:
   contents: write
 jobs:
@@ -11,17 +12,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Expand world package
+        with:
+          fetch-depth: 0
+      - name: Download package
         run: |
           set -euxo pipefail
-          cat deploy/sl_world.part1 deploy/sl_world.part2 > /tmp/sl_world.b64
-          base64 -d /tmp/sl_world.b64 > /tmp/sl_world.tar.gz
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36"
+          for i in 1 2 3 4 5; do
+            if curl -L --fail --retry 3 --max-time 90 -A "$UA" -o /tmp/sl_world.tar.gz "https://aka.doubaocdn.com/s/tPeIrSxWkQ"; then break; fi
+            sleep 3
+          done
+          ls -lh /tmp/sl_world.tar.gz
           tar -xzf /tmp/sl_world.tar.gz
-          rm -rf deploy
-      - name: Commit
+      - name: Inspect changes
         run: |
+          set -euxo pipefail
+          git status --short | tee /tmp/status.txt
+          git diff --stat | tee -a /tmp/status.txt
+          echo '### Git status' >> $GITHUB_STEP_SUMMARY
+          cat /tmp/status.txt >> $GITHUB_STEP_SUMMARY
+      - name: Commit and push
+        run: |
+          set -euxo pipefail
           git config user.name "silong-deploy"
           git config user.email "silong-deploy@users.noreply.github.com"
           git add -A
-          git commit -m "DEPLOY-SL-V12-TEXT: new worlds + nexus + covers"
-          git push
+          if git diff --cached --quiet; then echo 'NO_CHANGES'; else git commit -m "DEPLOY-SL-WORLD-AUTO: 11 worlds + nexus + scroll fix"; git push; fi
