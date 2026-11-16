@@ -1,0 +1,119 @@
+/* ============================================================
+   巳泷 V10 通用页面皮肤（comic / novel / yidu / yilu / yxgx / yxj）
+   仅统一观感：底色、字体、卡片、按钮、标题、输入框。
+   不改任何布局尺寸与交互，功能条目保持原样。
+   ============================================================ */
+:root{
+  --v10-bg:#05040c;
+  --v10-bg2:#0a0718;
+  --v10-panel:rgba(18,12,34,.84);
+  --v10-panel2:rgba(26,19,48,.7);
+  --v10-line:rgba(255,255,255,.08);
+  --v10-line2:rgba(160,120,255,.32);
+  --v10-ink:#f4f0ff;
+  --v10-ink2:#c6badd;
+  --v10-mut:#8b7ba8;
+  --v10-p:#8b5cf6;
+  --v10-acc:#22d3ee;
+  --v10-pink:#f472b6;
+  --v10-r:18px;
+  --v10-sh:0 18px 46px -22px rgba(0,0,0,.9);
+  --v10-glow:0 0 0 1px rgba(167,139,250,.2), 0 14px 44px -18px rgba(139,92,246,.55);
+}
+
+html{ background:var(--v10-bg) !important; }
+body{
+  color:var(--v10-ink) !important;
+  font-family:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",system-ui,-apple-system,sans-serif !important;
+  background:
+    radial-gradient(1100px 620px at 10% -8%, rgba(139,92,246,.20), transparent 62%),
+    radial-gradient(880px 540px at 94% 2%, rgba(34,211,238,.13), transparent 60%),
+    radial-gradient(900px 700px at 58% 108%, rgba(244,114,182,.10), transparent 62%),
+    linear-gradient(180deg,#07050f,#04030a) !important;
+  background-attachment:fixed !important;
+}
+
+/* 通用面板 */
+.card,.item,.row,.panel,.box,.sec,.post,.entry,.list-item,.media-card,.novel-card,.comic-card{
+  border-radius:16px !important;
+  border:1px solid var(--v10-line) !important;
+  background:linear-gradient(160deg, rgba(24,18,46,.66), rgba(9,7,20,.8)) !important;
+  box-shadow:var(--v10-sh) !important;
+  transition:.22s cubic-bezier(.22,.8,.28,1) !important;
+}
+.card:hover,.item:hover,.row:hover,.media-card:hover,.novel-card:hover,.comic-card:hover{
+  transform:translateY(-3px);
+  border-color:var(--v10-line2) !important;
+  box-shadow:var(--v10-glow) !important;
+}
+
+/* 标题 */
+h1,h2,h3,.title,.hd,.head,.sec-title{
+  color:var(--v10-ink) !important;
+  letter-spacing:.02em;
+}
+h1{ font-weight:900 !important; }
+h2,h3{ font-weight:800 !important; }
+.hd,.head,.sec-title,.title{
+  border-bottom:1px solid var(--v10-line) !important;
+}
+
+/* 按钮 */
+button,.btn,.btnp,.btn-primary,.tab,.chip,.tag-btn{
+  border-radius:999px !important;
+  border:1px solid var(--v10-line) !important;
+  background:rgba(255,255,255,.05) !important;
+  color:var(--v10-ink) !important;
+  font-weight:700 !important;
+  transition:.18s ease !important;
+}
+button:hover,.btn:hover,.tab:hover,.chip:hover{
+  border-color:var(--v10-line2) !important;
+  background:rgba(139,92,246,.16) !important;
+}
+.btn-primary,.primary,.btn.pri,.tab.on,.chip.on,.on{
+  border-color:transparent !important;
+  color:#fff !important;
+  background:linear-gradient(120deg,#7c3aed,#8b5cf6 44%,#22d3ee) !important;
+  box-shadow:0 10px 26px -12px rgba(139,92,246,.95), inset 0 0 0 1px rgba(255,255,255,.16) !important;
+}
+
+/* 输入 */
+input,textarea,select{
+  border-radius:11px !important;
+  border:1px solid var(--v10-line) !important;
+  background:rgba(255,255,255,.05) !important;
+  color:var(--v10-ink) !important;
+}
+input:focus,textarea:focus,select:focus{
+  outline:none !important;
+  border-color:rgba(139,92,246,.7) !important;
+  box-shadow:0 0 0 3px rgba(139,92,246,.16) !important;
+}
+input::placeholder,textarea::placeholder{ color:var(--v10-mut) !important; }
+
+/* 图片 */
+img{ background:rgba(255,255,255,.03); }
+.cover img,.thumb img,.poster img{ border-radius:12px !important; }
+
+/* 标签 / 元信息 */
+.meta,.sub,.desc,.info,.by,.date{ color:var(--v10-ink2) !important; }
+.tag,.badge,.pill,.label{
+  background:rgba(34,211,238,.14) !important;
+  border:1px solid rgba(34,211,238,.28) !important;
+  color:#a5f3fc !important;
+  border-radius:999px !important;
+}
+
+/* 顶栏 */
+header,.top,.navbar,.hbar{
+  background:linear-gradient(180deg, rgba(9,7,20,.94), rgba(7,5,15,.7)) !important;
+  border-bottom:1px solid var(--v10-line) !important;
+  backdrop-filter:blur(18px) saturate(1.4) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.4) !important;
+}
+
+/* 滚动条与选中 */
+::-webkit-scrollbar{ width:9px; height:9px; }
+::-webkit-scrollbar-thumb{ background:linear-gradient(180deg,#7c5cf0,#22d3ee); border-radius:9px; }
+::selection{ background:rgba(139,92,246,.4); color:#fff; }

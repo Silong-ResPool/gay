@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "plugins": [
+    {
+      "id": "clean_ads",
+      "name": "清爽广告拦截",
+      "desc": "拦截横幅、悬浮广告、广告位与常见广告联盟请求，页面保持干净整洁。",
+      "file": "clean-ads.js",
+      "match": "*",
+      "defaultOn": true,
+      "builtin": true
+    },
+    {
+      "id": "popup_guard",
+      "name": "弹窗与跳转拦截",
+      "desc": "拦截自动弹窗、无手势 window.open、伪装遮罩与强制跳转。",
+      "file": "popup-guard.js",
+      "match": "*",
+      "defaultOn": true,
+      "builtin": true
+    },
+    {
+      "id": "night_eye",
+      "name": "夜间护眼",
+      "desc": "为网页叠加柔和暖色滤镜，降低夜间刺眼感；图片与视频不受影响。",
+      "file": "night-eye.js",
+      "match": "*",
+      "defaultOn": false,
+      "builtin": true
+    },
+    {
+      "id": "video_boost",
+      "name": "视频增强",
+      "desc": "记忆音量与倍速，双击视频全屏，减少播放器周围的干扰。",
+      "file": "video-boost.js",
+      "match": "*",
+      "defaultOn": false,
+      "builtin": true
+    },
+    {
+      "id": "reader",
+      "name": "阅读模式",
+      "desc": "一键提取正文，去除侧栏、广告与杂乱排版，适合看文章与小说。",
+      "file": "reader.js",
+      "match": "*",
+      "defaultOn": false,
+      "builtin": true
+    }
+  ]
+}

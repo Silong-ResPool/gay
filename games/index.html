@@ -1,781 +1,398 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<style id="sl-color-lock">html,body,:root{color-scheme:dark!important}html,body{forced-color-adjust:none!important}</style>
 <meta charset="UTF-8">
 <meta name="color-scheme" content="dark">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>巳泷游戏机 · 全类型合一</title>
-<meta name="theme-color" content="#08050f">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>巳泷游戏机</title>
 <style>
-:root{--neon-blue:#00e5ff;--neon-purple:#b16cff;--neon-pink:#ff6ec7;--bg:#05001a;--line:rgba(177,108,255,.32)}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:'PingFang SC','Microsoft YaHei','Segoe UI',sans-serif;min-height:100vh;color:#eaf6ff;background:var(--bg);
-  background-image:radial-gradient(circle at 50% -10%,#1a0b48 0%,#05001a 55%,#02000f 100%);overflow:hidden}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,229,255,.028) 3px 4px)}
-.hd{position:fixed;top:0;left:0;right:0;height:54px;z-index:100;display:flex;align-items:center;gap:10px;padding:10px 13px;
-  background:rgba(10,4,36,.9);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);box-shadow:0 2px 18px rgba(0,229,255,.14)}
-.back{border:1px solid rgba(0,229,255,.5);background:rgba(0,229,255,.08);color:#8fefff;padding:8px 14px;border-radius:20px;font-size:13px;cursor:pointer;white-space:nowrap}
-.title{font-size:17px;font-weight:800;letter-spacing:1.5px;background:linear-gradient(90deg,var(--neon-blue),var(--neon-purple) 50%,var(--neon-pink));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 10px rgba(177,108,255,.55));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stage{position:fixed;top:54px;left:0;right:0;bottom:0;background:#000}
-.stage iframe{width:100%;height:100%;border:0;background:#000;display:block}
-.gm-btn{position:fixed;right:14px;bottom:18px;z-index:60;border:1px solid rgba(0,229,255,.55);border-radius:999px;
-  padding:11px 18px;font-size:13px;font-weight:800;color:#fff;background:linear-gradient(135deg,rgba(0,229,255,.35),rgba(177,108,255,.55),rgba(255,110,199,.4));
-  box-shadow:0 8px 28px rgba(177,108,255,.45);cursor:pointer;backdrop-filter:blur(10px)}
-.gm{position:fixed;inset:0;z-index:200;display:none;background:rgba(2,0,12,.78);backdrop-filter:blur(14px)}
-.gm.on{display:flex;flex-direction:column}
-.gm .top{display:flex;align-items:center;gap:10px;padding:14px;border-bottom:1px solid var(--line);background:rgba(10,4,36,.9)}
-.gm .top h2{font-size:17px;flex:1;background:linear-gradient(90deg,#8fefff,#e4ccff);-webkit-background-clip:text;background-clip:text;color:transparent}
-.gm .x{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,110,199,.5);background:rgba(255,110,199,.12);color:#ffd6ef;font-size:17px;cursor:pointer}
-.gm .body{flex:1;overflow-y:auto;padding:12px 12px 100px}
-.grp{margin:14px 0 7px;font-size:12.5px;font-weight:800;color:#b9a4ff;letter-spacing:.5px;display:flex;align-items:center;gap:7px}
-.grp .cnt{margin-left:auto;font-size:10.5px;color:#7f90b3;font-weight:400}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:8px}
-.gsearch{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);background:rgba(10,4,36,.72)}
-.gsearch input{flex:1;min-width:0;background:#0d0622;border:1px solid var(--line);border-radius:12px;color:#fff;padding:10px 13px;font-size:12.5px;outline:0}
-.gsearch input:focus{border-color:var(--neon-purple);box-shadow:0 0 14px rgba(177,108,255,.25)}
-.gsearch .gc{font-size:10.5px;color:#8fa2c4;white-space:nowrap}
-.gcard{position:relative;padding:12px 12px 10px;border-radius:14px;cursor:pointer;background:linear-gradient(150deg,rgba(177,108,255,.13),rgba(0,229,255,.055));
-  border:1px solid rgba(177,108,255,.24);transition:.18s;overflow:hidden;min-height:64px;display:flex;flex-direction:column;justify-content:space-between}
-.gcard:before{content:"";position:absolute;inset:-40% -60% auto auto;width:120px;height:120px;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,110,199,.22),transparent 70%);pointer-events:none}
-.gcard:hover{transform:translateY(-2px);border-color:var(--neon-blue);box-shadow:0 10px 26px rgba(0,229,255,.16),0 0 20px rgba(177,108,255,.2)}
-.gcard .nm{font-size:12px;line-height:1.4;word-break:break-word;color:#f2ecff;font-weight:600}
-.gcard .tag{margin-top:8px;font-size:9.5px;color:#9ff4ff;background:rgba(0,229,255,.12);padding:3px 8px;border-radius:9px;display:inline-block;align-self:flex-start;border:1px solid rgba(0,229,255,.18)}
-.grp{position:sticky;top:0;z-index:2;padding:11px 2px 7px;background:linear-gradient(180deg,rgba(10,4,36,.98),rgba(10,4,36,.8));backdrop-filter:blur(8px)}
-/* v8.4.0：按模拟器分区折叠，展开后显示中文游戏名 */
-.gz{margin:8px 0;border:0;background:transparent}
-.gz>summary{list-style:none;cursor:pointer;padding:12px 14px;font-size:12.5px;font-weight:700;color:#e9ddff;
-  display:flex;align-items:center;gap:8px;background:linear-gradient(90deg,rgba(177,108,255,.16),rgba(0,229,255,.05))}
-.gz>summary::-webkit-details-marker{display:none}
-.gz>summary:before{content:"▸";color:#00e5ff;font-size:13px;transition:.2s}
-.gz[open]>summary:before{transform:rotate(90deg)}
-.gz>summary .cnt{font-size:10.5px;color:#9ff4ff;font-weight:400;margin-left:auto}
-.gz .grid{padding:10px 10px 12px}
-.addbox{padding:12px;border-radius:14px;border:1px dashed rgba(177,108,255,.4);background:rgba(177,108,255,.06);margin-top:8px}
-.addbox label{font-size:11.5px;color:#b9a4ff;display:block;margin-bottom:6px}
-.addbox input[type=text]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:#120a26;color:#fff;font-size:12px;outline:0;margin-bottom:8px}
-.addbox .row{display:flex;gap:8px}
-.addbox button{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(0,229,255,.4);background:rgba(0,229,255,.12);color:#8fefff;font-weight:700;font-size:12px;cursor:pointer}
-.addbox .file{display:none}
-.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;padding:10px 18px;border-radius:12px;background:rgba(10,4,36,.96);border:1px solid rgba(177,108,255,.5);color:#fff;font-size:12px;z-index:999;transition:.25s}
-.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+/* ============================================================
+   巳泷游戏机 · 全新大厅（2026-11-11）
+   内置游戏全部保留：9 平台 homebrew ROM + 32 个本地 SWF
+   模拟器核心已本地化（games/ejs），离线可启动
+   ============================================================ */
+:root{
+  --bg:#070510;--panel:rgba(20,14,34,.78);--line:rgba(139,92,246,.2);
+  --line2:rgba(255,255,255,.07);--p:#8b5cf6;--p2:#7c3aed;--acc:#22d3ee;
+  --pink:#f472b6;--txt:#f4f1ff;--sub:#a79bc4;--muted:#7d7196;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);
+  font-family:-apple-system,"PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{background:
+  radial-gradient(980px 520px at 10% -8%,rgba(124,58,237,.24),transparent 60%),
+  radial-gradient(820px 440px at 100% 2%,rgba(34,211,238,.10),transparent 58%),
+  radial-gradient(820px 480px at 50% 112%,rgba(244,114,182,.09),transparent 60%),
+  var(--bg);min-height:100%}
+button,input,select{font-family:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:rgba(139,92,246,.4);border-radius:99px}
+::selection{background:rgba(139,92,246,.35);color:#fff}
+
+.top{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:10px;
+  padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px;
+  background:linear-gradient(180deg,rgba(12,8,22,.94),rgba(10,7,18,.76));
+  border-bottom:1px solid var(--line2);backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px)}
+.ibtn{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.06);color:#e9e4ff;display:flex;align-items:center;justify-content:center;
+  flex:0 0 auto;transition:.18s}
+.ibtn:hover{background:rgba(139,92,246,.24);border-color:rgba(139,92,246,.55)}
+.ibtn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.9}
+.brand{display:flex;align-items:center;gap:9px;min-width:0}
+.brand .mk{width:28px;height:28px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--p2),var(--acc));box-shadow:0 4px 14px rgba(124,58,237,.45);flex:0 0 auto}
+.brand .mk svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:1.8}
+.brand b{font-size:16px;letter-spacing:1px;white-space:nowrap;
+  background:linear-gradient(92deg,#fff,#e9d5ff 32%,#a78bfa 62%,#22d3ee);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.spacer{flex:1}
+.search{flex:1;max-width:360px;position:relative;min-width:90px}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;
+  stroke:#8f83ab;fill:none;stroke-width:2}
+.search input{width:100%;height:36px;border-radius:99px;border:1px solid rgba(255,255,255,.09);
+  background:rgba(255,255,255,.055);color:#fff;font-size:12.5px;padding:0 14px 0 34px;outline:none;
+  transition:.18s}
+.search input:focus{border-color:rgba(139,92,246,.8);box-shadow:0 0 0 3px rgba(139,92,246,.16)}
+
+.hero{position:relative;overflow:hidden;margin:14px 0 4px;padding:22px 20px 18px;border-radius:22px;
+  background:linear-gradient(145deg,rgba(124,58,237,.34),rgba(24,16,42,.9) 55%,rgba(12,8,22,.95));
+  border:1px solid var(--line);box-shadow:0 18px 44px rgba(0,0,0,.36)}
+.hero::after{content:"";position:absolute;right:-60px;top:-70px;width:230px;height:230px;border-radius:50%;
+  background:radial-gradient(circle,rgba(34,211,238,.24),transparent 68%);pointer-events:none}
+.hero::before{content:"";position:absolute;left:-50px;bottom:-90px;width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(244,114,182,.18),transparent 70%);pointer-events:none}
+.hero .kicker{font-size:9.5px;letter-spacing:3px;color:#a78bfa;margin-bottom:7px}
+.hero h1{margin:0 0 7px;font-size:23px;letter-spacing:1px;
+  background:linear-gradient(92deg,#fff,#ddd6fe 38%,#a78bfa 68%,#22d3ee);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:0;color:#b9aed4;font-size:12px;line-height:1.8;max-width:560px}
+.hero .stats{display:flex;gap:18px;margin-top:14px;flex-wrap:wrap;position:relative;z-index:1}
+.hero .stats span{font-size:10.5px;color:#8f83ab;letter-spacing:.5px}
+.hero .stats b{font-size:15px;color:#e9e4ff;font-weight:800;margin-right:4px}
+mark{background:rgba(34,211,238,.28);color:#a5f3fc;border-radius:4px;padding:0 2px}
+.cats{display:flex;gap:8px;overflow-x:auto;padding:12px 14px 6px;scrollbar-width:none;
+  position:sticky;top:calc(56px + env(safe-area-inset-top,0px));z-index:30;
+  background:linear-gradient(180deg,rgba(7,5,16,.96),rgba(7,5,16,.72));backdrop-filter:blur(14px)}
+.cats::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border-radius:99px;padding:8px 14px;font-size:12px;border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.045);color:#b9aed4;transition:.16s;white-space:nowrap}
+.chip:hover{background:rgba(139,92,246,.2);color:#fff;border-color:rgba(139,92,246,.45)}
+.chip.on{background:linear-gradient(135deg,var(--p2),var(--p));color:#fff;border-color:rgba(255,255,255,.16);
+  box-shadow:0 6px 18px rgba(124,58,237,.36)}
+.wrap{max-width:1200px;margin:0 auto;padding:6px 14px calc(36px + env(safe-area-inset-bottom,0px))}
+.sec{display:flex;align-items:center;justify-content:space-between;margin:18px 2px 10px}
+.sec h2{margin:0;font-size:14px;letter-spacing:.5px;color:#e7e0ff}
+.sec em{font-style:normal;font-size:11px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:11px}
+.gcard{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line2);
+  background:linear-gradient(160deg,rgba(28,18,48,.78),rgba(12,8,22,.9));
+  padding:0;text-align:left;transition:.18s;min-height:96px;display:flex;flex-direction:column}
+.gcard:hover{transform:translateY(-3px);border-color:rgba(139,92,246,.6);
+  box-shadow:0 14px 30px rgba(0,0,0,.4),0 0 0 1px rgba(139,92,246,.2)}
+.gcard .cover{height:74px;position:relative;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--c1,rgba(124,58,237,.5)),var(--c2,rgba(34,211,238,.32)))}
+.gcard .cover::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(120px 60px at 78% 18%,rgba(255,255,255,.22),transparent 70%)}
+.gcard .cover b{position:relative;z-index:1;font-size:22px;font-weight:800;color:rgba(255,255,255,.92);
+  letter-spacing:1px;text-shadow:0 2px 12px rgba(0,0,0,.35)}
+.gcard .bd{padding:9px 11px 11px;flex:1;display:flex;flex-direction:column;gap:4px}
+.gcard .nm{font-size:11.5px;color:#f0ecff;line-height:1.4;font-weight:600;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.gcard .pl{font-size:9.5px;color:#8f83ab;letter-spacing:.4px}
+.badge{position:absolute;right:7px;top:7px;z-index:2;font-size:9px;padding:2px 7px;border-radius:99px;
+  background:rgba(8,4,16,.62);border:1px solid rgba(255,255,255,.16);color:#e9e4ff;letter-spacing:.4px}
+.empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:12.5px;
+  border:1px dashed rgba(139,92,246,.26);border-radius:14px;line-height:1.9}
+.tipbar{margin:12px 0 2px;padding:10px 14px;border-radius:12px;font-size:11px;line-height:1.7;
+  color:#a79bc4;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.18)}
+
+/* 弹窗 */
+.mask{position:fixed;inset:0;z-index:100;background:rgba(4,2,10,.7);backdrop-filter:blur(8px);
+  display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:100%;max-width:560px;max-height:86vh;overflow-y:auto;border-radius:22px 22px 0 0;
+  border:1px solid var(--line);border-bottom:none;background:linear-gradient(180deg,rgba(24,16,42,.98),rgba(10,7,18,.99));
+  padding:20px 18px calc(22px + env(safe-area-inset-bottom,0px))}
+.sheet h3{margin:0 0 6px;font-size:15px;color:#fff}
+.sheet p{margin:0 0 14px;font-size:11.5px;color:var(--muted);line-height:1.7}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:11px;color:#b9aed4;margin-bottom:6px}
+.field input{width:100%;border-radius:11px;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);color:#fff;padding:11px 13px;font-size:12.5px;outline:none}
+.field input:focus{border-color:rgba(139,92,246,.8);box-shadow:0 0 0 3px rgba(139,92,246,.16)}
+.acts{display:flex;gap:10px;margin-top:16px}
+.btn{flex:1;border:none;border-radius:12px;padding:11px 14px;font-size:12.5px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:7px}
+.btn.pri{background:linear-gradient(135deg,var(--p2),var(--p));color:#fff;box-shadow:0 8px 22px rgba(124,58,237,.38)}
+.btn.gho{background:rgba(255,255,255,.06);color:#d9d0ee;border:1px solid rgba(255,255,255,.1)}
+#toast{position:fixed;left:50%;bottom:32px;transform:translate(-50%,14px);z-index:300;
+  padding:10px 18px;border-radius:99px;font-size:12px;color:#fff;background:rgba(24,16,42,.96);
+  border:1px solid rgba(139,92,246,.45);box-shadow:0 10px 30px rgba(0,0,0,.5);
+  opacity:0;pointer-events:none;transition:.24s;max-width:82vw;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+@media (max-width:520px){
+  .grid{grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+  .gcard .cover{height:62px}
+  .gcard .nm{font-size:10.5px}
+  .search{max-width:none}
+  .brand b{font-size:14px}
+}
 </style>
 </head>
 <body>
-<script id="sl-force-night">
-/* v8.0.7：全站强制单一黑夜紫罗兰模式
-   清除历史白日/黄昏 class，并强制成人内容全部可见；
-   用 MutationObserver 防止旧页面脚本再次加回 sl-day / mode-daily。 */
-(function(){
-  function force(){
-    /* v8.1.0 卡死修复：classList.remove/add 即使无实际变化也会产生 class 变更记录，
-       本函数由 MutationObserver 回调，无脑 remove+add 会造成无限观察者风暴（主线程卡死）。
-       改为「先检查、确有差异才写」。 */
-    var d=document.documentElement;
-    if(d){
-      var dNeed=!d.classList.contains('sl-night')||d.classList.contains('sl-day')||d.classList.contains('sl-dusk')||d.classList.contains('day');
-      if(dNeed){
-        d.classList.remove('sl-day','sl-dusk','day');
-        d.classList.add('sl-night');
-      }
-    }
-    var b=document.body;
-    if(b){
-      var bNeed=!b.classList.contains('mode-night')||!b.classList.contains('mode-adult')||b.classList.contains('mode-daily')||b.classList.contains('mode-dusk')||b.classList.contains('day');
-      if(bNeed){
-        b.classList.remove('mode-daily','mode-dusk','day');
-        b.classList.add('mode-night','mode-adult');
-      }
-    }
-  }
-  try{
-    localStorage.setItem('sl_cycle','1');
-    localStorage.setItem('sl_site_mode','"adult"');
-  }catch(e){}
-  force();
-  try{
-    new MutationObserver(force).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
-  }catch(e){}
-  document.addEventListener('DOMContentLoaded',function(){
-    force();
-    try{
-      new MutationObserver(force).observe(document.body,{attributes:true,attributeFilter:['class']});
-    }catch(e){}
-    setTimeout(force,300);
-  });
-})();
+<header class="top">
+  <button class="ibtn" id="back" title="返回"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+  <div class="brand">
+    <span class="mk"><svg viewBox="0 0 24 24"><path d="M6 11h4M8 9v4M15 10h.01M18 13h.01"/><path d="M7 6h10a4 4 0 0 1 4 4v5a3 3 0 0 1-5.5 1.7L15 16H9l-.5.7A3 3 0 1 1 3 15v-5a4 4 0 0 1 4-4z"/></svg></span>
+    <b>巳泷游戏机</b>
+  </div>
+  <div class="spacer"></div>
+  <div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="kw" type="search" placeholder="搜索游戏 / 平台" autocomplete="off"></div>
+  <button class="ibtn" id="addBtn" title="添加游戏"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+</header>
+<nav class="cats" id="cats"></nav>
+<main class="wrap">
+  <section class="hero">
+    <div class="kicker">SILONG ARCADE</div>
+    <h1>把街机厅装进口袋</h1>
+    <p>9 个经典平台、五百多款内置游戏，模拟器核心已经放进本机，离线也能启动。点开卡片就玩，不用再等核心下载。</p>
+    <div class="stats">
+      <span><b id="stTotal">0</b>款游戏</span>
+      <span><b id="stZones">0</b>个平台</span>
+      <span><b>32</b>个 SWF</span>
+      <span><b>离线</b>核心</span>
+    </div>
+  </section>
+  <div class="tipbar">模拟器核心已内置在本地，首次启动无需联网下载核心。ROM 来自公开的 homebrew 免费游戏库；本地 SWF 直接离线运行。</div>
+  <div class="sec"><h2 id="secTitle">全部游戏</h2><em id="secCount"></em></div>
+  <div id="grid" class="grid"></div>
+</main>
+<div id="modal"></div>
+<div id="toast"></div>
 
-</script>
-
-<div class="hd">
-  <button class="back" onclick="(window.GameNative&&GameNative.exit)?GameNative.exit():(location.href='../index.html')">← 返回</button>
-  <div class="title">巳泷游戏机 · 全类型合一</div>
-</div>
-<div class="stage"><iframe id="stageFrame" src="../yxj.html" allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write"></iframe></div>
-<button class="gm-btn" id="gmBtn">☰ 游戏菜单</button>
-<div class="gm" id="gm">
-  <div class="top"><h2>游戏菜单</h2><button class="x" id="gmX">✕</button></div>
-  <div class="gsearch"><input id="gmSearch" type="search" placeholder="搜索游戏 / 分类 / 在线小游戏" autocomplete="off"><span class="gc" id="gmCount"></span></div>
-  <div class="body" id="gmBody"></div>
-</div>
-<div class="toast" id="toast"></div>
-<script >/* 巳泷资源库 · 运行环境与解码工具（v9.9.0）
-   APP 内运行 = localhost / 127.0.0.1；网页部署 = 其他域名。
-   所有链接/密钥都放在 links-app.js / links-web.js / api-app.js / api-web.js 中，页面只引用解码。 */
-(function () {
-  var h = String(location.hostname || '').toLowerCase();
-  window.SL_ENV = (typeof window.Android !== 'undefined' || h === 'localhost' || h === '127.0.0.1' || h === '') ? 'app' : 'web';
-  window.SL_D = function (s) {
-    if (!s) return '';
-    try { return decodeURIComponent(escape(atob(s))); }
-    catch (e) { try { return atob(s); } catch (e2) { return String(s); } }
-  };
-  window.SL_E = function (s) { try { return btoa(unescape(encodeURIComponent(String(s)))); } catch (e) { return String(s); } };
-})();
-</script>
-<script >/* v9.9.0：链接数据层（自动生成，请勿手改）。URL 以 Base64 存放，页面用 SL_D 解码。 */
-(function(){
-var L={lbt:[['lbt/lbt1.jpg','aHR0cHM6Ly94aWFvbGFuMS5jb20vdmlkZW9zL2NhdGVnb3J5L2FpZ2Mv'],['lbt/lbt2.jpg','aHR0cHM6Ly9wb2lwaWt1LmNvbS8xMjA4MjkwMS8='],['lbt/lbt3.jpg','aHR0cHM6Ly85MW50NDMuY29tLw=='],['lbt/lbt4.jpg','aHR0cHM6Ly9zaWxvbmctcmVzcG9vbC5naXRodWIuaW8vZ2F5L3l4ai5odG1s'],['lbt/lbt5.jpg','aHR0cHM6Ly9hY3F1YWludGUueHl6L3poL2V4cGxvcmUvYXBwcz9yYW5raW5nPWRhaWx5X3JhbmsmZGlzcGxheT1zaW1wbGU='],['lbt/lbt6.jpg','aHR0cHM6Ly9qbTE4Yy1vZWMuY2Mvc2VhcmNoL3Bob3Rvcz9zZWFyY2hfcXVlcnk9eWFvaSZzZWFyY2gtdHlwZT1waG90b3MmbWFpbl90YWc9MA==']],
-quick1:[['更多网站♂','aHR0cHM6Ly95YW5kZXguY29tL3NlYXJjaC90b3VjaC8/dGV4dD0lRTclOTQlQjclRTUlOTAlOEMrZ2F5K1Bvcm4mbHI9MjA3MzQ=','fa-solid fa-globe'],['全球男同网','aHR0cHM6Ly9teWdheXNpdGVzLmNvbS8=','fa-solid fa-earth-americas'],['相册集','I2FsYnVt','fa-solid fa-images'],['小蓝视频','aHR0cHM6Ly94aWFvbGFuMS5jb20v','fa-solid fa-video'],['搜同网','aHR0cHM6Ly9sc2tpd3pjdy5jYy8=','fa-solid fa-magnifying-glass'],['每日黑料','aHR0cHM6Ly94bGd2NDcuY29tLw==','fa-solid fa-fire'],['男同网','aHR0cHM6Ly85MW50NDMuY29tLw==','fa-solid fa-user-group'],['匿名访问X','aHR0cHM6Ly90d2l0dGVydmlld2VyLm5ldC9Cb3lzV2l0aEVhcnNBSQ==','fa-brands fa-x-twitter']],
-quick2:[['漫蛙','aHR0cHM6Ly93d3cubWFud2F0dy5jYy8/eXNjbGlkPW1vNjlrcGc4anM5OTIxOTUyODY=','fa-solid fa-frog'],['AI绘图','aHR0cHM6Ly9zaWxvbmctcmVzcG9vbC5naXRodWIuaW8vZ2F5L2FpdHNjaS5odG1s','fa-solid fa-palette'],['聊天室','aHR0cHM6Ly92b2lkY2hhdC5vcmcvdi9zaWxvbmctQmFva3U=','fa-solid fa-comment-dots'],['AI聊天','aHR0cHM6Ly9saW5rLjNjZW5nLmNuL3ZpZXcvZDMwYTVjN2U=','fa-solid fa-comments'],['R18搜索','aHR0cHM6Ly9ub29kbGVtYWdhemluZS5jb20vbmV3LXZpZGVv','fa-solid fa-magnet'],['空域网','aHR0cHM6Ly93d3cueG4tLWNqczM4MWYueHl6Lw==','fa-solid fa-cloud'],['游戏网','aHR0cHM6Ly93d3cuZ2FtZWZyZXJlLmNvbS8=','fa-solid fa-gamepad'],['AI大全','aHR0cHM6Ly9haXNoZW5xaS5uZXQv','fa-solid fa-robot'],['硬核网','aHR0cHM6Ly95aW5naGV6aGluYW4uY29tLw==','fa-solid fa-bolt'],['工具箱','aHR0cHM6Ly90b29sLmx1Lw==','fa-solid fa-toolbox']],
-qq:'aHR0cHM6Ly9xdW4ucXEuY29tL3VuaXZlcnNhbC1zaGFyZS9zaGFyZT9hYz0xJmF1dGhLZXk9TXRBTHV6TmJHcklWbmclMkZJUUxrTENuZHQ0RVRndUdBMGRtQUlEcjQ3dHE4a1QyMWl2R2V5OUJQSHZxNjBZYjZPJmJ1c2lfZGF0YT1leUpuY205MWNFTnZaR1VpT2lJMk5UQXpORFk1TlRJaUxDSjBiMnRsYmlJNklra3hUbnBhT0VaMFQwZDVjbGQxTUdsSFltcDBOMWxuWVRKUGVtWk5OVmQ1YWpabk1Fa3ZZVnBpVFZoQmVrbHFkM1oxSzBWNVRHRnJZMVY1VTJWMVZYY2lMQ0oxYVc0aU9pSXpNakV6T0RJME1USTJJbjAlM0QmZGF0YT1kaTNCNm95V1NpMGt2RVc5U0xwcTl2RHR2ZWwwT2lBckNmdmdSWnpjNFR2MVZxUEx3TnA1VU5TbFNMN0FSZ3NhVU1aUFdvbmdSMEJSSGdMYmhfcTVBQSZzdmN0eXBlPTQmdGVtcGlkPWg1X2dyb3VwX2luZm8=',
-mp:'aHR0cHM6Ly9tcC53ZWl4aW4ucXEuY29tL3MvaGNSV0tGNkxfQnU3bFBIQ0JmMzA1dw==',
-mail:'eHozNTIzODM0NXl1bkAxNjMuY29t',
-tip:'dGlwL2luZGV4Lmh0bWw=',
-app:'aHR0cHM6Ly9naXRodWIuY29tL1NpbG9uZy1SZXNQb29sL2dheS9yZWxlYXNlcy90YWcvZ2F5',
-kid:'aHR0cHM6Ly9jYXJ0b29uZ2FtZXMuaW8vemg=',
-musicApi:'aHR0cHM6Ly9tdXNpYy1hcGkuZ2RzdHVkaW8ueHl6L2FwaS5waHA=',
-romBase:'aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3JldHJvYnJld3Mv',
-album1:'aHR0cHM6Ly9wb2lwaWt1LmNvbS8xMjA4MjkwMS8=',
-album2:'aHR0cHM6Ly90ZXN0Lnplcm9zdG9yYWdlLm5ldC9mb2xkZXIvY21vcjduczBnMDAzZmJjdWxvdDczMWdyZg=='};
-if(window.SL_ENV==='app') window.SLLINKS=L;
-})();
-</script>
-<script >/* v9.9.0：链接数据层（自动生成，请勿手改）。URL 以 Base64 存放，页面用 SL_D 解码。 */
-(function(){
-var L={lbt:[['lbt/lbt1.jpg','aHR0cHM6Ly94aWFvbGFuMS5jb20vdmlkZW9zL2NhdGVnb3J5L2FpZ2Mv'],['lbt/lbt2.jpg','aHR0cHM6Ly9wb2lwaWt1LmNvbS8xMjA4MjkwMS8='],['lbt/lbt3.jpg','aHR0cHM6Ly85MW50NDMuY29tLw=='],['lbt/lbt4.jpg','aHR0cHM6Ly9zaWxvbmctcmVzcG9vbC5naXRodWIuaW8vZ2F5L3l4ai5odG1s'],['lbt/lbt5.jpg','aHR0cHM6Ly9hY3F1YWludGUueHl6L3poL2V4cGxvcmUvYXBwcz9yYW5raW5nPWRhaWx5X3JhbmsmZGlzcGxheT1zaW1wbGU='],['lbt/lbt6.jpg','aHR0cHM6Ly9qbTE4Yy1vZWMuY2Mvc2VhcmNoL3Bob3Rvcz9zZWFyY2hfcXVlcnk9eWFvaSZzZWFyY2gtdHlwZT1waG90b3MmbWFpbl90YWc9MA==']],
-quick1:[['更多网站♂','aHR0cHM6Ly95YW5kZXguY29tL3NlYXJjaC90b3VjaC8/dGV4dD0lRTclOTQlQjclRTUlOTAlOEMrZ2F5K1Bvcm4mbHI9MjA3MzQ=','fa-solid fa-globe'],['全球男同网','aHR0cHM6Ly9teWdheXNpdGVzLmNvbS8=','fa-solid fa-earth-americas'],['相册集','I2FsYnVt','fa-solid fa-images'],['小蓝视频','aHR0cHM6Ly94aWFvbGFuMS5jb20v','fa-solid fa-video'],['搜同网','aHR0cHM6Ly9sc2tpd3pjdy5jYy8=','fa-solid fa-magnifying-glass'],['每日黑料','aHR0cHM6Ly94bGd2NDcuY29tLw==','fa-solid fa-fire'],['男同网','aHR0cHM6Ly85MW50NDMuY29tLw==','fa-solid fa-user-group'],['匿名访问X','aHR0cHM6Ly90d2l0dGVydmlld2VyLm5ldC9Cb3lzV2l0aEVhcnNBSQ==','fa-brands fa-x-twitter']],
-quick2:[['漫蛙','aHR0cHM6Ly93d3cubWFud2F0dy5jYy8/eXNjbGlkPW1vNjlrcGc4anM5OTIxOTUyODY=','fa-solid fa-frog'],['AI绘图','aHR0cHM6Ly9zaWxvbmctcmVzcG9vbC5naXRodWIuaW8vZ2F5L2FpdHNjaS5odG1s','fa-solid fa-palette'],['聊天室','aHR0cHM6Ly92b2lkY2hhdC5vcmcvdi9zaWxvbmctQmFva3U=','fa-solid fa-comment-dots'],['AI聊天','aHR0cHM6Ly9saW5rLjNjZW5nLmNuL3ZpZXcvZDMwYTVjN2U=','fa-solid fa-comments'],['R18搜索','aHR0cHM6Ly9ub29kbGVtYWdhemluZS5jb20vbmV3LXZpZGVv','fa-solid fa-magnet'],['空域网','aHR0cHM6Ly93d3cueG4tLWNqczM4MWYueHl6Lw==','fa-solid fa-cloud'],['游戏网','aHR0cHM6Ly93d3cuZ2FtZWZyZXJlLmNvbS8=','fa-solid fa-gamepad'],['AI大全','aHR0cHM6Ly9haXNoZW5xaS5uZXQv','fa-solid fa-robot'],['硬核网','aHR0cHM6Ly95aW5naGV6aGluYW4uY29tLw==','fa-solid fa-bolt'],['工具箱','aHR0cHM6Ly90b29sLmx1Lw==','fa-solid fa-toolbox']],
-qq:'aHR0cHM6Ly9xdW4ucXEuY29tL3VuaXZlcnNhbC1zaGFyZS9zaGFyZT9hYz0xJmF1dGhLZXk9TXRBTHV6TmJHcklWbmclMkZJUUxrTENuZHQ0RVRndUdBMGRtQUlEcjQ3dHE4a1QyMWl2R2V5OUJQSHZxNjBZYjZPJmJ1c2lfZGF0YT1leUpuY205MWNFTnZaR1VpT2lJMk5UQXpORFk1TlRJaUxDSjBiMnRsYmlJNklra3hUbnBhT0VaMFQwZDVjbGQxTUdsSFltcDBOMWxuWVRKUGVtWk5OVmQ1YWpabk1Fa3ZZVnBpVFZoQmVrbHFkM1oxSzBWNVRHRnJZMVY1VTJWMVZYY2lMQ0oxYVc0aU9pSXpNakV6T0RJME1USTJJbjAlM0QmZGF0YT1kaTNCNm95V1NpMGt2RVc5U0xwcTl2RHR2ZWwwT2lBckNmdmdSWnpjNFR2MVZxUEx3TnA1VU5TbFNMN0FSZ3NhVU1aUFdvbmdSMEJSSGdMYmhfcTVBQSZzdmN0eXBlPTQmdGVtcGlkPWg1X2dyb3VwX2luZm8=',
-mp:'aHR0cHM6Ly9tcC53ZWl4aW4ucXEuY29tL3MvaGNSV0tGNkxfQnU3bFBIQ0JmMzA1dw==',
-mail:'eHozNTIzODM0NXl1bkAxNjMuY29t',
-tip:'dGlwL2luZGV4Lmh0bWw=',
-app:'aHR0cHM6Ly9naXRodWIuY29tL1NpbG9uZy1SZXNQb29sL2dheS9yZWxlYXNlcy90YWcvZ2F5',
-kid:'aHR0cHM6Ly9jYXJ0b29uZ2FtZXMuaW8vemg=',
-musicApi:'aHR0cHM6Ly9tdXNpYy1hcGkuZ2RzdHVkaW8ueHl6L2FwaS5waHA=',
-romBase:'aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3JldHJvYnJld3Mv',
-album1:'aHR0cHM6Ly9wb2lwaWt1LmNvbS8xMjA4MjkwMS8=',
-album2:'aHR0cHM6Ly90ZXN0Lnplcm9zdG9yYWdlLm5ldC9mb2xkZXIvY21vcjduczBnMDAzZmJjdWxvdDczMWdyZg=='};
-if(window.SL_ENV!=='app') window.SLLINKS=L;
-})();
-</script>
-<script>
-/* 巳泷游戏机 · 免费开源/homebrew ROM 目录（来源：github.com/retrobrews，freeware） */
-/* v9.9.0：ROM 源来自 data/links-app.js / links-web.js */
-window.SL_ROM_BASE = (window.SLLINKS ? SL_D(SLLINKS.romBase) : 'https://raw.githubusercontent.com/retrobrews/');
-window.SL_ZONES = [
-  {id:'swf',name:'SWF 小游戏',icon:'⚡',type:'swf',pinned:true,core:'',repo:'',games:[
-    {n:'Snow Basch Game',f:'yxwj/yx-1.swf'},{n:'孙坚',f:'yxwj/yx-2.swf'},{n:'卫宫切嗣Solo',f:'yxwj/yx-3.swf'},
-    {n:'卫宫切嗣Solo2',f:'yxwj/yx-32.swf'},{n:'生化奇兵：无限',f:'yxwj/yx-4.swf'},{n:'触手物语',f:'yxwj/yx-5.swf'},
-    {n:'罪恶装备-索尔',f:'yxwj/yx-6.swf'},{n:'树枝游戏',f:'yxwj/yx-7.swf'},{n:'山治&索隆',f:'yxwj/yx-8.swf'},
-    {n:'兄弟之爱',f:'yxwj/yx-9.swf'},{n:'足球狂猎人',f:'yxwj/yx-10.swf'},{n:'军营',f:'yxwj/yx-11.swf'},
-    {n:'触碰与挑逗1',f:'yxwj/yx-12.swf'},{n:'触碰与挑逗2',f:'yxwj/yx-13.swf'},{n:'悟空&贝吉塔',f:'yxwj/yx-14.swf'},
-    {n:'阿米西提亚',f:'yxwj/yx-15.swf'},{n:'Vindictus',f:'yxwj/yx-16.swf'},{n:'Flesh Jack Game',f:'yxwj/yx-17.swf'},
-    {n:'巴托&索隆',f:'yxwj/yx-18.swf'},{n:'东城刃更',f:'yxwj/yx-19.swf'},{n:'斯摩格VS维尔戈',f:'yxwj/yx-20.swf'},
-    {n:'鬼泣但丁1',f:'yxwj/yx-21.swf'},{n:'鬼泣但丁2',f:'yxwj/yx-22.swf'},{n:'通缉：生死相依',f:'yxwj/yx-23.swf'},
-    {n:'徐金',f:'yxwj/yx-24.swf'},{n:'龙珠z-海滩',f:'yxwj/yx-25.swf'},{n:'圣星矢-海滩',f:'yxwj/yx-26.swf'},
-    {n:'布罗利&特兰克斯',f:'yxwj/yx-27.swf'},{n:'黄金太阳',f:'yxwj/yx-28.swf'},{n:'尹当面交康·温',f:'yxwj/yx-29.swf'},
-    {n:'合金装备x',f:'yxwj/yx-30.swf'},{n:'猜拳游戏',f:'yxwj/yx-31.swf'}
-  ]},
-  {id:'nes',name:'红白机 FC / NES',icon:'🎮',type:'rom',core:'fceumm',repo:'nes-games',games:[{n:'31in1realgame multicart',f:'31in1realgame-multicart.nes'},{n:'3in12ppak',f:'3in12ppak.nes'},{n:'ambushed',f:'ambushed.nes'},{n:'assimilate',f:'assimilate.nes'},{n:'babelblox',f:'babelblox.nes'},{n:'blackboxchallenge',f:'blackboxchallenge.nes'},{n:'blaster',f:'blaster.nes'},{n:'bombarray',f:'bombarray.nes'},{n:'bootee',f:'bootee.nes'},{n:'bronyblaster',f:'bronyblaster.nes'},{n:'cheril the goddess',f:'cheril-the-goddess.nes'},{n:'cl1k',f:'cl1k.nes'},{n:'croom',f:'croom.nes'},{n:'dabg',f:'dabg.nes'},{n:'debrisdodger',f:'debrisdodger.nes'},{n:'driar',f:'driar.nes'},{n:'falling',f:'falling.nes'},{n:'fff',f:'fff.nes'},{n:'filthykitchen',f:'filthykitchen.nes'},{n:'flappybird',f:'flappybird.nes'},{n:'flappyblock',f:'flappyblock.nes'},{n:'flappyjack',f:'flappyjack.nes'},{n:'forpoints',f:'forpoints.nes'},{n:'gsm',f:'gsm.nes'},{n:'indivisibleonnes',f:'indivisibleonnes.nes'},{n:'invaders',f:'invaders.nes'},{n:'jetpaco',f:'jetpaco.nes'},{n:'kyff',f:'kyff.nes'},{n:'lala',f:'lala.nes'},{n:'lightshields',f:'lightshields.nes'},{n:'lunarlimit',f:'lunarlimit.nes'},{n:'madwizard',f:'madwizard.nes'},{n:'mashymashy',f:'mashymashy.nes'},{n:'megamountain',f:'megamountain.nes'},{n:'memory',f:'memory.nes'},{n:'mguard',f:'mguard.nes'},{n:'mguard2',f:'mguard2.nes'},{n:'midnightjogger',f:'midnightjogger.nes'},{n:'miedow',f:'miedow.nes'},{n:'mineshaft',f:'mineshaft.nes'},{n:'mouser2',f:'mouser2.nes'},{n:'nesertbus',f:'nesertbus.nes'},{n:'ninjamuncher',f:'ninjamuncher.nes'},{n:'nintencattheparody',f:'nintencattheparody.nes'},{n:'nomolos',f:'nomolos.nes'},{n:'nopoints',f:'nopoints.nes'},{n:'novathesquirrel',f:'novathesquirrel.nes'},{n:'obstacletrek',f:'obstacletrek.nes'},{n:'owlia',f:'owlia.nes'},{n:'pegs',f:'pegs.nes'},{n:'pong1k',f:'pong1k.nes'},{n:'pong1k2p',f:'pong1k2p.nes'},{n:'ralph4',f:'ralph4.nes'},{n:'rhde',f:'rhde.nes'},{n:'riseofamondus',f:'riseofamondus.nes'},{n:'roboninjaclimb',f:'roboninjaclimb.nes'},{n:'robotfindskitten',f:'robotfindskitten.nes'},{n:'roulette',f:'roulette.nes'},{n:'rpsls',f:'rpsls.nes'},{n:'sgthelmet',f:'sgthelmet.nes'},{n:'simonesays',f:'simonesays.nes'},{n:'sir ababol remastered',f:'sir-ababol-remastered.nes'},{n:'snailmaze',f:'snailmaze.nes'},{n:'spaceymcracey',f:'spaceymcracey.nes'},{n:'starevil',f:'starevil.nes'},{n:'super tilt bro',f:'super-tilt-bro.nes'},{n:'superpakpak',f:'superpakpak.nes'},{n:'superuwol',f:'superuwol.nes'},{n:'thatswhack',f:'thatswhack.nes'},{n:'theinvasion',f:'theinvasion.nes'},{n:'themadwizard',f:'themadwizard.nes'},{n:'theonewiththewalls',f:'theonewiththewalls.nes'},{n:'thewit',f:'thewit.nes'},{n:'thwaite',f:'thwaite.nes'},{n:'tictactwop',f:'tictactwop.nes'},{n:'tictacxo',f:'tictacxo.nes'},{n:'tigerjenny',f:'tigerjenny.nes'},{n:'twindragons',f:'twindragons.nes'},{n:'vigilanteninja',f:'vigilanteninja.nes'},{n:'viruscleaner',f:'viruscleaner.nes'},{n:'wo xiang niao niao',f:'wo-xiang-niao-niao.nes'},{n:'yun',f:'yun.nes'}]},
-  {id:'snes',name:'超任 SFC / SNES',icon:'🕹️',type:'rom',core:'snes9x',repo:'snes-games',games:[{n:'astrohawk',f:'astrohawk.smc'},{n:'blt',f:'blt.sfc'},{n:'bucket',f:'bucket.smc'},{n:'furryrpg',f:'furryrpg.sfc'},{n:'hilda',f:'hilda.sfc'},{n:'horizontal shooter',f:'horizontal-shooter.sfc'},{n:'jetpilotrising',f:'jetpilotrising.sfc'},{n:'megafamilybros',f:'megafamilybros.smc'},{n:'nwarpdaisakusen',f:'nwarpdaisakusen.smc'},{n:'questformoney',f:'questformoney.sfc'},{n:'rockfall',f:'rockfall.smc'},{n:'saf',f:'saf.smc'},{n:'superbossgaiden',f:'superbossgaiden.sfc'},{n:'tchouv2',f:'tchouv2.smc'}]},
-  {id:'gba',name:'GBA 掌机',icon:'📟',type:'rom',core:'mgba',repo:'gba-games',games:[{n:'3weeksinparadise',f:'3weeksinparadise.gba'},{n:'agbhack',f:'agbhack.bin'},{n:'agbrogue',f:'agbrogue.bin'},{n:'airball',f:'airball.gba'},{n:'anguna',f:'anguna.gba'},{n:'anotherworld',f:'anotherworld.gba'},{n:'asteroidsb',f:'asteroidsb.gba'},{n:'asteroidsp',f:'asteroidsp.bin'},{n:'astrohawk',f:'astrohawk.bin'},{n:'awerewolftale',f:'awerewolftale.gba'},{n:'balle',f:'balle.gba'},{n:'battlepicross',f:'battlepicross.gba'},{n:'blastarenaadvance',f:'blastarenaadvance.gba'},{n:'blocktrap',f:'blocktrap.gba'},{n:'bridgeracer',f:'bridgeracer.gba'},{n:'bunnyxmas',f:'bunnyxmas.gba'},{n:'bustamove',f:'bustamove.bin'},{n:'bytes',f:'bytes.gba'},{n:'castlemaster',f:'castlemaster.gba'},{n:'cccp',f:'cccp.gba'},{n:'chaos',f:'chaos.bin'},{n:'chaosthebattleofwizards',f:'chaosthebattleofwizards.gba'},{n:'chipadvance',f:'chipadvance.gba'},{n:'chocoboworlddeluxe',f:'chocoboworlddeluxe.gba'},{n:'clayshooter',f:'clayshooter.gba'},{n:'cleangameadvance',f:'cleangameadvance.gba'},{n:'codenamehacker',f:'codenamehacker.gba'},{n:'collisioncourse',f:'collisioncourse.bin'},{n:'cosmic',f:'cosmic.gba'},{n:'crystalclearclone',f:'crystalclearclone.gba'},{n:'cyclone',f:'cyclone.bin'},{n:'cyler',f:'cyler.gba'},{n:'deflektor',f:'deflektor.gba'},{n:'doomdarksrevenge',f:'doomdarksrevenge.gba'},{n:'elevator',f:'elevator.gba'},{n:'eliminator',f:'eliminator.gba'},{n:'factorybots',f:'factorybots.gba'},{n:'fredfirefighter',f:'fredfirefighter.gba'},{n:'frogger',f:'frogger.gba'},{n:'frogtris',f:'frogtris.gba'},{n:'gapman',f:'gapman.gba'},{n:'gbacards',f:'gbacards.gba'},{n:'gbatactics',f:'gbatactics.gba'},{n:'goldrunner',f:'goldrunner.gba'},{n:'goodboyadvance',f:'goodboyadvance.gba'},{n:'gorf',f:'gorf.gba'},{n:'hexavirus',f:'hexavirus.gba'},{n:'hierogyphicman',f:'hierogyphicman.gba'},{n:'holyhell',f:'holyhell.gba'},{n:'impact',f:'impact.gba'},{n:'jetpack2',f:'jetpack2.gba'},{n:'jumpingbarnabe',f:'jumpingbarnabe.gba'},{n:'jumpingjim',f:'jumpingjim.gba'},{n:'klanwars',f:'klanwars.gba'},{n:'laserchess',f:'laserchess.bin'},{n:'llamaboost',f:'llamaboost.gba'},{n:'looped',f:'looped.gba'},{n:'looptheloop',f:'looptheloop.gba'},{n:'matrixrunner',f:'matrixrunner.gba'},{n:'memorymuncha',f:'memorymuncha.gba'},{n:'metalwarrior4',f:'metalwarrior4.gba'},{n:'monochromancy',f:'monochromancy.bin'},{n:'moshpit',f:'moshpit.gba'},{n:'nebulus',f:'nebulus.gba'},{n:'negativespace',f:'negativespace.gba'},{n:'ninjasack',f:'ninjasack.gba'},{n:'pacrun',f:'pacrun.gba'},{n:'paperscissorrocks',f:'paperscissorrocks.gba'},{n:'pnakys',f:'pnakys.bin'},{n:'pocketmeat',f:'pocketmeat.gba'},{n:'powerpig',f:'powerpig.gba'},{n:'pushit',f:'pushit.gba'},{n:'santassweatshop',f:'santassweatshop.gba'},{n:'shapes',f:'shapes.gba'},{n:'snakeinthegrass',f:'snakeinthegrass.gba'},{n:'spout',f:'spout.gba'},{n:'superhappy',f:'superhappy.gba'},{n:'superwings',f:'superwings.gba'},{n:'sworld3',f:'sworld3.gba'},{n:'tailgunner',f:'tailgunner.gba'},{n:'tetravex',f:'tetravex.gba'},{n:'tetrigram',f:'tetrigram.gba'},{n:'thelordsofmidnight',f:'thelordsofmidnight.gba'},{n:'timewalker',f:'timewalker.gba'},{n:'tronlordgraga',f:'tronlordgraga.gba'},{n:'waimanu',f:'waimanu.gba'},{n:'wonkieguy',f:'wonkieguy.gba'},{n:'yahtzeeherg',f:'yahtzeeherg.gba'}]},
-  {id:'gbc',name:'GB / GBC 掌机',icon:'🐢',type:'rom',core:'gambatte',repo:'gbc-games',games:[{n:'blastah',f:'blastah.gb'},{n:'brickster',f:'brickster.gbc'},{n:'burly',f:'burly.gbc'},{n:'combatsoccer',f:'combatsoccer.gbc'},{n:'geometrix',f:'geometrix.gbc'},{n:'initiald',f:'initiald.gbc'},{n:'klondike',f:'klondike.gbc'},{n:'pokedamon',f:'pokedamon.gbc'},{n:'ucity',f:'ucity.gbc'}]},
-  {id:'md',name:'世嘉 MD / Genesis',icon:'🌀',type:'rom',core:'genesis_plus_gx',repo:'md-games',games:[{n:'30yearsofnintendont',f:'30yearsofnintendont.bin'},{n:'asciiwar',f:'asciiwar.bin'},{n:'astroperdido',f:'astroperdido.bin'},{n:'barbarian',f:'barbarian.bin'},{n:'bareknuckleprincesss',f:'bareknuckleprincesss.bin'},{n:'bombonbasiccity',f:'bombonbasiccity.bin'},{n:'bombx',f:'bombx.bin'},{n:'bottled',f:'bottled.md'},{n:'breakanegg',f:'breakanegg.bin'},{n:'cavestory',f:'cavestory.bin'},{n:'crazycars',f:'crazycars.bin'},{n:'crazydriver',f:'crazydriver.bin'},{n:'downforce',f:'downforce.bin'},{n:'dragonscastle',f:'dragonscastle.bin'},{n:'errorrush',f:'errorrush.bin'},{n:'fixitfelixjr',f:'fixitfelixjr.bin'},{n:'genpoker',f:'genpoker.bin'},{n:'glassbreakermd',f:'glassbreakermd.bin'},{n:'goldrush',f:'goldrush.bin'},{n:'goplanes',f:'goplanes.bin'},{n:'gravitypig',f:'gravitypig.bin'},{n:'grielsquest',f:'grielsquest.bin'},{n:'headship',f:'headship.bin'},{n:'ikplusdeluxe',f:'ikplusdeluxe.bin'},{n:'junkbots',f:'junkbots.bin'},{n:'leomurconspiracy',f:'leomurconspiracy.bin'},{n:'mega cheril perils',f:'mega-cheril-perils.bin'},{n:'megaflappysis',f:'megaflappysis.bin'},{n:'megamindtris',f:'megamindtris.bin'},{n:'miniplanets',f:'miniplanets.bin'},{n:'msa',f:'msa.bin'},{n:'odeiocarros',f:'odeiocarros.bin'},{n:'ohmummy',f:'ohmummy.bin'},{n:'oldtowers',f:'oldtowers.bin'},{n:'papicommandoremix',f:'papicommandoremix.bin'},{n:'papicommandotennis',f:'papicommandotennis.bin'},{n:'pingouinbleu',f:'pingouinbleu.bin'},{n:'pingouinrose',f:'pingouinrose.bin'},{n:'plataforma ultimate',f:'plataforma-ultimate.bin'},{n:'pongram',f:'pongram.bin'},{n:'projectmd',f:'projectmd.bin'},{n:'racer',f:'racer.bin'},{n:'radrhino',f:'radrhino.bin'},{n:'redqueenrampage',f:'redqueenrampage.bin'},{n:'returntogenesis',f:'returntogenesis.bin'},{n:'rickdangerous',f:'rickdangerous.bin'},{n:'rickdangerous2',f:'rickdangerous2.bin'},{n:'scorpionilluminati',f:'scorpionilluminati.bin'},{n:'shatteringjaws',f:'shatteringjaws.md'},{n:'starchaser',f:'starchaser.bin'},{n:'tronow',f:'tronow.bin'},{n:'twocyclops fight',f:'twocyclops-fight.bin'},{n:'twocyclops',f:'twocyclops.bin'},{n:'ultimatetetris',f:'ultimatetetris.bin'},{n:'vilq',f:'vilq.bin'},{n:'vilqadventure',f:'vilqadventure.bin'},{n:'violencepingouin',f:'violencepingouin.bin'},{n:'virtuaworm',f:'virtuaworm.bin'},{n:'virtuaworm2',f:'virtuaworm2.bin'},{n:'wackywilly',f:'wackywilly.bin'},{n:'xump2',f:'xump2.bin'}]},
-  {id:'sms',name:'世嘉 Master System',icon:'🎯',type:'rom',core:'genesis_plus_gx',repo:'sms-games',games:[{n:'2048grz',f:'2048grz.sms'},{n:'2048sanqui',f:'2048sanqui.sms'},{n:'3dcity',f:'3dcity.sms'},{n:'acidreflux',f:'acidreflux.sms'},{n:'artillerymaster8k',f:'artillerymaster8k.sms'},{n:'astroforce',f:'astroforce.sms'},{n:'astroswab',f:'astroswab.sms'},{n:'bacachase',f:'bacachase.sms'},{n:'balubabalok',f:'balubabalok.sms'},{n:'baraburu',f:'baraburu.sms'},{n:'battleships',f:'battleships.sms'},{n:'baythirddungeon',f:'baythirddungeon.sms'},{n:'blockquest',f:'blockquest.sms'},{n:'bloki',f:'bloki.sms'},{n:'bocksbirthday2003',f:'bocksbirthday2003.sms'},{n:'bocksbirthday2004',f:'bocksbirthday2004.sms'},{n:'bocksbirthday2011ii',f:'bocksbirthday2011ii.sms'},{n:'breadandbutter',f:'breadandbutter.sms'},{n:'breadandbutterworld',f:'breadandbutterworld.sms'},{n:'burgersofhanoi',f:'burgersofhanoi.sms'},{n:'chappiesears',f:'chappiesears.sms'},{n:'cix',f:'cix.sms'},{n:'colossalcaveadventure',f:'colossalcaveadventure.sms'},{n:'cye',f:'cye.sms'},{n:'datastorm',f:'datastorm.sms'},{n:'datingsim',f:'datingsim.sms'},{n:'derpysmail',f:'derpysmail.sms'},{n:'diggerball',f:'diggerball.sms'},{n:'diggerchan',f:'diggerchan.sms'},{n:'duckslayeradventures',f:'duckslayeradventures.sms'},{n:'freeway',f:'freeway.sms'},{n:'galacticrevenge',f:'galacticrevenge.sms'},{n:'gaudream',f:'gaudream.sms'},{n:'gemitas',f:'gemitas.sms'},{n:'gotris',f:'gotris.sms'},{n:'gravitybeam',f:'gravitybeam.sms'},{n:'headlessninjavolley',f:'headlessninjavolley.sms'},{n:'io',f:'io.sms'},{n:'kunkunkokokun',f:'kunkunkokokun.sms'},{n:'kunkunkokokun2',f:'kunkunkokokun2.sms'},{n:'lander1',f:'lander1.sms'},{n:'lander2',f:'lander2.sms'},{n:'littlesokoban',f:'littlesokoban.sms'},{n:'lostraider',f:'lostraider.sms'},{n:'moggymaster',f:'moggymaster.sms'},{n:'nanowars8k',f:'nanowars8k.sms'},{n:'picross',f:'picross.sms'},{n:'platformexplorer',f:'platformexplorer.sms'},{n:'pongmaster',f:'pongmaster.sms'},{n:'porkpolis',f:'porkpolis.sms'},{n:'prisonnier2',f:'prisonnier2.sms'},{n:'racerclassic',f:'racerclassic.sms'},{n:'racerrebooted',f:'racerrebooted.sms'},{n:'scope',f:'scope.sms'},{n:'shootingstars',f:'shootingstars.sms'},{n:'silvervalley',f:'silvervalley.sms'},{n:'simpsonstrivia',f:'simpsonstrivia.sms'},{n:'smschip8',f:'smschip8.sms'},{n:'sokomaster',f:'sokomaster.sms'},{n:'spacehawks',f:'spacehawks.sms'},{n:'swordstrike',f:'swordstrike.sms'},{n:'versus',f:'versus.sms'},{n:'wahmunchers',f:'wahmunchers.sms'},{n:'waimanu',f:'waimanu.sms'},{n:'wekainvaders',f:'wekainvaders.sms'}]},
-  {id:'atari2600',name:'Atari 2600',icon:'👾',type:'rom',core:'stella2014',repo:'atari2600-games',games:[{n:'anguna',f:'anguna.bin'},{n:'bitquest',f:'bitquest.bin'},{n:'bitquest2',f:'bitquest2.bin'},{n:'dkarcade2600',f:'dkarcade2600.bin'},{n:'emr',f:'emr.bin'},{n:'emrii',f:'emrii.bin'},{n:'fishy',f:'fishy.bin'},{n:'flappy the duck',f:'flappy_the_duck.bin'},{n:'halo2600',f:'halo2600.bin'},{n:'hauntedbakery',f:'hauntedbakery.bin'},{n:'jammed',f:'jammed.bin'},{n:'kellykangaroo',f:'kellykangaroo.bin'},{n:'nanowing',f:'nanowing.bin'},{n:'neko 2600',f:'neko_2600.bin'},{n:'pothole',f:'pothole.bin'},{n:'roboninjaclimb',f:'roboninjaclimb.bin'},{n:'runtysrevenge',f:'runtysrevenge.bin'},{n:'sandcastles',f:'sandcastles.bin'},{n:'solarplexus',f:'solarplexus.bin'},{n:'stardust',f:'stardust.bin'},{n:'threes',f:'threes.bin'},{n:'thrust',f:'thrust.bin'},{n:'turtlebay',f:'turtlebay.bin'},{n:'winterfortress',f:'winterfortress.bin'}]},
-  {id:'c64',name:'Commodore 64',icon:'💾',type:'rom',core:'vice_x64',repo:'c64-games',games:[{n:'100box',f:'100box.prg'},{n:'algol',f:'algol.d64'},{n:'athanor plus4',f:'athanor_plus4.d64'},{n:'atomheart',f:'atomheart.d64'},{n:'bappleship',f:'bappleship.prg'},{n:'captaincloudberry',f:'captaincloudberry.d64'},{n:'elav',f:'elav.prg'},{n:'electricwarrior',f:'electricwarrior.d64'},{n:'explodingfish',f:'explodingfish.d64'},{n:'findthepussy',f:'findthepussy.prg'},{n:'gruniozerca',f:'gruniozerca.d64'},{n:'happyflappy',f:'happyflappy.prg'},{n:'hektic2',f:'hektic2.prg'},{n:'honeybee',f:'honeybee.d64'},{n:'humpy64',f:'humpy64.prg'},{n:'icebloxplus',f:'icebloxplus.d64'},{n:'itsmagic',f:'itsmagic.d64'},{n:'joegunngold',f:'joegunngold.d64'},{n:'lightsoff',f:'lightsoff.prg'},{n:'lightson',f:'lightson.prg'},{n:'lsstrilogy',f:'lsstrilogy.tap'},{n:'lumberjack',f:'lumberjack.d64'},{n:'magicsquares',f:'magicsquares.prg'},{n:'markanoid',f:'markanoid.prg'},{n:'mazeofdeath',f:'mazeofdeath.d64'},{n:'monsterhunt',f:'monsterhunt.prg'},{n:'moonrock',f:'moonrock.prg'},{n:'nanakoincastle',f:'nanakoincastle.d64'},{n:'numtrap',f:'numtrap.prg'},{n:'paperplane',f:'paperplane.prg'},{n:'plunko',f:'plunko.prg'},{n:'pulse',f:'pulse.prg'},{n:'quodinitexit',f:'quodinitexit.d64'},{n:'rollrollroll',f:'rollrollroll.prg'},{n:'scissorspaperrock',f:'scissorspaperrock.prg'},{n:'scissorspaperrocklizardspock',f:'scissorspaperrocklizardspock.prg'},{n:'sentence',f:'sentence.d64'},{n:'shinobidenzero',f:'shinobidenzero.prg'},{n:'simon',f:'simon.prg'},{n:'sirababol',f:'sirababol.d64'},{n:'snafu',f:'snafu.d64'},{n:'thelabyrinth',f:'thelabyrinth.prg'},{n:'thevicesquad',f:'thevicesquad.d64'},{n:'tombstones',f:'tombstones.d64'},{n:'trolleyfollies',f:'trolleyfollies.d64'},{n:'uwolquestformoney',f:'uwolquestformoney.d64'},{n:'winkyblinky',f:'winkyblinky.prg'},{n:'wtf',f:'wtf.prg'},{n:'zilspleef',f:'zilspleef.d64'}]},
-  {id:'coleco',name:'ColecoVision',icon:'🧩',type:'rom',core:'gearcoleco',repo:'colecovision-games',games:[{n:'frogmagi',f:'frogmagi.bin'}]},
-  {id:'zx',name:'ZX Spectrum',icon:'🔲',type:'rom',core:'fuse',repo:'zxspectrum-games',games:[{n:'berzerk',f:'berzerk.tap'},{n:'breakspace',f:'breakspace.tap'},{n:'cadaverion',f:'cadaverion.tap'},{n:'cherilofthebosque',f:'cherilofthebosque.tzx'},{n:'cherilperils',f:'cherilperils.tzx'},{n:'cherilthegoddess',f:'cherilthegoddess.tap'},{n:'columns',f:'columns.tzx'},{n:'elhobbit',f:'elhobbit.tzx'},{n:'gokumal',f:'gokumal.tap'},{n:'horacegoestotower',f:'horacegoestotower.tzx'},{n:'inkfall',f:'inkfall.z80'},{n:'judgevsbaldo',f:'judgevsbaldo.tzx'},{n:'lalaprologue',f:'lalaprologue.tzx'},{n:'leovigildo1',f:'leovigildo1.tap'},{n:'leovigildo2',f:'leovigildo2.tap'},{n:'leovigildo3',f:'leovigildo3.tap'},{n:'leovigildo4',f:'leovigildo4.tap'},{n:'lostinworlds',f:'lostinworlds.tap'},{n:'marianothedragon',f:'marianothedragon.tzx'},{n:'maritrinimonsterslayer',f:'maritrinimonsterslayer.tzx'},{n:'maritrinimonsterslayerp',f:'maritrinimonsterslayerp.tzx'},{n:'miner',f:'miner.tap'},{n:'minesweeper16',f:'minesweeper16.tap'},{n:'minesweeper48',f:'minesweeper48.tap'},{n:'ninjajar',f:'ninjajar.tap'},{n:'parachute',f:'parachute.tzx'},{n:'physiced',f:'physiced.tap'},{n:'pilotattack',f:'pilotattack.tap'},{n:'robotsrumble',f:'robotsrumble.tzx'},{n:'sirababol',f:'sirababol.tzx'},{n:'sirababol2',f:'sirababol2.tap'},{n:'sirababoldx',f:'sirababoldx.tap'},{n:'snaked3',f:'snaked3.tap'},{n:'snuffo',f:'snuffo.tap'},{n:'spacejunk',f:'spacejunk.tzx'},{n:'speccysnake',f:'speccysnake.z80'},{n:'unhallowed',f:'unhallowed.tap'},{n:'vallation128',f:'vallation128.tzx'}]},
-];
-
-</script>
-<script>
-window.SL_GAME_ZH = {
-  "31in1realgame multicart": "31合1合集",
-  "3in12ppak": "3合1双人包",
-  "ambushed": "伏击",
-  "assimilate": "同化",
-  "babelblox": "巴别方块",
-  "blackboxchallenge": "黑盒挑战",
-  "blaster": "爆破手",
-  "bombarray": "炸弹阵",
-  "bootee": "小靴子",
-  "bronyblaster": "小马爆破",
-  "cheril the goddess": "女神切丽尔",
-  "cl1k": "咔嗒",
-  "croom": "克罗姆",
-  "dabg": "达布格",
-  "debrisdodger": "碎石闪避",
-  "driar": "德里亚",
-  "falling": "坠落",
-  "fff": "三连击",
-  "filthykitchen": "脏乱厨房",
-  "flappybird": "像素鸟",
-  "flappyblock": "方块鸟",
-  "flappyjack": "杰克飞天",
-  "forpoints": "积分赛",
-  "gsm": "金曲掌机",
-  "indivisibleonnes": "不可分者",
-  "invaders": "入侵者",
-  "jetpaco": "喷射帕科",
-  "kyff": "基夫",
-  "lala": "拉拉",
-  "lightshields": "光盾",
-  "lunarlimit": "月球极限",
-  "madwizard": "疯狂巫师",
-  "mashymashy": "砸砸大作战",
-  "megamountain": "巨山",
-  "memory": "记忆",
-  "mguard": "机甲守卫",
-  "mguard2": "机甲守卫2",
-  "midnightjogger": "午夜慢跑者",
-  "miedow": "米多",
-  "mineshaft": "矿道",
-  "mouser2": "捕鼠者2",
-  "nesertbus": "无尽巴士",
-  "ninjamuncher": "忍者咀嚼者",
-  "nintencattheparody": "任天猫恶搞",
-  "nomolos": "诺莫洛斯",
-  "nopoints": "无分",
-  "novathesquirrel": "松鼠诺瓦",
-  "obstacletrek": "障碍长征",
-  "owlia": "猫头鹰莉娅",
-  "pegs": "钉板",
-  "pong1k": "乒乓1K",
-  "pong1k2p": "乒乓1K双人",
-  "ralph4": "拉尔夫4",
-  "rhde": "红帽英雄",
-  "riseofamondus": "阿蒙杜斯崛起",
-  "roboninjaclimb": "机器忍者攀爬",
-  "robotfindskitten": "机器人找猫",
-  "roulette": "轮盘",
-  "rpsls": "猜拳大战",
-  "sgthelmet": "头盔战机",
-  "simonesays": "西蒙说",
-  "sir ababol remastered": "阿巴博尔爵士重制",
-  "snailmaze": "蜗牛迷宫",
-  "spaceymcracey": "太空竞速",
-  "starevil": "星之恶",
-  "super tilt bro": "超级倾板兄弟",
-  "superpakpak": "超级帕克",
-  "superuwol": "超级乌沃尔",
-  "thatswhack": "乱打一气",
-  "theinvasion": "入侵",
-  "themadwizard": "疯狂巫师",
-  "theonewiththewalls": "高墙之困",
-  "thewit": "智者",
-  "thwaite": "斯韦特",
-  "tictactwop": "井字双人",
-  "tictacxo": "井字棋",
-  "tigerjenny": "老虎珍妮",
-  "twindragons": "双龙",
-  "vigilanteninja": "义警忍者",
-  "viruscleaner": "病毒清洁工",
-  "wo xiang niao niao": "我想尿尿",
-  "yun": "云",
-  "astrohawk": "星际鹰",
-  "blt": "三明治",
-  "bucket": "水桶",
-  "furryrpg": "兽人冒险",
-  "hilda": "希尔达",
-  "horizontal shooter": "横版射击",
-  "jetpilotrising": "喷气飞行员",
-  "megafamilybros": "超级家族兄弟",
-  "nwarpdaisakusen": "扭曲大作战",
-  "questformoney": "寻金任务",
-  "rockfall": "落石",
-  "saf": "安全区",
-  "superbossgaiden": "超级头目外传",
-  "tchouv2": "啾啾2",
-  "3weeksinparadise": "天堂三周",
-  "agbhack": "掌机黑客",
-  "agbrogue": "掌机地牢",
-  "airball": "空气球",
-  "anguna": "安古纳",
-  "anotherworld": "另一个世界",
-  "asteroidsb": "小行星B",
-  "asteroidsp": "小行星P",
-  "awerewolftale": "狼人传说",
-  "balle": "球球",
-  "battlepicross": "战斗数织",
-  "blastarenaadvance": "爆破竞技场",
-  "blocktrap": "方块陷阱",
-  "bridgeracer": "桥牌赛车",
-  "bunnyxmas": "兔子圣诞",
-  "bustamove": "泡泡龙",
-  "bytes": "字节",
-  "castlemaster": "城堡大师",
-  "cccp": "苏联方块",
-  "chaos": "混沌",
-  "chaosthebattleofwizards": "巫师之战",
-  "chipadvance": "芯片前进",
-  "chocoboworlddeluxe": "陆行鸟世界",
-  "clayshooter": "黏土射击",
-  "cleangameadvance": "清洁大作战",
-  "codenamehacker": "代号黑客",
-  "collisioncourse": "碰撞航线",
-  "cosmic": "宇宙",
-  "crystalclearclone": "水晶方块",
-  "cyclone": "旋风",
-  "cyler": "塞勒",
-  "deflektor": "反射镜",
-  "doomdarksrevenge": "末日黑暗复仇",
-  "elevator": "电梯",
-  "eliminator": "清除者",
-  "factorybots": "工厂机器人",
-  "fredfirefighter": "消防员弗雷德",
-  "frogger": "青蛙过河",
-  "frogtris": "青蛙方块",
-  "gapman": "缺口人",
-  "gbacards": "掌机纸牌",
-  "gbatactics": "掌机战棋",
-  "goldrunner": "黄金奔跑者",
-  "goodboyadvance": "好孩子",
-  "gorf": "戈尔夫",
-  "hexavirus": "六边病毒",
-  "hierogyphicman": "象形文字人",
-  "holyhell": "神圣地狱",
-  "impact": "冲击",
-  "jetpack2": "喷气背包2",
-  "jumpingbarnabe": "跳跃巴纳比",
-  "jumpingjim": "跳跃吉姆",
-  "klanwars": "氏族战争",
-  "laserchess": "激光象棋",
-  "llamaboost": "羊驼加速",
-  "looped": "循环",
-  "looptheloop": "空中翻环",
-  "matrixrunner": "矩阵狂奔",
-  "memorymuncha": "记忆吞噬",
-  "metalwarrior4": "钢铁战士4",
-  "monochromancy": "单色魔法",
-  "moshpit": "混战",
-  "nebulus": "星云",
-  "negativespace": "负空间",
-  "ninjasack": "忍者袋",
-  "pacrun": "吃豆狂奔",
-  "paperscissorrocks": "石头剪刀布",
-  "pnakys": "普纳基斯",
-  "pocketmeat": "口袋肉",
-  "powerpig": "力量猪",
-  "pushit": "推箱子",
-  "santassweatshop": "圣诞工坊",
-  "shapes": "形状",
-  "snakeinthegrass": "草中之蛇",
-  "spout": "喷流",
-  "superhappy": "超级快乐",
-  "superwings": "超级翅膀",
-  "sworld3": "剑世界3",
-  "tailgunner": "尾炮手",
-  "tetravex": "四向方块",
-  "tetrigram": "四方块",
-  "thelordsofmidnight": "午夜领主",
-  "timewalker": "时间行者",
-  "tronlordgraga": "特拉格领主",
-  "waimanu": "怀马努",
-  "wonkieguy": "古怪小子",
-  "yahtzeeherg": "骰子游戏",
-  "blastah": "爆裂",
-  "brickster": "砖块大师",
-  "burly": "壮汉",
-  "combatsoccer": "战斗足球",
-  "geometrix": "几何风暴",
-  "initiald": "头文字D",
-  "klondike": "克朗代克",
-  "pokedamon": "宝可梦",
-  "ucity": "你的城市",
-  "30yearsofnintendont": "三十年任天堂",
-  "asciiwar": "字符战争",
-  "astroperdido": "迷失太空",
-  "barbarian": "野蛮人",
-  "bareknuckleprincesss": "怒拳公主",
-  "bombonbasiccity": "基本城炸弹",
-  "bombx": "炸弹X",
-  "bottled": "瓶中求生",
-  "breakanegg": "破蛋",
-  "cavestory": "洞窟物语",
-  "crazycars": "疯狂赛车",
-  "crazydriver": "疯狂司机",
-  "downforce": "下压力",
-  "dragonscastle": "龙之城堡",
-  "errorrush": "错误狂奔",
-  "fixitfelixjr": "修理小子",
-  "genpoker": "综合扑克",
-  "glassbreakermd": "玻璃破碎",
-  "goldrush": "淘金热",
-  "goplanes": "戈飞机",
-  "gravitypig": "重力猪",
-  "grielsquest": "格里尔的任务",
-  "headship": "头舰",
-  "ikplusdeluxe": "格斗家加强版",
-  "junkbots": "废铁机器人",
-  "leomurconspiracy": "利奥默阴谋",
-  "mega cheril perils": "超级切丽尔",
-  "megaflappysis": "超级飞天姐",
-  "megamindtris": "超级思维方块",
-  "miniplanets": "迷你星球",
-  "msa": "沙漠突击",
-  "odeiocarros": "汽车狂欢",
-  "ohmummy": "噢木乃伊",
-  "oldtowers": "古塔",
-  "papicommandoremix": "帕皮突击队",
-  "papicommandotennis": "帕皮网球",
-  "pingouinbleu": "蓝企鹅",
-  "pingouinrose": "粉企鹅",
-  "plataforma ultimate": "终极平台",
-  "pongram": "乒乓格",
-  "projectmd": "MD计划",
-  "racer": "赛车",
-  "radrhino": "酷犀牛",
-  "redqueenrampage": "红后暴走",
-  "returntogenesis": "回归创世纪",
-  "rickdangerous": "瑞克危险",
-  "rickdangerous2": "瑞克危险2",
-  "scorpionilluminati": "光明会蝎子",
-  "shatteringjaws": "碎颚",
-  "starchaser": "逐星者",
-  "tronow": "特罗诺",
-  "twocyclops fight": "双独眼之战",
-  "twocyclops": "双独眼",
-  "ultimatetetris": "终极俄罗斯方块",
-  "vilq": "维尔克",
-  "vilqadventure": "维尔克冒险",
-  "violencepingouin": "暴力企鹅",
-  "virtuaworm": "虚拟蠕虫",
-  "virtuaworm2": "虚拟蠕虫2",
-  "wackywilly": "怪咖威利",
-  "xump2": "桑普2",
-  "2048grz": "2048GRZ",
-  "2048sanqui": "2048双拼",
-  "3dcity": "立体城市",
-  "acidreflux": "酸液逆流",
-  "artillerymaster8k": "炮兵大师",
-  "astroforce": "星际战队",
-  "astroswab": "太空清洁",
-  "bacachase": "巴卡追逐",
-  "balubabalok": "巴鲁巴洛克",
-  "baraburu": "巴拉布鲁",
-  "battleships": "战舰",
-  "baythirddungeon": "第三湾地牢",
-  "blockquest": "方块冒险",
-  "bloki": "布洛基",
-  "bocksbirthday2003": "博克斯生日2003",
-  "bocksbirthday2004": "博克斯生日2004",
-  "bocksbirthday2011ii": "博克斯生日2011",
-  "breadandbutter": "面包黄油",
-  "breadandbutterworld": "面包黄油世界",
-  "burgersofhanoi": "汉堡塔",
-  "chappiesears": "查皮耳朵",
-  "cix": "希克斯",
-  "colossalcaveadventure": "巨洞冒险",
-  "cye": "赛伊",
-  "datastorm": "数据风暴",
-  "datingsim": "恋爱模拟",
-  "derpysmail": "呆萌邮件",
-  "diggerball": "挖球",
-  "diggerchan": "挖掘少女",
-  "duckslayeradventures": "猎鸭历险",
-  "freeway": "高速路",
-  "galacticrevenge": "银河复仇",
-  "gaudream": "嘎之梦",
-  "gemitas": "宝石",
-  "gotris": "围棋方块",
-  "gravitybeam": "重力光束",
-  "headlessninjavolley": "无头忍者",
-  "io": "吞噬球",
-  "kunkunkokokun": "滚滚小僧",
-  "kunkunkokokun2": "滚滚小僧2",
-  "lander1": "登月者1",
-  "lander2": "登月者2",
-  "littlesokoban": "小推箱子",
-  "lostraider": "失落劫掠者",
-  "moggymaster": "莫吉大师",
-  "nanowars8k": "纳米战争",
-  "picross": "数织",
-  "platformexplorer": "平台探险",
-  "pongmaster": "乒乓大师",
-  "porkpolis": "猪肉都市",
-  "prisonnier2": "囚徒2",
-  "racerclassic": "经典赛车",
-  "racerrebooted": "重启赛车",
-  "scope": "瞄准镜",
-  "shootingstars": "流星",
-  "silvervalley": "银色山谷",
-  "simpsonstrivia": "辛普森问答",
-  "smschip8": "芯片八号",
-  "sokomaster": "推箱大师",
-  "spacehawks": "太空鹰",
-  "swordstrike": "剑击",
-  "versus": "对决",
-  "wahmunchers": "哇呜吞噬",
-  "wekainvaders": "维卡入侵者",
-  "bitquest": "位元冒险",
-  "bitquest2": "位元冒险2",
-  "dkarcade2600": "大金刚街机",
-  "emr": "电磁跑者",
-  "emrii": "电磁跑者2",
-  "fishy": "小鱼",
-  "flappy the duck": "飞天小鸭",
-  "halo2600": "光环",
-  "hauntedbakery": "闹鬼面包店",
-  "jammed": "卡住了",
-  "kellykangaroo": "袋鼠凯莉",
-  "nanowing": "纳米翼",
-  "neko 2600": "猫咪2600",
-  "pothole": "坑洞",
-  "runtysrevenge": "伦蒂复仇",
-  "sandcastles": "沙堡",
-  "solarplexus": "太阳神经丛",
-  "stardust": "星尘",
-  "threes": "三消",
-  "thrust": "推力",
-  "turtlebay": "海龟湾",
-  "winterfortress": "冬之要塞",
-  "100box": "百箱",
-  "algol": "大陵五",
-  "athanor plus4": "炼金炉",
-  "atomheart": "原子之心",
-  "bappleship": "苹果飞船",
-  "captaincloudberry": "云莓船长",
-  "elav": "埃拉夫",
-  "electricwarrior": "电击战士",
-  "explodingfish": "爆裂鱼",
-  "findthepussy": "寻找小猫",
-  "gruniozerca": "格鲁尼",
-  "happyflappy": "快乐飞天",
-  "hektic2": "狂乱2",
-  "honeybee": "小蜜蜂",
-  "humpy64": "驼峰64",
-  "icebloxplus": "冰块加强版",
-  "itsmagic": "这是魔法",
-  "joegunngold": "乔冈黄金",
-  "lightsoff": "熄灯",
-  "lightson": "点灯",
-  "lsstrilogy": "三部曲",
-  "lumberjack": "伐木工",
-  "magicsquares": "魔方阵",
-  "markanoid": "打砖块",
-  "mazeofdeath": "死亡迷宫",
-  "monsterhunt": "怪物狩猎",
-  "moonrock": "月岩",
-  "nanakoincastle": "奈奈子城堡",
-  "numtrap": "数字陷阱",
-  "paperplane": "纸飞机",
-  "plunko": "普伦科",
-  "pulse": "脉冲",
-  "quodinitexit": "四方出口",
-  "rollrollroll": "滚不停",
-  "scissorspaperrock": "剪刀石头布",
-  "scissorspaperrocklizardspock": "石头剪刀布蜥蜴",
-  "sentence": "造句",
-  "shinobidenzero": "忍者出零",
-  "simon": "西蒙",
-  "sirababol": "西拉巴博",
-  "snafu": "混乱",
-  "thelabyrinth": "迷宫",
-  "thevicesquad": "罪恶小队",
-  "tombstones": "墓碑",
-  "trolleyfollies": "电车闹剧",
-  "uwolquestformoney": "乌沃尔寻金",
-  "winkyblinky": "眨眼精灵",
-  "wtf": "什么鬼",
-  "zilspleef": "兹尔斯普利夫",
-  "frogmagi": "青蛙法师",
-  "berzerk": "狂暴",
-  "breakspace": "破空",
-  "cadaverion": "尸骸",
-  "cherilofthebosque": "林间切丽尔",
-  "cherilperils": "切丽尔历险",
-  "cherilthegoddess": "女神切丽尔",
-  "columns": "宝石方块",
-  "elhobbit": "霍比特人",
-  "gokumal": "极恶",
-  "horacegoestotower": "霍勒斯登塔",
-  "inkfall": "墨落",
-  "judgevsbaldo": "法官对秃头",
-  "lalaprologue": "拉拉序章",
-  "leovigildo1": "莱奥维1",
-  "leovigildo2": "莱奥维2",
-  "leovigildo3": "莱奥维3",
-  "leovigildo4": "莱奥维4",
-  "lostinworlds": "迷界",
-  "marianothedragon": "马里亚诺与龙",
-  "maritrinimonsterslayer": "玛丽特里猎魔",
-  "maritrinimonsterslayerp": "玛丽特里猎魔P",
-  "miner": "矿工",
-  "minesweeper16": "扫雷16",
-  "minesweeper48": "扫雷48",
-  "ninjajar": "忍者罐",
-  "parachute": "降落伞",
-  "physiced": "物理实验室",
-  "pilotattack": "飞行员突袭",
-  "robotsrumble": "机器人乱斗",
-  "sirababol2": "西拉巴博2",
-  "sirababoldx": "西拉巴博DX",
-  "snaked3": "贪吃蛇3",
-  "snuffo": "斯努福",
-  "spacejunk": "太空垃圾",
-  "speccysnake": "光谱蛇",
-  "unhallowed": "不洁之地",
-  "vallation128": "壁垒128"
-};
-
-</script>
+<script src="data/games-data.js"></script>
+<script src="data/game-names-zh.js"></script>
 <script>
 (function(){
 'use strict';
 var $=function(id){return document.getElementById(id)};
-var zones=window.SL_ZONES||[];
-function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e}
-function toast(t){var x=$('toast');x.textContent=t;x.classList.add('on');clearTimeout(window.__tt);window.__tt=setTimeout(function(){x.classList.remove('on')},2200)}
-function openUrl(u,name){ $('stageFrame').src=u; if(name)toast('正在打开：'+name); }
-function romUrl(z,g){return window.SL_ROM_BASE+z.repo+'/master/'+g.f}
-function playRom(z,g){ openUrl('player.html?core='+encodeURIComponent(z.core)+'&name='+encodeURIComponent(g.n)+'&url='+encodeURIComponent(romUrl(z,g)),g.n); closeMenu(); }
-function closeMenu(){ $('gm').classList.remove('on'); }
-$('gmBtn').onclick=function(){ $('gm').classList.add('on'); };
-/* v9.9.0：隐藏内层 yxj.html 的重复「游戏菜单」按钮，统一使用外层菜单 */
-var stageFrame=$('stageFrame');
-function syncInnerMenu(){
-  try{
-    var d=stageFrame.contentDocument;
-    if(!d) return;
-    if(!d.getElementById('slHideMenu')){
-      var st=d.createElement('style');st.id='slHideMenu';
-      st.textContent='#menuBtn{display:none!important}';
-      (d.head||d.documentElement).appendChild(st);
-    }
-    var m=d.getElementById('menuModal');
-    if(m) m.classList.remove('show');
-  }catch(e){}
-}
-stageFrame.addEventListener('load',syncInnerMenu);
-setInterval(syncInnerMenu,1200);
-syncInnerMenu();
-$('gmX').onclick=closeMenu;
-$('gm').onclick=function(e){ if(e.target===this)closeMenu(); };
+var ZONES=window.SL_ZONES||[];
+var ZH=window.SL_GAME_ZH||{};
+var RECENT_KEY='sl_games_recent_v1';
+var S={zone:'all',kw:'',recent:[]};
+try{S.recent=JSON.parse(localStorage.getItem(RECENT_KEY)||'[]')||[]}catch(e){S.recent=[]}
 
-function buildMenu(){
-  var body=$('gmBody'); body.innerHTML='';
-  var q=String(($('gmSearch')&&$('gmSearch').value)||'').trim().toLowerCase();
-  var shown=0;
-  function match(n){ return !q || String(n||'').toLowerCase().indexOf(q)>=0; }
-  function zh(n){ try{ return (window.SL_GAME_ZH&&window.SL_GAME_ZH[n])||n }catch(e){return n} }
-  var ZONE_ZH={'Atari 2600':'雅达利 2600','Commodore 64':'C64 电脑','ColecoVision':'Coleco 视界','ZX Spectrum':'ZX 光谱','SWF 小游戏':'SWF 小游戏'};
-  function group(title,count,grid,open){
-    var det=el('details','gz');det.open=!!open||!!q;
-    det.appendChild(el('summary',null,esc(title)+' <span class="cnt">'+count+' 款</span>'));
-    det.appendChild(grid);body.appendChild(det);
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function toast(t){var el=$('toast');el.textContent=t;el.classList.add('on');clearTimeout(el.__t);el.__t=setTimeout(function(){el.classList.remove('on')},2400)}
+
+var COLORS={
+  swf:['rgba(244,114,182,.55)','rgba(139,92,246,.42)'],
+  nes:['rgba(239,68,68,.5)','rgba(124,58,237,.4)'],
+  snes:['rgba(59,130,246,.5)','rgba(139,92,246,.4)'],
+  gba:['rgba(16,185,129,.5)','rgba(34,211,238,.38)'],
+  gbc:['rgba(245,158,11,.5)','rgba(244,114,182,.36)'],
+  md:['rgba(99,102,241,.5)','rgba(34,211,238,.34)'],
+  sms:['rgba(14,165,233,.5)','rgba(139,92,246,.36)'],
+  atari2600:['rgba(234,88,12,.5)','rgba(244,114,182,.34)'],
+  c64:['rgba(132,204,22,.45)','rgba(34,211,238,.3)'],
+  coleco:['rgba(168,85,247,.5)','rgba(244,114,182,.34)'],
+  zx:['rgba(6,182,212,.48)','rgba(99,102,241,.36)']
+};
+function cOf(z){return COLORS[z]||['rgba(124,58,237,.45)','rgba(34,211,238,.3)']}
+function zhOf(n){return ZH[n]||n}
+function initials(n){
+  var s=String(n||'?').replace(/[^A-Za-z0-9\u4e00-\u9fa5]/g,'');
+  return (s.slice(0,2)||'?').toUpperCase();
+}
+function romUrl(z,g){
+  var base=window.SL_ROM_BASE||'https://raw.githubusercontent.com/retrobrews/';
+  return base+z.repo+'/master/'+g.f;
+}
+function mirrorUrl(u){
+  // GitHub raw → jsDelivr 镜像兜底
+  var m=/^https?:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+)$/.exec(u);
+  if(m) return 'https://cdn.jsdelivr.net/gh/'+m[1]+'/'+m[2]+'@'+m[3]+'/'+m[4];
+  return '';
+}
+function openRom(z,g){
+  pushRecent({t:'rom',n:zhOf(g.n),z:z.name,core:z.core,url:romUrl(z,g)});
+  location.href='player.html?core='+encodeURIComponent(z.core)+'&name='+encodeURIComponent(zhOf(g.n))+'&url='+encodeURIComponent(romUrl(z,g))+'&mirror='+encodeURIComponent(mirrorUrl(romUrl(z,g)));
+}
+function openSwf(g){
+  pushRecent({t:'swf',n:g.n,z:'SWF 小游戏',f:g.f});
+  try{localStorage.setItem('sl_swf_pending',g.f)}catch(e){}
+  location.href='../yxj.html?g='+encodeURIComponent(g.f);
+}
+function pushRecent(o){
+  o.at=Date.now();
+  S.recent=S.recent.filter(function(x){return !(x.t===o.t&&x.n===o.n)});
+  S.recent.unshift(o);
+  if(S.recent.length>18)S.recent=S.recent.slice(0,18);
+  try{localStorage.setItem(RECENT_KEY,JSON.stringify(S.recent))}catch(e){}
+}
+
+/* ---------- 分类 ---------- */
+function renderCats(){
+  var h='<button class="chip'+(S.zone==='all'?' on':'')+'" data-z="all">全部游戏</button>';
+  h+='<button class="chip'+(S.zone==='recent'?' on':'')+'" data-z="recent">最近游玩</button>';
+  ZONES.forEach(function(z){h+='<button class="chip'+(S.zone===z.id?' on':'')+'" data-z="'+esc(z.id)+'">'+esc(z.name)+'</button>'});
+  $('cats').innerHTML=h;
+}
+function zoneById(id){for(var i=0;i<ZONES.length;i++)if(ZONES[i].id===id)return ZONES[i];return null}
+
+/* ---------- 列表 ---------- */
+function hl(s){
+  var e=esc(s);
+  if(!S.kw) return e;
+  var q=S.kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  try{ return e.replace(new RegExp('('+q+')','ig'),'<mark>$1</mark>'); }catch(x){ return e; }
+}
+function render(){
+  renderCats();
+  if(!S._stat){
+    var total=0; ZONES.forEach(function(z){total+=z.games.length});
+    var a=$('stTotal'), b=$('stZones');
+    if(a)a.textContent=total; if(b)b.textContent=ZONES.length;
+    S._stat=1;
   }
-  var swf=zones.filter(function(z){return z.type==='swf'})[0];
-  if(swf && match('swf 小游戏')){
-    var g=el('div','grid');
-    var c=el('div','gcard','<div class="nm">打开 SWF 游戏机</div><span class="tag">内置游戏库 / 上传 / 链接</span>');
-    c.onclick=function(){ openUrl('../yxj.html','SWF 游戏机'); closeMenu(); };
-    g.appendChild(c); shown++;
-    (swf.games||[]).forEach(function(game){
-      if(!match(game.n))return;
-      var d=el('div','gcard','<div class="nm">'+esc(zh(game.n||'未命名'))+'</div><span class="tag">SWF</span>');
-      d.onclick=function(){
-        try{ localStorage.setItem('sl_swf_pending',game.f); }catch(e){}
-        openUrl('../yxj.html','SWF 游戏机'); closeMenu();
-      };
-      g.appendChild(d); shown++;
+  var grid=$('grid'),title=$('secTitle'),cnt=$('secCount');
+  var list=[];
+  if(S.zone==='recent'){
+    title.textContent='最近游玩';
+    S.recent.forEach(function(r){
+      list.push({type:r.t==='swf'?'swf':'rom',n:r.n,z:{id:r.t==='swf'?'swf':'rom',name:r.z,core:r.core},g:{n:r.n,f:r.url||r.f},recent:r});
     });
-    group('SWF 小游戏',(swf.games||[]).length,g,true);
+    cnt.textContent=list.length?('共 '+list.length+' 个'):'';
+  }else if(S.zone==='all'){
+    title.textContent='全部游戏';
+    ZONES.forEach(function(z){
+      z.games.forEach(function(g){list.push({type:z.type,n:zhOf(g.n),z:z,g:g})});
+    });
+    cnt.textContent='共 '+list.length+' 个内置游戏';
+  }else{
+    var z=zoneById(S.zone);
+    if(z){title.textContent=z.name;z.games.forEach(function(g){list.push({type:z.type,n:zhOf(g.n),z:z,g:g})});cnt.textContent='共 '+z.games.length+' 个'}
   }
-  zones.forEach(function(z,idx){
-    if(z.type==='swf'||!z.games||!z.games.length)return;
-    var list=z.games.filter(function(game){return match(game.n)||match(z.name)});
-    if(!list.length)return;
-    var g=el('div','grid');
-    list.forEach(function(game){
-      var d=el('div','gcard','<div class="nm">'+esc(zh(game.n))+'</div><span class="tag">开始</span>');
-      d.onclick=function(){ playRom(z,game); };
-      g.appendChild(d); shown++;
-    });
-    group(ZONE_ZH[z.name]||z.name,list.length,g,idx===0);
+  var q=S.kw.trim().toLowerCase();
+  if(q)list=list.filter(function(x){return String(x.n).toLowerCase().indexOf(q)>=0||String(x.g.n||'').toLowerCase().indexOf(q)>=0||String(x.z.name||'').toLowerCase().indexOf(q)>=0});
+  if(!list.length){
+    grid.innerHTML='<div class="empty" style="grid-column:1/-1">'+(S.zone==='recent'?'还没有玩过游戏。<br>随便点一个开始吧。':'没有匹配的游戏，换个关键词试试。')+'</div>';
+    return;
+  }
+  var h='';
+  list.forEach(function(x,i){
+    var c=cOf(x.z.id);
+    var badge=x.type==='swf'?'SWF':(x.z.core||'ROM').toUpperCase();
+    h+='<button class="gcard" data-i="'+i+'" style="--c1:'+c[0]+';--c2:'+c[1]+'">'+
+      '<span class="badge">'+esc(badge)+'</span>'+
+      '<span class="cover"><b>'+esc(initials(x.n))+'</b></span>'+
+      '<span class="bd"><span class="nm">'+hl(x.n)+'</span><span class="pl">'+esc(x.z.name||'')+'</span></span></button>';
   });
-  var online=[['CrazyGames','https://www.crazygames.com/'],['Poki','https://poki.com/'],['Y8 游戏','https://www.y8.com/'],['itch.io 免费游戏','https://itch.io/games/free'],['4399 小游戏','https://www.4399.com/'],['7k7k 小游戏','https://www.7k7k.com/']];
-  var onlineShown=online.filter(function(o){return match(o[0])});
-  if(onlineShown.length){
-    var og=el('div','grid');
-    onlineShown.forEach(function(o){
-      var a=el('a','gcard','<div class="nm">'+o[0]+'</div><span class="tag">在浏览器打开</span>');
-      a.href=o[1]; a.target='_blank'; a.rel='noopener';
-      og.appendChild(a); shown++;
-    });
-    group('在线小游戏',onlineShown.length,og,false);
-  }
-  if($('gmCount'))$('gmCount').textContent=shown+' 项';
-  var add=el('div','addbox','<label>添加自己的游戏</label>'+
-    '<input type="text" id="gameLink" placeholder="粘贴游戏直链（.swf / .nes / .gba / .zip 等）" autocomplete="off">'+
-    '<div class="row"><button id="playLink">打开链接</button><button id="pickFile">上传文件</button></div>'+
-    '<input class="file" type="file" id="gameFile" accept=".swf,.nes,.sfc,.smc,.gba,.gb,.gbc,.bin,.md,.sms,.d64,.prg,.tap,.tzx,.z80,.zip">');
-  body.appendChild(add);
-  $('playLink').onclick=function(){
-    var u=String($('gameLink').value||'').trim(); if(!u){toast('请先粘贴游戏链接');return;}
-    if(/\.swf(\?|$)/i.test(u)){ openUrl('../yxj.html','SWF 游戏机'); toast('SWF 链接请在游戏机内用「添加」导入'); }
-    else { openUrl('player.html?name='+encodeURIComponent('自定义游戏')+'&url='+encodeURIComponent(u),'自定义游戏'); }
-    closeMenu();
-  };
-  $('pickFile').onclick=function(){ $('gameFile').click(); };
-  $('gameFile').onchange=function(){
-    var f=this.files&&this.files[0]; if(!f)return;
-    var u=URL.createObjectURL(f);
-    if(/\.swf$/i.test(f.name)){ openUrl('../yxj.html','SWF 游戏机'); toast('SWF 文件请点游戏机里的「添加」上传'); }
-    else { openUrl('player.html?name='+encodeURIComponent(f.name)+'&url='+encodeURIComponent(u),f.name); }
-    closeMenu();
+  grid.innerHTML=h;
+  grid.__list=list;
+  grid.onclick=function(e){
+    var b=e.target.closest('.gcard');if(!b)return;
+    var item=grid.__list[+b.getAttribute('data-i')];if(!item)return;
+    if(item.recent){
+      if(item.recent.t==='swf'){try{localStorage.setItem('sl_swf_pending',item.recent.f)}catch(x){};location.href='../yxj.html?g='+encodeURIComponent(item.recent.f)}
+      else location.href='player.html?core='+encodeURIComponent(item.recent.core)+'&name='+encodeURIComponent(item.recent.n)+'&url='+encodeURIComponent(item.recent.url)+'&mirror='+encodeURIComponent(mirrorUrl(item.recent.url));
+      return;
+    }
+    if(item.type==='swf')openSwf(item.g);
+    else openRom(item.z,item.g);
   };
 }
-function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-if($('gmSearch'))$('gmSearch').oninput=buildMenu;
-buildMenu();
+
+/* ---------- 自定义添加 ---------- */
+function openAdd(){
+  var h='<div class="mask" data-a="closeMask"><div class="sheet">'+
+    '<h3>添加游戏</h3><p>支持直接粘贴 ROM 直链（.nes/.sfc/.smc/.gba/.gb/.gbc/.md/.bin/.sms/.zip），或上传本地文件。SWF 请在游戏机页面里导入。</p>'+
+    '<div class="field"><label>游戏名称</label><input id="aName" placeholder="例如：我的游戏"></div>'+
+    '<div class="field"><label>ROM 直链</label><input id="aUrl" placeholder="https://.../game.nes"></div>'+
+    '<div class="field"><label>模拟器核心</label><input id="aCore" placeholder="fceumm / snes9x / mgba / gambatte / genesis_plus_gx / stella2014 / vice_x64 / gearcoleco / fuse" value="fceumm"></div>'+
+    '<div class="acts"><button class="btn gho" data-a="pickFile">上传文件</button><button class="btn pri" data-a="playCustom">开始</button></div>'+
+    '<input type="file" id="aFile" accept=".nes,.sfc,.smc,.gba,.gb,.gbc,.bin,.md,.sms,.d64,.prg,.tap,.tzx,.z80,.zip" hidden>'+
+    '</div></div>';
+  $('modal').innerHTML=h;
+  var f=$('aFile');
+  f.addEventListener('change',function(){
+    var file=f.files&&f.files[0];if(!file)return;
+    if(!$('aName').value)$('aName').value=file.name.replace(/\.[^.]+$/,'');
+    $('aUrl').value=URL.createObjectURL(file);
+    var ext=(file.name.split('.').pop()||'').toLowerCase();
+    var map={nes:'fceumm',sfc:'snes9x',smc:'snes9x',gba:'mgba',gb:'gambatte',gbc:'gambatte',md:'genesis_plus_gx',bin:'genesis_plus_gx',sms:'genesis_plus_gx',d64:'vice_x64',prg:'vice_x64',tap:'fuse',tzx:'fuse',z80:'fuse'};
+    if(map[ext])$('aCore').value=map[ext];
+    toast('已选择：'+file.name);
+  });
+}
+function playCustom(){
+  var n=($('aName').value||'').trim()||'自定义游戏';
+  var u=($('aUrl').value||'').trim();
+  var c=($('aCore').value||'fceumm').trim();
+  if(!u){toast('请先填写 ROM 直链或上传文件');return}
+  pushRecent({t:'rom',n:n,z:'自定义',core:c,url:u});
+  location.href='player.html?core='+encodeURIComponent(c)+'&name='+encodeURIComponent(n)+'&url='+encodeURIComponent(u);
+}
+
+/* ---------- 事件 ---------- */
+$('kw').addEventListener('input',function(){S.kw=this.value;render()});
+$('back').addEventListener('click',function(){
+  if(history.length>1)history.back();else location.href='../index.html';
+});
+$('addBtn').addEventListener('click',openAdd);
+document.addEventListener('click',function(e){
+  var c=e.target.closest('.chip');if(c){S.zone=c.getAttribute('data-z');render();return}
+  var a=e.target.closest('[data-a]');if(!a)return;
+  var act=a.getAttribute('data-a');
+  if(act==='closeMask'){if(e.target===a)$('modal').innerHTML=''}
+  else if(act==='pickFile'){$('aFile').click()}
+  else if(act==='playCustom'){playCustom()}
+});
+render();
 })();
 </script>
 <style id="sl-skeleton">
 /* ============================================================
-   巳泷资源库 · 前端骨架 Token 体系（v8.0.7）
-   统一：颜色 / 字体 / 圆角 / 间距 / 阴影 / 层级
+   巳泷资源库 · 前端骨架 Token 体系（v9.9 商业级统一皮肤）
+   统一：颜色 / 字体 / 圆角 / 间距 / 阴影 / 层级 / 组件
    所有页面通过构建脚本内联本文件，页面运行时不额外请求 CSS。
    ============================================================ */
 :root{
-  /* 颜色 */
-  --sl-bg:#08050f;
-  --sl-bg-2:#0e0819;
-  --sl-surface:#151024;
-  --sl-surface-2:#1d1533;
-  --sl-glass:rgba(16,10,30,.72);
-  --sl-glass-strong:rgba(20,12,36,.92);
+  /* 颜色 · 背景层次 */
+  --sl-bg:#07040e;
+  --sl-bg-2:#0c0716;
+  --sl-surface:#150f24;
+  --sl-surface-2:#1e1633;
+  --sl-surface-3:#281d40;
+  --sl-glass:rgba(18,11,32,.72);
+  --sl-glass-strong:rgba(22,13,38,.92);
+  /* 颜色 · 主色与强调 */
   --sl-primary:#8b5cf6;
-  --sl-primary-2:#7c3aed;
+  --sl-primary-2:#6d28d9;
   --sl-accent:#22d3ee;
   --sl-pink:#ff6ec7;
   --sl-glow:rgba(139,92,246,.45);
-  --sl-text:#f5f3ff;
-  --sl-text-2:#d8cfe9;
-  --sl-muted:#a99bc4;
-  --sl-line:rgba(139,92,246,.26);
+  /* 颜色 · 文字 */
+  --sl-text:#f6f3ff;
+  --sl-text-2:#d9d0ec;
+  --sl-muted:#a293c0;
+  /* 颜色 · 描边 */
+  --sl-line:rgba(139,92,246,.22);
   --sl-line-strong:rgba(139,92,246,.42);
+  /* 颜色 · 状态 */
   --sl-success:#34d399;
   --sl-danger:#f87171;
   --sl-warning:#fbbf24;
   /* 字体 */
-  --sl-font:'PingFang SC','Microsoft YaHei',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --sl-font:'PingFang SC','Microsoft YaHei',system-ui,-apple-system,'Segoe UI','Noto Sans SC',sans-serif;
   --sl-font-mono:'JetBrains Mono','Consolas','Courier New',monospace;
   /* 圆角 */
-  --sl-r-sm:8px;
-  --sl-r-md:12px;
+  --sl-r-sm:10px;
+  --sl-r-md:14px;
   --sl-r-lg:18px;
   --sl-r-xl:24px;
   --sl-r-pill:999px;
@@ -788,8 +405,8 @@ buildMenu();
   --sl-sp-6:32px;
   /* 阴影 */
   --sl-shadow-sm:0 2px 10px rgba(0,0,0,.35);
-  --sl-shadow:0 8px 30px rgba(0,0,0,.45);
-  --sl-shadow-lg:0 18px 60px rgba(0,0,0,.55);
+  --sl-shadow:0 10px 30px rgba(0,0,0,.45);
+  --sl-shadow-lg:0 20px 60px rgba(0,0,0,.55);
   --sl-glow-line:0 0 0 1px rgba(139,92,246,.18),0 0 24px rgba(139,92,246,.18);
   /* 层级 */
   --sl-z-nav:100;
@@ -807,8 +424,13 @@ buildMenu();
   --v-ink:var(--sl-text);
   --v-soft:var(--sl-line);
   --text-muted:var(--sl-muted);
+  --card:var(--sl-surface);
+  --line:var(--sl-line);
+  --mut:var(--sl-muted);
+  --bg2:var(--sl-bg-2);
 }
 
+/* ---------- 基础 ---------- */
 html,body{
   background:var(--sl-bg);
   color:var(--sl-text);
@@ -816,52 +438,110 @@ html,body{
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
 }
-body{min-height:100vh}
+body{
+  min-height:100vh;
+  background-image:
+    radial-gradient(1000px 520px at 10% -8%,rgba(124,58,237,.20),transparent 60%),
+    radial-gradient(820px 440px at 100% 2%,rgba(34,211,238,.08),transparent 58%),
+    radial-gradient(820px 480px at 50% 112%,rgba(255,110,199,.08),transparent 60%);
+  background-attachment:fixed;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 ::selection{background:rgba(139,92,246,.38);color:#fff}
 *{scrollbar-width:thin;scrollbar-color:rgba(139,92,246,.55) transparent}
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-thumb{background:rgba(139,92,246,.45);border-radius:var(--sl-r-pill)}
 ::-webkit-scrollbar-track{background:transparent}
 *:focus-visible{outline:2px solid rgba(34,211,238,.55);outline-offset:2px}
+a{color:#c4b5fd}
+a:hover{color:#fff}
 
-/* 顶部栏：统一深色玻璃 + 紫罗兰描边（不改各页面原有高度与排布） */
-.navbar,.v-head,.sl-top,.topbar,.top-bar,#topbar,.app-header,.header{
+/* ---------- 顶部栏 / 导航：深色玻璃 + 紫罗兰描边 + 顶部微光 ---------- */
+.navbar,.v-head,.sl-top,.topbar,.top-bar,#topbar,.app-header,.header,
+.nav,.top,.page-header,.sl-nav{
   background:linear-gradient(180deg,var(--sl-glass-strong),var(--sl-glass))!important;
   border-color:var(--sl-line)!important;
   box-shadow:var(--sl-shadow-sm)!important;
-  backdrop-filter:blur(18px) saturate(160%);
-  -webkit-backdrop-filter:blur(18px) saturate(160%);
+  backdrop-filter:blur(20px) saturate(160%);
+  -webkit-backdrop-filter:blur(20px) saturate(160%);
 }
-/* 侧栏 / 抽屉 / 面板统一 */
-.side,.side-panel,.side-pane,.src-dock,.panel,.drawer{
-  border-color:var(--sl-line)!important;
-}
-.side-header,.side-hd,.dock-head{
-  border-bottom-color:var(--sl-line)!important;
-}
-.side-header h3,.side-hd h3,.dock-title{
-  color:var(--sl-text)!important;letter-spacing:.4px;
+.nav h1,.top h1,.page-title,.sl-name,.brand b,.hd h2{
+  letter-spacing:.6px;
 }
 
-/* 通用按钮：统一字体、圆角、动效；保留各页面自己的配色 */
-.btn,.pbtn,.mini,.sr-tool,.tab-btn,.api-pool-btn,.rate-btn,.mbtn,.card-edit,.dk-tts,.icon-btn,.sl-top .bk{
+/* ---------- 侧栏 / 抽屉 / 面板 ---------- */
+.side,.side-panel,.side-pane,.src-dock,.panel,.drawer,.settings-panel,.history-panel{
+  border-color:var(--sl-line)!important;
+  background:linear-gradient(180deg,var(--sl-glass-strong),var(--sl-glass))!important;
+}
+.side-header,.side-hd,.dock-head{border-bottom-color:var(--sl-line)!important}
+.side-header h3,.side-hd h3,.dock-title{color:var(--sl-text)!important;letter-spacing:.4px}
+
+/* ---------- 卡片 / 列表行 / 面板 ---------- */
+.item,.opt,.hero,.gcard,.sl-rec-card,.card-hover,.rate-card,.pet-card,.dt,
+.entry,.silong-entry-card,.sheet,.list .item,.panel-box{
+  background:linear-gradient(160deg,var(--sl-surface-2),var(--sl-surface))!important;
+  border:1px solid var(--sl-line)!important;
+  border-radius:var(--sl-r-lg)!important;
+  box-shadow:var(--sl-shadow-sm);
+}
+/* 通用 .card / .row 仅做柔和描边与圆角，不强制卡片底色，避免破坏第三方布局 */
+.card,.row{
+  border-color:var(--sl-line);
+  border-radius:var(--sl-r-md);
+}
+.item,.opt,.gcard,.sl-rec-card,.card-hover{
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.item:active,.opt:active,.gcard:active,.sl-rec-card:active,.card-hover:active{transform:scale(.985)}
+
+/* ---------- 通用按钮 ---------- */
+.btn,.pbtn,.mini,.sr-tool,.tab-btn,.api-pool-btn,.rate-btn,.mbtn,.card-edit,.dk-tts,
+.icon-btn,.sl-top .bk,.go,.back,.back-btn,.bt,.ibtn,.sl-nb,.chip{
   font-family:var(--sl-font);
   border-radius:var(--sl-r-md);
-  transition:transform .16s ease,box-shadow .16s ease,background .16s ease,border-color .16s ease;
+  transition:transform .16s ease,box-shadow .16s ease,background .16s ease,border-color .16s ease,color .16s ease;
 }
-.btn:active,.pbtn:active,.mini:active,.sr-tool:active,.tab-btn:active,.api-pool-btn:active,.rate-btn:active,.mbtn:active,.card-edit:active,.dk-tts:active,.icon-btn:active,.sl-top .bk:active{
-  transform:scale(.97);
-}
-.primary,.pbtn{
+.btn:active,.pbtn:active,.mini:active,.sr-tool:active,.tab-btn:active,.api-pool-btn:active,
+.rate-btn:active,.mbtn:active,.card-edit:active,.dk-tts:active,.icon-btn:active,.go:active,
+.back:active,.back-btn:active,.bt:active,.ibtn:active,.sl-nb:active,.chip:active{transform:scale(.97)}
+
+/* 主操作：紫罗兰渐变 */
+.primary,.pbtn,.btn.pri,.btn.primary,.go,.primary-btn{
   background-image:linear-gradient(135deg,var(--sl-primary-2),var(--sl-primary))!important;
   border-color:transparent!important;
   color:#fff!important;
-  box-shadow:0 6px 18px rgba(124,58,237,.32);
+  box-shadow:0 8px 22px rgba(124,58,237,.36);
+}
+/* 次级：玻璃描边 */
+.btn.gho,.btn.ghost,.mini,.icon-btn,.sl-nb,.ibtn,.back,.back-btn,.bt{
+  background:rgba(139,92,246,.10)!important;
+  border:1px solid var(--sl-line)!important;
+  color:var(--sl-text-2)!important;
+}
+.btn.gho:hover,.mini:hover,.icon-btn:hover,.sl-nb:hover,.ibtn:hover,.back:hover,.back-btn:hover,.bt:hover{
+  background:rgba(139,92,246,.22)!important;
+  border-color:var(--sl-line-strong)!important;
+  color:#fff!important;
 }
 
-/* 输入类：统一深色底、占位色与聚焦光环（排除勾选/滑杆/取色/文件） */
+/* ---------- 标签 / 分段选择 ---------- */
+.chip,.tab-btn{
+  background:rgba(139,92,246,.08);
+  border:1px solid var(--sl-line);
+  color:var(--sl-text-2);
+}
+.chip.on,.tab-btn.on,.chip.active,.tab-btn.active{
+  background:linear-gradient(135deg,var(--sl-primary-2),var(--sl-primary))!important;
+  border-color:rgba(255,255,255,.16)!important;
+  color:#fff!important;
+  box-shadow:0 6px 18px rgba(124,58,237,.34);
+}
+
+/* ---------- 输入类（排除勾选/滑杆/取色/文件） ---------- */
 input,textarea,select{font-family:var(--sl-font)}
-input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),textarea,select{
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+textarea,select{
   background:var(--sl-surface-2)!important;
   color:var(--sl-text)!important;
   border:1px solid var(--sl-line)!important;
@@ -873,24 +553,85 @@ input:focus,textarea:focus,select:focus{
   box-shadow:0 0 0 3px rgba(139,92,246,.16);
 }
 
-/* 区块标题与正文层级 */
-.hd h2,.side-section h4,.side-header h3,.bubble-name,.v-bubble-name{
-  color:var(--sl-text);
-}
-.hd,.side-section h4{
-  letter-spacing:.3px;
-}
-.msg-time,.sub,.hint,.brand-status,.meta,.ds{
-  color:var(--sl-muted);
+/* ---------- 文字层级 ---------- */
+.hd h2,.side-section h4,.side-header h3,.bubble-name,.v-bubble-name{color:var(--sl-text)}
+.hd,.side-section h4{letter-spacing:.3px}
+.msg-time,.sub,.hint,.brand-status,.meta,.ds,.pl,.nm-sub{color:var(--sl-muted)}
+
+/* ---------- 徽章 / 计数 ---------- */
+.badge,.count-badge,.countBadge{
+  background:rgba(8,4,16,.62);
+  border:1px solid rgba(255,255,255,.16);
+  color:var(--sl-text-2);
+  border-radius:var(--sl-r-pill);
 }
 
-/* 弹窗 / 浮层统一描边与阴影 */
-.modal,.rate-card,.pet-card,.sl-kwarn,.dt,.dt-head,.context-menu{
-  border-color:var(--sl-line)!important;
+/* ---------- 空状态 ---------- */
+.empty{
+  text-align:center;
+  color:var(--sl-muted);
+  border:1px dashed var(--sl-line);
+  border-radius:var(--sl-r-lg);
+  line-height:1.9;
+}
+
+/* ---------- 轻提示条 ---------- */
+.tip,.tipbar,.note,.warn{
+  color:var(--sl-text-2);
+  background:rgba(139,92,246,.08);
+  border:1px solid rgba(139,92,246,.18);
+  border-radius:var(--sl-r-md);
+}
+
+/* ---------- 弹窗 / 浮层 ---------- */
+.modal,.rate-card,.pet-card,.sl-kwarn,.dt,.dt-head,.context-menu,.mask{
+  border-color:var(--sl-line-strong)!important;
   box-shadow:var(--sl-shadow-lg)!important;
 }
+.mask{
+  position:fixed;inset:0;z-index:var(--sl-z-modal);
+  background:rgba(4,2,10,.72);
+  backdrop-filter:blur(14px) saturate(150%);
+  -webkit-backdrop-filter:blur(14px) saturate(150%);
+}
 
-/* 兼容旧的白日/黄昏蓝白覆盖：即使旧 class 残留，也保持统一紫罗兰暗色 */
+/* 统一自定义弹窗（替代原生白色 confirm / alert / prompt） */
+.sl-mask{position:fixed;inset:0;z-index:var(--sl-z-toast);display:flex;align-items:center;justify-content:center;
+  padding:24px;background:rgba(4,2,10,.72);backdrop-filter:blur(16px) saturate(150%);
+  -webkit-backdrop-filter:blur(16px) saturate(150%);animation:slMIn .18s ease-out}
+.sl-dialog{width:min(400px,94vw);max-height:82vh;overflow:auto;padding:22px 22px 18px;
+  color:var(--sl-text);background:linear-gradient(168deg,rgba(32,20,54,.98),rgba(16,10,30,.98));
+  border:1px solid var(--sl-line-strong);border-radius:var(--sl-r-xl);
+  box-shadow:var(--sl-shadow-lg),0 0 0 1px rgba(139,92,246,.16),0 0 40px rgba(139,92,246,.18);
+  animation:slDIn .2s cubic-bezier(.2,.9,.3,1.2)}
+.sl-dialog h3{margin:0 0 10px;font-size:16px;font-weight:800;letter-spacing:.4px;
+  background:linear-gradient(90deg,var(--sl-text),var(--sl-accent));-webkit-background-clip:text;
+  background-clip:text;-webkit-text-fill-color:transparent}
+.sl-dialog p{margin:0;color:var(--sl-text-2);font-size:13px;line-height:1.75;white-space:pre-wrap}
+.sl-dialog .sl-d-field{margin-top:14px}
+.sl-dialog .sl-d-field label{display:block;font-size:11px;color:var(--sl-muted);margin-bottom:6px}
+.sl-dialog .sl-d-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap}
+.sl-dialog button{min-width:96px;padding:10px 16px;border-radius:var(--sl-r-md);font-size:13px;
+  font-weight:700;font-family:var(--sl-font);cursor:pointer;transition:.16s ease;
+  background:rgba(139,92,246,.12);border:1px solid var(--sl-line);color:var(--sl-text-2)}
+.sl-dialog button:hover{background:rgba(139,92,246,.22);border-color:var(--sl-line-strong)}
+.sl-dialog button.ok{background:linear-gradient(135deg,var(--sl-primary-2),var(--sl-primary));
+  border-color:transparent;color:#fff;box-shadow:0 6px 18px rgba(124,58,237,.35)}
+.sl-dialog button.danger{background:rgba(248,113,113,.14);border-color:rgba(248,113,113,.35);color:#fecaca}
+.sl-dialog button:active{transform:scale(.97)}
+@keyframes slMIn{from{opacity:0}to{opacity:1}}
+@keyframes slDIn{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+
+/* ---------- 浮动提示 ---------- */
+.toast{
+  background:rgba(30,18,48,.96);
+  border:1px solid rgba(139,92,246,.4);
+  color:#eee;
+  border-radius:var(--sl-r-pill);
+  box-shadow:var(--sl-shadow);
+}
+
+/* ---------- 兼容旧的白日/黄昏蓝白覆盖：保持统一紫罗兰暗色 ---------- */
 html.sl-day,html.sl-dusk{
   --bg:var(--sl-bg);--card:var(--sl-surface);--line:var(--sl-line);
   --txt:var(--sl-text);--mut:var(--sl-muted);--acc:var(--sl-primary);--acc2:var(--sl-accent);
@@ -906,25 +647,24 @@ html.sl-day .navbar,html.sl-dusk .navbar,body.mode-daily .nav{
   border-color:var(--sl-line)!important;
   background-image:none!important;
 }
-html.sl-day .side-header h3,body.mode-daily .hd h2,body.mode-daily .about-site h2{
-  color:var(--sl-text)!important;
-}
-html.sl-day .side,body.mode-daily .side{
-  background:var(--sl-glass-strong)!important;
-  border-color:var(--sl-line)!important;
-}
-body.mode-daily .side a:hover,body.mode-daily .side a.on{
-  color:var(--sl-text)!important;
-  border-left-color:var(--sl-primary)!important;
-}
+html.sl-day .side-header h3,body.mode-daily .hd h2,body.mode-daily .about-site h2{color:var(--sl-text)!important}
+html.sl-day .side,body.mode-daily .side{background:var(--sl-glass-strong)!important;border-color:var(--sl-line)!important}
+body.mode-daily .side a:hover,body.mode-daily .side a.on{color:var(--sl-text)!important;border-left-color:var(--sl-primary)!important}
 
-/* 移动端安全区与间距基线 */
+/* ---------- 移动端安全区 ---------- */
 @supports(padding:max(0px)){
-  .navbar,.v-head,.sl-top,.topbar,.top-bar,#topbar,.app-header,.header{
+  .navbar,.v-head,.sl-top,.topbar,.top-bar,#topbar,.app-header,.header,
+  .nav,.top,.page-header,.sl-nav{
     padding-top:max(8px,env(safe-area-inset-top));
   }
 }
 
+/* ---------- 动效降级 ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+
 </style>
+<link rel="stylesheet" href="assets/ui/theme-lock.css?v=11">
 </body>
 </html>

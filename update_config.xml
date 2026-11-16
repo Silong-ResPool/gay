@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <update>
-    <version>8.2.0</version>
+    <version>8.4.0</version>
     <log>
-📋 巳泷资源库 v8.2.0 更新公告
-1. 影视乐园：改用 LibreTV 开源壳，357 个接口全部保留，新增热门推荐、海报化结果与紫罗兰界面。
-2. 游戏机：全新游戏大厅，EmulatorJS 核心本地化，9 平台 ROM 与 32 个 SWF 保留，离线可启动。
-3. AI 文游：新增 OC 世界工坊（角色档案、可视化关系网、势力、地点、时间线、世界百科、世界书），可用 OC 世界一键开局；内置两张世界卡独立文件管理。
-4. 三平台资源同步更新，版本检测改为分平台 XML。
+📋 巳泷资源库 v8.4.0 更新公告
+1. 广告屏蔽新增「标准 / 激进」两档，默认激进；设置内可切换，切换后自动刷新。
+2. 影视乐园全源影院重构：全源聚合搜索、默认成人分区、海报失败占位、手机三列。
+3. AI 文游与创世工坊：10 页创建世界、45 个中枢模块、地图地形笔刷、状态面板、世界推演。
+4. 三端自动翻译：非中文页面自动译为中文，在线优先 + 离线词库兜底，可一键恢复原文。
+5. 内置 API 统一限流：每 5 分钟最多 20 次，聊天 / 文游 / 代码助手 / 群聊共享额度。
     </log>
-    <url>https://github.com/Silong-ResPool/gay/releases/download/gay/Silong-ResPool_v8.2.0_Android.apk</url>
+    <url>https://github.com/Silong-ResPool/gay/releases/download/gay/Silong-ResPool_v8.4.0_Android.apk</url>
 </update>

@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<style id="sl-color-lock">html,body,:root{color-scheme:dark!important}html,body{forced-color-adjust:none!important}</style>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Live2D Previewer</title>
     
     <!-- Live2D Cubism Core & Runtime -->
@@ -3001,5 +3003,316 @@ window.addEventListener('load', () => {
 });
 
 </script>
+<style id="sl-skeleton">
+/* ============================================================
+   巳泷资源库 · 前端骨架 Token 体系（v9.9 商业级统一皮肤）
+   统一：颜色 / 字体 / 圆角 / 间距 / 阴影 / 层级 / 组件
+   所有页面通过构建脚本内联本文件，页面运行时不额外请求 CSS。
+   ============================================================ */
+:root{
+  /* 颜色 · 背景层次 */
+  --sl-bg:#07040e;
+  --sl-bg-2:#0c0716;
+  --sl-surface:#150f24;
+  --sl-surface-2:#1e1633;
+  --sl-surface-3:#281d40;
+  --sl-glass:rgba(18,11,32,.72);
+  --sl-glass-strong:rgba(22,13,38,.92);
+  /* 颜色 · 主色与强调 */
+  --sl-primary:#8b5cf6;
+  --sl-primary-2:#6d28d9;
+  --sl-accent:#22d3ee;
+  --sl-pink:#ff6ec7;
+  --sl-glow:rgba(139,92,246,.45);
+  /* 颜色 · 文字 */
+  --sl-text:#f6f3ff;
+  --sl-text-2:#d9d0ec;
+  --sl-muted:#a293c0;
+  /* 颜色 · 描边 */
+  --sl-line:rgba(139,92,246,.22);
+  --sl-line-strong:rgba(139,92,246,.42);
+  /* 颜色 · 状态 */
+  --sl-success:#34d399;
+  --sl-danger:#f87171;
+  --sl-warning:#fbbf24;
+  /* 字体 */
+  --sl-font:'PingFang SC','Microsoft YaHei',system-ui,-apple-system,'Segoe UI','Noto Sans SC',sans-serif;
+  --sl-font-mono:'JetBrains Mono','Consolas','Courier New',monospace;
+  /* 圆角 */
+  --sl-r-sm:10px;
+  --sl-r-md:14px;
+  --sl-r-lg:18px;
+  --sl-r-xl:24px;
+  --sl-r-pill:999px;
+  /* 间距 */
+  --sl-sp-1:4px;
+  --sl-sp-2:8px;
+  --sl-sp-3:12px;
+  --sl-sp-4:16px;
+  --sl-sp-5:24px;
+  --sl-sp-6:32px;
+  /* 阴影 */
+  --sl-shadow-sm:0 2px 10px rgba(0,0,0,.35);
+  --sl-shadow:0 10px 30px rgba(0,0,0,.45);
+  --sl-shadow-lg:0 20px 60px rgba(0,0,0,.55);
+  --sl-glow-line:0 0 0 1px rgba(139,92,246,.18),0 0 24px rgba(139,92,246,.18);
+  /* 层级 */
+  --sl-z-nav:100;
+  --sl-z-panel:300;
+  --sl-z-modal:1000;
+  --sl-z-toast:2000;
+  /* 兼容旧页面变量名 */
+  --acc:var(--sl-primary);
+  --acc2:var(--sl-accent);
+  --pink:var(--sl-pink);
+  --border:var(--sl-line);
+  --bg:var(--sl-bg);
+  --txt:var(--sl-text);
+  --v-glow:var(--sl-primary);
+  --v-ink:var(--sl-text);
+  --v-soft:var(--sl-line);
+  --text-muted:var(--sl-muted);
+  --card:var(--sl-surface);
+  --line:var(--sl-line);
+  --mut:var(--sl-muted);
+  --bg2:var(--sl-bg-2);
+}
+
+/* ---------- 基础 ---------- */
+html,body{
+  background:var(--sl-bg);
+  color:var(--sl-text);
+  font-family:var(--sl-font);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+body{
+  min-height:100vh;
+  background-image:
+    radial-gradient(1000px 520px at 10% -8%,rgba(124,58,237,.20),transparent 60%),
+    radial-gradient(820px 440px at 100% 2%,rgba(34,211,238,.08),transparent 58%),
+    radial-gradient(820px 480px at 50% 112%,rgba(255,110,199,.08),transparent 60%);
+  background-attachment:fixed;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+::selection{background:rgba(139,92,246,.38);color:#fff}
+*{scrollbar-width:thin;scrollbar-color:rgba(139,92,246,.55) transparent}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:rgba(139,92,246,.45);border-radius:var(--sl-r-pill)}
+::-webkit-scrollbar-track{background:transparent}
+*:focus-visible{outline:2px solid rgba(34,211,238,.55);outline-offset:2px}
+a{color:#c4b5fd}
+a:hover{color:#fff}
+
+/* ---------- 顶部栏 / 导航：深色玻璃 + 紫罗兰描边 + 顶部微光 ---------- */
+.navbar,.v-head,.sl-top,.topbar,.top-bar,#topbar,.app-header,.header,
+.nav,.top,.page-header,.sl-nav{
+  background:linear-gradient(180deg,var(--sl-glass-strong),var(--sl-glass))!important;
+  border-color:var(--sl-line)!important;
+  box-shadow:var(--sl-shadow-sm)!important;
+  backdrop-filter:blur(20px) saturate(160%);
+  -webkit-backdrop-filter:blur(20px) saturate(160%);
+}
+.nav h1,.top h1,.page-title,.sl-name,.brand b,.hd h2{
+  letter-spacing:.6px;
+}
+
+/* ---------- 侧栏 / 抽屉 / 面板 ---------- */
+.side,.side-panel,.side-pane,.src-dock,.panel,.drawer,.settings-panel,.history-panel{
+  border-color:var(--sl-line)!important;
+  background:linear-gradient(180deg,var(--sl-glass-strong),var(--sl-glass))!important;
+}
+.side-header,.side-hd,.dock-head{border-bottom-color:var(--sl-line)!important}
+.side-header h3,.side-hd h3,.dock-title{color:var(--sl-text)!important;letter-spacing:.4px}
+
+/* ---------- 卡片 / 列表行 / 面板 ---------- */
+.item,.opt,.hero,.gcard,.sl-rec-card,.card-hover,.rate-card,.pet-card,.dt,
+.entry,.silong-entry-card,.sheet,.list .item,.panel-box{
+  background:linear-gradient(160deg,var(--sl-surface-2),var(--sl-surface))!important;
+  border:1px solid var(--sl-line)!important;
+  border-radius:var(--sl-r-lg)!important;
+  box-shadow:var(--sl-shadow-sm);
+}
+/* 通用 .card / .row 仅做柔和描边与圆角，不强制卡片底色，避免破坏第三方布局 */
+.card,.row{
+  border-color:var(--sl-line);
+  border-radius:var(--sl-r-md);
+}
+.item,.opt,.gcard,.sl-rec-card,.card-hover{
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.item:active,.opt:active,.gcard:active,.sl-rec-card:active,.card-hover:active{transform:scale(.985)}
+
+/* ---------- 通用按钮 ---------- */
+.btn,.pbtn,.mini,.sr-tool,.tab-btn,.api-pool-btn,.rate-btn,.mbtn,.card-edit,.dk-tts,
+.icon-btn,.sl-top .bk,.go,.back,.back-btn,.bt,.ibtn,.sl-nb,.chip{
+  font-family:var(--sl-font);
+  border-radius:var(--sl-r-md);
+  transition:transform .16s ease,box-shadow .16s ease,background .16s ease,border-color .16s ease,color .16s ease;
+}
+.btn:active,.pbtn:active,.mini:active,.sr-tool:active,.tab-btn:active,.api-pool-btn:active,
+.rate-btn:active,.mbtn:active,.card-edit:active,.dk-tts:active,.icon-btn:active,.go:active,
+.back:active,.back-btn:active,.bt:active,.ibtn:active,.sl-nb:active,.chip:active{transform:scale(.97)}
+
+/* 主操作：紫罗兰渐变 */
+.primary,.pbtn,.btn.pri,.btn.primary,.go,.primary-btn{
+  background-image:linear-gradient(135deg,var(--sl-primary-2),var(--sl-primary))!important;
+  border-color:transparent!important;
+  color:#fff!important;
+  box-shadow:0 8px 22px rgba(124,58,237,.36);
+}
+/* 次级：玻璃描边 */
+.btn.gho,.btn.ghost,.mini,.icon-btn,.sl-nb,.ibtn,.back,.back-btn,.bt{
+  background:rgba(139,92,246,.10)!important;
+  border:1px solid var(--sl-line)!important;
+  color:var(--sl-text-2)!important;
+}
+.btn.gho:hover,.mini:hover,.icon-btn:hover,.sl-nb:hover,.ibtn:hover,.back:hover,.back-btn:hover,.bt:hover{
+  background:rgba(139,92,246,.22)!important;
+  border-color:var(--sl-line-strong)!important;
+  color:#fff!important;
+}
+
+/* ---------- 标签 / 分段选择 ---------- */
+.chip,.tab-btn{
+  background:rgba(139,92,246,.08);
+  border:1px solid var(--sl-line);
+  color:var(--sl-text-2);
+}
+.chip.on,.tab-btn.on,.chip.active,.tab-btn.active{
+  background:linear-gradient(135deg,var(--sl-primary-2),var(--sl-primary))!important;
+  border-color:rgba(255,255,255,.16)!important;
+  color:#fff!important;
+  box-shadow:0 6px 18px rgba(124,58,237,.34);
+}
+
+/* ---------- 输入类（排除勾选/滑杆/取色/文件） ---------- */
+input,textarea,select{font-family:var(--sl-font)}
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+textarea,select{
+  background:var(--sl-surface-2)!important;
+  color:var(--sl-text)!important;
+  border:1px solid var(--sl-line)!important;
+  border-radius:var(--sl-r-md)!important;
+}
+input::placeholder,textarea::placeholder{color:var(--sl-muted)}
+input:focus,textarea:focus,select:focus{
+  border-color:var(--sl-primary)!important;
+  box-shadow:0 0 0 3px rgba(139,92,246,.16);
+}
+
+/* ---------- 文字层级 ---------- */
+.hd h2,.side-section h4,.side-header h3,.bubble-name,.v-bubble-name{color:var(--sl-text)}
+.hd,.side-section h4{letter-spacing:.3px}
+.msg-time,.sub,.hint,.brand-status,.meta,.ds,.pl,.nm-sub{color:var(--sl-muted)}
+
+/* ---------- 徽章 / 计数 ---------- */
+.badge,.count-badge,.countBadge{
+  background:rgba(8,4,16,.62);
+  border:1px solid rgba(255,255,255,.16);
+  color:var(--sl-text-2);
+  border-radius:var(--sl-r-pill);
+}
+
+/* ---------- 空状态 ---------- */
+.empty{
+  text-align:center;
+  color:var(--sl-muted);
+  border:1px dashed var(--sl-line);
+  border-radius:var(--sl-r-lg);
+  line-height:1.9;
+}
+
+/* ---------- 轻提示条 ---------- */
+.tip,.tipbar,.note,.warn{
+  color:var(--sl-text-2);
+  background:rgba(139,92,246,.08);
+  border:1px solid rgba(139,92,246,.18);
+  border-radius:var(--sl-r-md);
+}
+
+/* ---------- 弹窗 / 浮层 ---------- */
+.modal,.rate-card,.pet-card,.sl-kwarn,.dt,.dt-head,.context-menu,.mask{
+  border-color:var(--sl-line-strong)!important;
+  box-shadow:var(--sl-shadow-lg)!important;
+}
+.mask{
+  position:fixed;inset:0;z-index:var(--sl-z-modal);
+  background:rgba(4,2,10,.72);
+  backdrop-filter:blur(14px) saturate(150%);
+  -webkit-backdrop-filter:blur(14px) saturate(150%);
+}
+
+/* 统一自定义弹窗（替代原生白色 confirm / alert / prompt） */
+.sl-mask{position:fixed;inset:0;z-index:var(--sl-z-toast);display:flex;align-items:center;justify-content:center;
+  padding:24px;background:rgba(4,2,10,.72);backdrop-filter:blur(16px) saturate(150%);
+  -webkit-backdrop-filter:blur(16px) saturate(150%);animation:slMIn .18s ease-out}
+.sl-dialog{width:min(400px,94vw);max-height:82vh;overflow:auto;padding:22px 22px 18px;
+  color:var(--sl-text);background:linear-gradient(168deg,rgba(32,20,54,.98),rgba(16,10,30,.98));
+  border:1px solid var(--sl-line-strong);border-radius:var(--sl-r-xl);
+  box-shadow:var(--sl-shadow-lg),0 0 0 1px rgba(139,92,246,.16),0 0 40px rgba(139,92,246,.18);
+  animation:slDIn .2s cubic-bezier(.2,.9,.3,1.2)}
+.sl-dialog h3{margin:0 0 10px;font-size:16px;font-weight:800;letter-spacing:.4px;
+  background:linear-gradient(90deg,var(--sl-text),var(--sl-accent));-webkit-background-clip:text;
+  background-clip:text;-webkit-text-fill-color:transparent}
+.sl-dialog p{margin:0;color:var(--sl-text-2);font-size:13px;line-height:1.75;white-space:pre-wrap}
+.sl-dialog .sl-d-field{margin-top:14px}
+.sl-dialog .sl-d-field label{display:block;font-size:11px;color:var(--sl-muted);margin-bottom:6px}
+.sl-dialog .sl-d-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap}
+.sl-dialog button{min-width:96px;padding:10px 16px;border-radius:var(--sl-r-md);font-size:13px;
+  font-weight:700;font-family:var(--sl-font);cursor:pointer;transition:.16s ease;
+  background:rgba(139,92,246,.12);border:1px solid var(--sl-line);color:var(--sl-text-2)}
+.sl-dialog button:hover{background:rgba(139,92,246,.22);border-color:var(--sl-line-strong)}
+.sl-dialog button.ok{background:linear-gradient(135deg,var(--sl-primary-2),var(--sl-primary));
+  border-color:transparent;color:#fff;box-shadow:0 6px 18px rgba(124,58,237,.35)}
+.sl-dialog button.danger{background:rgba(248,113,113,.14);border-color:rgba(248,113,113,.35);color:#fecaca}
+.sl-dialog button:active{transform:scale(.97)}
+@keyframes slMIn{from{opacity:0}to{opacity:1}}
+@keyframes slDIn{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+
+/* ---------- 浮动提示 ---------- */
+.toast{
+  background:rgba(30,18,48,.96);
+  border:1px solid rgba(139,92,246,.4);
+  color:#eee;
+  border-radius:var(--sl-r-pill);
+  box-shadow:var(--sl-shadow);
+}
+
+/* ---------- 兼容旧的白日/黄昏蓝白覆盖：保持统一紫罗兰暗色 ---------- */
+html.sl-day,html.sl-dusk{
+  --bg:var(--sl-bg);--card:var(--sl-surface);--line:var(--sl-line);
+  --txt:var(--sl-text);--mut:var(--sl-muted);--acc:var(--sl-primary);--acc2:var(--sl-accent);
+}
+html.sl-day body,html.sl-dusk body{
+  background:radial-gradient(ellipse at 12% 6%,rgba(139,92,246,.20),transparent 55%),
+             radial-gradient(ellipse at 88% 94%,rgba(255,110,199,.12),transparent 55%),
+             var(--sl-bg)!important;
+  color:var(--sl-text)!important;
+}
+html.sl-day .navbar,html.sl-dusk .navbar,body.mode-daily .nav{
+  background:linear-gradient(180deg,var(--sl-glass-strong),var(--sl-glass))!important;
+  border-color:var(--sl-line)!important;
+  background-image:none!important;
+}
+html.sl-day .side-header h3,body.mode-daily .hd h2,body.mode-daily .about-site h2{color:var(--sl-text)!important}
+html.sl-day .side,body.mode-daily .side{background:var(--sl-glass-strong)!important;border-color:var(--sl-line)!important}
+body.mode-daily .side a:hover,body.mode-daily .side a.on{color:var(--sl-text)!important;border-left-color:var(--sl-primary)!important}
+
+/* ---------- 移动端安全区 ---------- */
+@supports(padding:max(0px)){
+  .navbar,.v-head,.sl-top,.topbar,.top-bar,#topbar,.app-header,.header,
+  .nav,.top,.page-header,.sl-nav{
+    padding-top:max(8px,env(safe-area-inset-top));
+  }
+}
+
+/* ---------- 动效降级 ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+
+</style>
+<link rel="stylesheet" href="assets/ui/theme-lock.css?v=11">
 </body>
 </html>

@@ -4,7 +4,7 @@
 <style id="sl-color-lock">html,body,:root{color-scheme:dark!important}html,body{forced-color-adjust:none!important}</style>
 <meta charset="UTF-8">
 <meta name="color-scheme" content="dark">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>代码编辑器 · 巳泷</title>
 <link rel="stylesheet" href="vendor/vs/editor/editor.main.css">
 <style>
@@ -133,6 +133,8 @@ button{font-family:inherit;cursor:pointer}
   <div class="tabs" id="tabs"></div>
   <button class="hbtn" id="newBtn">新建</button>
   <button class="hbtn" id="runBtn">立即预览</button>
+  <button class="hbtn" id="fmtBtn">格式化</button>
+  <button class="hbtn" id="downBtn">下载</button>
   <button class="hbtn" id="saveSrcBtn">写回源码</button>
   <button class="hbtn" id="aiBtn">代码助手</button>
   <button class="hbtn" id="cfgBtn">API</button>
@@ -199,6 +201,7 @@ button{font-family:inherit;cursor:pointer}
 </script>
 <script src="../data/api-app.js"></script>
 <script src="../data/api-web.js"></script>
+<script src="../data/ai-limit.js"></script>
 <script>
 (function(){
 'use strict';
@@ -208,7 +211,7 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return
 function b64d(s){try{return decodeURIComponent(escape(atob(s)))}catch(e){try{return atob(s)}catch(e2){return ''}}}
 
 var FKEY='sl_code_files_v1';
-var DEFAULT_HTML='<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>我的页面</title>\n<style>\n  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;\n    font-family:system-ui,sans-serif;background:linear-gradient(135deg,#1a0a2e,#2d1155);color:#fff}\n  .card{padding:34px 40px;border-radius:20px;background:rgba(255,255,255,.08);\n    border:1px solid rgba(199,125,255,.35);box-shadow:0 20px 60px rgba(0,0,0,.45)}\n  .card h1{margin:0 0 10px;font-size:28px}\n  .card p{margin:0;color:#cbb6ea}\n</style>\n</head>\n<body>\n  <div class="card">\n    <h1>你好，主人</h1>\n    <p>这是巳泷代码编辑器的实时预览。</p>\n  </div>\n</body>\n</html>';
+var DEFAULT_HTML='<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>我的页面</title>\n<style>\n  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;\n    font-family:system-ui,sans-serif;background:linear-gradient(135deg,#1a0a2e,#2d1155);color:#fff}\n  .card{padding:34px 40px;border-radius:20px;background:rgba(255,255,255,.08);\n    border:1px solid rgba(199,125,255,.35);box-shadow:0 20px 60px rgba(0,0,0,.45)}\n  .card h1{margin:0 0 10px;font-size:28px}\n  .card p{margin:0;color:#cbb6ea}\n</style>\n</head>\n<body>\n  <div class="card">\n    <h1>你好，主人</h1>\n    <p>这是巳泷代码编辑器的实时预览。</p>\n  </div>\n<style id="sl-skeleton">\n</body>\n</html>';
 var files=[];
 try{files=JSON.parse(localStorage.getItem(FKEY)||'null')||[]}catch(e){files=[]}
 if(!files.length){
@@ -374,6 +377,20 @@ $('preview').addEventListener('load',bindPreview);
 $('backBtn').onclick=function(){if(window.CodeNative&&CodeNative.exit)CodeNative.exit();else location.href='../index.html'};
 $('newBtn').onclick=newFile;
 $('runBtn').onclick=doPreview;
+if($('fmtBtn')) $('fmtBtn').onclick=function(){
+  try{ if(editor) editor.getAction('editor.action.formatDocument').run(); else toast('编辑器尚未就绪'); }
+  catch(e){ toast('当前文件不支持格式化'); }
+};
+if($('downBtn')) $('downBtn').onclick=function(){
+  try{
+    var f=currentFile(); if(!f) return;
+    var blob=new Blob([f.content||''],{type:'text/plain;charset=utf-8'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=f.name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); },2000);
+    toast('已下载 '+f.name);
+  }catch(e){ toast('下载失败'); }
+};
 $('refreshBtn').onclick=doPreview;
 $('insClose').onclick=function(){$('inspector').classList.remove('on')};
 $('applySrcBtn').onclick=function(){
@@ -442,8 +459,10 @@ $('cfgSave').onclick=function(){
 $('aiBtn').onclick=function(){$('aiPanel').classList.add('on');$('aiInput').focus()};
 $('aiClose').onclick=function(){$('aiPanel').classList.remove('on')};
 
-/* 独立限频：5 分钟 20 次 */
+/* 全局共享限频：内置 API 5 分钟 20 次，所有页面共用 */
 function rateOk(){
+  try{ if(aiCfg && aiCfg.keys && aiCfg.keys.length) return true; }catch(e){}
+  if(window.SL_AI_LIMIT) return !!SL_AI_LIMIT.take().ok;
   var now=Date.now(),w=5*60*1000,key='sl_code_ai_rate';
   var arr=[];try{arr=JSON.parse(localStorage.getItem(key)||'[]')}catch(e){arr=[]}
   arr=arr.filter(function(t){return now-t<w});
@@ -497,5 +516,6 @@ $('aiInput').addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&e
 renderTabs();switchFile(0);
 })();
 </script>
+<link rel="stylesheet" href="assets/ui/theme-lock.css?v=11">
 </body>
 </html>

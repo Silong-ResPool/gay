@@ -1,7 +1,7 @@
 /* v8.0.4 永久缓存 Service Worker：CSS/JS/图片/视频/字体 缓存优先；
    HTML 走网络优先（保证更新可见），断网回退缓存。
    v8.0.4-r2：缓存版本升级 + 激活时清空旧版本缓存，避免旧脚本/旧样式长期残留。 */
-var CACHE = 'sl-static-v2';
+var CACHE = 'sl-static-v3';
 var ASSET_RE = /\.(png|jpe?g|webp|gif|svg|ico|css|js|webm|mp4|woff2?|ttf|mp3|wav|ogg)(\?.*)?$/i;
 
 self.addEventListener('install', function (e) { self.skipWaiting(); });
