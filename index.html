@@ -898,6 +898,7 @@ body.mode-kids .hd::before{background:linear-gradient(180deg,#FBBF24,#38BDF8)}
 </style>
 <link rel="stylesheet" href="sl-search-plus.css">
 <link rel="stylesheet" href="assets/ui/ui.css?v=12">
+<link rel="stylesheet" href="assets/ui/v12.css?v=7">
 </head>
 <body><script>/* v8.1.0 单文件·数据惰性解析：站点数据改成 application/json 静默块，首屏不再一次性执行 1.3MB JS。
    任何代码访问 window.SLDATA["id"] 时才即时 JSON.parse 并缓存，行为与原来自动加载完全一致。 */
@@ -2057,26 +2058,27 @@ function homeTopHtml(){
   if(mk==='daily') __heroP='白天，专注效率与创作。工具、学习与灵感入口已收拢到这一屏。';
   return '<div class="home-top">'+
     '<section class="hero hero-v11">'+
-      '<div class="hero-veil"></div>'+
-      '<div class="hk">SHENGLONG · RESOURCE UNIVERSE · V11</div>'+
-      '<h1><span>把整个互联网</span><br><em>折叠成一张星图</em></h1>'+
-      '<p>'+esc(__heroP)+'</p>'+
-      '<div class="hstats">'+
-        '<span><b>'+__total+'</b>站点收录</span>'+
-        '<span><b>'+(order?order.length:0)+'</b>资源分类</span>'+
-        '<span><b>'+MODULES.length+'</b>功能板块</span>'+
-        '<span><b>26+</b>全网引擎</span>'+
-        '<span><b>5</b>Yandex 分站</span>'+
-        '<span><b>∞</b>可探索内容</span>'+
+      '<div class="hero-copy">'+
+        '<div class="hk">SHENGLONG · RESOURCE UNIVERSE · V12</div>'+
+        '<h1><span>把整个互联网</span><br><em>折叠成一张星图</em></h1>'+
+        '<p>'+esc(__heroP)+'</p>'+
+        '<div class="hstats">'+
+          '<span><b>'+__total+'</b>站点收录</span>'+
+          '<span><b>'+(order?order.length:0)+'</b>资源分类</span>'+
+          '<span><b>'+MODULES.length+'</b>功能板块</span>'+
+          '<span><b>26+</b>全网引擎</span>'+
+          '<span><b>5</b>Yandex 分站</span>'+
+          '<span><b>∞</b>可探索内容</span>'+
+        '</div>'+
+        '<div class="hacts">'+
+          '<button class="pri" type="button" onclick="window.__SL_UI&&__SL_UI.search()"><i class="fa-solid fa-magnifying-glass"></i> 开始搜索</button>'+
+          '<a class="pri" href="story/index.html" target="_blank" rel="noopener"><i class="fa-solid fa-book"></i> 进入 AI 文游</a>'+
+          '<button type="button" onclick="window.__SL_UI&&__SL_UI.butler()"><i class="fa-solid fa-comment-dots"></i> 召唤管家</button>'+
+          '<a href="imagepro/index.html" target="_blank" rel="noopener"><i class="fa-solid fa-wand-magic-sparkles"></i> 图像工坊</a>'+
+        '</div>'+
+        '<div class="hero-meta"><span>26 路全网聚合</span><i></i><span>AI 文游宇宙</span><i></i><span>影视 · 音乐 · 漫画 · 图像</span></div>'+
       '</div>'+
-      '<div class="hacts">'+
-        '<button class="pri" type="button" onclick="window.__SL_UI&&__SL_UI.search()"><i class="fa-solid fa-magnifying-glass"></i> 开始搜索</button>'+
-        '<a class="pri" href="story/index.html" target="_blank" rel="noopener"><i class="fa-solid fa-book"></i> 进入 AI 文游</a>'+
-        '<button type="button" onclick="window.__SL_UI&&__SL_UI.butler()"><i class="fa-solid fa-comment-dots"></i> 召唤管家</button>'+
-        '<a href="imagepro/index.html" target="_blank" rel="noopener"><i class="fa-solid fa-wand-magic-sparkles"></i> 图像工坊</a>'+
-      '</div>'+
-      '<div class="hero-meta"><span>26 路全网聚合</span><i></i><span>AI 文游宇宙</span><i></i><span>影视 · 音乐 · 漫画 · 图像</span></div>'+
-      '<div class="hero-scroll"><span>SCROLL TO EXPLORE</span><b></b></div>'+
+      '<figure class="hero-art"><img src="assets/ui/hero_main.svg?v=13" alt="深空星球主视觉" loading="eager"><span class="art-tag">DEEP SPACE · SHENGLONG</span></figure>'+
     '</section>'+
     '<div class="greet-bar" id="greetBar"><div class="greet-track" id="greetTxt"></div></div>'+
     lbtBlock+
@@ -2574,6 +2576,7 @@ function initButlerPopups(){
   if(window.__slPopInit)return;window.__slPopInit=1;
   ['scroll','click','touchstart','keydown'].forEach(function(ev){window.addEventListener(ev,slTouch,{passive:true})});
   function maybeFirst(){
+    if(window.innerWidth<=900)return;
     if(popMuted()||SL_POP.first||window.scrollY<160)return;
     if(dockBusy()||$('butlerView').classList.contains('on'))return;
     SL_POP.first=true;

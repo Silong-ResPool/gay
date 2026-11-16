@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -291,6 +291,7 @@ main{flex:1;overflow-y:auto;overflow-x:hidden;padding:16px 14px calc(32px + env(
   .wcard .cover{height:110px}
 }
 </style>
+
 </head>
 <body>
 <div id="app">
@@ -316,7 +317,7 @@ main{flex:1;overflow-y:auto;overflow-x:hidden;padding:16px 14px calc(32px + env(
 <script src="../data/api-app.js"></script>
 <script src="../data/api-web.js"></script>
 <script src="../data/ai-limit.js"></script>
-<script src="worlds/index.js"></script>
+<script src="worlds/index.js?v=13"></script>
 <script src="oc-sim.js"></script>
 <script>
 (function(){
@@ -1764,5 +1765,124 @@ body.mode-daily .side a:hover,body.mode-daily .side a.on{color:var(--sl-text)!im
 </style>
 <link rel="stylesheet" href="neo.css?v=10">
 <link rel="stylesheet" href="assets/ui/theme-lock.css?v=11">
+<style id="v12-story-final">
+/* V12 · 与资源库主页统一深空视觉 */
+:root{
+  --bg:#04060c;--panel:rgba(12,18,30,.82);--panel2:rgba(8,12,20,.95);
+  --line:rgba(126,196,255,.22);--line2:rgba(255,255,255,.075);
+  --p:#6d5dfc;--p2:#5b4de0;--acc:#22d3ee;--pink:#f472b6;
+  --txt:#edf3ff;--sub:#a9b5c8;--muted:#7e8b9f;
+}
+html,body{background:#04060c}
+body{background:
+  radial-gradient(1000px 600px at 82% -10%,rgba(34,211,238,.06),transparent 62%),
+  radial-gradient(900px 600px at 8% 104%,rgba(109,93,252,.07),transparent 62%),
+  linear-gradient(180deg,#070b13,#04060c 60%)!important;
+  background-attachment:fixed!important}
+.top{background:rgba(5,8,14,.8);border-bottom:1px solid rgba(255,255,255,.07);
+  box-shadow:0 12px 40px rgba(0,0,0,.25)}
+.brand .mk{background:linear-gradient(135deg,#5cc8ff,#6d5dfc);box-shadow:0 5px 18px rgba(34,211,238,.2)}
+.brand b{background:linear-gradient(92deg,#fff,#dcecff 55%,#8fe8fa);-webkit-background-clip:text;background-clip:text}
+.brand em{color:#6f7d92;letter-spacing:.18em}
+.search input{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.075);border-radius:10px;height:38px}
+.search input:focus{border-color:rgba(103,232,249,.4);box-shadow:0 0 0 3px rgba(103,232,249,.1)}
+.ibtn{border-radius:10px;background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.075);color:#c8d4e6}
+.ibtn:hover{background:rgba(103,232,249,.1);border-color:rgba(103,232,249,.3)}
+.hero{padding:26px 24px;border-radius:20px;margin-bottom:18px;
+  background:
+    radial-gradient(620px 300px at 92% 0%,rgba(34,211,238,.08),transparent 66%),
+    linear-gradient(140deg,rgba(13,19,31,.92),rgba(7,11,19,.97));
+  border:1px solid rgba(255,255,255,.08);box-shadow:0 24px 60px -40px #000}
+.hero::after{right:-90px;top:-110px;background:radial-gradient(circle,rgba(34,211,238,.13),transparent 68%)}
+.hero::before{left:-60px;bottom:-120px;background:radial-gradient(circle,rgba(109,93,252,.12),transparent 70%)}
+.hero .kicker{font-size:9.5px;letter-spacing:.26em;color:#8ba0bd}
+.hero h1{font-size:clamp(22px,3.2vw,30px);line-height:1.35;
+  background:linear-gradient(92deg,#fff,#dcecff 48%,#8fe8fa);-webkit-background-clip:text;background-clip:text}
+.hero p{color:#9fadc2;font-size:12.5px;line-height:1.85}
+.hero .hstats span{color:#7d8ba0;font-size:10px}
+.hero .hstats b{color:#dfe9fa;font-size:14px}
+.btn{border-radius:10px;padding:10px 16px;font-size:12.5px}
+.btn.pri{background:linear-gradient(135deg,#8cecff,#5cc8ff);color:#04121c;
+  box-shadow:0 10px 26px -14px rgba(34,211,238,.6)}
+.btn.pri:hover{box-shadow:0 14px 30px -14px rgba(34,211,238,.7)}
+.btn.gho{background:rgba(255,255,255,.04);color:#c2cee0;border-color:rgba(255,255,255,.09)}
+.btn.gho:hover{background:rgba(255,255,255,.07);border-color:rgba(126,196,255,.3)}
+.sec{margin:22px 2px 12px}
+.sec h2{font-size:15px;color:#e9f1ff;font-weight:750}
+.sec em{font-size:10.5px;color:#6f7d92}
+.chip{border-radius:8px;border-color:rgba(255,255,255,.07);background:rgba(255,255,255,.035);
+  color:#a9b5c8;font-size:11px;padding:7px 11px}
+.chip:hover{background:rgba(255,255,255,.06);color:#eaf4ff;border-color:rgba(126,196,255,.2)}
+.chip.on{background:linear-gradient(135deg,#3f8ea8,#385c9a);color:#effbff;
+  border-color:rgba(126,196,255,.28);box-shadow:none}
+.worlds{grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:12px}
+.wcard{border-radius:15px;border-color:rgba(255,255,255,.075);
+  background:linear-gradient(170deg,rgba(15,22,35,.86),rgba(8,12,20,.94))}
+.wcard:hover{transform:translateY(-3px);border-color:rgba(126,196,255,.32);
+  box-shadow:0 18px 40px -20px rgba(0,0,0,.75),0 0 0 1px rgba(103,232,249,.1)}
+.wcard .cover{height:148px}
+.wcard .cover::before{opacity:.15}
+.wcard .cover.hasimg::after{background:linear-gradient(0deg,rgba(5,8,14,.78),rgba(5,8,14,.02) 62%,rgba(5,8,14,.22))}
+.wcard .cover .st{background:rgba(4,8,14,.55);border-color:rgba(255,255,255,.16);
+  font-size:9px;letter-spacing:.14em}
+.wcard .cover .ad{background:rgba(70,10,22,.6);border-color:rgba(248,113,113,.3)}
+.wcard .cover .recent{background:rgba(8,52,64,.64);border-color:rgba(34,211,238,.34)}
+.wcard .bd{padding:13px 14px 14px}
+.wcard h3{font-size:14.5px;color:#eef5ff}
+.wcard .sub{font-size:10px;color:#7d8ba0;letter-spacing:.06em}
+.wcard .desc{font-size:10.5px;color:#7f8da2}
+.wcard .tags .tag{border-radius:6px;font-size:9.5px;color:#9fd8e8;background:rgba(34,211,238,.08);
+  border-color:rgba(34,211,238,.18)}
+.wcard .foot .go{border-radius:9px;background:linear-gradient(135deg,#4a8fd4,#5b6fe0);
+  box-shadow:none;font-size:11px}
+.wcard .foot .gh{border-radius:9px;background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08);
+  color:#a9b5c8;font-size:11px}
+.wcard .playbar{background:rgba(255,255,255,.05)}
+.wcard .playbar i{background:linear-gradient(90deg,#5cc8ff,#6d5dfc)}
+.panel{border-radius:15px;border-color:rgba(255,255,255,.075);
+  background:linear-gradient(160deg,rgba(14,21,34,.84),rgba(8,12,20,.94));box-shadow:none}
+.field input,.field textarea,.field select{border-radius:9px;background:rgba(255,255,255,.04);
+  border-color:rgba(255,255,255,.08)}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:rgba(103,232,249,.38);
+  box-shadow:0 0 0 3px rgba(103,232,249,.1)}
+.drop{border-radius:10px;border-color:rgba(126,196,255,.25);background:rgba(34,211,238,.04);color:#a9b5c8}
+.drop:hover,.drop.on{background:rgba(34,211,238,.08);border-color:rgba(103,232,249,.42)}
+.drop svg{stroke:#67e8f9}
+.seg{border-radius:12px;border-color:rgba(255,255,255,.07);
+  background:linear-gradient(160deg,rgba(14,21,34,.78),rgba(8,12,20,.9));color:#d7e2f0}
+.seg.choice{border-color:rgba(34,211,238,.28);background:linear-gradient(160deg,rgba(8,40,52,.55),rgba(9,13,22,.9))}
+.opt{border-radius:10px;border-color:rgba(255,255,255,.09);color:#dce6f5;
+  background:linear-gradient(160deg,rgba(25,34,52,.8),rgba(10,14,23,.9))}
+.opt:hover{border-color:rgba(126,196,255,.32);background:linear-gradient(160deg,rgba(31,43,65,.86),rgba(12,17,28,.94));
+  box-shadow:none}
+.opt i{border-radius:6px;color:#9fe8fa;background:rgba(34,211,238,.1);border-color:rgba(34,211,238,.24)}
+.sheet{border-radius:22px 22px 0 0;background:linear-gradient(180deg,rgba(12,18,30,.99),rgba(6,9,16,.99))}
+.bigcover,.detail-cover{background-position:center}
+#toast{border-radius:99px;background:rgba(10,15,24,.96);border-color:rgba(126,196,255,.3)}
+@media (max-width:640px){
+  main{padding:13px 11px calc(28px + env(safe-area-inset-bottom,0px))}
+  .hero{padding:19px 16px;border-radius:18px}
+  .hero h1{font-size:20px}
+  .worlds{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .wcard .cover{height:102px}
+  .wcard .bd{padding:10px 11px 11px}
+  .wcard h3{font-size:12.5px;line-height:1.35}
+  .wcard .sub{font-size:8.5px;letter-spacing:.02em}
+  .wcard .tags{gap:4px;margin:7px 0}
+  .wcard .tags .tag{font-size:8.5px;padding:2px 5px}
+  .wcard .desc{display:none}
+  .wcard .foot .go,.wcard .foot .gh{padding:8px 6px;font-size:10px}
+  .wcard .cover .st{font-size:8px;padding:2px 6px;left:8px;top:8px}
+  .wcard .cover .ad,.wcard .cover .recent{font-size:8px;padding:2px 6px;right:8px;top:8px}
+  .wcard .cover .recent{left:8px;bottom:8px;top:auto}
+  .brand b{font-size:14px}
+  .brand em{display:none}
+}
+@media (max-width:360px){
+  .worlds{gap:7px}
+  .wcard .cover{height:88px}
+  .wcard h3{font-size:11.5px}
+}
+</style>
 </body>
 </html>
