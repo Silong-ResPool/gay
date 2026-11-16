@@ -18,7 +18,7 @@ jobs:
           UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36"
           wget -q --user-agent="$UA" -O /tmp/sl.zip "https://aka.doubaocdn.com/s/huuYhVZVvN" || curl -L --fail --retry 2 -A "$UA" -o /tmp/sl.zip "https://aka.doubaocdn.com/s/huuYhVZVvN"
           ls -lh /tmp/sl.zip
-          python3 -m zipfile -e /tmp/sl.zip .
+          unzip -o /tmp/sl.zip
           echo '### Extracted' >> $GITHUB_STEP_SUMMARY
           ls -lh story/index.html >> $GITHUB_STEP_SUMMARY
           grep -o 'worlds/index.js?v=[0-9]*' story/index.html >> $GITHUB_STEP_SUMMARY || true
