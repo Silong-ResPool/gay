@@ -1,0 +1,74 @@
+name: convert-ui-assets
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  convert:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Decode SVG-wrapped JPEG assets and rewire references
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import re, base64, pathlib, sys
+          base = pathlib.Path('assets/ui')
+          stems = ['hero_main', 'world_xjlr', 'world_zgysl']
+          for stem in stems:
+              svg = (base / (stem + '.svg')).read_text(encoding='utf-8')
+              m = re.search(r'base64,([A-Za-z0-9+/=]+)', svg)
+              if not m:
+                  raise SystemExit(f'no base64 in {stem}.svg')
+              data = base64.b64decode(m.group(1))
+              if data[:3] != b'\xff\xd8\xff':
+                  raise SystemExit(f'not jpeg: {stem}')
+              (base / (stem + '.jpg')).write_bytes(data)
+              print(stem, len(data))
+          index = pathlib.Path('index.html')
+          text = index.read_text(encoding='utf-8')
+          text = text.replace('hero_main.svg?v=13', 'hero_main.jpg?v=14')
+          index.write_text(text, encoding='utf-8')
+          worlds = pathlib.Path('story/worlds/index.js')
+          text = worlds.read_text(encoding='utf-8')
+          text = text.replace('world_xjlr.svg?v=2', 'world_xjlr.jpg?v=3')
+          text = text.replace('world_zgysl.svg?v=2', 'world_zgysl.jpg?v=3')
+          worlds.write_text(text, encoding='utf-8')
+          story = pathlib.Path('story/index.html')
+          text = story.read_text(encoding='utf-8')
+          text = text.replace('worlds/index.js?v=13', 'worlds/index.js?v=14')
+          story.write_text(text, encoding='utf-8')
+          PY
+          git rm --quiet assets/ui/hero_main.svg assets/ui/world_xjlr.svg assets/ui/world_zgysl.svg
+          git add index.html story/index.html story/worlds/index.js assets/ui/hero_main.jpg assets/ui/world_xjlr.jpg assets/ui/world_zgysl.jpg
+
+      - name: Verify rewired references
+        run: |
+          set -euo pipefail
+          grep -q 'hero_main.jpg?v=14' index.html
+          grep -q 'world_xjlr.jpg?v=3' story/worlds/index.js
+          grep -q 'world_zgysl.jpg?v=3' story/worlds/index.js
+          grep -q 'worlds/index.js?v=14' story/index.html
+          for f in assets/ui/hero_main.jpg assets/ui/world_xjlr.jpg assets/ui/world_zgysl.jpg; do
+            test -s "$f"
+            file "$f" | grep -q 'JPEG image data'
+            echo "$f $(wc -c < "$f")"
+          done
+
+      - name: Commit and remove workflow
+        run: |
+          set -euo pipefail
+          git config user.name 'Silong Deploy Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git rm --quiet .github/workflows/convert-ui-assets.yml
+          git add .github/workflows/convert-ui-assets.yml
+          git commit -m 'chore: 用真实 JPEG 替换主页与文游封面 [skip ci]'
+          git push origin HEAD:main
