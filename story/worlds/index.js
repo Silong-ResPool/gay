@@ -22,7 +22,7 @@ window.SL_WORLDS = [
     desc: '你是 ARK·TALOS 上唯一的旅人。星舰在深空里醒来，船上的每一个人都记得你，而你并不记得他们。探索舱室、维系关系、在理智与欲望之间做出选择。',
     mark: '星',
     accent: ['#22d3ee', '#6366f1'],
-    cover: '../assets/ui/world_xjlr.svg?v=2',
+    cover: '../assets/ui/world_xjlr.jpg?v=3',
     adult: false
   },
   {
@@ -34,7 +34,7 @@ window.SL_WORLDS = [
     desc: '昭元三年，白霜城的风里带着铁锈与香灰。你是忽然被卷进这场局里的人。四卷手存，一章一记；心念、锋刃、气血、器物，以及那些人记住的事，都会跟着你走。',
     mark: '战',
     accent: ['#f59e0b', '#b91c1c'],
-    cover: '../assets/ui/world_zgysl.svg?v=2',
+    cover: '../assets/ui/world_zgysl.jpg?v=3',
     adult: true
   }
 ];
