@@ -1,30 +1,10 @@
 name: SL Deploy V12
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 permissions:
   contents: write
 jobs:
   deploy:
-    if: "!contains(github.event.head_commit.message, 'DEPLOY-SL-V12-AUTO')"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Download package
-        run: |
-          set -euxo pipefail
-          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36"
-          wget -q --user-agent="$UA" -O /tmp/sl.zip "https://aka.doubaocdn.com/s/huuYhVZVvN" || curl -L --fail --retry 2 -A "$UA" -o /tmp/sl.zip "https://aka.doubaocdn.com/s/huuYhVZVvN"
-          ls -lh /tmp/sl.zip
-          unzip -o /tmp/sl.zip
-          echo '### Extracted' >> $GITHUB_STEP_SUMMARY
-          ls -lh story/index.html >> $GITHUB_STEP_SUMMARY
-      - name: Commit and push
-        run: |
-          git config user.name "silong-deploy"
-          git config user.email "silong-deploy@users.noreply.github.com"
-          git add -A
-          git commit -m "DEPLOY-SL-V12-AUTO: worlds + nexus + scroll fix" || echo "no changes"
-          git push
+      - run: echo disabled
