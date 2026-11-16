@@ -1,0 +1,44 @@
+name: SL Patch Hygy Nexus
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sl-patch-hygy.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch pack
+        run: |
+          set -euxo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('story/worlds/packs/hygy.js')
+          src=p.read_text(encoding='utf-8')
+          if 'nexusLinks:' not in src:
+              block="""  nexusLinks: [
+              { label: '规则：槐阴公寓住户守则 R-01—R-06', kind: '规则系', target: 'rules' },
+              { label: '物品：404 铜钥匙 / 镇宅符', kind: '物品', target: 'items' },
+              { label: '人物：陆时 / 管理员老周', kind: '人物档案', target: 'species' }
+            ]"""
+              idx=src.rfind('\n};')
+              head=src[:idx].rstrip()
+              if head.endswith(']'): head=head[:-1]+'],'
+              src=head+'\n'+block+'\n};\n'
+              p.write_text(src, encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          set -euxo pipefail
+          git diff --stat
+          git config user.name "silong-deploy"
+          git config user.email "silong-deploy@users.noreply.github.com"
+          git add story/worlds/packs/hygy.js
+          if git diff --cached --quiet; then echo NO_CHANGES; exit 0; fi
+          git commit -m "add nexus links to hygy pack"
+          for i in 1 2 3; do git pull --rebase origin main || true; if git push origin HEAD:main; then break; fi; sleep 2; done
