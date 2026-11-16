@@ -69,6 +69,5 @@ jobs:
           git config user.name 'Silong Deploy Bot'
           git config user.email 'actions@users.noreply.github.com'
           git rm --quiet .github/workflows/convert-ui-assets.yml
-          git add .github/workflows/convert-ui-assets.yml
           git commit -m 'chore: 用真实 JPEG 替换主页与文游封面 [skip ci]'
           git push origin HEAD:main
