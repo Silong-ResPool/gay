@@ -1,0 +1,18 @@
+name: SL Probe
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          git config user.name "silong-deploy"
+          git config user.email "silong-deploy@users.noreply.github.com"
+          echo "$GITHUB_SHA" > DEPLOY_PROBE.txt
+          git add DEPLOY_PROBE.txt
+          git commit -m "DEPLOY-PROBE"
+          git push
