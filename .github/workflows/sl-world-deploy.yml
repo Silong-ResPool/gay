@@ -1,0 +1,27 @@
+name: SL World Deploy
+on:
+  push:
+    branches: [main]
+    paths:
+      - deploy/sl_world.ready
+permissions:
+  contents: write
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Expand world package
+        run: |
+          set -euxo pipefail
+          cat deploy/sl_world.part1 deploy/sl_world.part2 > /tmp/sl_world.b64
+          base64 -d /tmp/sl_world.b64 > /tmp/sl_world.tar.gz
+          tar -xzf /tmp/sl_world.tar.gz
+          rm -rf deploy
+      - name: Commit
+        run: |
+          git config user.name "silong-deploy"
+          git config user.email "silong-deploy@users.noreply.github.com"
+          git add -A
+          git commit -m "DEPLOY-SL-V12-TEXT: new worlds + nexus + covers"
+          git push
