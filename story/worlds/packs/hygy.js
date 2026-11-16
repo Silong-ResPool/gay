@@ -225,5 +225,10 @@ window.SL_PACK = {
     { id: 'seal', title: '封门', if: function (s) { return s.flags.sealed; }, text: '你从里面锁上门。灯笼灭了，整栋楼的灯也一盏一盏熄灭。\n陆时在门外坐了一整夜。天亮后，404 的门牌不见了，403 的登记簿上，你的名字也淡成了空白。\n只有那张糖纸还在他掌心里。' },
     { id: 'sacrifice', title: '新的 404', if: function (s) { return s.flags.sacrifice; }, text: '你留在门里，听见陆时在门外喊你的名字。\n第二天，槐阴公寓又贴出一张招租启事。404 的门永远开着，里面摆着一张和 403 一模一样的书桌。\n一个穿黑外套的年轻人站在门口，手腕上多了一道红痕。' },
     { id: 'taint', title: '你变成了规则', if: function (s) { return s.stats.taint >= 80; }, text: '你开始听不见自己的心跳，却能听见整栋楼的呼吸。\n走廊尽头出现了一面新镜子。镜中的你对新来的租客笑了笑，抬起手指，指向门上的第一行规则。' }
+  ],
+  nexusLinks: [
+    { label: '规则：槐阴公寓住户守则 R-01—R-06', kind: '规则系', target: 'rules' },
+    { label: '物品：404 铜钥匙 / 镇宅符', kind: '物品', target: 'items' },
+    { label: '人物：陆时 / 管理员老周', kind: '人物档案', target: 'species' }
   ]
 };
