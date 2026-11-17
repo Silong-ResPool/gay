@@ -12,13 +12,39 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Download web package
-        run: curl -L --fail --retry 3 'https://aka.doubaocdn.com/s/7Acg9jRQu4' -o /tmp/silong_web_850.zip
-      - name: Extract and overlay
-        run: python3 -m zipfile -e /tmp/silong_web_850.zip .
+        run: curl -L --fail --retry 3 'https://aka.doubaocdn.com/s/vkCzLzYsPa' -o /tmp/silong_web_850.zip
+      - name: Extract, normalize and clean malformed paths
+        run: |
+          python3 - <<'PY'
+          import os, subprocess, zipfile
+          tracked = subprocess.check_output(['git','ls-files','-z']).split(b'\0')
+          for raw in tracked:
+              if not raw:
+                  continue
+              p = raw.decode('utf-8', 'surrogateescape')
+              if '\\' in p:
+                  try:
+                      os.remove(p)
+                  except FileNotFoundError:
+                      pass
+          with zipfile.ZipFile('/tmp/silong_web_850.zip') as z:
+              for n in z.namelist():
+                  if n.endswith('/'):
+                      continue
+                  n = n.replace('\\', '/')
+                  dest = os.path.normpath(n)
+                  if dest.startswith('..'):
+                      continue
+                  d = os.path.dirname(dest)
+                  if d:
+                      os.makedirs(d, exist_ok=True)
+                  with open(dest, 'wb') as f:
+                      f.write(z.read(n))
+          PY
       - name: Commit and push
         run: |
           git config user.name 'silong-bot'
           git config user.email 'bot@users.noreply.github.com'
           git add -A
-          git diff --cached --quiet && echo 'no changes' || git commit -m 'chore: sync Web v8.5.0'
+          git diff --cached --quiet && echo 'no changes' || git commit -m 'chore: sync Web v8.5.0 with normalized paths'
           git push
