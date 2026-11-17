@@ -1,0 +1,55 @@
+name: Release packages v8.5.0
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/release-assets-850.yml'
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reassemble release packages
+        run: |
+          python3 - <<'PY'
+          import urllib.request, os
+          groups = {
+            'Silong-ResPool_v8.5.0_Android.apk': [
+              'uYI6uCH4V1','RXoVdVC3Yb','2P8efokWrM','IiJmaNakKy','mqZU6VnMbb',
+              'Ri9h9vxL5r','UeTlxhy5Wk','pL4Wh9T0hu','ZQc02ZPF0t','a9EGwi8krd',
+              'xlf6GDcjwV','WuPMrOjqWF','xj0DB9VwKv','qUTiyYIlZR','Syz2AC84K1',
+              'QnNUSAfXK0','LgWm3jgXCb','RSnifg8qER','dYXslnhoeh','MCEY4F6vbe',
+            ],
+            'Silong-ResPool_v8.5.0_Harmony.apk': [
+              '5w8VfurmSS','A4QZVpqriW','1KXUhWoohi','w1B3pP25LU','C0uVKDOOqa',
+              'VqfT6JMiql','reo6QFxq8L','8OeVL87BWW','AlSeUVNl9g','jSFup5cmvR',
+              'nXHf2DKe8K','asS7coVMe5','0XP7rZr09r','S04NIQBRPU','s6bYNLNUA1',
+              'oDC6eBIzrQ','5M0Mhki2aZ','4LboLOIZeA','srYRdzNhHE','SN6orEYNJv',
+            ],
+            'Silong-ResPool_v8.5.0_Windows.exe': [
+              'eK2mUYH5x9','Rbo0jqiwT3','0X1MUDevF3','ahKodHuQVs','UbilX78TEE',
+              'Epmj64FMV7','Kh19qkwWDN','iY1qvAbKA3','qaF8Fn0wDI','Oi4GBWPm5U',
+              'demOuBtGqL','JKZWfFvYnf','gaXDSQ4nUm','pjCz6QrHzD','OkBzTKeGw0',
+              '7TekPvK0st','E2giomvb5l','hUzp7UsxqD','nyDDV8U3UG','a1O07t3HqR',
+              'V3uer5xFNE',
+            ],
+          }
+          base = 'https://aka.doubaocdn.com/s/'
+          for filename, ids in groups.items():
+              with open(filename, 'wb') as out:
+                  for cid in ids:
+                      req = urllib.request.Request(base + cid, headers={'User-Agent': 'silong-release'})
+                      with urllib.request.urlopen(req, timeout=180) as r:
+                          out.write(r.read())
+              print(filename, os.path.getsize(filename))
+          PY
+      - name: Upload release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload gay Silong-ResPool_v8.5.0_Android.apk --clobber
+          gh release upload gay Silong-ResPool_v8.5.0_Harmony.apk --clobber
+          gh release upload gay Silong-ResPool_v8.5.0_Windows.exe --clobber
+          gh release edit gay --name 'Silong ResPool v8.5.0' --notes '巳泷资源库 v8.5.0 三端发布（Android / Harmony / Windows）。网页版已同步部署：https://silong-respool.github.io/gay/'
