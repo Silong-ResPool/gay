@@ -1,0 +1,19 @@
+name: Update release metadata v8.5.0
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/release-title-850.yml'
+permissions:
+  contents: write
+jobs:
+  meta:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update release name and notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api -X PATCH repos/Silong-ResPool/gay/releases/431055237 \
+            -f name='Silong ResPool v8.5.0' \
+            -f body='巳泷资源库 v8.5.0 三端发布（Android / Harmony / Windows）。网页版已同步部署：https://silong-respool.github.io/gay/'
