@@ -6,39 +6,60 @@ on:
       - '.github/workflows/release-assets-850.yml'
 permissions:
   contents: write
+concurrency:
+  group: release-assets-850
+  cancel-in-progress: true
 jobs:
   release:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - name: Reassemble release packages
         run: |
-          set -euo pipefail
-          fetch() {
-            out="$1"; shift
-            : > "$out"
-            for id in "$@"; do
-              echo "fetch $id -> $out"
-              curl -fSL --retry 4 --retry-delay 2 --connect-timeout 20 --max-time 180 "https://aka.doubaocdn.com/s/$id" >> "$out"
-            done
-            echo "built $out $(stat -c%s "$out") bytes"
+          python3 - <<'PY'
+          import urllib.request, os, concurrent.futures
+          groups = {
+            'Silong-ResPool_v8.5.0_Android.apk': [
+              'uYI6uCH4V1','RXoVdVC3Yb','2P8efokWrM','IiJmaNakKy','mqZU6VnMbb',
+              'Ri9h9vxL5r','UeTlxhy5Wk','pL4Wh9T0hu','ZQc02ZPF0t','a9EGwi8krd',
+              'xlf6GDcjwV','WuPMrOjqWF','xj0DB9VwKv','qUTiyYIlZR','Syz2AC84K1',
+              'QnNUSAfXK0','LgWm3jgXCb','RSnifg8qER','dYXslnhoeh','MCEY4F6vbe',
+            ],
+            'Silong-ResPool_v8.5.0_Harmony.apk': [
+              '5w8VfurmSS','A4QZVpqriW','1KXUhWoohi','w1B3pP25LU','C0uVKDOOqa',
+              'VqfT6JMiql','reo6QFxq8L','8OeVL87BWW','AlSeUVNl9g','jSFup5cmvR',
+              'nXHf2DKe8K','asS7coVMe5','0XP7rZr09r','S04NIQBRPU','s6bYNLNUA1',
+              'oDC6eBIzrQ','5M0Mhki2aZ','4LboLOIZeA','srYRdzNhHE','SN6orEYNJv',
+            ],
+            'Silong-ResPool_v8.5.0_Windows.exe': [
+              'eK2mUYH5x9','Rbo0jqiwT3','0X1MUDevF3','ahKodHuQVs','UbilX78TEE',
+              'Epmj64FMV7','Kh19qkwWDN','iY1qvAbKA3','qaF8Fn0wDI','Oi4GBWPm5U',
+              'demOuBtGqL','JKZWfFvYnf','gaXDSQ4nUm','pjCz6QrHzD','OkBzTKeGw0',
+              '7TekPvK0st','E2giomvb5l','hUzp7UsxqD','nyDDV8U3UG','a1O07t3HqR',
+              'V3uer5xFNE',
+            ],
           }
-          fetch Silong-ResPool_v8.5.0_Android.apk \
-            uYI6uCH4V1 RXoVdVC3Yb 2P8efokWrM IiJmaNakKy mqZU6VnMbb \
-            Ri9h9vxL5r UeTlxhy5Wk pL4Wh9T0hu ZQc02ZPF0t a9EGwi8krd \
-            xlf6GDcjwV WuPMrOjqWF xj0DB9VwKv qUTiyYIlZR Syz2AC84K1 \
-            QnNUSAfXK0 LgWm3jgXCb RSnifg8qER dYXslnhoeh MCEY4F6vbe
-          fetch Silong-ResPool_v8.5.0_Harmony.apk \
-            5w8VfurmSS A4QZVpqriW 1KXUhWoohi w1B3pP25LU C0uVKDOOqa \
-            VqfT6JMiql reo6QFxq8L 8OeVL87BWW AlSeUVNl9g jSFup5cmvR \
-            nXHf2DKe8K asS7coVMe5 0XP7rZr09r S04NIQBRPU s6bYNLNUA1 \
-            oDC6eBIzrQ 5M0Mhki2aZ 4LboLOIZeA srYRdzNhHE SN6orEYNJv
-          fetch Silong-ResPool_v8.5.0_Windows.exe \
-            eK2mUYH5x9 Rbo0jqiwT3 0X1MUDevF3 ahKodHuQVs UbilX78TEE \
-            Epmj64FMV7 Kh19qkwWDN iY1qvAbKA3 qaF8Fn0wDI Oi4GBWPm5U \
-            demOuBtGqL JKZWfFvYnf gaXDSQ4nUm pjCz6QrHzD OkBzTKeGw0 \
-            7TekPvK0st E2giomvb5l hUzp7UsxqD nyDDV8U3UG a1O07t3HqR \
-            V3uer5xFNE
+          base = 'https://aka.doubaocdn.com/s/'
+          def one(args):
+              filename, idx, cid = args
+              req = urllib.request.Request(base + cid, headers={'User-Agent': 'Mozilla/5.0'})
+              with urllib.request.urlopen(req, timeout=60) as r:
+                  data = r.read()
+              with open(f'/tmp/{filename}.part{idx:02d}', 'wb') as f:
+                  f.write(data)
+              return filename, idx, len(data)
+          tasks = [(fn, i, cid) for fn, ids in groups.items() for i, cid in enumerate(ids)]
+          with concurrent.futures.ThreadPoolExecutor(max_workers=8) as ex:
+              for result in ex.map(one, tasks):
+                  print(result, flush=True)
+          for fn, ids in groups.items():
+              with open(fn, 'wb') as out:
+                  for i in range(len(ids)):
+                      with open(f'/tmp/{fn}.part{i:02d}', 'rb') as part:
+                          out.write(part.read())
+              print('built', fn, os.path.getsize(fn), flush=True)
+          PY
           test "$(stat -c%s Silong-ResPool_v8.5.0_Android.apk)" = "202209843"
           test "$(stat -c%s Silong-ResPool_v8.5.0_Harmony.apk)" = "202208435"
           test "$(stat -c%s Silong-ResPool_v8.5.0_Windows.exe)" = "212111619"
