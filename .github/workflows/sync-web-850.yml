@@ -1,0 +1,24 @@
+name: Sync Web v8.5.0
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sync-web-850.yml'
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download web package
+        run: curl -L --fail --retry 3 'https://aka.doubaocdn.com/s/7Acg9jRQu4' -o /tmp/silong_web_850.zip
+      - name: Extract and overlay
+        run: unzip -oq /tmp/silong_web_850.zip -d .
+      - name: Commit and push
+        run: |
+          git config user.name 'silong-bot'
+          git config user.email 'bot@users.noreply.github.com'
+          git add -A
+          git diff --cached --quiet && echo 'no changes' || git commit -m 'chore: sync Web v8.5.0'
+          git push
