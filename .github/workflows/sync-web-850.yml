@@ -14,7 +14,7 @@ jobs:
       - name: Download web package
         run: curl -L --fail --retry 3 'https://aka.doubaocdn.com/s/7Acg9jRQu4' -o /tmp/silong_web_850.zip
       - name: Extract and overlay
-        run: unzip -oq /tmp/silong_web_850.zip -d .
+        run: python3 -m zipfile -e /tmp/silong_web_850.zip .
       - name: Commit and push
         run: |
           git config user.name 'silong-bot'
