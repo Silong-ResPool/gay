@@ -2,8 +2,14 @@
 window.SL_PACK = {
   id: 'cs1983', title: '重生1983', subtitle: '八十年代 · 系统发家',
   kicker: 'REBORN 1983 · BUSINESS', theme: 'business', layout: 'ledger', modeLabel: '年代经营', mode: 'business',
-  accent: '#f97316', accent2: '#facc15', bg: '#120b06', bg2: '#1e140b', cover: '../../assets/ui/world_cs1983.jpg?v=3',
+  accent: '#f97316', accent2: '#facc15', bg: '#120b06', bg2: '#1e140b', cover: 'https://aka.doubaocdn.com/s/oFSUZXUSIe',
   turnsPerDay: 6, eventChance: 0.38, freePlaceholder: '自由行动：摆摊 / 做工 / 听广播 / 找人 / 进货 / 去知青点',
+  bgm: [
+    { id: 'daily', name: '旧城晨雾', mood: 'daily', tempo: 62, scale: 'major', lead: 'piano', pad: 'soft' },
+    { id: 'tense', name: '厂区夜班', mood: 'tense', tempo: 88, scale: 'minor', lead: 'guitar', pad: 'pulse' },
+    { id: 'hope', name: '第一桶金', mood: 'hope', tempo: 74, scale: 'major', lead: 'piano', pad: 'warm' },
+    { id: 'horror', name: '广播里的杂音', mood: 'horror', tempo: 66, scale: 'minor', lead: 'theremin', pad: 'dark' }
+  ],
   stats: [
     { key: 'money', label: '现金', init: 18, max: 1000, unit: '元' },
     { key: 'rep', label: '声望', init: 8, max: 100 },

@@ -9,6 +9,128 @@
   var CN = ['零','一','二','三','四','五','六','七','八','九','十','十一','十二','十三','十四','十五'];
   var S = null;
   var $ = function (id) { return document.getElementById(id); };
+  var BGM = { ctx: null, gain: null, timer: null, track: null, mood: '', muted: false, started: false };
+  var BGM_DEFAULT = [
+    { id: 'daily', name: '日常', mood: 'daily', tempo: 66, scale: 'minor', lead: 'piano', pad: 'soft' },
+    { id: 'tense', name: '紧张', mood: 'tense', tempo: 96, scale: 'phrygian', lead: 'lowStrings', pad: 'pulse' },
+    { id: 'hope', name: '希望', mood: 'hope', tempo: 74, scale: 'major', lead: 'strings', pad: 'warm' }
+  ];
+  var SCALES = {
+    minor: [0, 2, 3, 5, 7, 8, 10],
+    major: [0, 2, 4, 5, 7, 9, 11],
+    phrygian: [0, 1, 3, 5, 7, 8, 10],
+    dorian: [0, 2, 3, 5, 7, 9, 10],
+    pentatonic: [0, 2, 4, 7, 9]
+  };
+  var INSTRUMENTS = {
+    piano: { type: 'triangle', gain: .18, decay: .32 },
+    guitar: { type: 'triangle', gain: .14, decay: .42 },
+    cello: { type: 'sawtooth', gain: .12, decay: .7 },
+    strings: { type: 'sawtooth', gain: .1, decay: .85 },
+    lowStrings: { type: 'sawtooth', gain: .1, decay: .65 },
+    guqin: { type: 'triangle', gain: .14, decay: .9 },
+    dizi: { type: 'sine', gain: .12, decay: .55 },
+    pipa: { type: 'triangle', gain: .12, decay: .3 },
+    synth: { type: 'square', gain: .08, decay: .3 },
+    pulse: { type: 'sawtooth', gain: .07, decay: .2 },
+    flute: { type: 'sine', gain: .11, decay: .6 },
+    erhu: { type: 'sawtooth', gain: .1, decay: .72 },
+    violin: { type: 'sawtooth', gain: .1, decay: .8 },
+    harp: { type: 'sine', gain: .12, decay: .9 },
+    bell: { type: 'sine', gain: .09, decay: .95 },
+    choir: { type: 'sine', gain: .07, decay: 1.1 },
+    sitar: { type: 'sawtooth', gain: .11, decay: .52 },
+    oud: { type: 'triangle', gain: .12, decay: .62 },
+    koto: { type: 'triangle', gain: .12, decay: .4 },
+    suona: { type: 'sawtooth', gain: .1, decay: .48 },
+    organ: { type: 'sine', gain: .07, decay: .9 },
+    taiko: { type: 'triangle', gain: .1, decay: .22 },
+    tabla: { type: 'triangle', gain: .09, decay: .18 },
+    kalimba: { type: 'sine', gain: .1, decay: .55 },
+    theremin: { type: 'sine', gain: .08, decay: .8 },
+    gamelan: { type: 'triangle', gain: .1, decay: .7 },
+    marimba: { type: 'triangle', gain: .12, decay: .35 }
+  };
+  function bgmList() { return (P.bgm && P.bgm.length ? P.bgm : BGM_DEFAULT); }
+  function trackFor(mood) {
+    var list = bgmList();
+    var hit = list.filter(function (t) { return t.mood === mood; })[0];
+    if (!hit) hit = list.filter(function (t) { return t.mood === 'daily'; })[0] || list[0];
+    return hit;
+  }
+  function audioCtx() {
+    if (BGM.ctx) return BGM.ctx;
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      BGM.ctx = new AC();
+      BGM.gain = BGM.ctx.createGain();
+      BGM.gain.gain.value = BGM.muted ? 0 : 0.16;
+      BGM.gain.connect(BGM.ctx.destination);
+    } catch (e) { return null; }
+    return BGM.ctx;
+  }
+  function note(freq, dur, opt) {
+    var ctx = audioCtx(); if (!ctx) return;
+    var o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = opt.type; o.frequency.value = freq;
+    var t = ctx.currentTime;
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(opt.gain, t + .012);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g); g.connect(BGM.gain);
+    o.start(t); o.stop(t + dur + .03);
+  }
+  function noisePad() {
+    var ctx = audioCtx(); if (!ctx) return;
+    var len = ctx.sampleRate * 1.6, buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
+    for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * .12;
+    var src = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+    src.buffer = buf; f.type = 'lowpass'; f.frequency.value = 520; g.gain.value = .02;
+    src.connect(f); f.connect(g); g.connect(BGM.gain); src.start(); src.stop(ctx.currentTime + 1.6);
+  }
+  function tick() {
+    if (!BGM.ctx || BGM.muted || !BGM.track) return;
+    var t = BGM.track, scale = SCALES[t.scale] || SCALES.minor, root = 196;
+    var step = Math.floor((Date.now() / 1000) / (60 / (t.tempo || 72)) ) % 8;
+    var inst = INSTRUMENTS[t.lead] || INSTRUMENTS.piano;
+    var degree = scale[step % scale.length];
+    var freq = root * Math.pow(2, degree / 12 + (step === 5 ? 12 : 0) / 12);
+    note(freq, inst.decay, inst);
+    if (step === 0 || step === 4) note(root / 2, .9, { type: 'sine', gain: .05 });
+    if (step === 2 && (t.mood === 'tense' || t.mood === 'horror')) note(root * 1.06, .28, { type: 'sawtooth', gain: .04 });
+    if (step === 0 && (t.pad === 'waves' || t.pad === 'rain' || t.pad === 'space' || t.pad === 'storm' || t.pad === 'wind' || t.pad === 'dark')) noisePad();
+  }
+  function setBgm(mood, force) {
+    mood = mood || 'daily';
+    if (!force && BGM.mood === mood && BGM.timer) return;
+    BGM.mood = mood;
+    BGM.track = trackFor(mood);
+    clearInterval(BGM.timer); BGM.timer = null;
+    if (BGM.muted) { updateBgmBtn(); return; }
+    var ctx = audioCtx();
+    if (!ctx) { updateBgmBtn(); return; }
+    if (ctx.state === 'suspended') { try { ctx.resume(); } catch (e) {} }
+    BGM.timer = setInterval(tick, Math.max(180, (60 / (BGM.track.tempo || 72)) * 1000 / 2));
+    tick();
+    updateBgmBtn();
+  }
+  function toggleBgm() {
+    BGM.muted = !BGM.muted;
+    try { localStorage.setItem('sl_bgm_muted', BGM.muted ? '1' : '0'); } catch (e) {}
+    if (BGM.gain) BGM.gain.gain.value = BGM.muted ? 0 : .16;
+    if (!BGM.muted) setBgm(BGM.mood || 'daily', true); else clearInterval(BGM.timer);
+    updateBgmBtn();
+    toast(BGM.muted ? '背景音乐已关闭。' : '背景音乐已开启：' + (BGM.track ? BGM.track.name : ''));
+  }
+  function updateBgmBtn() {
+    var b = $('wgBgmBtn');
+    if (!b) return;
+    b.classList.toggle('on', !BGM.muted && !!BGM.timer);
+    var n = b.querySelector('span');
+    if (n) n.textContent = BGM.muted ? '音乐' : (BGM.track ? BGM.track.name : '音乐');
+    b.title = BGM.track ? 'BGM：' + BGM.track.name : '背景音乐';
+  }
   function esc(v) {
     return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -110,6 +232,7 @@
       S.entered = id;
       apply(sc.onEnter);
     }
+    if (sc.bgm || sc.mood) setBgm(sc.bgm || sc.mood);
     if (!S.visited[id]) S.visited[id] = 1;
   }
   function go(next) {
@@ -144,6 +267,7 @@
     S.eventsDone[e.id] = 1;
     if (e.eff) apply(e.eff);
     S.lastEvent = { title: e.title || '突发事件', text: resolve(e.text, S) };
+    setBgm(e.bgm || e.mood || 'tense');
     log('事件：' + (e.title || '突发事件'), 'event');
   }
   function checkEnding() {
@@ -152,6 +276,7 @@
     for (var i = 0; i < arr.length; i++) {
       if (arr[i].if && resolve(arr[i].if, S)) {
         S.ended = arr[i].id;
+        setBgm(arr[i].bgm || 'hope');
         log('结局：' + arr[i].title, 'ending');
         return;
       }
@@ -355,6 +480,7 @@
         '<div class="wg-spacer"></div>' +
         '<div class="wg-actions">' +
           '<a href="../nexus.html" title="世界观中枢"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/></svg><span>中枢</span></a>' +
+          '<button id="wgBgmBtn" data-wg="bgm" title="背景音乐"><svg viewBox="0 0 24 24"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg><span>音乐</span></button>' +
           '<button data-wg="save" title="保存"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v6h8M8 20v-6h8"/></svg><span>保存</span></button>' +
           '<button data-wg="restart" title="重开"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.3-5.7"/><path d="M4 4v5h5"/></svg><span>重开</span></button>' +
         '</div>' +
@@ -380,6 +506,10 @@
     document.body.appendChild(root);
   }
   function bind() {
+    document.addEventListener('pointerdown', function () {
+      if (BGM.ctx && BGM.ctx.state === 'suspended') { try { BGM.ctx.resume(); } catch (e) {} }
+      if (!BGM.muted && BGM.ctx && !BGM.timer) setBgm(BGM.mood || 'daily', true);
+    }, { once: true });
     document.addEventListener('click', function (e) {
       var t = e.target.closest('[data-wg]');
       if (!t) return;
@@ -390,6 +520,7 @@
       } else if (a === 'auto') {
         actAuto(Number(t.getAttribute('data-n')) || 10);
       } else if (a === 'save') { save(); toast('已保存到本机。'); }
+      else if (a === 'bgm') { toggleBgm(); }
       else if (a === 'restart') restart();
       else if (a === 'side') {
         var side = $('wgSide'); if (side) side.classList.toggle('open');
@@ -410,13 +541,16 @@
   }
   function start() {
     S = load() || defaultState();
+    try { BGM.muted = localStorage.getItem('sl_bgm_muted') === '1'; } catch (e) { BGM.muted = false; }
     if (!S.scene || !P.scenes[S.scene]) S.scene = P.start;
     enterScene(S.scene);
     shell();
     bind();
     render();
     save();
-    window.SL_W = { pack: P, state: function () { return S; }, render: render, act: actAuto, free: freeAct, reset: restart, clear: function () { restart(true); } };
+    if (!BGM.muted) setBgm('daily');
+    updateBgmBtn();
+    window.SL_W = { pack: P, state: function () { return S; }, render: render, act: actAuto, free: freeAct, reset: restart, bgm: setBgm, clear: function () { restart(true); } };
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();

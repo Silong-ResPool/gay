@@ -2,8 +2,14 @@
 window.SL_PACK = {
   id: 'lbyy', title: '龙堡银月', subtitle: '异世界 · 魔法与恶龙',
   kicker: 'SILVERMOON · FANTASY', theme: 'magic', layout: 'dashboard', modeLabel: '魔法冒险', mode: 'magic',
-  accent: '#a78bfa', accent2: '#5eead4', bg: '#080514', bg2: '#120b22', cover: '../../assets/ui/world_lbyy.jpg?v=3',
+  accent: '#a78bfa', accent2: '#5eead4', bg: '#080514', bg2: '#120b22', cover: 'https://aka.doubaocdn.com/s/nLEKS1XOLc',
   turnsPerDay: 6, eventChance: 0.4, freePlaceholder: '自由行动：冥想 / 阅读魔法书 / 调配药剂 / 去龙塔 / 和奥雷交谈',
+  bgm: [
+    { id: 'daily', name: '银月城堡', mood: 'daily', tempo: 64, scale: 'major', lead: 'harp', pad: 'soft' },
+    { id: 'tense', name: '龙翼掠过', mood: 'tense', tempo: 96, scale: 'minor', lead: 'lowStrings', pad: 'storm' },
+    { id: 'hope', name: '月下誓言', mood: 'hope', tempo: 70, scale: 'major', lead: 'strings', pad: 'warm' },
+    { id: 'horror', name: '龙息', mood: 'horror', tempo: 76, scale: 'phrygian', lead: 'lowStrings', pad: 'storm' }
+  ],
   stats: [
     { key: 'mana', label: '魔力', init: 40, max: 120 },
     { key: 'talent', label: '天赋', init: 2, max: 10 },

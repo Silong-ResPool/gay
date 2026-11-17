@@ -2,8 +2,14 @@
 window.SL_PACK = {
   id: 'yxsx', title: '云墟双修', subtitle: '国风修仙 · 丹符器宠',
   kicker: 'CLOUD RUINS · CULTIVATION', theme: 'xianxia', layout: 'scroll', modeLabel: '修仙经营', mode: 'cultivation',
-  accent: '#d4af37', accent2: '#67e8f9', bg: '#080705', bg2: '#15120b', cover: '../../assets/ui/world_yxsx.jpg?v=3',
+  accent: '#d4af37', accent2: '#67e8f9', bg: '#080705', bg2: '#15120b', cover: 'https://aka.doubaocdn.com/s/aVqvXbYJ22',
   turnsPerDay: 7, eventChance: 0.35, freePlaceholder: '自由行动：打坐 / 采药 / 炼丹 / 炼器 / 画符 / 喂养赤璃 / 和墨渊双修',
+  bgm: [
+    { id: 'daily', name: '云海', mood: 'daily', tempo: 56, scale: 'pentatonic', lead: 'dizi', pad: 'soft' },
+    { id: 'tense', name: '雷劫', mood: 'tense', tempo: 98, scale: 'minor', lead: 'lowStrings', pad: 'storm' },
+    { id: 'hope', name: '双修', mood: 'hope', tempo: 66, scale: 'major', lead: 'guqin', pad: 'warm' },
+    { id: 'horror', name: '走火入魔', mood: 'horror', tempo: 78, scale: 'phrygian', lead: 'lowStrings', pad: 'storm' }
+  ],
   stats: [
     { key: 'aura', label: '灵力', init: 38, max: 120 },
     { key: 'dao', label: '道心', init: 66, max: 100, danger: true },

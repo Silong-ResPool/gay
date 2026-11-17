@@ -1,5 +1,5 @@
 // 全局常量配置
-const PROXY_URL = '';    // 适用于 Cloudflare, Netlify (带重写), Vercel (带重写)
+const PROXY_URL = 'https://proxy.cors.dev/';    // 静态站点默认走公共 CORS 代理；也可换成自己的 Cloudflare / Netlify / Vercel 重写地址
 // const HOPLAYER_URL = 'https://hoplayer.com/index.html';
 const SEARCH_HISTORY_KEY = 'videoSearchHistory';
 const MAX_HISTORY_ITEMS = 5;

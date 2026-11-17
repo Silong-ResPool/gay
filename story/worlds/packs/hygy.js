@@ -12,7 +12,13 @@ window.SL_PACK = {
   accent2: '#2dd4bf',
   bg: '#070508',
   bg2: '#12080d',
-  cover: '../../assets/ui/world_hygy.jpg?v=3',
+  cover: 'https://aka.doubaocdn.com/s/LudCf3eAc8',
+  bgm: [
+    { id: 'daily', name: '楼道回声', mood: 'daily', tempo: 54, scale: 'minor', lead: 'guqin', pad: 'rain' },
+    { id: 'tense', name: '第四下敲门', mood: 'tense', tempo: 78, scale: 'phrygian', lead: 'bell', pad: 'dark' },
+    { id: 'hope', name: '天亮之前', mood: 'hope', tempo: 66, scale: 'major', lead: 'piano', pad: 'warm' },
+    { id: 'horror', name: '第四个人', mood: 'horror', tempo: 64, scale: 'phrygian', lead: 'theremin', pad: 'dark' }
+  ],
   turnsPerDay: 5,
   eventChance: 0.38,
   freePlaceholder: '自由行动：搜索 / 休息 / 交谈 / 照镜子 / 去电梯 / 上天台',

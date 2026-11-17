@@ -2,8 +2,14 @@
 window.SL_PACK = {
   id: 'wyzx', title: '午夜自习', subtitle: '校园怪谈 · 第十三节课',
   kicker: 'MIDNIGHT STUDY · CAMPUS HORROR', theme: 'school', layout: 'dashboard', modeLabel: '校园怪谈', mode: 'rule',
-  accent: '#4ade80', accent2: '#60a5fa', bg: '#050a08', bg2: '#0b1410', cover: '../../assets/ui/world_wyzx.jpg?v=3',
+  accent: '#4ade80', accent2: '#60a5fa', bg: '#050a08', bg2: '#0b1410', cover: 'https://aka.doubaocdn.com/s/lpJeTrKJwS',
   turnsPerDay: 5, eventChance: 0.42, freePlaceholder: '自由行动：翻书 / 照手电 / 查课表 / 去走廊 / 和陆星交谈',
+  bgm: [
+    { id: 'daily', name: '晚自习', mood: 'daily', tempo: 58, scale: 'minor', lead: 'guqin', pad: 'soft' },
+    { id: 'tense', name: '走廊脚步', mood: 'tense', tempo: 72, scale: 'phrygian', lead: 'bell', pad: 'dark' },
+    { id: 'hope', name: '晨光透过窗', mood: 'hope', tempo: 70, scale: 'major', lead: 'piano', pad: 'warm' },
+    { id: 'horror', name: '门后有人', mood: 'horror', tempo: 60, scale: 'phrygian', lead: 'bell', pad: 'dark' }
+  ],
   useNexusRules: true,
   stats: [
     { key: 'sanity', label: '理智', init: 70, max: 100, danger: true },

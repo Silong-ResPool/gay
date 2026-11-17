@@ -2,8 +2,14 @@
 window.SL_PACK = {
   id: 'wfxd', title: '晚风心动', subtitle: '都市 BL · 雨夜与设计稿',
   kicker: 'EVENING WIND · ROMANCE', theme: 'romance', layout: 'cinema', modeLabel: '都市言情', mode: 'romance',
-  accent: '#f472b6', accent2: '#a78bfa', bg: '#0c0710', bg2: '#170d18', cover: '../../assets/ui/world_wfxd.jpg?v=3',
+  accent: '#f472b6', accent2: '#a78bfa', bg: '#0c0710', bg2: '#170d18', cover: 'https://aka.doubaocdn.com/s/86vIuO1odF',
   turnsPerDay: 5, eventChance: 0.32, freePlaceholder: '自由行动：改稿 / 喝咖啡 / 去天台 / 约会 / 和林遇交谈',
+  bgm: [
+    { id: 'daily', name: '雨夜便利店', mood: 'daily', tempo: 60, scale: 'major', lead: 'piano', pad: 'rain' },
+    { id: 'tense', name: '心跳失控', mood: 'tense', tempo: 84, scale: 'minor', lead: 'lowStrings', pad: 'pulse' },
+    { id: 'hope', name: '晚风与你', mood: 'hope', tempo: 68, scale: 'major', lead: 'strings', pad: 'warm' },
+    { id: 'horror', name: '门外的雨伞', mood: 'horror', tempo: 66, scale: 'minor', lead: 'theremin', pad: 'rain' }
+  ],
   stats: [
     { key: 'heart', label: '心动', init: 18, max: 100 },
     { key: 'career', label: '事业', init: 32, max: 100 },

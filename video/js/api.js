@@ -1,8 +1,7 @@
 function proxyUrl(u){
     try{
         if(location.protocol==='file:') return u;
-        if(/^(localhost|127\.0\.0\.1)$/i.test(location.hostname)) return '/api?url='+encodeURIComponent(u);
-        return PROXY_URL ? PROXY_URL+encodeURIComponent(u) : u;
+        return (PROXY_URL ? PROXY_URL : 'https://proxy.cors.dev/') + u;
     }catch(e){ return u; }
 }
 // 改进的API请求处理函数

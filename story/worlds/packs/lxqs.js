@@ -3,7 +3,13 @@ window.SL_PACK = {
   id: 'lxqs', title: '零下七十', subtitle: '极寒末世 · 异能觉醒',
   kicker: 'FROSTFALL · SURVIVAL', theme: 'survival', layout: 'dashboard', modeLabel: '生存刷怪', mode: 'survival',
   accent: '#7dd3fc', accent2: '#818cf8', bg: '#040b14', bg2: '#0a1522',
-  cover: '../../assets/ui/world_lxqs.jpg?v=3', turnsPerDay: 4, eventChance: 0.45,
+  cover: 'https://aka.doubaocdn.com/s/XyAU4AjY6e', turnsPerDay: 4, eventChance: 0.45,
+  bgm: [
+    { id: 'daily', name: '风雪营地', mood: 'daily', tempo: 50, scale: 'minor', lead: 'guitar', pad: 'wind' },
+    { id: 'tense', name: '尸潮逼近', mood: 'tense', tempo: 100, scale: 'phrygian', lead: 'taiko', pad: 'pulse' },
+    { id: 'hope', name: '火堆旁', mood: 'hope', tempo: 64, scale: 'major', lead: 'piano', pad: 'warm' },
+    { id: 'horror', name: '雪地里的脚步', mood: 'horror', tempo: 62, scale: 'minor', lead: 'bell', pad: 'wind' }
+  ],
   freePlaceholder: '自由行动：搜刮 / 生火 / 休息 / 吸收晶核 / 刷怪 / 和秦焰交谈',
   stats: [
     { key: 'warmth', label: '体温', init: 58, max: 100, danger: true },

@@ -4,7 +4,7 @@
 :root{
   --bg:#06040d;--bg2:#0b0716;--panel:rgba(18,11,32,.78);--panel2:rgba(10,6,20,.96);
   --line:rgba(139,92,246,.20);--line2:rgba(255,255,255,.07);
-  --p:#8b5cf6;--p2:#6d28d9;--acc:#22d3ee;--pink:#f472b6;--gold:#fbbf24;
+  --p:#8b5cf6;--p2:#6d28d9;--acc:#c084fc;--pink:#f0abfc;--gold:#fbbf24;
   --txt:#f6f3ff;--sub:#b9aed4;--muted:#7d7196;
   --r:20px;--rs:12px;
 }
@@ -23,7 +23,7 @@ button{cursor:pointer}
 .ambient{position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
     radial-gradient(1100px 560px at 8% -10%,rgba(124,58,237,.34),transparent 62%),
-    radial-gradient(900px 520px at 100% 4%,rgba(34,211,238,.13),transparent 60%),
+    radial-gradient(900px 520px at 100% 4%,rgba(192,132,252,.17),transparent 60%),
     radial-gradient(900px 600px at 50% 118%,rgba(244,114,182,.10),transparent 66%),
     linear-gradient(180deg,#080510,#05030b 60%,#07040e)}
 .ambient::after{content:"";position:absolute;inset:0;opacity:.32;
@@ -82,7 +82,7 @@ main{position:relative;z-index:2;max-width:1280px;margin:0 auto;
 .kicker{font-size:9px;letter-spacing:3px;color:#a78bfa;margin-bottom:10px}
 .kicker span{color:#4c1d95}
 .hero h1{margin:0 0 10px;font-size:clamp(28px,4.4vw,46px);line-height:1.12;letter-spacing:.5px;color:#fff}
-.hero h1 span{background:linear-gradient(92deg,#c4b5fd,#22d3ee 70%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero h1 span{background:linear-gradient(92deg,#e9d5ff,#c084fc 55%,#f0abfc 78%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero p{margin:0;max-width:640px;font-size:12.5px;line-height:1.9;color:#b9aed4}
 .searchbox{position:relative;display:flex;align-items:center;gap:8px;margin-top:20px;
   padding:7px 7px 7px 16px;border-radius:16px;border:1px solid rgba(139,92,246,.32);
@@ -93,6 +93,8 @@ main{position:relative;z-index:2;max-width:1280px;margin:0 auto;
 .searchbox input::placeholder{color:#7d7196}
 .searchbox button{border:none;border-radius:12px;padding:12px 20px;font-size:12.5px;font-weight:800;color:#fff;
   background:linear-gradient(135deg,var(--p2),var(--p));box-shadow:0 8px 22px rgba(124,58,237,.4);white-space:nowrap}
+.engine-mode{border:1px solid rgba(192,132,252,.34);border-radius:10px;background:rgba(24,15,42,.9);
+  color:#e6d7ff;font-size:11px;font-weight:700;padding:9px 5px;outline:none;cursor:pointer;max-width:76px}
 .hot{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
 .hot button{border:1px solid var(--line2);background:rgba(255,255,255,.04);color:#a79bc4;
   border-radius:99px;padding:5px 11px;font-size:10.5px;transition:.16s}
@@ -132,13 +134,13 @@ main{position:relative;z-index:2;max-width:1280px;margin:0 auto;
   font-size:30px;font-weight:900;color:rgba(255,255,255,.22);
   background:radial-gradient(300px 200px at 30% 20%,rgba(124,58,237,.45),transparent 65%),
     linear-gradient(150deg,#23163f,#0d071b)}
-.poster .shade{position:absolute;inset:0;background:linear-gradient(0deg,rgba(6,3,13,.92),transparent 52%)}
-.poster .remark{position:absolute;left:8px;right:8px;bottom:7px;font-size:9.5px;color:#e9e4ff;
+.poster .shade{position:absolute;inset:0;z-index:3;background:linear-gradient(0deg,rgba(6,3,13,.92),transparent 52%)}
+.poster .remark{position:absolute;left:8px;right:8px;bottom:7px;z-index:4;font-size:9.5px;color:#e9e4ff;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 1px 4px #000}
-.poster .srcbadge{position:absolute;left:7px;top:7px;font-size:8.5px;padding:3px 7px;border-radius:99px;
+.poster .srcbadge{position:absolute;left:7px;top:7px;z-index:4;font-size:8.5px;padding:3px 7px;border-radius:99px;
   color:#ddd6fe;background:rgba(8,4,16,.66);border:1px solid rgba(139,92,246,.42);max-width:72%;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.poster .countbadge{position:absolute;right:7px;top:7px;font-size:8.5px;padding:3px 7px;border-radius:99px;
+.poster .countbadge{position:absolute;right:7px;top:7px;z-index:4;font-size:8.5px;padding:3px 7px;border-radius:99px;
   color:#a5f3fc;background:rgba(8,52,64,.74);border:1px solid rgba(34,211,238,.42)}
 .card-body{padding:9px 10px 11px}
 .card-body h3{margin:0;font-size:12.5px;line-height:1.35;color:#f4f1ff;font-weight:700;
@@ -300,10 +302,10 @@ main{position:relative;z-index:2;max-width:1280px;margin:0 auto;
 /* ===== V10 海报墙修复 + 视觉增强 ===== */
 .poster{aspect-ratio:auto!important;height:0!important;padding-top:150%!important;position:relative;overflow:hidden;
   background:linear-gradient(150deg,#2A1A50,#150C2A 55%,#0E0819)}
-.poster img{position:absolute!important;left:0;top:0;width:100%!important;height:100%!important;object-fit:cover;
+.poster img{position:absolute!important;left:0;top:0;z-index:2;width:100%!important;height:100%!important;object-fit:cover;
   display:block;transition:opacity .3s,transform .5s}
 .poster .fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:6px;padding:10%;text-align:center;z-index:1}
+  gap:6px;padding:10%;text-align:center;z-index:0}
 .poster .fallback span{font-size:clamp(20px,26%,34px);font-weight:800;letter-spacing:2px;color:rgba(220,205,255,.75);
   text-shadow:0 6px 24px rgba(0,0,0,.5)}
 .poster .fallback em{font-style:normal;font-size:10px;line-height:1.4;color:rgba(200,185,240,.5);

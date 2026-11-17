@@ -47,7 +47,7 @@
 
   var state = {
     enabled: new Set(), view: 'search', groups: new Map(), groupList: [],
-    searching: false, searchAbort: null, found: 0, lastQuery: '',
+    searching: false, searchAbort: null, found: 0, lastQuery: '', engineMode: 'site',
     browseSrc: '', browseCats: [], browseType: '', browsePage: 1, browsePageCount: 1,
     browseItems: [], browseLoading: false, detail: null, detailRoad: 0, detailGroup: null,
     homeItems: []
@@ -220,7 +220,7 @@
   /* ---------------- 卡片 ---------------- */
   function mapMaccms(it, src) {
     return {
-      id: it.vod_id, name: it.vod_name || '未命名', pic: it.vod_pic || '',
+      id: it.vod_id, name: it.vod_name || '未命名', pic: it.vod_pic || it.vod_pic_slide || it.vod_pic_thumb || it.pic || it.poster || '',
       remarks: it.vod_remarks || '', typeName: it.type_name || it.vod_class || '',
       year: it.vod_year || '', area: it.vod_area || '', time: it.vod_time || '',
       sourceName: src.name, sourceKey: src.key, api: src.api, type: 'maccms', raw: it
@@ -228,7 +228,7 @@
   }
   function mapXpath(it, src) {
     return {
-      id: it.src, name: it.name || '未命名', pic: '', remarks: '规则源',
+      id: it.src, name: it.name || '未命名', pic: it.pic || '', remarks: '规则源',
       typeName: '动漫', year: '', area: '', time: '',
       sourceName: src.name, sourceKey: src.key, rule: src.rule, detailUrl: it.src, type: 'xpath'
     };
@@ -237,19 +237,29 @@
   window.slPicFallback = function (img) {
     try {
       var s = img.getAttribute('src') || '';
-      if (s.indexOf('http://') === 0) { img.setAttribute('src', 'https://' + s.slice(7)); return; }
+      var tries = parseInt(img.getAttribute('data-sl-try') || '0', 10);
+      if (s.indexOf('http://') === 0 && tries === 0) {
+        img.setAttribute('data-sl-try', '1');
+        img.setAttribute('src', 'https://' + s.slice(7)); return;
+      }
+      if (s && tries < 2) {
+        img.setAttribute('data-sl-try', String(tries ? 3 : 2));
+        img.setAttribute('src', 'https://images.weserv.nl/?url=' + encodeURIComponent(s.replace(/^https?:\/\//, '')) + '&w=420&h=620&fit=cover');
+        return;
+      }
       img.style.display = 'none';
       var box = img.parentNode;
       if (box) box.classList.add('noimg');
     } catch (e) {}
   };
-  function posterHtml(pic, title, badge, count) {
+  function posterHtml(pic, title, badge, count, idx) {
     var t = String(title || '?');
     var src = String(pic || '').trim();
     if (src && src.indexOf('//') === 0) src = 'https:' + src;
+    var eager = typeof idx === 'number' ? idx < 8 : true;
     return '<div class="poster">' +
       '<div class="fallback"><span>' + esc(t.slice(0, 2)) + '</span><em>' + esc(t.length > 8 ? t.slice(0, 8) + '…' : t) + '</em></div>' +
-      (src ? '<img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="' + esc(src) + '" onerror="slPicFallback(this)" alt="' + esc(t) + '">' : '') +
+      (src ? '<img loading="' + (eager ? 'eager' : 'lazy') + '" decoding="async" referrerpolicy="no-referrer" src="' + esc(src) + '" onerror="slPicFallback(this)" alt="' + esc(t) + '">' : '') +
       '<div class="shade"></div>' +
       (badge ? '<span class="srcbadge">' + esc(badge) + '</span>' : '') +
       (count ? '<span class="countbadge">' + esc(count) + '</span>' : '') +
@@ -258,14 +268,14 @@
   function itemCard(it, idx) {
     var sub = [it.typeName, it.year, it.area].filter(Boolean).join(' · ') || it.remarks || '';
     return '<div class="card" data-idx="' + idx + '">' +
-      posterHtml(it.pic, it.name, it.sourceName, '') +
+      posterHtml(it.pic, it.name, it.sourceName, '', idx) +
       '<div class="card-body"><h3>' + esc(it.name) + '</h3><div class="sub">' + esc(sub) + '</div></div></div>';
   }
   function groupCard(g, idx) {
     var first = g.items[0] || {};
     var sub = [first.typeName, first.year, first.area].filter(Boolean).join(' · ') || (g.items.length + ' 个源');
     return '<div class="card" data-group-idx="' + idx + '">' +
-      posterHtml(g.pic, g.title, g.items.length + ' 源', '') +
+      posterHtml(g.pic, g.title, g.items.length + ' 源', '', idx) +
       '<div class="card-body"><h3>' + esc(g.title) + '</h3><div class="sub">' + esc(sub) + '</div></div></div>';
   }
   function renderGrid(el, items, kind) {
@@ -374,13 +384,16 @@
     $('resultGrid').innerHTML = '<div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div><div class="sk"></div>';
     state._painted = {}; state._firstPaint = false;
     try { $('resultGrid').setAttribute('data-q', ''); } catch (e) {}
-    $('resultMeta').textContent = '正在向全部启用源发起搜索…';
+    $('resultMeta').textContent = state.engineMode === 'all' ? '正在向全网全部源发起搜索…' : '正在向站内已启用源发起搜索…';
     $('searchProg').hidden = false;
-    var list = SOURCES.filter(function (s) { return state.enabled.has(s.key) && s.type !== 'gayagg'; })
+    var list = SOURCES.filter(function (s) {
+      if (s.type === 'gayagg') return false;
+      return state.engineMode === 'all' || state.enabled.has(s.key);
+    })
       .sort(function (a, b) { return (b.verified ? 1 : 0) - (a.verified ? 1 : 0) || a.index - b.index; });
     if (!list.length) {
       state.searching = false; $('searchProg').hidden = true;
-      $('resultGrid').innerHTML = '<div class="empty">还没有启用任何源，请打开右上角「源」勾选。</div>';
+      $('resultGrid').innerHTML = '<div class="empty">站内还没有启用任何源。切到「全部」可直接搜索全网，或打开右上角「源」勾选站内源。</div>';
       return;
     }
     var total = list.length, done = 0, idx = 0;
@@ -603,6 +616,14 @@
       b.onclick = function () { switchView(b.getAttribute('data-view')); };
     });
     $('searchForm').addEventListener('submit', function (e) { e.preventDefault(); doSearch($('q').value); });
+    var modeSel = $('engineMode');
+    if (modeSel) {
+      modeSel.addEventListener('change', function () {
+        state.engineMode = this.value === 'all' ? 'all' : 'site';
+        $('searchBtn').textContent = state.engineMode === 'all' ? '全部搜索' : '站内搜索';
+        if (state.lastQuery && !state.searching) doSearch(state.lastQuery);
+      });
+    }
     $('hotChips').addEventListener('click', function (e) {
       var b = e.target.closest('[data-hot]'); if (!b) return;
       var w = b.getAttribute('data-hot');

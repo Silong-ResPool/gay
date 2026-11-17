@@ -208,8 +208,8 @@ section.hero.hero-v11{
   border:1px solid rgba(255,255,255,.09) !important;
   background:#05070d !important;
   box-shadow:0 22px 50px -26px rgba(0,0,0,.9) !important;
-  height:clamp(210px,22vw,280px) !important;
-  max-height:280px !important;
+  height:clamp(180px,18vw,232px) !important;
+  max-height:232px !important;
 }
 .hero-art img{
   display:block;width:100%;height:100%;object-fit:cover;object-position:center;
@@ -409,7 +409,7 @@ section.hero.hero-v11{
 }
 @media (max-width:900px){
   section.hero.hero-v11{grid-template-columns:1fr !important;gap:18px !important;padding:22px !important;}
-  .hero-art{height:210px !important;max-height:210px !important;order:-1 !important;}
+  .hero-art{height:168px !important;max-height:168px !important;order:-1 !important;}
   section.hero.hero-v11 h1{font-size:clamp(27px,5.2vw,40px) !important;}
   .hero.hero-v11 p{max-width:100% !important;}
   .grid{grid-template-columns:repeat(3,minmax(0,1fr)) !important;}
@@ -429,7 +429,7 @@ section.hero.hero-v11{
   .hero-v11 .hk{font-size:9px !important;margin-bottom:9px !important;letter-spacing:.2em !important;}
   .hero.hero-v11 h1{font-size:26px !important;line-height:1.16 !important;margin-bottom:10px !important;}
   .hero.hero-v11 p{font-size:12.5px !important;line-height:1.75 !important;}
-  .hero-art{height:180px !important;max-height:180px !important;border-radius:12px !important;}
+  .hero-art{height:150px !important;max-height:150px !important;border-radius:12px !important;}
   .hero.hero-v11 .hstats{gap:5px !important;margin-top:14px !important;}
   .hero.hero-v11 .hstats span{padding:5px 8px !important;font-size:9px !important;gap:4px !important;}
   .hero.hero-v11 .hstats b{font-size:12px !important;}

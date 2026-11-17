@@ -5,7 +5,7 @@
 <meta name="color-scheme" content="dark">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>巳泷影视 · 全源影院</title>
-<link rel="stylesheet" href="css/neo.css">
+<link rel="stylesheet" href="css/neo.css?v=10">
 </head>
 <body>
 <div class="ambient"></div>
@@ -34,7 +34,11 @@
         <form class="searchbox" id="searchForm" autocomplete="off">
           <span class="s-ic">⌕</span>
           <input id="q" placeholder="搜索电影、剧集、动漫、演员…" enterkeyhint="search">
-          <button type="submit">全源搜索</button>
+          <select id="engineMode" class="engine-mode" title="搜索范围">
+            <option value="site">站内</option>
+            <option value="all">全部</option>
+          </select>
+          <button type="submit" id="searchBtn">站内搜索</button>
         </form>
         <div class="hot" id="hotChips"></div>
       </div>
@@ -104,10 +108,10 @@
 <div id="toast"></div>
 
 <script src="js/sources_data.js"></script>
-<script src="js/config.js"></script>
-<script src="js/api.js"></script>
-<script src="js/xpath.js"></script>
-<script src="js/neo.js"></script>
+<script src="js/config.js?v=10"></script>
+<script src="js/api.js?v=10"></script>
+<script src="js/xpath.js?v=9"></script>
+<script src="js/neo.js?v=10"></script>
 <link rel="stylesheet" href="assets/ui/theme-lock.css?v=11">
 </body>
 </html>

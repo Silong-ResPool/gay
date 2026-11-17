@@ -2,8 +2,14 @@
 window.SL_PACK = {
   id: 'fyzd', title: '烽烟照胆', subtitle: '近代军阀 · 枪火与盟誓',
   kicker: 'WARLORD 1927 · STRATEGY', theme: 'war', layout: 'dashboard', modeLabel: '军阀经营', mode: 'war',
-  accent: '#c08457', accent2: '#facc15', bg: '#0c0907', bg2: '#1a120c', cover: '../../assets/ui/world_fyzd.jpg?v=3',
+  accent: '#c08457', accent2: '#facc15', bg: '#0c0907', bg2: '#1a120c', cover: 'https://aka.doubaocdn.com/s/n7nzzQW7o8',
   turnsPerDay: 6, eventChance: 0.4, freePlaceholder: '自由行动：操练 / 筹粮 / 谈判 / 听戏 / 巡查 / 和段峥交谈',
+  bgm: [
+    { id: 'daily', name: '军营黄昏', mood: 'daily', tempo: 60, scale: 'minor', lead: 'erhu', pad: 'soft' },
+    { id: 'tense', name: '夜袭', mood: 'tense', tempo: 104, scale: 'phrygian', lead: 'taiko', pad: 'pulse' },
+    { id: 'hope', name: '停战书', mood: 'hope', tempo: 72, scale: 'major', lead: 'strings', pad: 'warm' },
+    { id: 'horror', name: '无人巷', mood: 'horror', tempo: 68, scale: 'minor', lead: 'lowStrings', pad: 'dark' }
+  ],
   useNexusRules: true,
   stats: [
     { key: 'army', label: '兵力', init: 2, max: 20 },

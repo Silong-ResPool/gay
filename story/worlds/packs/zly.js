@@ -2,8 +2,14 @@
 window.SL_PACK = {
   id: 'zly', title: '罪乐园', subtitle: '地府 · 十八层罪值乐园',
   kicker: 'SIN PARADISE · AFTERLIFE', theme: 'sin', layout: 'vertical', modeLabel: '罪值审判', mode: 'judgment',
-  accent: '#c084fc', accent2: '#fbbf24', bg: '#07050c', bg2: '#120a1a', cover: '../../assets/ui/world_zly.jpg?v=3',
+  accent: '#c084fc', accent2: '#fbbf24', bg: '#07050c', bg2: '#120a1a', cover: 'https://aka.doubaocdn.com/s/VreO7Kt2Lu',
   turnsPerDay: 6, eventChance: 0.36, freePlaceholder: '自由行动：查看罪碑 / 逛乐园 / 乘电梯下潜 / 和祁宴交谈 / 申诉',
+  bgm: [
+    { id: 'daily', name: '第一层乐园', mood: 'daily', tempo: 62, scale: 'major', lead: 'harp', pad: 'soft' },
+    { id: 'tense', name: '罪值审判', mood: 'tense', tempo: 84, scale: 'phrygian', lead: 'lowStrings', pad: 'dark' },
+    { id: 'hope', name: '十八层之外', mood: 'hope', tempo: 66, scale: 'major', lead: 'strings', pad: 'warm' },
+    { id: 'horror', name: '十八层回响', mood: 'horror', tempo: 62, scale: 'phrygian', lead: 'choir', pad: 'dark' }
+  ],
   useNexusRules: true,
   stats: [
     { key: 'sin', label: '罪值', init: 0, max: 180, danger: true },

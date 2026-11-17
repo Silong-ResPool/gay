@@ -125,7 +125,7 @@
   }
 
   /* ------------------------------------------------------ 搜索 */
-  // 返回 [{name, src}] ；失败返回 []
+  // 返回 [{name, src, pic}] ；失败返回 []
   XP.search = function (rule, keyword) {
     if (!rule || !rule.searchURL || !rule.searchList) return Promise.resolve([]);
     var q = String(keyword || '');
@@ -147,7 +147,14 @@
           var src = nodeHref(srcEl);
           if (!name && srcEl) name = nodeText(srcEl);
           if (!name || !src) continue;
-          out.push({ name: name, src: XP.normalize(rule.baseURL, src) });
+          var pic = '';
+          var picEl = rule.searchPic ? firstNode(node, rule.searchPic) : (node.querySelector ? node.querySelector('img') : null);
+          if (picEl) {
+            pic = String(picEl.getAttribute('data-original') || picEl.getAttribute('data-src') || picEl.getAttribute('src') || '').trim();
+            if (!pic && picEl.getAttribute) pic = String(picEl.getAttribute('data-lazy') || '').trim();
+          }
+          if (pic) pic = XP.normalize(rule.baseURL, pic);
+          out.push({ name: name, src: XP.normalize(rule.baseURL, src), pic: pic });
         } catch (e) {}
       }
       return out;

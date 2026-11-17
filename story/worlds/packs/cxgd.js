@@ -2,8 +2,14 @@
 window.SL_PACK = {
   id: 'cxgd', title: '潮汐孤岛', subtitle: '海岛生存 · 潮汐历',
   kicker: 'TIDAL ISLE · SURVIVAL', theme: 'island', layout: 'dashboard', modeLabel: '生存建造', mode: 'survival',
-  accent: '#2dd4bf', accent2: '#fbbf24', bg: '#031014', bg2: '#082026', cover: '../../assets/ui/world_cxgd.jpg?v=3',
+  accent: '#2dd4bf', accent2: '#fbbf24', bg: '#031014', bg2: '#082026', cover: 'https://aka.doubaocdn.com/s/TZZRjv2621',
   turnsPerDay: 5, eventChance: 0.4, freePlaceholder: '自由行动：取水 / 捕鱼 / 搭建庇护所 / 探索 / 和同伴交谈',
+  bgm: [
+    { id: 'daily', name: '潮声与篝火', mood: 'daily', tempo: 58, scale: 'major', lead: 'guitar', pad: 'waves' },
+    { id: 'tense', name: '风暴将至', mood: 'tense', tempo: 92, scale: 'minor', lead: 'lowStrings', pad: 'storm' },
+    { id: 'hope', name: '灯塔亮了', mood: 'hope', tempo: 70, scale: 'major', lead: 'strings', pad: 'warm' },
+    { id: 'horror', name: '海底的东西', mood: 'horror', tempo: 74, scale: 'phrygian', lead: 'lowStrings', pad: 'dark' }
+  ],
   stats: [
     { key: 'water', label: '淡水', init: 2, max: 10, danger: true },
     { key: 'food', label: '食物', init: 3, max: 10, danger: true },

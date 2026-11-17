@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -317,7 +317,8 @@ main{flex:1;overflow-y:auto;overflow-x:hidden;padding:16px 14px calc(32px + env(
 <script src="../data/api-app.js"></script>
 <script src="../data/api-web.js"></script>
 <script src="../data/ai-limit.js"></script>
-<script src="worlds/index.js?v=15"></script>
+<script src="../butler/config/injection.js"></script>
+<script src="worlds/index.js?v=21"></script>
 <script src="oc-sim.js"></script>
 <script>
 (function(){
@@ -375,12 +376,33 @@ function apiUrl(base){
   if(!/\/v\d+$/.test(b))b+='/v1';
   return b+'/chat/completions';
 }
+function aiCacheKey(messages,opt){
+  var s=JSON.stringify(messages||[])+'|'+(opt&&opt.temp||'')+'|'+(opt&&opt.max||'');
+  var h=2166136261;
+  for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}
+  return 'c'+((h>>>0).toString(36));
+}
+function aiCachePut(key,text){
+  try{
+    var o=JSON.parse(localStorage.getItem('sl_ai_cache_v1')||'{}')||{};
+    o[key]={t:text,at:Date.now()};
+    var ks=Object.keys(o);if(ks.length>80){ks.slice(0,ks.length-80).forEach(function(k){delete o[k]})}
+    localStorage.setItem('sl_ai_cache_v1',JSON.stringify(o));
+  }catch(e){}
+}
 function chat(messages,opt){
   opt=opt||{};
   var c=getCfg();
-  if(!c.base||!c.key)return Promise.reject(new Error('还没有配置 API，请点右上角齿轮填写'));
+  if(!c.base||!c.key)return Promise.reject(new Error('还没有配置 API，请点右上角齿轮填写，或到资源管家注册免费 API'));
+  var inj=String(window.SL_INJECTION||'').trim();
+  if(inj){messages=[{role:'system',content:inj}].concat(messages||[])}
+  var cacheKey=aiCacheKey(messages,opt);
+  try{
+    var cj=JSON.parse(localStorage.getItem('sl_ai_cache_v1')||'{}')||{};
+    if(cj[cacheKey]&&cj[cacheKey].t){return Promise.resolve(cj[cacheKey].t)}
+  }catch(e){}
   var custom=false;try{var __cc=JSON.parse(localStorage.getItem(LS_CFG)||'{}');custom=!!__cc.key}catch(e){}
-  if(!custom&&window.SL_AI_LIMIT&&!window.SL_DEV){var __q=SL_AI_LIMIT.take();if(!__q.ok)return Promise.reject(new Error('内置 API 请求已达上限，请等待冷却或填写自己的 Key'))}
+  if(!custom&&window.SL_AI_LIMIT&&!window.SL_DEV){var __q=SL_AI_LIMIT.take();if(!__q.ok)return Promise.reject(new Error('本设备内置 API 额度已用完（5 分钟内最多 20 次）。请更换 API，或到资源管家注册免费 API；自填 API Key 不受此限制。冷却剩余约 '+Math.ceil((__q.resetIn||0)/1000)+' 秒。'))}
   var body=JSON.stringify({model:c.model||'agnes-3.0-flash',messages:messages,
     temperature:opt.temp!=null?opt.temp:(parseFloat(c.temp)||0.9),max_tokens:opt.max||1800,stream:false});
   var url=apiUrl(c.base),tries=[];
@@ -401,6 +423,7 @@ function chat(messages,opt){
     }).then(function(j){
       var t=j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
       if(!t)throw new Error('API 返回空内容');
+      aiCachePut(cacheKey,t);
       return t;
     }).catch(function(e){clearTimeout(timer);return attempt()});
   }
@@ -709,6 +732,9 @@ function enterWorld(id){
   var x=findCard(id);if(!x)return;
   markPlayed(id);closeModal();
   if(x.kind==='mine'){openMine(x.w);return}
+  if(x.kind==='imported'&&x.w.slcard){
+    location.href='worlds/imported.html?id='+encodeURIComponent(x.w.id);return;
+  }
   if(x.kind==='imported'&&x.w.html){
     var b=new Blob([x.w.html],{type:'text/html'});
     location.href=URL.createObjectURL(b);return;
@@ -719,7 +745,7 @@ function enterWorld(id){
 
 /* ---------------- 我的世界：新建（分页详细设定） ---------------- */
 function blankDraft(){
-  return {title:'',genre:'玄幻',hero:'',text:'',fileName:'',step:0,cover:'',
+  return {title:'',genre:'玄幻',hero:'',text:'',fileName:'',refName:'',refText:'',step:0,cover:'',
     data:{basic:{},world:{},chars:[],factions:[],places:[],events:[],species:[],flora:[],foods:[],items:[],
       economy:[],faith:[],society:[],tech:[],careers:[],powers:[],langs:[],stories:[],lore:[],worldbook:[],conflicts:[]}};
 }
@@ -796,7 +822,12 @@ function renderCreate(fromImport){
       dField('basic','标语','tagline',b.tagline,'一句话世界观')+'</div>'+
       dField('basic','世界简介','desc',b.desc,'世界背景、基调、主要冲突…',1)+
       '<div class="field"><label>封面（可不上传）</label><button class="mini" data-cover="1">上传封面图片</button>'+
-      (draft.cover?'<div class="hint">已选择封面，保存后生效</div>':'<div class="hint">不上传则默认紫罗兰封面框 + 标题文字</div>')+'</div>';
+      (draft.cover?'<div class="hint">已选择封面，保存后生效</div>':'<div class="hint">不上传则默认紫罗兰封面框 + 标题文字</div>')+'</div>'+
+      '<div class="field"><label>参考文件（AI 读取后参考生成）</label>'+
+      '<div class="drop" id="refDrop"><span>点击上传 TXT / MD / JSON / HTML，AI 会读取内容并参考生成整张世界卡</span></div>'+
+      '<input id="refFile" type="file" accept=".txt,.md,.json,.html,text/plain,application/json" hidden>'+
+      '<div class="hint" id="refHint">'+(draft.refName?('已载入参考：'+esc(draft.refName)+'（'+draft.refText.length+' 字）'):'支持 UTF-8 文本；上传后点下方按钮，AI 会按内置世界卡模板生成全部板块。')+'</div>'+
+      '<button class="btn pri" data-ai-ref="1" style="margin-top:9px;width:100%">AI 读取参考文件并生成整张世界卡</button></div>';
   } else if(page.id==='world'){
     var w=draft.data.world;
     h+=dField('world','世界总纲 / 规则','world',w.world,'世界的核心规则、力量体系、禁忌…',1)+
@@ -893,6 +924,19 @@ function renderCreate(fromImport){
     }
     if(fromImport)setTimeout(function(){file.click()},120);
   }
+  var refFile=$('refFile');
+  if(refFile){
+    var refDrop=$('refDrop');
+    if(refDrop)refDrop.addEventListener('click',function(){refFile.click()});
+    refFile.addEventListener('change',function(){readRefFile(refFile.files&&refFile.files[0])});
+    if(refDrop){
+      ['dragover','dragenter'].forEach(function(t){refDrop.addEventListener(t,function(e){e.preventDefault();refDrop.classList.add('on')})});
+      ['dragleave','drop'].forEach(function(t){refDrop.addEventListener(t,function(e){e.preventDefault();refDrop.classList.remove('on')})});
+      refDrop.addEventListener('drop',function(e){var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(f)readRefFile(f)});
+    }
+  }
+  var aiRefBtn=view.querySelector('[data-ai-ref]');
+  if(aiRefBtn)aiRefBtn.onclick=aiGenerateAll;
   $('main').scrollTop=0;
 }
 
@@ -921,6 +965,48 @@ function pageSchema(){
   if(p.id==='systems')return '{"economy":[],"faith":[],"society":[],"tech":[],"careers":[],"powers":[],"langs":[]}';
   if(p.id==='story')return '{"stories":[],"lore":[],"worldbook":[],"conflicts":[]}';
   return '{}';
+}
+function readRefFile(f){
+  if(!f)return;
+  if(f.size>16*1024*1024){toast('参考文件太大（超过 16MB），请先截取关键内容');return}
+  if(!/\.(txt|md|json|html)$/i.test(f.name)&&!/text\/plain|application\/json|text\/html|text\/markdown/.test(f.type||'')){toast('请上传 TXT / MD / JSON / HTML 参考文件');return}
+  var r=new FileReader();
+  r.onload=function(){
+    var t=String(r.result||'');
+    draft.refName=f.name;draft.refText=t.slice(0,120000);
+    var hint=$('refHint');
+    if(hint)hint.textContent='已载入参考：'+f.name+'（'+t.length+' 字），点下方按钮让 AI 读取并生成整卡。';
+    toast('参考文件已载入');
+  };
+  r.onerror=function(){toast('参考文件读取失败，请换一个文件')};
+  r.readAsText(f,'utf-8');
+}
+function aiGenerateAll(){
+  if(!draft.refText){toast('请先上传参考文件，AI 会读取后按内置世界卡模板生成');return}
+  var btn=view.querySelector('[data-ai-ref]');
+  if(btn){btn.disabled=true;btn.textContent='AI 正在读取参考文件…'}
+  var sys='你是「巳泷文游」的世界卡构建师。所有世界必须是双男主/BL：主角与男二及配角感情线为主，不写男女主恋爱；不得露骨；父母等生育背景角色可以存在。只输出严格 JSON，不要 Markdown、不要解释。';
+  var schema='{"basic":{"name":"世界名","era":"时代","tagline":"标语","desc":"简介","genre":"玄幻/仙侠/都市/悬疑/科幻/历史/校园/言情/无限流/自定义"},"world":{"world":"世界规则与力量体系","geo":"地理气候","conflict":"主要冲突"},"chars":[{"name":"","role":"","race":"","persona":"","goal":"","secret":"","desc":"","gender":"男"}],"factions":[{"name":"","type":"","leader":"","goal":"","creed":""}],"places":[{"name":"","type":"","climate":"","resources":"","desc":""}],"events":[{"era":"","time":"","title":"","cat":"","desc":""}],"species":[{"name":"","type":"","desc":""}],"flora":[{"name":"","type":"","effect":"","desc":""}],"foods":[{"name":"","type":"","taste":"","effect":"","desc":""}],"items":[{"name":"","type":"","effect":"","desc":""}],"economy":[{"name":"","type":"","desc":""}],"faith":[{"name":"","type":"","desc":""}],"society":[{"name":"","type":"","desc":""}],"tech":[{"name":"","type":"","desc":""}],"careers":[{"name":"","type":"","desc":""}],"powers":[{"name":"","type":"","desc":""}],"langs":[{"name":"","type":"","desc":""}],"stories":[{"name":"","type":"","status":"","desc":""}],"lore":[{"title":"","cat":"","content":""}],"worldbook":[{"keys":"","content":""}],"conflicts":[{"name":"","type":"","parties":"","desc":""}]}';
+  var user='参考文件：'+(draft.refName||'')+'\n\n参考内容：\n'+draft.refText.slice(0,12000)+
+    '\n\n请读取以上参考内容，参考内置世界卡模板生成一整张可直接游玩的世界卡。要求：\n1. 世界观完整，主角与男二感情线清晰，至少 2 个可攻略男角色；\n2. 至少 8 个地点、6 个事件、4 条剧情线、3 个势力、4 个结局方向；\n3. 至少有 3 个日常/紧张/恐怖/欢乐/剧情触发的音乐情绪标签；\n4. 图鉴至少 3 个物种、3 个植物、3 个食物、3 个物品；\n5. 只输出这个 JSON：'+schema;
+  chat([{role:'system',content:sys},{role:'user',content:user}],{temp:0.88,max:3200}).then(function(txt){
+    var j=parseJson(txt);
+    if(!j)throw new Error('AI 返回格式不对，请再试一次');
+    if(j.basic){
+      ['name','era','tagline','desc','genre'].forEach(function(k){if(j.basic[k])draft.data.basic[k]=j.basic[k]});
+      if(j.basic.genre)draft.genre=j.basic.genre;
+    }
+    if(j.world){['world','geo','conflict'].forEach(function(k){if(j.world[k])draft.data.world[k]=j.world[k]})}
+    ['chars','factions','places','events','species','flora','foods','items','economy','faith','society','tech','careers','powers','langs','stories','lore','worldbook','conflicts'].forEach(function(k){
+      if(Array.isArray(j[k])&&j[k].length)draft.data[k]=j[k];
+    });
+    draft.text=draft.refText;
+    renderCreate();
+    toast('AI 已按参考文件生成整张世界卡，可以逐页检查后保存');
+  }).catch(function(e){
+    if(btn){btn.disabled=false;btn.textContent='AI 读取参考文件并生成整张世界卡'}
+    toast(e.message||'AI 生成失败');
+  });
 }
 function aiFillPage(){
   var p=CREATE_PAGES[draft.step];
@@ -1023,7 +1109,8 @@ function renderPlay(){
     '<h2>'+esc(w.title)+'</h2><span class="meta">'+esc(w.genre||'AI 世界')+' · 第 '+(w.turn+1)+' 幕</span>'+
     '<span class="spacer" style="flex:1"></span>'+
     '<button class="mini" data-a="archive">档案</button>'+
-    '<button class="mini" data-a="export" data-id="'+esc(w.id)+'">导出</button></div>';
+    '<button class="mini" data-a="exportCard" data-id="'+esc(w.id)+'">导出世界卡</button>'+
+    '<button class="mini" data-a="export" data-id="'+esc(w.id)+'">导出存档</button></div>';
   h+=statusBarHtml(w);
   h+='<div class="story" id="story">';
   (w.log||[]).forEach(function(m){
@@ -1336,7 +1423,20 @@ $('importFile').addEventListener('change',function(){
       return;
     }
     var j=null;try{j=JSON.parse(txt)}catch(e){j=null}
-    if(!j||!j.title){toast('不是有效的世界卡（需要 .json 或 .html）');return}
+    if(j&&j.slcard){
+      var c=j, nid=uid();
+      var nw={id:nid,slcard:true,title:c.title||'导入世界卡',subtitle:c.subtitle||'导入世界卡',
+        tags:c.tags||['导入','双男主'],desc:c.desc||String(c.world||'').slice(0,120),
+        mark:c.mark||String(c.title||'?').slice(0,1),accent:c.accent||['#7c3aed','#22d3ee'],
+        adult:!!c.adult,genre:c.genre||'',world:c.world||'',chars:c.chars||[],items:c.items||[],
+        places:c.places||[],factions:c.factions||[],events:c.events||[],pack:c.pack||null,
+        snapshot:c.snapshot||null,opening:c.opening||c.world||'',
+        choices:c.choices||['先观察四周','找个人谈谈','跟随直觉行动'],log:c.log||[]};
+      if(c.cover){S.covers[nid]=c.cover;saveCovers()}
+      S.imported.push(nw);saveImported();renderHome();toast('已导入世界卡：'+nw.title+'；进入后将使用统一引擎');
+      return;
+    }
+    if(!j||!j.title){toast('不是有效的世界卡（支持 .slcard.json / .json / .html）');return}
     S.imported.push({id:uid(),title:j.title,subtitle:j.subtitle||'导入世界卡',tags:j.tags||['导入'],
       desc:j.desc||(j.world||'').slice(0,90),mark:j.mark||j.title.slice(0,1),
       accent:j.accent||['#8b5cf6','#22d3ee'],world:j.world||'',chars:j.chars||[],
@@ -1365,6 +1465,26 @@ function exportWorld(id){
   var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=w.title+'_存档.txt';
   document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},400);
 }
+function exportCard(id){
+  var x=findCard(id);if(!x){toast('找不到这个世界卡');return}
+  var w=merged(x.w), oc=ocForStory(w);
+  var card={
+    slcard:true,version:2,exportedAt:new Date().toISOString(),
+    id:w.id,title:w.title,subtitle:w.subtitle||'',tags:w.tags||[],desc:w.desc||'',mark:w.mark||String(w.title||'?').slice(0,1),
+    accent:w.accent||['#7c3aed','#22d3ee'],adult:!!w.adult,cover:S.covers[w.id]||w.cover||'',
+    genre:w.genre||'',world:w.world||'',opening:(oc&&oc.desc)||w.world||w.desc||'',
+    chars:w.chars||(oc&&oc.chars)||[],items:w.items||(oc&&oc.items)||[],places:w.places||(oc&&oc.places)||[],
+    factions:w.factions||(oc&&oc.factions)||[],events:w.events||(oc&&oc.events)||[],
+    snapshot:oc||w.snapshot||null,
+    pack:(w.pack&&typeof w.pack==='object')?w.pack:null,
+    choices:w.choices||['先观察四周','找个人谈谈','跟随直觉行动'],log:w.log||[]
+  };
+  if(card.cover&&card.cover.length>900000){toast('封面太大，导出时不包含封面；可单独压缩后重试');card.cover=''}
+  var b=new Blob([JSON.stringify(card,null,2)],{type:'application/json;charset=utf-8'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=(w.title||'世界卡')+'.slcard.json';
+  document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},450);
+  toast('世界卡已导出；换设备后点「导入世界卡」即可继续');
+}
 function delWorld(id){
   var x=findCard(id);if(!x)return;
   if(x.kind==='builtin'){toast('内置世界卡不能删除，可以更换封面或卡片设置');return}
@@ -1379,7 +1499,8 @@ function openCfg(){
   var c=getCfg();
   var h='<div class="mask" data-a="closeMask"><div class="sheet">'+
     '<button class="ibtn close" data-a="closeMask">✕</button><h3>API 设置</h3>'+
-    '<p class="ssub">默认使用资源管家的内置双 API；手动填写会覆盖。</p>'+
+    '<p class="ssub">默认使用资源管家的内置双 API；手动填写会覆盖。内置 API 为本设备独立额度：5 分钟最多 20 次；自填 API Key 不受限制。</p>'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px"><a class="mini" href="../butler/index.html#register" target="_blank" style="text-decoration:none">注册免费 API</a><a class="mini" href="../butler/index.html" target="_blank" style="text-decoration:none">打开资源管家</a></div>'+
     '<div class="field"><label>接口地址（OpenAI 兼容）</label><input id="cBase" placeholder="https://api.example.com/v1" value="'+esc(c.base)+'"></div>'+
     '<div class="field"><label>API Key</label><input id="cKey" type="password" placeholder="sk-..." value="'+esc(c.key)+'"></div>'+
     '<div class="row2"><div class="field"><label>模型</label><input id="cModel" value="'+esc(c.model)+'"></div>'+
@@ -1403,6 +1524,7 @@ document.addEventListener('click',function(e){
   else if(a==='detail'){openDetail(id)}
   else if(a==='del'){delWorld(id)}
   else if(a==='export'){exportWorld(id)}
+  else if(a==='exportCard'){exportCard(id)}
   else if(a==='pick'){var i=+t.getAttribute('data-i');var w=S.cur;if(w&&w.choices&&w.choices[i]!=null){var __ch=w.choices[i];try{applyStatusPanels(w,__ch)}catch(e){}act(__ch)}}
   else if(a==='free'){freeAction()}
   else if(a==='oc'){location.href='oc.html'}
@@ -1763,7 +1885,7 @@ body.mode-daily .side a:hover,body.mode-daily .side a.on{color:var(--sl-text)!im
 }
 
 </style>
-<link rel="stylesheet" href="neo.css?v=10">
+<link rel="stylesheet" href="neo.css?v=11">
 <link rel="stylesheet" href="../assets/ui/theme-lock.css?v=11">
 <style id="v12-story-final">
 /* V12 · 与资源库主页统一深空视觉 */

@@ -22,7 +22,7 @@
   };
 
   function empty() {
-    return { law: [], rules: [], study: { ancient: [], magic: [] }, items: [], foods: [], species: [], glyphs: [], music: [], audio: [] };
+    return { law: [], rules: [], concepts: [], study: { ancient: [], magic: [] }, items: [], foods: [], species: [], glyphs: [], music: [], audio: [] };
   }
   function seed() {
     return {
@@ -35,6 +35,18 @@
         { id: 'seed_rule_1', code: 'C-06', name: '第四下敲门', trigger: '23:00 后，查寝老师敲完三下后的一分钟内出现第四下', effect: '第四下不是老师。不要开门、不要应答、不要从猫眼看；闭眼默数到六十，等走廊灯自己熄灭。', severity: '致命', world: '午夜自习 / 槐阴公寓', law: '以太潮汐常数' },
         { id: 'seed_rule_2', code: 'S-06', name: '罪值重审', trigger: '魂体在第一层乐园停留超过七天', effect: '判官会重新读取生前最后一幕；若罪值仍为 0，可申请转世或留任。申诉期间不得喝孟婆汤。', severity: '世界法则', world: '罪乐园', law: '灵质守恒方程' },
         { id: 'seed_rule_3', code: 'W-06', name: '粮饷三日', trigger: '镇北军粮饷低于三日用量', effect: '军心每日下降 5；士兵可合法拒绝出城作战。解决方式：商会借粮、革命军谈判或裁军。', severity: '危险', world: '烽烟照胆', law: '寒铁矿活性' }
+      ],
+      concepts: [
+        { id: 'seed_concept_1', name: '治愈', code: '#HEAL-2', kind: '状态', tags: '恢复,生命,正面', severity: '中等', scope: '单人', trigger: '服用回温丹 / 接受医者治疗 / 休息满一夜', effect: '生命值 +20，清除一层冻伤或中毒；对致命伤只能稳定，不能复活。', codejs: 'return { hp: +20, remove: ["冻伤","中毒-1"] };' },
+        { id: 'seed_concept_2', name: '死亡', code: '#DEATH', kind: '状态', tags: '终止,灵魂,不可逆', severity: '致命', scope: '单人', trigger: '生命值归零 / 被法老干尸贯穿心脏 / 规则违反到不可挽回', effect: '角色退场，进入地府或结局结算；除非世界存在复活法则，否则不可逆。', codejs: 'return { hp: 0, state: "dead", end: true };' },
+        { id: 'seed_concept_3', name: '中毒', code: '#TOXIC-3', kind: '状态', tags: '毒素,持续伤害,可解', severity: '严重', scope: '单人', trigger: '食用相冲食物 / 被毒物标记的物品命中', effect: '每回合损失 3 点生命；与 #HEAL-2 相冲时治愈效果减半。', codejs: 'return { hp: -3 / turn, stacked: true };' },
+        { id: 'seed_concept_4', name: '繁衍', code: '#BREED', kind: '种族', tags: '延续,种群,长期', severity: '中等', scope: '种族', trigger: '种群数量低于安全线 / 双男主建立稳定关系并选择延续支线', effect: '种群数量 +10%，遗传特征按双亲标签组合；不影响主角恋爱线。', codejs: 'return { population: +10%, inherit: true };' },
+        { id: 'seed_concept_5', name: '致富', code: '#WEALTH-5', kind: '经济', tags: '金钱,经营,势力', severity: '中等', scope: '全城', trigger: '完成商会交易 / 掌控码头 / 系统奖励', effect: '资金 +5000，势力 +1；连续触发三次会引来税务官或黑帮。', codejs: 'return { money: +5000, influence: +1 };' },
+        { id: 'seed_concept_6', name: '诅咒', code: '#CURSE-4', kind: '规则', tags: '负面,持续,可转移', severity: '严重', scope: '单人', trigger: '触碰禁忌遗物 / 毁坏契约 / 进入规则怪谈错误楼层', effect: '随机封印一项能力；每夜损失 1 点理智。可用等价物或真名解除。', codejs: 'return { seal: random(power), sanity: -1 / night };' },
+        { id: 'seed_concept_7', name: '觉醒', code: '#AWAKEN', kind: '状态', tags: '异能,成长,不可逆', severity: '中等', scope: '单人', trigger: '首次接触冰晶核 / 血脉共鸣 / 濒死', effect: '开启异能树，获得一个主属性与一个弱点；觉醒当晚必然引来一次袭击。', codejs: 'return { unlock: "power-tree", threat: +1 };' },
+        { id: 'seed_concept_8', name: '失忆', code: '#AMNESIA', kind: '状态', tags: '记忆,剧情,可恢复', severity: '中等', scope: '单人', trigger: '喝下孟婆汤 / 头部重创 / 规则怪谈第 4 层', effect: '忘记最近三条事件；关键关系保留模糊印象。可借引魂灯找回片段。', codejs: 'return { forget: last(3), keep: ["bond"] };' },
+        { id: 'seed_concept_9', name: '腐化', code: '#CORRUPT-5', kind: '状态', tags: '变异,负面,扩散', severity: '致命', scope: '全城', trigger: '接触深渊水 / 被妖神血溅到 / 连续三夜不处理伤口', effect: '每日腐化 +1；到 5 时转化为敌对物种，可能感染同伴。', codejs: 'return { corrupt: +1, hostile: at(5) };' },
+        { id: 'seed_concept_10', name: '重生', code: '#REBIRTH', kind: '事件', tags: '复活,代价,稀有', severity: '世界级', scope: '全世界', trigger: '集齐三件信物 / 在法老金棺前献祭 / 触发世界终局', effect: '目标复活，但失去一段记忆并背负一条新规则；同一世界只能触发一次。', codejs: 'return { revive: true, cost: "memory+rule", once: true };' }
       ],
       study: {
         ancient: [
@@ -70,7 +82,7 @@
       var raw = JSON.parse(localStorage.getItem(KEY) || 'null');
       if (!raw || typeof raw !== 'object') return empty();
       var d = empty();
-      ['law', 'rules', 'items', 'foods', 'species', 'glyphs', 'music', 'audio'].forEach(function (k) { if (Array.isArray(raw[k])) d[k] = raw[k]; });
+      ['law', 'rules', 'concepts', 'items', 'foods', 'species', 'glyphs', 'music', 'audio'].forEach(function (k) { if (Array.isArray(raw[k])) d[k] = raw[k]; });
       if (raw.study && typeof raw.study === 'object') {
         d.study.ancient = Array.isArray(raw.study.ancient) ? raw.study.ancient : [];
         d.study.magic = Array.isArray(raw.study.magic) ? raw.study.magic : [];
@@ -81,6 +93,7 @@
   var hadStored = !!localStorage.getItem(KEY);
   var DB = load();
   if (!hadStored) DB = seed();
+  else if (!DB.concepts || !DB.concepts.length) { DB.concepts = seed().concepts; save(); }
   var filterState = { law: '', rules: '', study: '', items: '', foods: '', species: '' };
   var activeTab = 'home';
   var activeStudy = 'ancient';
@@ -96,13 +109,14 @@
     var map = {
       statLaw: DB.law.length, statRule: DB.rules.length,
       statItem: DB.items.length + DB.foods.length, statGlyph: DB.glyphs.length,
-      cLaw: DB.law.length, cRule: DB.rules.length, cStudy: study,
+      cLaw: DB.law.length, cRule: DB.rules.length, cConcept: DB.concepts.length, cStudy: study,
       cItem: DB.items.length, cFood: DB.foods.length, cSpecies: DB.species.length,
       cGlyph: DB.glyphs.length, cMusic: DB.music.length + DB.audio.length
     };
     Object.keys(map).forEach(function (k) { var el = document.getElementById(k); if (el) el.textContent = map[k]; });
     var lawCount = $('#lawCount'); if (lawCount) lawCount.textContent = DB.law.length + ' 条';
     var ruleCount = $('#ruleCount'); if (ruleCount) ruleCount.textContent = DB.rules.length + ' 条';
+    var conceptCount = $('#conceptCount'); if (conceptCount) conceptCount.textContent = DB.concepts.length + ' 条';
     var studyCount = $('#studyCount'); if (studyCount) studyCount.textContent = study + ' 条';
     var itemCount = $('#itemCount'); if (itemCount) itemCount.textContent = DB.items.length + ' 件';
     var foodCount = $('#foodCount'); if (foodCount) foodCount.textContent = DB.foods.length + ' 条';
@@ -146,6 +160,20 @@
     }).join('') : '<div class="nx-empty">规则库是空的。写一条「不要回应第四下敲门」试试。</div>';
     applyFilter('rules');
   }
+  function renderConcepts() {
+    var el = $('#conceptList'); if (!el) return;
+    el.innerHTML = DB.concepts.length ? DB.concepts.slice().reverse().map(function (x) {
+      return card(x.name, (x.code || '#CONCEPT') + ' · ' + (x.kind || '概念') + ' · ' + (x.severity || '中等'),
+        (x.trigger ? '<p><b>触发：</b>' + nl(x.trigger) + '</p>' : '') +
+        (x.effect ? '<p><b>影响：</b>' + nl(x.effect) + '</p>' : '') +
+        (x.scope ? '<p><b>范围：</b>' + nl(x.scope) + '</p>' : '') +
+        (x.codejs ? '<p><b>本地代码：</b><code>' + nl(x.codejs) + '</code></p>' : ''),
+        [{ text: x.code || '#CONCEPT', cls: 'code' }, { text: x.kind || '概念' }, { text: x.severity || '中等' }].concat(split(x.tags).map(function (t) { return { text: t, cls: 'acc' }; })),
+        'concepts:' + x.id);
+    }).join('') : '<div class="nx-empty">还没有概念。治愈、死亡、致富、诅咒都可以先写成代码。</div>';
+    applyFilter('concepts');
+  }
+
   function renderStudy() {
     var el = $('#studyList'); if (!el) return;
     var arr = DB.study[activeStudy] || [];
@@ -199,7 +227,7 @@
 
   function applyFilter(key) {
     var q = String(filterState[key] || '').toLowerCase();
-    var ids = { law: 'lawList', rules: 'ruleList', study: 'studyList', items: 'craftList', foods: 'foodList', species: 'speciesList' };
+    var ids = { law: 'lawList', rules: 'ruleList', concepts: 'conceptList', study: 'studyList', items: 'craftList', foods: 'foodList', species: 'speciesList' };
     var el = document.getElementById(ids[key]); if (!el) return;
     $$('.nx-card', el).forEach(function (c) {
       var hit = !q || String(c.getAttribute('data-text') || '').indexOf(q) >= 0;
@@ -208,7 +236,7 @@
     var empty = $('.nx-empty', el);
     if (empty) empty.style.display = '';
   }
-  function renderAll() { renderLaw(); renderRules(); renderStudy(); renderItems(); renderFoods(); renderSpecies(); renderGlyphs(); renderMusic(); renderAudio(); countAll(); }
+  function renderAll() { renderLaw(); renderRules(); renderConcepts(); renderStudy(); renderItems(); renderFoods(); renderSpecies(); renderGlyphs(); renderMusic(); renderAudio(); countAll(); }
 
   function switchTab(tab) {
     activeTab = tab;
@@ -421,12 +449,22 @@
         guitar: ['triangle', 1, 1.4], harp: ['sine', 1.6, 1.8], trumpet: ['sawtooth', 1.8, 1.3], sax: ['square', 1.4, 1.6],
         organ: ['sine', 0.7, 3.6], koto: ['triangle', 1.3, 1.2], cello: ['sawtooth', 0.4, 3.5], violin: ['sawtooth', 2, 3.4],
         accordion: ['square', 0.8, 2.6], suona: ['sawtooth', 2.4, 1.5], pipa: ['triangle', 1.8, 1.1], dizi: ['sine', 1.9, 1.5],
-        qin: ['triangle', 0.5, 2.4], harmonica: ['sine', 1.2, 1.7]
+        qin: ['triangle', 0.5, 2.4], harmonica: ['sine', 1.2, 1.7],
+        sitar: ['sawtooth', 1.15, 1.8], oud: ['triangle', 0.9, 2.4], duduk: ['sine', 1.35, 2.6], didgeridoo: ['sawtooth', 0.22, 3.8],
+        taiko: ['triangle', 0.32, 0.5], tabla: ['triangle', 0.55, 0.35], marimba: ['triangle', 1.5, 1.1], kalimba: ['sine', 2.2, 1.3],
+        gamelan: ['triangle', 1.7, 2.2], theremin: ['sine', 1.75, 3.2], brass: ['sawtooth', 1.25, 2.1], ukulele: ['triangle', 1.9, 0.9],
+        banjo: ['square', 1.55, 1.1], charango: ['triangle', 2.05, 0.95], panflute: ['sine', 1.45, 2.2], shakuhachi: ['sine', 0.85, 3.1],
+        bansuri: ['sine', 1.6, 2.4], gayageum: ['triangle', 1.1, 1.8], dombra: ['triangle', 0.8, 2.0], morinkhuur: ['sawtooth', 0.45, 3.4],
+        balafon: ['triangle', 1.35, 1.4], steelpan: ['triangle', 1.8, 1.7], hurdygurdy: ['sawtooth', 0.7, 3.2]
       };
       Object.keys(TIMBRES).forEach(function (name) {
         if (cfg.instruments.indexOf(name) < 0) return;
         var t = TIMBRES[name];
-        tone(ctx, t[0], root * t[1], t0 + (name === 'harp' || name === 'pipa' ? beat * 0.25 : 0), beat * t[2], mood.gain * 0.42, dest);
+        if (name === 'taiko' || name === 'tabla') {
+          noise(ctx, t0 + (name === 'tabla' ? beat * 2 : 0), 0.14, mood.gain * 0.7, dest);
+        } else {
+          tone(ctx, t[0], root * t[1], t0 + (name === 'harp' || name === 'pipa' ? beat * 0.25 : 0), beat * t[2], mood.gain * 0.42, dest);
+        }
       });
     }
   }
@@ -540,6 +578,13 @@
     DB.rules.push({ id: uid('rule'), code: f.code.value.trim(), name: f.name.value.trim(), trigger: f.trigger.value.trim(), effect: f.effect.value.trim(), severity: f.severity.value, world: f.world.value.trim(), law: f.law.value.trim() });
     save(); f.reset(); renderAll(); toast('规则已写入。');
   });
+  $('#conceptForm').addEventListener('submit', function (e) {
+    e.preventDefault(); var f = e.target;
+    var code = f.code.value.trim();
+    if (!code) code = '#CONCEPT-' + Math.floor(Math.random() * 900 + 100);
+    DB.concepts.push({ id: uid('concept'), name: f.name.value.trim(), code: code, kind: f.kind.value, tags: f.tags.value.trim(), severity: f.severity.value, scope: f.scope.value.trim(), trigger: f.trigger.value.trim(), effect: f.effect.value.trim(), codejs: f.codejs.value.trim(), created: Date.now() });
+    save(); f.reset(); renderAll(); toast('概念已写入，本地推演与 AI 会读取同一代码。');
+  });
   $('#studyForm').addEventListener('submit', function (e) {
     e.preventDefault(); var f = e.target, branch = f.branch.value;
     DB.study[branch].push({ id: uid('study'), type: f.type.value.trim(), name: f.name.value.trim(), rank: f.rank.value.trim(), materials: f.materials.value.trim(), steps: f.steps.value.trim(), effect: f.effect.value.trim(), refs: f.refs.value.trim() });
@@ -611,7 +656,7 @@
     var fr = new FileReader(); fr.onload = function () {
       try {
         var raw = JSON.parse(fr.result); var d = empty();
-        ['law', 'rules', 'items', 'foods', 'species', 'glyphs', 'music', 'audio'].forEach(function (k) { if (Array.isArray(raw[k])) d[k] = raw[k]; });
+        ['law', 'rules', 'concepts', 'items', 'foods', 'species', 'glyphs', 'music', 'audio'].forEach(function (k) { if (Array.isArray(raw[k])) d[k] = raw[k]; });
         if (raw.study) { d.study.ancient = Array.isArray(raw.study.ancient) ? raw.study.ancient : []; d.study.magic = Array.isArray(raw.study.magic) ? raw.study.magic : []; }
         DB = d; save(); renderAll(); toast('中枢数据已导入。');
       } catch (err) { toast('导入失败：不是合法 JSON。'); }
@@ -629,6 +674,15 @@
       imageToData(f, 640, function (data) { if (hidden) hidden.value = data; if (prev) prev.innerHTML = '<img src="' + data + '" alt="">'; toast('图片已压缩并放进本地档案。'); });
     });
   });
+  window.SL_NEXUS = {
+    get: function () { return DB; },
+    concepts: function () { return DB.concepts || []; },
+    conceptByCode: function (code) {
+      var c = String(code || '').toLowerCase();
+      return (DB.concepts || []).filter(function (x) { return String(x.code || '').toLowerCase() === c; })[0] || null;
+    },
+    reload: function () { DB = load(); renderAll(); }
+  };
   if (!hadStored) save();
   renderAll();
   if (location.hash && $('#tab-' + location.hash.slice(1))) switchTab(location.hash.slice(1));

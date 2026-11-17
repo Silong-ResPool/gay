@@ -2,8 +2,14 @@
 window.SL_PACK = {
   id: 'fljg', title: '法老金棺', subtitle: '埃及探险 · 诅咒与机关',
   kicker: 'TOMB OF GOLD · EXPEDITION', theme: 'dungeon', layout: 'cinema', modeLabel: '解谜探险', mode: 'adventure',
-  accent: '#fbbf24', accent2: '#38bdf8', bg: '#0d0903', bg2: '#1a1207', cover: '../../assets/ui/world_fljg.jpg?v=3',
+  accent: '#fbbf24', accent2: '#38bdf8', bg: '#0d0903', bg2: '#1a1207', cover: 'https://aka.doubaocdn.com/s/4xfz6DQ7w9',
   turnsPerDay: 6, eventChance: 0.4, freePlaceholder: '自由行动：点火 / 探路 / 破译 / 搜刮 / 和纳赛尔交谈',
+  bgm: [
+    { id: 'daily', name: '沙海低吟', mood: 'daily', tempo: 56, scale: 'minor', lead: 'oud', pad: 'wind' },
+    { id: 'tense', name: '墓道机关', mood: 'tense', tempo: 86, scale: 'phrygian', lead: 'lowStrings', pad: 'dark' },
+    { id: 'hope', name: '金棺之外', mood: 'hope', tempo: 68, scale: 'major', lead: 'harp', pad: 'warm' },
+    { id: 'horror', name: '干尸复活', mood: 'horror', tempo: 72, scale: 'phrygian', lead: 'bell', pad: 'dark' }
+  ],
   stats: [
     { key: 'torch', label: '火把', init: 6, max: 10, danger: true },
     { key: 'treasure', label: '宝藏', init: 0, max: 12 },

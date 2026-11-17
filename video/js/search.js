@@ -25,8 +25,8 @@ async function searchByAPIAndKeyWord(apiId, query) {
         
         // 添加鉴权参数到代理URL
         const proxiedUrl = await window.ProxyAuth?.addAuthToProxyUrl ? 
-            await window.ProxyAuth.addAuthToProxyUrl(PROXY_URL + encodeURIComponent(apiUrl)) :
-            PROXY_URL + encodeURIComponent(apiUrl);
+            await window.ProxyAuth.addAuthToProxyUrl(PROXY_URL + apiUrl) :
+            PROXY_URL + apiUrl;
         
         const response = await fetch(proxiedUrl, {
             headers: API_CONFIG.search.headers,
@@ -76,8 +76,8 @@ async function searchByAPIAndKeyWord(apiId, query) {
                         
                         // 添加鉴权参数到代理URL
                         const proxiedPageUrl = await window.ProxyAuth?.addAuthToProxyUrl ? 
-                            await window.ProxyAuth.addAuthToProxyUrl(PROXY_URL + encodeURIComponent(pageUrl)) :
-                            PROXY_URL + encodeURIComponent(pageUrl);
+                            await window.ProxyAuth.addAuthToProxyUrl(PROXY_URL + pageUrl) :
+                            PROXY_URL + pageUrl;
                         
                         const pageResponse = await fetch(proxiedPageUrl, {
                             headers: API_CONFIG.search.headers,

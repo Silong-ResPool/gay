@@ -39,6 +39,7 @@
     <button class="nx-tab on" data-tab="home">总览</button>
     <button class="nx-tab" data-tab="law">宇宙法则</button>
     <button class="nx-tab" data-tab="rules">规则系</button>
+    <button class="nx-tab" data-tab="concept">概念代码</button>
     <button class="nx-tab" data-tab="study">学习</button>
     <button class="nx-tab" data-tab="craft">物品与制作</button>
     <button class="nx-tab" data-tab="food">食材与毒性</button>
@@ -53,6 +54,7 @@
       <div class="nx-jump" id="nxJump">
         <button data-tab="law"><b>宇宙法则</b><em id="cLaw">0</em></button>
         <button data-tab="rules"><b>规则系</b><em id="cRule">0</em></button>
+        <button data-tab="concept"><b>概念代码</b><em id="cConcept">0</em></button>
         <button data-tab="study"><b>学习</b><em id="cStudy">0</em></button>
         <button data-tab="craft"><b>物品与制作</b><em id="cItem">0</em></button>
         <button data-tab="food"><b>食材与毒性</b><em id="cFood">0</em></button>
@@ -75,6 +77,7 @@
           <article class="nx-card"><div class="sub">SPECIES</div><h4>图片档案</h4><p>物种、作物、人物支持上传图片，压缩后存本机；人物卡可直接被世界侧栏引用。</p><div class="meta"><span class="nx-chip acc">上传图片</span><span class="nx-chip">人物 / 物种</span></div></article>
           <article class="nx-card"><div class="sub">LANGUAGE</div><h4>笔触坐标永久保存</h4><p>画字形、填含义与组合词，保存笔触顺序和坐标；导出 JSON，下次导入还原。</p><div class="meta"><span class="nx-chip code">STROKE JSON</span><span class="nx-chip">可导出</span></div></article>
           <article class="nx-card"><div class="sub">MUSIC</div><h4>本地合成器</h4><p>多乐器、音阶、情绪与基调；按世界标签自动组合，支持上传音频与导出 WAV。</p><div class="meta"><span class="nx-chip acc">Web Audio</span><span class="nx-chip">WAV 导出</span></div></article>
+          <article class="nx-card"><div class="sub">CONCEPT</div><h4>概念即代码</h4><p>中毒只是预设之一；治愈、死亡、繁衍、致富、诅咒、觉醒都能自定义代码、标签与触发事件，本地推演按代码判定。</p><div class="meta"><span class="nx-chip code">#CONCEPT</span><span class="nx-chip acc">可绑定事件</span></div></article>
           <article class="nx-card"><div class="sub">SYNC</div><h4>一份数据，全站共用</h4><p>所有条目写入 localStorage 的 sl_nexus_v1，世界引擎读取 sl_nexus_v1.items 与规则。</p><div class="meta"><span class="nx-chip code">sl_nexus_v1</span><span class="nx-chip">本机优先</span></div></article>
         </div>
       </section>
@@ -113,6 +116,28 @@
         </form>
         <div class="nx-toolbar"><input class="nx-search" placeholder="搜索规则…" data-filter="rules"><span class="nx-pill" id="ruleCount">0 条</span></div>
         <div class="nx-grid" id="ruleList"></div>
+      </section>
+
+      <section class="nx-section" id="tab-concept">
+        <div class="nx-head"><div><h2>概念代码</h2><p>治愈、死亡、中毒、繁衍、致富、诅咒……每个概念都带代码、标签、触发事件与影响，本地推演和 AI 读取同一套标记。</p></div><span class="nx-pill">CONCEPT</span></div>
+        <div class="nx-note"><b>用法：</b>代码写进食材、物品、事件或世界卡后，引擎会把概念当作硬规则处理；例如 #TOXIC-3 必然判定为中毒，不依赖模型临场发挥。</div>
+        <form class="nx-form" id="conceptForm">
+          <h3>新增概念 / 自定义代码</h3>
+          <div class="nx-fields">
+            <div class="nx-field"><label>概念名</label><input name="name" placeholder="例如：治愈 / 死亡 / 种族延续" required></div>
+            <div class="nx-field"><label>代码</label><input name="code" placeholder="例如：#HEAL-2 / #DEATH / #WEALTH"></div>
+            <div class="nx-field"><label>分类</label><select name="kind"><option>状态</option><option>事件</option><option>种族</option><option>经济</option><option>规则</option><option>自定义</option></select></div>
+            <div class="nx-field"><label>标签</label><input name="tags" placeholder="用逗号分隔，例如：治愈、恢复、正面"></div>
+            <div class="nx-field"><label>严重度 / 强度</label><select name="severity"><option>轻微</option><option>中等</option><option>严重</option><option>致命</option><option>世界级</option></select></div>
+            <div class="nx-field"><label>作用范围</label><input name="scope" placeholder="例如：单人 / 全城 / 种族 / 全世界"></div>
+            <div class="nx-field full"><label>触发事件</label><textarea name="trigger" placeholder="哪些事件会触发？例如：角色生命低于 20 / 食用冰原苔 / 城破"></textarea></div>
+            <div class="nx-field full"><label>影响与后果</label><textarea name="effect" placeholder="会导致什么？恢复、死亡、变异、致富、种族存亡……"></textarea></div>
+            <div class="nx-field full"><label>本地推演代码（可选）</label><textarea name="codejs" placeholder="例如：return hp + 20; 或 { race: '延续', wealth: +10 }。留空则按代码与标签判定。"></textarea></div>
+          </div>
+          <div class="bar"><button class="nx-btn pri" type="submit">写入概念</button></div>
+        </form>
+        <div class="nx-toolbar"><input class="nx-search" placeholder="搜索概念 / 代码 / 标签…" data-filter="concepts"><span class="nx-pill" id="conceptCount">0 条</span></div>
+        <div class="nx-grid" id="conceptList"></div>
       </section>
 
       <section class="nx-section" id="tab-study">
@@ -263,6 +288,29 @@
               <label class="nx-inst"><input type="checkbox" value="dizi"> 笛子</label>
               <label class="nx-inst"><input type="checkbox" value="qin"> 古琴</label>
               <label class="nx-inst"><input type="checkbox" value="harmonica"> 口琴</label>
+              <label class="nx-inst"><input type="checkbox" value="sitar"> 西塔琴</label>
+              <label class="nx-inst"><input type="checkbox" value="oud"> 乌德琴</label>
+              <label class="nx-inst"><input type="checkbox" value="duduk"> 杜杜克</label>
+              <label class="nx-inst"><input type="checkbox" value="didgeridoo"> 迪吉里杜管</label>
+              <label class="nx-inst"><input type="checkbox" value="taiko"> 太鼓</label>
+              <label class="nx-inst"><input type="checkbox" value="tabla"> 塔布拉</label>
+              <label class="nx-inst"><input type="checkbox" value="marimba"> 马林巴</label>
+              <label class="nx-inst"><input type="checkbox" value="kalimba"> 卡林巴</label>
+              <label class="nx-inst"><input type="checkbox" value="gamelan"> 甘美兰</label>
+              <label class="nx-inst"><input type="checkbox" value="theremin"> 特雷门</label>
+              <label class="nx-inst"><input type="checkbox" value="brass"> 铜管</label>
+              <label class="nx-inst"><input type="checkbox" value="ukulele"> 尤克里里</label>
+              <label class="nx-inst"><input type="checkbox" value="banjo"> 班卓琴</label>
+              <label class="nx-inst"><input type="checkbox" value="charango"> 恰朗戈</label>
+              <label class="nx-inst"><input type="checkbox" value="panflute"> 排箫</label>
+              <label class="nx-inst"><input type="checkbox" value="shakuhachi"> 尺八</label>
+              <label class="nx-inst"><input type="checkbox" value="bansuri"> 班苏里</label>
+              <label class="nx-inst"><input type="checkbox" value="gayageum"> 伽倻琴</label>
+              <label class="nx-inst"><input type="checkbox" value="dombra"> 冬不拉</label>
+              <label class="nx-inst"><input type="checkbox" value="morinkhuur"> 马头琴</label>
+              <label class="nx-inst"><input type="checkbox" value="balafon"> 巴拉风</label>
+              <label class="nx-inst"><input type="checkbox" value="steelpan"> 钢鼓</label>
+              <label class="nx-inst"><input type="checkbox" value="hurdygurdy"> 手摇琴</label>
             </div></div>
           </div>
           <div class="bar">
@@ -292,6 +340,6 @@
 <div class="nx-toast" id="nxToast"></div>
 <div class="nx-modal" id="nxModal"><div class="nx-modal-box"><h3 id="modalTitle">数据</h3><pre id="modalBody"></pre><div class="bar"><button class="nx-btn" id="modalClose">关闭</button></div></div></div>
 
-<script src="nexus.js?v=3"></script>
+<script src="nexus.js?v=5"></script>
 </body>
 </html>
