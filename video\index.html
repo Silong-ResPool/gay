@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>巳泷影视 · 全源影院</title>
+<link rel="stylesheet" href="css/neo.css?v=10">
+</head>
+<body>
+<div class="ambient"></div>
+<header class="nav">
+  <button class="nav-back" id="btnBack" title="返回资源库"><i>‹</i></button>
+  <div class="brand">
+    <span class="brand-mk">巳</span>
+    <div><b>巳泷影视</b><em>ALL SOURCES CINEMA</em></div>
+  </div>
+  <nav class="seg">
+    <button class="on" data-view="search">搜索</button>
+    <button data-view="browse">浏览</button>
+  </nav>
+  <div class="nav-actions">
+    <button class="pill" id="srcBtn"><span class="dot"></span>源 <b id="srcCount">0</b></button>
+  </div>
+</header>
+
+<main>
+  <section id="viewSearch" class="view">
+    <div class="hero">
+      <div class="hero-copy">
+        <div class="kicker">SILONG CINEMA <span>·</span> 全源聚合</div>
+        <h1>把整个片库，<br><span>装进一个搜索框</span></h1>
+        <p>内置全部影视接口默认启用。搜索时逐源返回结果，也可以切到「浏览」按源和分类慢慢翻。片源、线路、集数都在本机切换，不跳广告页。</p>
+        <form class="searchbox" id="searchForm" autocomplete="off">
+          <span class="s-ic">⌕</span>
+          <input id="q" placeholder="搜索电影、剧集、动漫、演员…" enterkeyhint="search">
+          <select id="engineMode" class="engine-mode" title="搜索范围">
+            <option value="site">站内</option>
+            <option value="all">全部</option>
+          </select>
+          <button type="submit" id="searchBtn">站内搜索</button>
+        </form>
+        <div class="hot" id="hotChips"></div>
+      </div>
+      <div class="hero-side">
+        <div class="stat"><b id="stSources">0</b><span>内置源</span></div>
+        <div class="stat"><b id="stEnabled">0</b><span>已启用</span></div>
+        <div class="stat"><b id="stCats">0</b><span>分类</span></div>
+        <div class="stat"><b id="stFound">0</b><span>本次结果</span></div>
+      </div>
+    </div>
+
+    <div class="progress" id="searchProg" hidden>
+      <div class="pg-head"><span id="pgText">准备搜索…</span><b id="pgNum">0%</b></div>
+      <div class="pg-track"><i id="pgBar"></i></div>
+    </div>
+
+    <section id="homeSec">
+      <div class="sec-head"><h2>热门推荐</h2><em id="homeSrc">正在连接源…</em></div>
+      <div class="grid" id="homeGrid"></div>
+    </section>
+
+    <section id="resultSec" hidden>
+      <div class="sec-head"><h2 id="resultTitle">搜索结果</h2><em id="resultMeta"></em></div>
+      <div class="grid" id="resultGrid"></div>
+      <div class="empty" id="resultEmpty" hidden>没有找到结果，换个关键词，或到「浏览」里按分类翻。</div>
+    </section>
+  </section>
+
+  <section id="viewBrowse" class="view" hidden>
+    <div class="browse-head">
+      <div><div class="kicker">BROWSE BY SOURCE</div><h1>按源 · 按分类浏览</h1></div>
+      <div class="browse-pick">
+        <label>选择源</label>
+        <select id="browseSrc"></select>
+      </div>
+    </div>
+    <div class="browse-meta" id="browseMeta">正在读取源分类…</div>
+    <div class="chips" id="browseCats"></div>
+    <div class="grid" id="browseGrid"></div>
+    <div class="more"><button class="btn ghost" id="moreBtn" hidden>加载更多</button></div>
+  </section>
+</main>
+
+<div class="overlay" id="overlay" hidden></div>
+
+<aside class="src-panel" id="srcPanel" hidden>
+  <div class="sp-head">
+    <div><b>播放源管理</b><em>默认全部启用 · 可自由勾选</em></div>
+    <button class="x" id="spClose">✕</button>
+  </div>
+  <div class="sp-tools">
+    <input id="spSearch" placeholder="筛选源名称 / 域名…">
+    <div class="sp-btns">
+      <button data-src="all">全选</button>
+      <button data-src="none">全不选</button>
+      <button data-src="maccms">只选采集源</button>
+      <button data-src="reset">恢复默认</button>
+    </div>
+  </div>
+  <div class="sp-body" id="spBody"></div>
+</aside>
+
+<div class="modal" id="detail" hidden>
+  <div class="modal-card" id="detailCard"></div>
+</div>
+
+<div id="toast"></div>
+
+<script src="js/sources_data.js"></script>
+<script src="js/config.js?v=10"></script>
+<script src="js/api.js?v=10"></script>
+<script src="js/xpath.js?v=9"></script>
+<script src="js/neo.js?v=10"></script>
+<link rel="stylesheet" href="assets/ui/theme-lock.css?v=11">
+</body>
+</html>

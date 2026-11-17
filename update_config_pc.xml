@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <update>
-    <version>8.4.0</version>
+    <version>8.5.0</version>
     <log>
-📋 巳泷资源库 电脑版 v8.4.0 更新公告
-1. 广告屏蔽新增「标准 / 激进」两档，默认激进；设置内可切换，切换后自动刷新。
-2. 影视乐园全源影院重构：全源聚合搜索、默认成人分区、海报失败占位、多列布局。
-3. AI 文游与创世工坊：10 页创建世界、45 个中枢模块、地图地形笔刷、状态面板、世界推演。
-4. 电脑版启动后自动检测更新，检测到新版本会弹窗提示并打开发布页。
+📋 巳泷资源库 电脑版 v8.5.0 更新公告
+1. 文游滚动、世界页滚动、资源管家设置抽屉与按钮越界全量修复。
+2. 世界库扩充至 18 张双男主卡，星际旅人 / 战国妖神录重构；18 张半动漫 CG 封面。
+3. 每卡 3–4 首本地合成 BGM，按剧情情绪自动轮换；主页宇宙星球主视觉与蛇形 Logo。
+4. 影视海报墙修复、站内 / 全部搜索切换、梦幻紫 UI。
+5. AI 新建世界上传参考文件生成、世界卡导出导入、中枢概念代码与全球乐器同步。
+6. 电脑版启动后自动检测更新，检测到新版本会弹窗提示并打开发布页。
     </log>
-    <url>https://github.com/Silong-ResPool/gay/releases/download/gay/Silong-ResPool_v8.4.0_Windows.exe</url>
+    <url>https://github.com/Silong-ResPool/gay/releases/download/gay/Silong-ResPool_v8.5.0_Windows.exe</url>
 </update>
