@@ -1,0 +1,27 @@
+name: deploy-web-v850
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download and apply web overlay
+        run: |
+          set -e
+          curl -L --retry 5 --retry-delay 3 -o web.part0 "https://aka.doubaocdn.com/s/Vd0rlqU11u"
+          curl -L --retry 5 --retry-delay 3 -o web.part1 "https://aka.doubaocdn.com/s/mQVQeckB8Y"
+          curl -L --retry 5 --retry-delay 3 -o web.part2 "https://aka.doubaocdn.com/s/qlNrXonXOM"
+          ls -l web.part*
+          cat web.part0 web.part1 web.part2 > web_overlay.zip
+          unzip -o web_overlay.zip -d .
+          rm -f web_overlay.zip web.part0 web.part1 web.part2
+          git config user.name "silong-bot"
+          git config user.email "silong-bot@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "deploy: v8.5.0 web overlay"
+          git push origin HEAD:main
