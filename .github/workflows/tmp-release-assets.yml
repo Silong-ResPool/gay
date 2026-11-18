@@ -11,25 +11,29 @@ jobs:
       - uses: actions/checkout@v4
       - name: Download chunk manifest
         run: curl -L --retry 5 --retry-delay 3 -o chunks.json "https://aka.doubaocdn.com/s/Py7U7WS5vb"
-      - name: Download and assemble assets
+      - name: Download and assemble assets in parallel
         run: |
-          set -e
-          for key in android harmony windows; do
-            n=$(jq -r ".${key} | length" chunks.json)
-            echo "$key chunks: $n"
-            rm -f ${key}.part*
-            for i in $(seq 0 $((n-1))); do
-              idx=$(printf '%02d' $i)
-              url=$(jq -r ".${key}[$i]" chunks.json)
-              echo "$key $idx $url"
-              curl -L --retry 5 --retry-delay 3 -o ${key}.part${idx} "$url"
-            done
-            cat ${key}.part* > ${key}.bin
-            rm -f ${key}.part*
-          done
-          mv android.bin Silong-ResPool_v8.5.0_Android.apk
-          mv harmony.bin Silong-ResPool_v8.5.0_Harmony.apk
-          mv windows.bin Silong-ResPool_v8.5.0_Windows.exe
+          python3 - <<'PY'
+          import json, urllib.request, concurrent.futures, pathlib, shutil
+          data=json.load(open('chunks.json'))
+          for key, urls in data.items():
+              outdir=pathlib.Path(key); outdir.mkdir(exist_ok=True)
+              def fetch(item):
+                  i,url=item
+                  path=outdir/f'part{i:02d}'
+                  req=urllib.request.Request(url,headers={'User-Agent':'silong-release'})
+                  with urllib.request.urlopen(req,timeout=180) as r, open(path,'wb') as f:
+                      shutil.copyfileobj(r,f)
+                  print(key,i,path.stat().st_size,flush=True)
+              with concurrent.futures.ThreadPoolExecutor(max_workers=12) as ex:
+                  list(ex.map(fetch, enumerate(urls)))
+              with open(key+'.bin','wb') as out:
+                  for i in range(len(urls)):
+                      out.write((outdir/f'part{i:02d}').read_bytes())
+              print(key,'combined',pathlib.Path(key+'.bin').stat().st_size,flush=True)
+          for key,name in [('android','Silong-ResPool_v8.5.0_Android.apk'),('harmony','Silong-ResPool_v8.5.0_Harmony.apk'),('windows','Silong-ResPool_v8.5.0_Windows.exe')]:
+              pathlib.Path(key+'.bin').replace(name)
+          PY
           ls -lh Silong-ResPool_v8.5.0_*
       - name: Upload release assets
         env:
