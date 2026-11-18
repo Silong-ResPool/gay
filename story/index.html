@@ -423,6 +423,7 @@ function chat(messages,opt){
     }).then(function(j){
       var t=j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
       if(!t)throw new Error('API 返回空内容');
+      try{window.__SL_LAST_AI=t}catch(e){}
       aiCachePut(cacheKey,t);
       return t;
     }).catch(function(e){clearTimeout(timer);return attempt()});
@@ -473,6 +474,7 @@ function renderHome(){
     '<p>内置世界卡直接进入；创世工坊里的设定可以一键变成剧情互动小说或 AI 互动小说，正常排在书架上。封面、角色立绘、物品图鉴与地图都能自定义，存档全部在本机。</p>'+
     '<div class="acts"><button class="btn pri" data-a="create"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>AI 新建世界</button>'+
     '<button class="btn gho" data-a="import"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 21h16"/></svg>导入世界卡</button>'+
+    '<button class="btn gho" data-a="tpl" title="下载 .slcard.json 模板，按板块填写后导入">下载模板</button>'+
     '<button class="btn gho" data-a="oc"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>创世工坊</button></div>'+
     '<div class="hstats"><span><b id="stWorlds">0</b>个世界</span><span><b id="stMine">0</b>个自建</span><span><b id="stNovel">0</b>本互动小说</span><span><b>本地</b>存档</span><span><b>AI</b>续写</span></div></section>';
   h+='<div class="chips">'+['all','builtin','novel','ai','科幻','古风','成人向','mine'].map(function(k){
@@ -988,8 +990,8 @@ function aiGenerateAll(){
   var sys='你是「巳泷文游」的世界卡构建师。所有世界必须是双男主/BL：主角与男二及配角感情线为主，不写男女主恋爱；不得露骨；父母等生育背景角色可以存在。只输出严格 JSON，不要 Markdown、不要解释。';
   var schema='{"basic":{"name":"世界名","era":"时代","tagline":"标语","desc":"简介","genre":"玄幻/仙侠/都市/悬疑/科幻/历史/校园/言情/无限流/自定义"},"world":{"world":"世界规则与力量体系","geo":"地理气候","conflict":"主要冲突"},"chars":[{"name":"","role":"","race":"","persona":"","goal":"","secret":"","desc":"","gender":"男"}],"factions":[{"name":"","type":"","leader":"","goal":"","creed":""}],"places":[{"name":"","type":"","climate":"","resources":"","desc":""}],"events":[{"era":"","time":"","title":"","cat":"","desc":""}],"species":[{"name":"","type":"","desc":""}],"flora":[{"name":"","type":"","effect":"","desc":""}],"foods":[{"name":"","type":"","taste":"","effect":"","desc":""}],"items":[{"name":"","type":"","effect":"","desc":""}],"economy":[{"name":"","type":"","desc":""}],"faith":[{"name":"","type":"","desc":""}],"society":[{"name":"","type":"","desc":""}],"tech":[{"name":"","type":"","desc":""}],"careers":[{"name":"","type":"","desc":""}],"powers":[{"name":"","type":"","desc":""}],"langs":[{"name":"","type":"","desc":""}],"stories":[{"name":"","type":"","status":"","desc":""}],"lore":[{"title":"","cat":"","content":""}],"worldbook":[{"keys":"","content":""}],"conflicts":[{"name":"","type":"","parties":"","desc":""}]}';
   var user='参考文件：'+(draft.refName||'')+'\n\n参考内容：\n'+draft.refText.slice(0,12000)+
-    '\n\n请读取以上参考内容，参考内置世界卡模板生成一整张可直接游玩的世界卡。要求：\n1. 世界观完整，主角与男二感情线清晰，至少 2 个可攻略男角色；\n2. 至少 8 个地点、6 个事件、4 条剧情线、3 个势力、4 个结局方向；\n3. 至少有 3 个日常/紧张/恐怖/欢乐/剧情触发的音乐情绪标签；\n4. 图鉴至少 3 个物种、3 个植物、3 个食物、3 个物品；\n5. 只输出这个 JSON：'+schema;
-  chat([{role:'system',content:sys},{role:'user',content:user}],{temp:0.88,max:3200}).then(function(txt){
+    '\n\n请读取以上参考内容，参考内置世界卡模板生成一整张可直接游玩的世界卡。要求：\n1. 世界观完整，主角与男二感情线清晰，至少 2 个可攻略男角色；\n2. 至少 8 个地点、6 个事件、4 条剧情线、3 个势力、4 个结局方向；\n3. 至少有 3 个日常/紧张/恐怖/欢乐/剧情触发的音乐情绪标签；\n4. 图鉴至少 3 个物种、3 个植物、3 个食物、3 个物品；\n5. 字段尽量简短，总输出不超过 6000 tokens；只输出这个 JSON：'+schema;
+  chat([{role:'system',content:sys},{role:'user',content:user}],{temp:0.88,max:6000}).then(function(txt){
     var j=parseJson(txt);
     if(!j)throw new Error('AI 返回格式不对，请再试一次');
     if(j.basic){
@@ -1068,8 +1070,13 @@ function saveWorldNow(){
     localStorage.setItem('sl_oc_last',ocId);
   }catch(e){toast('世界中枢保存失败：本地空间不足')}
   var w={id:uid(),title:name,genre:draft.genre||'玄幻',hero:(d.chars[0]&&d.chars[0].name)||'',
-    world:worldDesc,chars:oc.chars,log:[{type:'narr',text:(draft.text?('《'+name+'》的故事开始了。'):(worldDesc||'故事开始了。'))}],
+    world:worldDesc,desc:worldDesc,subtitle:d.basic.tagline||'',era:d.basic.era||'',
+    chars:oc.chars,log:[{type:'narr',text:(draft.text?('《'+name+'》的故事开始了。'):(worldDesc||'故事开始了。'))}],
     choices:['先观察四周','找个人谈谈','跟随直觉行动'],turn:0,created:now(),updated:now(),ocId:ocId};
+  ['factions','places','events','species','flora','foods','items','economy','faith','society','tech','careers','powers','langs','stories','lore','worldbook','conflicts'].forEach(function(k){
+    if(Array.isArray(oc[k])&&oc[k].length)w[k]=oc[k];
+  });
+  w.data=d; w.startItems=(d.items||[]).slice(0,3).map(function(x,i){return {id:x.id||('i'+i),qty:1}});
   if(draft.cover)S.covers[w.id]=draft.cover;
   S.mine.unshift(w);saveMine();
   if(draft.cover)saveCovers();
@@ -1101,6 +1108,7 @@ function doGenerate(){ saveWorldNow(); }
 function openMine(w){
   if(!w)return;
   if(w.mode==='script'){openNovel(w);return}
+  if(w.ocId){ location.href='worlds/imported.html?id='+encodeURIComponent(w.id)+'&mine=1'; return; }
   S.cur=w;S.view='play';renderPlay();
 }
 function renderPlay(){
@@ -1408,6 +1416,21 @@ function archBody(d){
 function novelRefName(d,ref,id){var arr=d[ref]||[];for(var i=0;i<arr.length;i++)if(String(arr[i].id)===String(id))return arr[i].name||'';return''}
 
 /* ---------------- 导入 / 导出 ---------------- */
+function downloadCardTemplate(){
+  var t={slcard:true,_说明:'按下面板块填写后保存为 .slcard.json，导入后会使用与内置卡一致的世界引擎。chars/items/places/factions/events 可继续增加对象。',
+    title:'我的世界',subtitle:'双男主 · 自定义世界',genre:'自定义',tags:['双男主','自定义'],desc:'一句话介绍这个世界。',
+    world:'世界观总述：时代、地点、核心冲突、双男主关系。',cover:'',
+    chars:[{name:'男主',role:'主角',persona:'性格与说话方式',background:'来历',ability:'能力',look:'外貌'}],
+    items:[{name:'信物',type:'关键物品',desc:'作用与来历'}],
+    places:[{name:'起点',desc:'地点描述',unlocked:true}],
+    factions:[{name:'势力名',type:'阵营',goal:'目标'}],
+    events:[{title:'开场事件',desc:'会发生什么'}],
+    opening:'故事从这里开始。',choices:['先观察四周','和对方交谈','跟随直觉行动'],
+    startItems:[],bgm:[{name:'日常',mood:'daily',tempo:66,scale:'minor',lead:'piano',pad:'soft'},{name:'紧张',mood:'tense',tempo:96,scale:'phrygian',lead:'lowStrings',pad:'pulse'},{name:'希望',mood:'hope',tempo:74,scale:'major',lead:'strings',pad:'warm'}]};
+  var b=new Blob([JSON.stringify(t,null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='巳泷世界卡模板.slcard.json';a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},2000);
+  toast('模板已下载；填好板块后点「导入世界卡」即可。');
+}
 function importCard(){
   $('importFile').click();
 }
@@ -1518,6 +1541,7 @@ document.addEventListener('click',function(e){
   if(a==='home')renderHome();
   else if(a==='create'){draft=blankDraft();renderCreate(false)}
   else if(a==='import'){importCard()}
+  else if(a==='tpl'){downloadCardTemplate()}
   else if(a==='gen'){doGenerate()}
   else if(a==='enter'){enterWorld(id)}
   else if(a==='play'){var m=findCard(id);if(m&&m.kind==='mine')openMine(m.w)}
@@ -2018,6 +2042,13 @@ body{background:
   .wcard .cover{height:88px}
   .wcard h3{font-size:11.5px}
 }
+</style>
+<style id="sl-story-scroll-fix">
+/* 2026-11-17：书架页改为整页滚动，避免固定 #app + 内部 main 在手机/平板上卡住 */
+html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important}
+#app{position:relative!important;inset:auto!important;height:auto!important;min-height:100vh!important;max-height:none!important;display:block!important;overflow:visible!important}
+.top{position:fixed!important;left:0!important;right:0!important;top:0!important}
+main{flex:none!important;height:auto!important;min-height:0!important;overflow:visible!important;padding-top:74px!important}
 </style>
 </body>
 </html>

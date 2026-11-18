@@ -51,7 +51,39 @@
     gamelan: { type: 'triangle', gain: .1, decay: .7 },
     marimba: { type: 'triangle', gain: .12, decay: .35 }
   };
-  function bgmList() { return (P.bgm && P.bgm.length ? P.bgm : BGM_DEFAULT); }
+  function nexusBgm() {
+    try {
+      var d = JSON.parse(localStorage.getItem('sl_nexus_v1') || '{}') || {};
+      var list = Array.isArray(d.music) ? d.music : [];
+      var names = [P.title, P.id, P.genre, P.subtitle].concat(P.tags || []).filter(Boolean).map(function (x) { return String(x).toLowerCase(); });
+      var moodMap = { joy: 'joy', bleak: 'bleak', war: 'tense', chill: 'daily', romance: 'hope', mystic: 'horror' };
+      return list.filter(function (m) {
+        var tag = String(m.tag || '').toLowerCase();
+        if (!tag) return false;
+        return names.some(function (n) { return n && (n.indexOf(tag) >= 0 || tag.indexOf(n) >= 0); });
+      }).slice(0, 6).map(function (m, i) {
+        var lead = (m.instruments && m.instruments[0]) || 'piano';
+        return { id: 'nx' + i, name: m.tag || '中枢音乐', mood: moodMap[m.mood] || 'daily', tempo: m.tempo || 80, scale: m.scale || 'minor', lead: lead, pad: m.mood === 'mystic' ? 'dark' : m.mood === 'chill' ? 'waves' : 'warm' };
+      });
+    } catch (e) { return []; }
+  }
+  function defaultBgmForWorld() {
+    var g = String((P.genre || '') + ' ' + (P.theme || '') + ' ' + (P.subtitle || '')).toLowerCase();
+    var lead = /古风|仙|妖|武侠|战国|修真/.test(g) ? 'guqin' : /科幻|星际|太空/.test(g) ? 'synth' : /恐怖|怪谈|地府|规则/.test(g) ? 'choir' : /校园|都市|恋|青春/.test(g) ? 'guitar' : 'piano';
+    var pad = /恐怖|怪谈|地府|规则/.test(g) ? 'dark' : /科幻|星际|太空/.test(g) ? 'pulse' : /古风|仙|妖|武侠|战国|修真/.test(g) ? 'mist' : 'soft';
+    var sc = /恐怖|怪谈|地府|规则/.test(g) ? 'phrygian' : /古风|仙|妖|武侠|战国|修真/.test(g) ? 'pentatonic' : 'minor';
+    return [
+      { id:'daily', name:'日常 · ' + P.title, mood:'daily', tempo:64, scale:sc, lead:lead, pad:pad },
+      { id:'tense', name:'暗涌 · ' + P.title, mood:'tense', tempo:96, scale:'phrygian', lead:'lowStrings', pad:'pulse' },
+      { id:'hope', name:'微光 · ' + P.title, mood:'hope', tempo:76, scale:'major', lead:'strings', pad:'warm' },
+      { id:'horror', name:'惊夜 · ' + P.title, mood:'horror', tempo:58, scale:'phrygian', lead:'choir', pad:'dark' }
+    ];
+  }
+  function bgmList() {
+    var base = (P.bgm && P.bgm.length ? P.bgm : defaultBgmForWorld());
+    var nx = nexusBgm();
+    return nx.length ? nx.concat(base).slice(0, 10) : base;
+  }
   function trackFor(mood) {
     var list = bgmList();
     var hit = list.filter(function (t) { return t.mood === mood; })[0];
@@ -131,6 +163,7 @@
     if (n) n.textContent = BGM.muted ? '音乐' : (BGM.track ? BGM.track.name : '音乐');
     b.title = BGM.track ? 'BGM：' + BGM.track.name : '背景音乐';
   }
+  function nl(v) { return esc(v).replace(/\n/g, '<br>'); }
   function esc(v) {
     return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -161,7 +194,7 @@
     return { id: id, name: id, desc: '未归档物品', tags: [] };
   }
   function defaultState() {
-    var st = { v: 1, id: P.id, day: 1, turn: 0, scene: P.start, place: '', stats: {}, rel: {}, flags: {}, items: [], skills: [], visited: {}, eventsDone: {}, log: [], lastEvent: null, ended: null, entered: '' };
+    var st = { v: 1, id: P.id, day: 1, turn: 0, scene: P.start, place: '', stats: {}, rel: {}, flags: {}, items: [], skills: [], visited: {}, eventsDone: {}, log: [], lastEvent: null, ended: null, entered: '', aiNarrative: '', aiChoices: [], aiMeta: null };
     (P.stats || []).forEach(function (x) { st.stats[x.key] = (x.init == null ? 0 : x.init); });
     (P.relations || []).forEach(function (x) { st.rel[x.key] = (x.init == null ? 0 : x.init); });
     (P.startItems || []).forEach(function (x) { addItem(st, x.id, x.qty || 1); });
@@ -293,6 +326,7 @@
   }
   function doChoice(c, silent) {
     if (!c) return;
+    S.aiNarrative = ''; S.aiChoices = [];
     if (c.eff) apply(c.eff);
     log('选择：' + resolve(c.label, S));
     if (c.next) go(c.next);
@@ -320,28 +354,159 @@
     save(); render();
     toast('自动推演 ' + (S.turn - startTurn) + ' 回合，状态与关系已更新。');
   }
-  function freeAct(text) {
-    text = String(text || '').trim();
-    if (!text) return;
-    var hit = null, pool = P.freeActions || [];
-    for (var i = 0; i < pool.length; i++) {
-      var a = pool[i];
-      if ((a.keys || []).some(function (k) { return text.indexOf(k) >= 0; })) { hit = a; break; }
+
+  /* ---------- AI 自由行动 ---------- */
+  var AI_BUSY = false;
+  function aiB64(v){ try{ return decodeURIComponent(escape(window.atob(String(v||'')))); }catch(e){ try{ return window.atob(String(v||'')); }catch(_){ return ''; } } }
+  function aiCfg(){
+    var c={base:'',key:'',model:'',temp:.9};
+    try{
+      var A=window.SL_API||window.SL_API_NV;
+      if(A){ c.base=aiB64(A.b||''); c.key=aiB64((A.k&&A.k[0])||''); c.model=aiB64(A.m||''); }
+    }catch(e){}
+    try{
+      var u=JSON.parse(localStorage.getItem('sl_story_cfg_v1')||'{}')||{};
+      if(u.base)c.base=u.base; if(u.key)c.key=u.key; if(u.model)c.model=u.model; if(u.temp)c.temp=u.temp;
+    }catch(e){}
+    try{ c.custom=!!(JSON.parse(localStorage.getItem('sl_story_cfg_v1')||'{}')||{}).key; }catch(e){ c.custom=false; }
+    return c;
+  }
+  function aiUrl(base){
+    var b=String(base||'').replace(/\/+$/,'');
+    if(!/\/v\d+$/.test(b)) b+='/v1';
+    return b+'/chat/completions';
+  }
+  function aiParse(txt){
+    var t=String(txt||'').trim().replace(/^```(?:json)?/i,'').replace(/```$/,'').trim();
+    var a=t.indexOf('{'), b=t.lastIndexOf('}');
+    if(a>=0&&b>a) t=t.slice(a,b+1);
+    try{ return JSON.parse(t); }catch(e){ return null; }
+  }
+  function aiCacheGet(k){
+    try{ var o=JSON.parse(localStorage.getItem('sl_world_ai_cache_v1')||'{}')||{}; return o[k]||null; }catch(e){ return null; }
+  }
+  function aiCachePut(k,v){
+    try{
+      var o=JSON.parse(localStorage.getItem('sl_world_ai_cache_v1')||'{}')||{};
+      o[k]={v:v,at:Date.now()};
+      var ks=Object.keys(o); if(ks.length>120) ks.slice(0,ks.length-120).forEach(function(x){delete o[x]});
+      localStorage.setItem('sl_world_ai_cache_v1',JSON.stringify(o));
+    }catch(e){}
+  }
+  function aiKey(text){
+    var st={scene:S.scene,turn:S.turn,day:S.day,stats:S.stats,rel:S.rel,items:S.items,flags:S.flags};
+    var raw=text+'|'+JSON.stringify(st);
+    var h=2166136261; for(var i=0;i<raw.length;i++){h^=raw.charCodeAt(i);h=Math.imul(h,16777619)}
+    return 'w'+(h>>>0).toString(36);
+  }
+  function aiWorldBrief(){
+    var sc=P.scenes[S.scene]||{};
+    var choices=availableChoices().map(function(c){return resolve(c.label,S)});
+    return {
+      world:P.title, subtitle:P.subtitle, genre:P.genre||P.kicker||'', setting:P.setting||P.intro||'',
+      rule:(P.rules||[]).map(function(r){return typeof r==='string'?r:(r.name+':'+(r.effect||r.trigger||''))}).slice(0,8),
+      place:resolve(sc.place||S.place||'',S), chapter:sc.chapter||'', sceneText:resolve(sc.text||'',S),
+      choices:choices, stats:S.stats, relations:S.rel, items:S.items, day:S.day, turn:S.turn, flags:S.flags,
+      mode:P.modeLabel||'双男主剧情推演', playerRole:P.playerRole||'主角', loveInterest:P.loveInterest||''
+    };
+  }
+  function aiPrompt(text){
+    return [
+      '你是「巳泷世界引擎」的剧情导演。世界观与人物必须严格服从下面提供的世界卡，不得改名、不得换CP、不得改成男女恋爱。',
+      '所有世界为双男主/BL，允许克制的暧昧、信任、占有欲与情感张力，但不写露骨性内容。',
+      '玩家输入的是自由行动，不要求命中关键词。你要根据行动与当前状态生成一段真正推进剧情的中文叙事，并给出 3 个下一步行动。',
+      '只输出 JSON，不要解释，不要 Markdown。格式：',
+      '{"narration":"120-240字剧情，承接玩家行动，写出环境、人物反应、风险或情感变化","effects":{"stats":{"键":数值},"rel":{"键":数值},"addItems":[{"id":"物品id","qty":1}],"addSkills":["技能id"],"flags":{"键":true},"log":"一句系统记录"},"choices":[{"label":"下一步行动","hint":"预期风险或收益"},{"label":"...","hint":"..."},{"label":"...","hint":"..."}]}',
+      'effects 只能用世界卡已有的属性键与关系键；没有合适物品时 addItems 留空。数值要小，单次一般 -8 到 +8。若行动会导致死亡或结局，把对应属性推到边界并在 narration 里明确写出。',
+      '玩家行动：'+text,
+      '世界卡：'+JSON.stringify(aiWorldBrief())
+    ].join('\n');
+  }
+  function aiApply(data,text){
+    if(!data||typeof data!=='object') throw new Error('AI 返回格式不正确');
+    var narration=String(data.narration||'').trim();
+    if(!narration) throw new Error('AI 没有生成剧情');
+    var eff=data.effects||{};
+    // 只接受世界卡定义过的属性与关系，防止 AI 写入未知键
+    var statKeys=(P.stats||[]).map(function(x){return x.key});
+    var relKeys=(P.relations||[]).map(function(x){return x.key});
+    var clean={stats:{},rel:{},addItems:[],addSkills:[],flags:{},log:''};
+    if(eff.stats) Object.keys(eff.stats).forEach(function(k){ if(statKeys.indexOf(k)>=0) clean.stats[k]=Number(eff.stats[k])||0; });
+    if(eff.rel) Object.keys(eff.rel).forEach(function(k){ if(relKeys.indexOf(k)>=0) clean.rel[k]=Number(eff.rel[k])||0; });
+    if(Array.isArray(eff.addItems)) clean.addItems=eff.addItems.filter(function(x){return x&&x.id}).slice(0,3);
+    if(Array.isArray(eff.addSkills)) clean.addSkills=eff.addSkills.filter(Boolean).slice(0,2);
+    if(eff.flags&&typeof eff.flags==='object') clean.flags=eff.flags;
+    if(eff.log) clean.log=String(eff.log).slice(0,120);
+    apply(clean);
+    S.aiNarrative=narration;
+    S.aiChoices=(Array.isArray(data.choices)?data.choices:[]).filter(function(c){return c&&c.label}).slice(0,3).map(function(c){return {label:String(c.label).slice(0,60),hint:String(c.hint||'').slice(0,60)}});
+    S.aiMeta={at:Date.now(),text:text};
+    log('AI 剧情：'+text);
+    stepTime();
+  }
+  function freeAct(text){
+    text=String(text||'').trim();
+    if(!text) return;
+    if(AI_BUSY){ toast('上一条行动还在推演，稍等。'); return; }
+    var c=aiCfg();
+    if(!c.base||!c.key){ localFreeAct(text); toast('未配置 AI API，已用本地规则结算。可在书架右上角配置，或到资源管家注册免费 API。'); return; }
+    var cacheKey=aiKey(text);
+    var cached=aiCacheGet(cacheKey);
+    if(cached&&cached.v){ try{ aiApply(cached.v,text); save(); render(); toast('AI 剧情已生成（本地缓存）。'); return; }catch(e){} }
+    if(!c.custom&&window.SL_AI_LIMIT&&!window.SL_DEV){
+      var q=SL_AI_LIMIT.take();
+      if(!q.ok){ localFreeAct(text); toast('本设备内置 API 额度已用完（5 分钟最多 20 次）。请更换 API，或到资源管家注册免费 API；自填 Key 不受限制。冷却约 '+Math.ceil((q.resetIn||0)/1000)+' 秒。'); return; }
     }
-    if (hit) {
-      apply(hit.eff);
-      log('行动：' + text);
-      if (hit.text) log(resolve(hit.text, S));
-      if (hit.next) go(hit.next);
+    AI_BUSY=true;
+    var form=$('wgFreeForm'), btn=form?form.querySelector('button'):null;
+    if(btn){ btn.disabled=true; btn.textContent='AI 推演中…'; }
+    if(form){ var inp=form.querySelector('input'); if(inp) inp.disabled=true; }
+    var messages=[{role:'system',content:String(window.SL_INJECTION||'').trim()||'你是互动小说导演，遵守世界卡设定。'}].concat([{role:'user',content:aiPrompt(text)}]);
+    var body=JSON.stringify({model:c.model||'agnes-3.0-flash',messages:messages,temperature:parseFloat(c.temp)||.9,max_tokens:1200,stream:false});
+    var url=aiUrl(c.base),ctl=new AbortController(),timer=setTimeout(function(){try{ctl.abort()}catch(e){}},85000);
+    fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+c.key},body:body,signal:ctl.signal})
+      .then(function(r){ clearTimeout(timer); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+      .then(function(j){
+        var raw=j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
+        if(!raw) throw new Error('API 返回空内容');
+        var data=aiParse(raw);
+        if(!data) throw new Error('AI 返回的不是 JSON');
+        aiCachePut(cacheKey,data);
+        aiApply(data,text);
+        save(); render();
+        toast('AI 已根据你的行动生成新剧情。');
+      })
+      .catch(function(err){
+        clearTimeout(timer);
+        localFreeAct(text);
+        var m=String(err&&err.message||'');
+        if(/HTTP 401|HTTP 403/.test(m)) toast('API 调用失败：Key 无效或无权限。请更换 API，或到资源管家注册免费 API。');
+        else if(/HTTP 429/.test(m)) toast('API 调用失败：请求过于频繁或额度用尽。内置 API 为 5 分钟最多 20 次；自填 Key 不受限制。');
+        else if(/abort|timeout/i.test(m)) toast('API 调用超时，已用本地规则结算。请检查网络或更换 API。');
+        else toast('AI 调用失败，已用本地规则结算：'+m);
+      })
+      .then(function(){ AI_BUSY=false; if(btn){ btn.disabled=false; btn.textContent='执行'; } if(form){ var i2=form.querySelector('input'); if(i2) i2.disabled=false; } });
+  }
+  function localFreeAct(text){
+    var hit=null,pool=P.freeActions||[];
+    for(var i=0;i<pool.length;i++){
+      var a=pool[i];
+      if((a.keys||[]).some(function(k){return text.indexOf(k)>=0})){ hit=a; break; }
+    }
+    S.aiNarrative=''; S.aiChoices=[];
+    if(hit){
+      apply(hit.eff); log('行动：'+text);
+      if(hit.text) log(resolve(hit.text,S));
+      if(hit.next) go(hit.next);
       stepTime();
-    } else {
-      apply(P.defaultAction || { stats: { sanity: -1 }, log: '你在世界里试着做了一件小事，环境没有明显变化。' });
-      log('行动：' + text);
+    }else{
+      apply(P.defaultAction||{stats:{sanity:-1},log:'你在世界里试着做了一件小事，环境没有明显变化。'});
+      log('行动：'+text);
       stepTime();
     }
     save(); render();
-    toast('行动已结算，时间推进。');
   }
+
   function restart(silent) {
     if (!silent && !confirm('重开这个世界？当前存档会被覆盖。')) return;
     S = defaultState();
@@ -377,7 +542,7 @@
         var n = Math.round((v / (x.max || 100)) * 5);
         var hearts = '';
         for (var i = 0; i < 5; i++) hearts += i < n ? '♥' : '♡';
-        return '<div class="wg-rel-row"><div class="wg-avatar">' + esc((x.name || x.key).slice(0, 1)) + '</div><div class="nm">' + esc(x.name || x.key) + '<em>' + esc(x.role || '') + '</em></div><div class="wg-hearts" title="' + v + '/' + (x.max || 100) + '">' + hearts + '</div></div>';
+        return '<div class="wg-rel-row" data-detail="rel"><div class="wg-avatar">' + esc((x.name || x.key).slice(0, 1)) + '</div><div class="nm">' + esc(x.name || x.key) + '<em>' + esc(x.role || '') + '</em></div><div class="wg-hearts" title="' + v + '/' + (x.max || 100) + '">' + hearts + '</div></div>';
       }).join('') : '<div class="wg-empty">这个世界没有登记可攻略角色。</div>';
     }
     var inv = $('wgInv');
@@ -386,11 +551,11 @@
         var d = itemDef(x.id);
         var im = d.image ? '<img src="' + esc(d.image) + '" alt="">' : '<div class="ic">' + esc((d.name || '?').slice(0, 1)) + '</div>';
         var tags = (d.tags || []).slice(0, 3).map(function (t) { return '<span class="wg-tag ' + (String(t).indexOf('毒') >= 0 || String(t).indexOf('危险') >= 0 ? 'danger' : '') + '">' + esc(t) + '</span>'; }).join('');
-        return '<div class="wg-item">' + im + '<div class="nm">' + esc(d.name || x.id) + (d.desc ? '<em>' + esc(d.desc) + '</em>' : '') + (tags ? '<div class="wg-tags">' + tags + '</div>' : '') + '</div><span class="qty">×' + x.qty + '</span></div>';
+        return '<div class="wg-item" data-detail="item">' + im + '<div class="nm">' + esc(d.name || x.id) + (d.desc ? '<em>' + esc(d.desc) + '</em>' : '') + (tags ? '<div class="wg-tags">' + tags + '</div>' : '') + '</div><span class="qty">×' + x.qty + '</span></div>';
       }).join('') : '<div class="wg-empty">背包还是空的。去场景里搜一搜。</div>';
     }
     var sk = $('wgSkills');
-    if (sk) sk.innerHTML = S.skills.length ? S.skills.map(function (x) { var d = (P.skills || []).filter(function (s) { return (s.id || s) === x; })[0] || {}; return '<div class="wg-skill"><i></i><span>' + esc(d.name || x) + '</span></div>'; }).join('') : '<div class="wg-empty">尚未掌握技能。</div>';
+    if (sk) sk.innerHTML = S.skills.length ? S.skills.map(function (x) { var d = (P.skills || []).filter(function (s) { return (s.id || s) === x; })[0] || {}; return '<div class="wg-skill" data-detail="skill"><i></i><span>' + esc(d.name || x) + '</span></div>'; }).join('') : '<div class="wg-empty">尚未掌握技能。</div>';
     var rules = $('wgRules');
     if (rules) {
       var base = (P.rules || []).map(function (r) { return typeof r === 'string' ? { text: r } : r; });
@@ -401,13 +566,13 @@
       }).map(function (r) { return { text: r.name + '：' + (r.effect || r.trigger || ''), code: r.code || 'RULE', custom: true }; });
       var all = base.concat(custom);
       rules.innerHTML = all.length ? all.map(function (r) {
-        return '<div class="wg-rule">' + esc(r.text || '') + (r.code ? '<span class="code">' + esc(r.code) + '</span>' : '') + '</div>';
+        return '<div class="wg-rule" data-detail="rule">' + esc(r.text || '') + (r.code ? '<span class="code">' + esc(r.code) + '</span>' : '') + '</div>';
       }).join('') : '<div class="wg-empty">这个世界没有公开规则。</div>';
     }
     var map = $('wgMap');
     if (map) {
       if (P.places && P.places.length) {
-        map.innerHTML = P.places.map(function (p) { return '<div class="wg-room ' + (S.place === p.name ? 'cur' : (p.unlocked !== false ? 'unlocked' : '')) + '" title="' + esc(p.desc || '') + '">' + esc(p.name) + '</div>'; }).join('');
+        map.innerHTML = P.places.map(function (p) { return '<div class="wg-room ' + (S.place === p.name ? 'cur' : (p.unlocked !== false ? 'unlocked' : '')) + '" data-detail="room" title="' + esc(p.desc || '') + '">' + esc(p.name) + '</div>'; }).join('');
       } else if (P.mapNote) {
         map.innerHTML = '<div class="wg-empty">' + esc(P.mapNote) + '</div>';
       } else {
@@ -442,6 +607,7 @@
     body += '<div class="wg-kicker">' + esc(P.kicker || 'SHENGLONG · WORLD') + '</div>';
     body += '<h1 class="wg-h1">' + title + '</h1>';
     if (S.lastEvent) body += '<div class="wg-event"><b>' + esc(S.lastEvent.title) + '</b>' + esc(S.lastEvent.text) + '</div>';
+    if (S.aiNarrative) body += '<div class="wg-ai-narr"><div class="wg-ai-kicker">AI · 动态剧情</div><p>' + nl(S.aiNarrative) + '</p></div>';
     body += '<div class="wg-text">' + esc(resolve(sc.text || '', S)) + '</div>';
     if (choices.length) {
       body += '<div class="wg-choices">' + choices.map(function (c, i) {
@@ -449,6 +615,11 @@
       }).join('') + '</div>';
     } else {
       body += '<div class="wg-toolbar" style="margin-top:16px"><button data-wg="continue">继续</button></div>';
+    }
+    if (S.aiChoices && S.aiChoices.length) {
+      body += '<div class="wg-ai-choices"><div class="wg-ai-kicker">AI 建议的下一步</div>' + S.aiChoices.map(function (c, i) {
+        return '<button class="wg-choice ai" data-wg="aichoice" data-i="' + i + '"><span class="no">A' + (i + 1) + '</span><span class="tx"><b>' + esc(c.label) + '</b>' + (c.hint ? '<em>' + esc(c.hint) + '</em>' : '') + '</span></button>';
+      }).join('') + '</div>';
     }
     if (P.free !== false) {
       body += '<form class="wg-free" id="wgFreeForm"><input id="wgFreeInput" placeholder="' + esc(P.freePlaceholder || '自由行动：搜索 / 休息 / 交谈 / 修炼 / 制作 / 地图') + '" autocomplete="off"><button type="submit">执行</button></form>';
@@ -461,7 +632,7 @@
   function renderLog() {
     var el = $('wgLog');
     if (!el) return;
-    el.innerHTML = S.log.slice(-8).reverse().map(function (x) { return '<div class="wg-log-row"><b>D' + x.t + '</b> ' + esc(x.text) + '</div>'; }).join('') || '<div class="wg-empty">还没有记录。你的选择会写进这里。</div>';
+    el.innerHTML = S.log.slice(-30).reverse().map(function (x) { return '<div class="wg-log-row" data-detail="log"><b>D' + x.t + '</b> ' + esc(x.text) + '</div>'; }).join('') || '<div class="wg-empty">还没有记录。你的选择会写进这里。</div>';
   }
   function shell() {
     document.body.dataset.theme = P.theme || 'dashboard';
@@ -505,6 +676,32 @@
       '<div class="wg-toast" id="wgToast"></div>';
     document.body.appendChild(root);
   }
+
+  function openDetail(row){
+    var panel=row.closest?row.closest('.wg-panel'):null;
+    var title=panel?((panel.querySelector('.wg-panel-h b')||{}).textContent||'详情'):'详情';
+    var sub=row.getAttribute('data-detail')||'';
+    var html=row.innerHTML;
+    if(sub==='item'){
+      var name=row.querySelector('.nm')?row.querySelector('.nm').textContent:'';
+      title=name||title;
+    }else if(sub==='rel'){
+      var nm=row.querySelector('.nm'); title=nm?nm.textContent:title;
+    }else if(sub==='rule'){
+      title='规则 / 法则';
+    }else if(sub==='room'){
+      title=row.textContent||'地点';
+      var desc=row.getAttribute('title')||''; if(desc) html='<p>'+esc(desc)+'</p>'+html;
+    }
+    var mask=document.createElement('div'); mask.className='wg-detail-mask';
+    mask.innerHTML='<div class="wg-detail" role="dialog" aria-modal="true"><div class="wg-detail-h"><b>'+esc(title)+'</b><button type="button" aria-label="关闭">×</button></div><div class="wg-detail-b">'+html+'</div></div>';
+    document.body.appendChild(mask);
+    var close=function(){ mask.remove(); document.removeEventListener('keydown',onKey); };
+    var onKey=function(e){ if(e.key==='Escape') close(); };
+    mask.addEventListener('click',function(e){ if(e.target===mask||e.target.closest('.wg-detail-h button')) close(); });
+    document.addEventListener('keydown',onKey);
+  }
+
   function bind() {
     document.addEventListener('pointerdown', function () {
       if (BGM.ctx && BGM.ctx.state === 'suspended') { try { BGM.ctx.resume(); } catch (e) {} }
@@ -517,19 +714,28 @@
       if (a === 'choice') {
         var cs = availableChoices();
         doChoice(cs[Number(t.getAttribute('data-i'))]);
+      } else if (a === 'aichoice') {
+        var ac = (S.aiChoices || [])[Number(t.getAttribute('data-i'))];
+        if (ac) freeAct(ac.label);
       } else if (a === 'auto') {
         actAuto(Number(t.getAttribute('data-n')) || 10);
       } else if (a === 'save') { save(); toast('已保存到本机。'); }
       else if (a === 'bgm') { toggleBgm(); }
       else if (a === 'restart') restart();
       else if (a === 'side') {
-        var side = $('wgSide'); if (side) side.classList.toggle('open');
+        var side = $('wgSide'); if (side) side.scrollIntoView({behavior:'smooth',block:'start'});
       } else if (a === 'continue') {
         var sc = P.scenes[S.scene] || {};
         if (sc.next) { go(sc.next); stepTime(); save(); render(); }
         else toast('这个场景还没有写下一步。');
       }
       if (t.closest('.wg-side')) { var s = $('wgSide'); if (s && window.innerWidth <= 900) s.classList.remove('open'); }
+    });
+    document.addEventListener('click', function (e) {
+      var row = e.target.closest('[data-detail]');
+      if (row && !e.target.closest('[data-wg]')) { openDetail(row); return; }
+      var ph = e.target.closest('.wg-panel-h');
+      if (ph) { var pn = ph.closest('.wg-panel'); if (pn) pn.classList.toggle('collapsed'); }
     });
     document.addEventListener('submit', function (e) {
       if (e.target && e.target.id === 'wgFreeForm') {
@@ -547,10 +753,11 @@
     shell();
     bind();
     render();
+    try{ if(window.innerWidth<=900){ var side=$('wgSide'), main=document.querySelector('.wg-main'); if(side&&main){ var log=main.querySelector('.wg-log'); if(log) main.insertBefore(side,log); else main.appendChild(side); side.classList.add('mobile-inline'); var cover=$('wgCover'); if(cover){ main.insertBefore(cover, main.firstElementChild); cover.classList.add('mobile-cover'); } } } }catch(e){}
     save();
     if (!BGM.muted) setBgm('daily');
     updateBgmBtn();
-    window.SL_W = { pack: P, state: function () { return S; }, render: render, act: actAuto, free: freeAct, reset: restart, bgm: setBgm, clear: function () { restart(true); } };
+    window.SL_W = { pack: P, state: function () { return S; }, render: render, act: actAuto, free: freeAct, ai: freeAct, local: localFreeAct, reset: restart, bgm: setBgm, clear: function () { restart(true); } };
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();

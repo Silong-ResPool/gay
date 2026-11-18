@@ -652,6 +652,13 @@ body.lrc-fx-type .lyr .ln.cur::after,body.lrc-fx-type #full .fn.cur::after{
 }
 </style>
 <script src="../data/ai-limit.js"></script>
+<style id="sl-music-layout-fix">
+html,body{overflow-x:hidden!important}
+.cp-right{overflow:hidden!important;min-width:0}
+.catrows{width:100%;max-width:100%;overflow:hidden}
+.catrow{overflow-x:auto!important;overflow-y:hidden!important;scrollbar-width:none}
+.catrow::-webkit-scrollbar{display:none}
+</style>
 </head>
 <body>
 <script id="sl-force-night">
@@ -2060,6 +2067,7 @@ var VOICES=[['v_loli','萝莉音',1.45],['v_uncle','大叔音',0.72],['v_chip','
 var FXALL=FXS.concat(VOICES.map(function(v){return [v[0],v[1]]}));
 function voiceRate(k){ for(var i=0;i<VOICES.length;i++) if(VOICES[i][0]===k) return VOICES[i][2]; return 1; }
 function labelOfFx(k){ var f=FXALL.filter(function(x){return x[0]===k})[0]; return f?f[1]:'原声'; }
+/* BASE64-IMAGE: 音乐页彩蛋封面图（隐藏歌曲封面，替换时只改下面 data:image 字符串） */
 var IMG_EGG='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAVVSURBVHhe7Zx5iFVlGMZHE9MkGcswVCIKIUpstHKoyKhU0jCIog2siCJSJmwFCcMiAsuyjZAsWuyfgvbFAa2gHY0i/KOUogUqsn2xFG4z/d7zPSNzReeeybnnvN93zw8evvN9Z3mf5x1x7j1zz23zTk9Pzzx0bW9v7ygtVeSBps1Ab9O4DLbv166KPNCwN9W7DOb/oinaXdEImjUL9ah/GUwf1u6KPNCw1epdBvM/GcZrd0UjaNhk9E9oX4B5l3ZX5IGGvaDeZTDfqF0VeaBhC9W7XbB2tHZXNMKahXb/ZbJKuysaQb/aadjO0LoAc3tJsxbdhq5EM1kerlMq+qAxB6GVoW0Dw3Gb0RU6tbWhEZPQfWib+pMbznmVoV2Xaj1owIL/07j+cP4mNFaXbB0IPUc92Ge41su6bGtA4IPRj8o/JHC963T59CHs3co9ZHDNGjpFJdKFkGPRL8o9aDh3JXpJ0zrsuug0lUoTAp6vvHWwbq/3bkC/a2mPsP9UhvGM89GGsFoP6/eiY9lsRyNVOg0I9lyWsh+s7UBz0DGok6Xfwp562GdNPgHZ68AH0TR0IroDfYR26NAM5k+jySodPxYG7X7H5TtkjVukuY2HMX5t8/6wthXZ272a5tbQZ9HFyO5qT0cno7ns7mAcrdJpQKC1FrwP5t1oIpvLw0qAtVsYxjFuDSsB5ivQuZrWwbo1cwuapHJpQcbLQtQs7K/oajYPZ3wlrNbDujXrELTr5Q7b9i91naZ743GVTAMCjST0EkvG+AO6h82jGC9BP9v63mB/F8NsbT+JZtj2QHDMdjRB5eOHMFPQMrSAfNn7VrbfC3Ebw7Ez0SPIrpPrPI5L90424ezlRW44fr3OW6OlhnDsu1mxFCGc/YbMDcf/hV7UNBccb+9KjlTJtCDYhcrZVGq12mKVTAsaeJUyNhXqPK+SaUGwG5WxqVDnW7S/yqYDoVYoYxF0qGw60MAnFK7pUOtylU0HQq1XvqZDrQdUNg3INIxQW0K85kOtDSqdBgSagP5WvqZDrS8Y9lP5+CGQ3QwtDOptZzhU5eOHQEtDtOKg5jSVjx/CvK5chUHNM1Q+bggyEdXdci8Cal4gC3FDkMXKVChWXhbihiAfK1OhUHepLMQLIU5XnjJYLhvxQgPfUpgyiLuBNO8sBSmLeBuI+VE00N4NlAb1b5Wd+MD8ncpRGni4WXbiAuOzlKFU8BHfX+gwfSD6ShlKBR8LZSse8P1MsF8+NHCebMUBhq+Rdy8cJ2v+oXmdKPvklAfwYh+bi+PDRvg9ALOfB+s+wM83DHF8wBKzDwXbfsBTHB/xwOhJ8uwKfK2RRd9gdJM8uwJfi2TRL5g8R37dgbdO2fQLJj+QX1fgaxsaI5s+weDx8usOvK2TTb9gcpX8ugNv18umT/A4HJOfBrv+wNtUWfUJHo/ApJt3Hf3B12aGYbLqE0zOD3b9gbdlsukXTNojCO7Alz1w4/9ro/Ba93SRF2hetyz6BqN3ybMr8HWmLPoGo7fLsxvw9Ins+QezN8m3G/B0nuz5B7OFPO8xCD6UtTjAcEfw7QN+oHF9XwKGR6Pv5b9U8PGYbMUF3kv/65t+iONkKS4wf3aIUR54mCs78YH/EQSoeyy/SKgd7+de+qjVapcqT6HQvKdkIX4I845yFQL1uhlGqHz8EMZubQ34hTlDBXVeQ+k9hUm22QRr6v1Brv8oQ7rfXklA+zqmP0LcoYNr7kRLVCZtCDoVva/s+wzXegNN1+VbA3LbU5ld6MvQhsHDuRvRRbpka0IDxiD7gh37j/8n9WaPsN/uJH+GViOHj2e1tf0HjrtSdP3WvqQAAAAASUVORK5CYII=';
 var CATS=[
   {k:'收藏音乐',   t:'收藏音乐', d:'我收藏的',   i:'fa-heart', fav:1},

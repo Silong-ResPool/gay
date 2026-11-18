@@ -234,6 +234,15 @@
     };
   }
   /* V10：海报兜底 —— 不删 img、http 自动升级 https、失败后保留首字底图 */
+  function posterKind(name) {
+    var t = String(name || '');
+    if (/动漫|动画|番|漫画/.test(t)) return 'anime';
+    if (/综艺|真人秀|脱口秀/.test(t)) return 'variety';
+    if (/纪录|纪实/.test(t)) return 'doc';
+    if (/短剧|微短剧/.test(t)) return 'short';
+    if (/电视剧|连续剧|剧/.test(t)) return 'tv';
+    return 'movie';
+  }
   window.slPicFallback = function (img) {
     try {
       var s = img.getAttribute('src') || '';
@@ -245,6 +254,15 @@
       if (s && tries < 2) {
         img.setAttribute('data-sl-try', String(tries ? 3 : 2));
         img.setAttribute('src', 'https://images.weserv.nl/?url=' + encodeURIComponent(s.replace(/^https?:\/\//, '')) + '&w=420&h=620&fit=cover');
+        return;
+      }
+      var fb = img.getAttribute('data-fb') || 'movie';
+      if (tries < 4) {
+        img.setAttribute('data-sl-try', '4');
+        img.onerror = null;
+        img.style.display = 'block';
+        img.setAttribute('src', 'assets/posters/' + fb + '.svg');
+        var box0 = img.parentNode; if (box0) { box0.classList.remove('noimg'); box0.classList.add('localposter'); }
         return;
       }
       img.style.display = 'none';
@@ -259,21 +277,21 @@
     var eager = typeof idx === 'number' ? idx < 8 : true;
     return '<div class="poster">' +
       '<div class="fallback"><span>' + esc(t.slice(0, 2)) + '</span><em>' + esc(t.length > 8 ? t.slice(0, 8) + '…' : t) + '</em></div>' +
-      (src ? '<img loading="' + (eager ? 'eager' : 'lazy') + '" decoding="async" referrerpolicy="no-referrer" src="' + esc(src) + '" onerror="slPicFallback(this)" alt="' + esc(t) + '">' : '') +
+      '<img loading="' + (eager ? 'eager' : 'lazy') + '" decoding="async" referrerpolicy="no-referrer" src="' + esc(src || ('assets/posters/' + posterKind(badge || t) + '.svg')) + '" data-fb="' + posterKind(badge || t) + '" onerror="' + (src ? 'slPicFallback(this)' : 'this.onerror=null') + '" alt="' + esc(t) + '">' +
       '<div class="shade"></div>' +
       (badge ? '<span class="srcbadge">' + esc(badge) + '</span>' : '') +
       (count ? '<span class="countbadge">' + esc(count) + '</span>' : '') +
       '</div>';
   }
   function itemCard(it, idx) {
-    var sub = [it.typeName, it.year, it.area].filter(Boolean).join(' · ') || it.remarks || '';
+    var sub = it.sourceName ? ('来源 · ' + it.sourceName) : (it.remarks || '');
     return '<div class="card" data-idx="' + idx + '">' +
       posterHtml(it.pic, it.name, it.sourceName, '', idx) +
       '<div class="card-body"><h3>' + esc(it.name) + '</h3><div class="sub">' + esc(sub) + '</div></div></div>';
   }
   function groupCard(g, idx) {
     var first = g.items[0] || {};
-    var sub = [first.typeName, first.year, first.area].filter(Boolean).join(' · ') || (g.items.length + ' 个源');
+    var sub = (g.items.length || 1) + ' 个来源 · 点击查看详情';
     return '<div class="card" data-group-idx="' + idx + '">' +
       posterHtml(g.pic, g.title, g.items.length + ' 源', '', idx) +
       '<div class="card-body"><h3>' + esc(g.title) + '</h3><div class="sub">' + esc(sub) + '</div></div></div>';

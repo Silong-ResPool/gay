@@ -453,6 +453,15 @@ button{flex:0 0 auto}
 .sl-d-actions button.ok{background:linear-gradient(135deg,#9d4edd,#c77dff);border-color:transparent;color:#fff;font-weight:700}
 .sl-d-actions button.danger{background:linear-gradient(135deg,#b91c1c,#ef4444)}
 </style>
+
+<style id="sl-butler-layout-fix">
+/* 设置抽屉：按钮组允许换行，禁止横向溢出裁切 */
+.side-content{overflow-x:hidden!important}
+.side-section > div:has(> .btn),.side-section > .btn-row{display:flex;flex-wrap:wrap;gap:8px;min-width:0}
+.side-section > div:has(> .btn) > .btn{flex:1 1 calc(50% - 8px);min-width:0;width:auto!important;max-width:100%}
+.side-section > .btn-row > .btn{flex:1 1 120px;min-width:0}
+.side-section input,.side-section select,.side-section textarea{max-width:100%;box-sizing:border-box}
+</style>
 </head>
 <body><script>/* v8.1.0 单文件·数据惰性解析：站点数据改成 application/json 静默块，首屏不再一次性执行 1.3MB JS。
    任何代码访问 window.SLDATA["id"] 时才即时 JSON.parse 并缓存，行为与原来自动加载完全一致。 */
@@ -590,7 +599,7 @@ button{flex:0 0 auto}
     <span class="attach-chip" id="mmRefChip" style="display:none">参考图 ×</span>
   </div>
   <div class="input-box">
-    <button class="attach-btn on" id="ttsBtn" title="自动朗读开关"><i class="fa-solid fa-volume-high"></i></button>
+    <button class="attach-btn" id="ttsBtn" title="自动朗读开关（默认关闭）"><i class="fa-solid fa-volume-high"></i></button>
     <button class="attach-btn" id="callToggleBtn" title="语音通话"><i class="fa-solid fa-phone"></i></button>
     <button class="attach-btn on" id="resToggle" title="检索开关"><i class="fa-solid fa-magnifying-glass"></i></button>
     <button class="attach-btn" id="toolBtn" title="工具：点击切换 文字 / 图片 / 视频 模式；长按选择参考图"><i class="fa-solid fa-wrench"></i><span class="attach-num" id="toolModeNum">文</span></button>
@@ -778,7 +787,7 @@ button{flex:0 0 auto}
         <div class="form-group"><label>自动压缩间隔（轮） <small style="font-size:10px;color:var(--text-muted)">每 N 轮把旧对话压成前情提要，1~100</small></label>
           <input type="number" id="compressRoundsInput" min="1" max="100" step="1" value="10">
         </div>
-        <div class="switch-row"><span>主动聊天<br><small id="proactiveHint" style="font-size:10px;color:var(--text-muted)">2 分钟未回复时主动开启话题，最多连续 3 轮（点击开关设置时长，长按恢复 2 分钟）</small></span><div class="sw on" id="swProactive"></div></div>
+        <div class="switch-row"><span>主动聊天<br><small id="proactiveHint" style="font-size:10px;color:var(--text-muted)">2 分钟未回复时主动开启话题，最多连续 3 轮（点击开关设置时长，长按恢复 2 分钟）</small></span><div class="sw" id="swProactive"></div></div>
         <div class="switch-row"><span>随机间隔<br><small style="font-size:10px;color:var(--text-muted)">在最短与最长分钟之间随机挑选，避免固定节奏</small></span><div class="sw" id="swProactiveRandom"></div></div>
         <div class="form-group"><label>主动间隔范围（分钟）</label>
           <div class="row" style="display:flex;gap:6px;align-items:center">
@@ -909,7 +918,7 @@ button{flex:0 0 auto}
       </div>
       <div class="side-section">
         <h4><i class="fa-solid fa-volume-high" style="color:var(--v-glow);margin-right:6px"></i>自动朗读（TTS）</h4>
-        <div class="switch-row"><span>自动朗读 AI 回复<br><small style="font-size:10px;color:var(--text-muted)">默认开启，默认男声「布莱恩」</small></span><div class="sw on" id="swTts"></div></div>
+        <div class="switch-row"><span>自动朗读 AI 回复<br><small style="font-size:10px;color:var(--text-muted)">默认关闭，需要时手动开启；默认男声「布莱恩」</small></span><div class="sw" id="swTts"></div></div>
         <div class="form-group"><label>音色（12 个男性预设）</label>
           <select id="ttsPreset"></select>
         </div>
@@ -1326,8 +1335,8 @@ function ttsPreset(){
   for(var i=0;i<TTS_PRESETS.length;i++) if(TTS_PRESETS[i].k===key) return TTS_PRESETS[i];
   return TTS_PRESETS[0];
 }
-function blankTts(){ return {on:true, preset:TTS_DEFAULT, engine:'edge', rate:1, pitch:0.7, bass:0, fx:'', voiceUrl:'', api:'', keys:'', keyMode:'rotate', voice:'', localVoiceOn:false, localVoiceId:''}; }
-function blankSettings(){ return {resMode:false, ctxMemory:true, showStatus:true, showOptions:true, typing:true, memMode:'forever', defaultChat:true, newChatOnOpen:true, retryCount:20, retryUnlimited:false, timeSource:'story', autoScroll:false, ctxRounds:10, compressRounds:10, proactiveOn:true, proactiveMin:2, proactiveMax:8, proactiveRandom:false, proactiveMode:'continue', tts:blankTts()}; }
+function blankTts(){ return {on:false, preset:TTS_DEFAULT, engine:'edge', rate:1, pitch:0.7, bass:0, fx:'', voiceUrl:'', api:'', keys:'', keyMode:'rotate', voice:'', localVoiceOn:false, localVoiceId:''}; }
+function blankSettings(){ return {resMode:false, ctxMemory:true, showStatus:true, showOptions:true, typing:true, memMode:'forever', defaultChat:true, newChatOnOpen:true, retryCount:20, retryUnlimited:false, timeSource:'story', autoScroll:false, ctxRounds:10, compressRounds:10, proactiveOn:false, proactiveMin:2, proactiveMax:8, proactiveRandom:false, proactiveMode:'continue', tts:blankTts()}; }
 function blankAgentState(seedAI, seedLook, seedMemory){
   const seed=Object.assign({}, seedAI||{});
   if(!seed.model || seed.model==='agnes-2.5-flash') seed.model=AI_DEFAULT.model;   // 默认升级到 3.0 Fast
@@ -1395,11 +1404,11 @@ try{
 let activeBranch = null;   /* 非空 = 正在查看某条独立分支 */
 let showStatus = true, showOptions = true, resMode = false, ctxMemory = true, typewriter = true, memMode = 'forever';
 let autoScroll = false;
-let ctxRounds = 10, compressRounds = 10, proactiveOn = true, proactiveMin = 2, proactiveMax = 8, proactiveRandom = false, proactiveMode = 'continue';
+let ctxRounds = 10, compressRounds = 10, proactiveOn = false, proactiveMin = 2, proactiveMax = 8, proactiveRandom = false, proactiveMode = 'continue';
 let proactiveCount = 0, lastUserAt = Date.now(), lastProactiveAt = 0;
 let defaultChat = true, newChatOnOpen = true, retryCount = 20, retryUnlimited = false;
 let timeSource = 'story';
-let ttsCfg = blankTts();
+let ttsCfg = blankTts();  /* 自动朗读默认关闭，保留开关 */
 if(AS.settings){
   showStatus = AS.settings.showStatus !== false;
   showOptions = AS.settings.showOptions !== false;
@@ -1409,7 +1418,7 @@ if(AS.settings){
   autoScroll = AS.settings.autoScroll === true;
   ctxRounds = Number.isFinite(+AS.settings.ctxRounds) ? +AS.settings.ctxRounds : 10;
   compressRounds = Number.isFinite(+AS.settings.compressRounds) ? +AS.settings.compressRounds : 10;
-  proactiveOn = AS.settings.proactiveOn !== false;
+  proactiveOn = AS.settings.proactiveOn === true;
   proactiveMin = Math.max(1, +AS.settings.proactiveMin || 2);
   proactiveMax = Math.max(proactiveMin, +AS.settings.proactiveMax || 8);
   proactiveRandom = AS.settings.proactiveRandom === true;
@@ -1420,7 +1429,7 @@ if(AS.settings){
   retryCount = Math.max(1, +AS.settings.retryCount || 20);
   retryUnlimited = AS.settings.retryUnlimited === true;
   timeSource = AS.settings.timeSource === 'beijing' ? 'beijing' : 'story';
-  ttsCfg = Object.assign(blankTts(), AS.settings.tts || {});
+  ttsCfg = Object.assign(blankTts(), AS.settings.tts || {}); ttsCfg.on = ttsCfg.on === true;
   if(ttsCfg.engine!=='edge' && ttsCfg.engine!=='api') ttsCfg.engine='edge';
   if(ttsCfg.engine==='api' && !ttsCfg.api) ttsCfg.engine='edge';
   if(!ttsCfg.preset) ttsCfg.preset=TTS_DEFAULT;
@@ -1431,7 +1440,7 @@ function ensureMaleTts(){
   try{
     if(!localStorage.getItem('sl_tts_brian_fix_v983')){
       ttsCfg.preset=TTS_DEFAULT;
-      ttsCfg.on=ttsCfg.on!==false;
+      ttsCfg.on=ttsCfg.on===true;
       ttsCfg.engine='edge';
       localStorage.setItem('sl_tts_brian_fix_v983','1');
       saveAgentState();
@@ -3342,8 +3351,26 @@ function studioRun(){
   const f=$('studioPreview'); if(!f) return;
   let html='';
   if(lang==='html') html=code;
-  else if(lang==='css') html='<!doctype html><html><head><meta charset="utf-8"><style>'+code+'</style></head><body><h1>样式预览</h1><p>这段文字会套用你的 CSS。</p><button>按钮</button></body></html>';
-  else html='<!doctype html><html><head><meta charset="utf-8"></head><body><pre id="out" style="white-space:pre-wrap"></pre><script>var __o=[];console.log=function(){__o.push([].slice.call(arguments).join(" "));document.getElementById("out").textContent=__o.join("\\n")};try{'+code+'\n}catch(e){document.getElementById("out").textContent="错误: "+e.message}<\/script></body></html>';
+  else if(lang==='css') html='<!doctype html><html><head><meta charset="utf-8"><style>'+code+'</style>
+<style id="sl-butler-layout-fix">
+/* 设置抽屉：按钮组允许换行，禁止横向溢出裁切 */
+.side-content{overflow-x:hidden!important}
+.side-section > div:has(> .btn),.side-section > .btn-row{display:flex;flex-wrap:wrap;gap:8px;min-width:0}
+.side-section > div:has(> .btn) > .btn{flex:1 1 calc(50% - 8px);min-width:0;width:auto!important;max-width:100%}
+.side-section > .btn-row > .btn{flex:1 1 120px;min-width:0}
+.side-section input,.side-section select,.side-section textarea{max-width:100%;box-sizing:border-box}
+</style>
+</head><body><h1>样式预览</h1><p>这段文字会套用你的 CSS。</p><button>按钮</button></body></html>';
+  else html='<!doctype html><html><head><meta charset="utf-8">
+<style id="sl-butler-layout-fix">
+/* 设置抽屉：按钮组允许换行，禁止横向溢出裁切 */
+.side-content{overflow-x:hidden!important}
+.side-section > div:has(> .btn),.side-section > .btn-row{display:flex;flex-wrap:wrap;gap:8px;min-width:0}
+.side-section > div:has(> .btn) > .btn{flex:1 1 calc(50% - 8px);min-width:0;width:auto!important;max-width:100%}
+.side-section > .btn-row > .btn{flex:1 1 120px;min-width:0}
+.side-section input,.side-section select,.side-section textarea{max-width:100%;box-sizing:border-box}
+</style>
+</head><body><pre id="out" style="white-space:pre-wrap"></pre><script>var __o=[];console.log=function(){__o.push([].slice.call(arguments).join(" "));document.getElementById("out").textContent=__o.join("\\n")};try{'+code+'\n}catch(e){document.getElementById("out").textContent="错误: "+e.message}<\/script></body></html>';
   f.srcdoc=html;
 }
 function studioVisualToggle(){
@@ -4001,7 +4028,7 @@ function applyAgentSettings(){
   autoScroll = AS.settings.autoScroll === true;
   ctxRounds = Number.isFinite(+AS.settings.ctxRounds) ? +AS.settings.ctxRounds : 10;
   compressRounds = Number.isFinite(+AS.settings.compressRounds) ? +AS.settings.compressRounds : 10;
-  proactiveOn = AS.settings.proactiveOn !== false;
+  proactiveOn = AS.settings.proactiveOn === true;
   proactiveMin = Math.max(1, +AS.settings.proactiveMin || 2);
   proactiveMax = Math.max(proactiveMin, +AS.settings.proactiveMax || 8);
   proactiveRandom = AS.settings.proactiveRandom === true;
@@ -4012,7 +4039,7 @@ function applyAgentSettings(){
   retryCount = Math.max(1, +AS.settings.retryCount || 20);
   retryUnlimited = AS.settings.retryUnlimited === true;
   timeSource = AS.settings.timeSource === 'beijing' ? 'beijing' : 'story';
-  ttsCfg = Object.assign(blankTts(), AS.settings.tts || {});
+  ttsCfg = Object.assign(blankTts(), AS.settings.tts || {}); ttsCfg.on = ttsCfg.on === true;
   if(ttsCfg.engine!=='edge' && ttsCfg.engine!=='api') ttsCfg.engine='edge';
   if(ttsCfg.engine==='api' && !ttsCfg.api) ttsCfg.engine='edge';
   if(!ttsCfg.preset) ttsCfg.preset=TTS_DEFAULT;
@@ -4198,7 +4225,7 @@ function syncSettingsUI(){
   if($('proactiveHint')) $('proactiveHint').textContent = (proactiveRandom?('随机 '+proactiveMin+'~'+proactiveMax):proactiveMin) + ' 分钟未回复时主动开启话题，最多连续 3 轮';
   if($('customMemory')) $('customMemory').value = memory.custom || '';
   if($('timeSource')) $('timeSource').value = timeSource;
-  if($('swTts')) $('swTts').classList.toggle('on', ttsCfg.on!==false);
+  if($('swTts')) $('swTts').classList.toggle('on', ttsCfg.on===true);
   if($('swLocalChat')) $('swLocalChat').classList.toggle('on', !!aiCfg.localChat);
   if($('localCtx')) $('localCtx').value = String(aiCfg.localCtx || 4096);
   if($('localThreads')) $('localThreads').value = String(aiCfg.localThreads || 4);
@@ -4210,7 +4237,7 @@ function syncSettingsUI(){
   if($('advReasoning')) $('advReasoning').value = aiCfg.reasoning || '';
   if($('swTempChat')) $('swTempChat').classList.toggle('on', !!tempChat);
   try{ renderQuickPhrases(); }catch(e){}
-  if($('ttsBtn')) $('ttsBtn').classList.toggle('on', ttsCfg.on!==false);
+  if($('ttsBtn')) $('ttsBtn').classList.toggle('on', ttsCfg.on===true);
   if($('ttsEngine')) $('ttsEngine').value = ttsCfg.engine||'edge';
   if($('ttsPreset')){
     if(!$('ttsPreset').dataset.filled){
@@ -4900,7 +4927,7 @@ function startCall(){
   callActive=true; callMuted=false;
   const bar=$('callBar'); bar.classList.add('on'); bar.classList.remove('muted');
   $('muteBtn').classList.remove('on');
-  $('callSpkBtn').classList.toggle('on', ttsCfg.on!==false);
+  $('callSpkBtn').classList.toggle('on', ttsCfg.on===true);
   setCallState('通话中：说完自动发送，可闭麦暂停');
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   const A=androidBridge();

@@ -5,8 +5,8 @@
     var m = new RegExp('[?&]' + k + '=([^&]*)', 'i').exec(location.search);
     return m ? decodeURIComponent(m[1]) : '';
   }
-  var id = qs('id'), arr = [];
-  try { arr = JSON.parse(localStorage.getItem('sl_story_cards_v1') || '[]') || []; } catch (e) { arr = []; }
+  var id = qs('id'), mine = qs('mine') === '1', arr = [];
+  try { arr = JSON.parse(localStorage.getItem(mine ? 'sl_story_worlds_v1' : 'sl_story_cards_v1') || '[]') || []; } catch (e) { arr = []; }
   var card = null;
   for (var i = 0; i < arr.length; i++) if (String(arr[i].id) === String(id)) { card = arr[i]; break; }
   if (!card) {
@@ -65,8 +65,8 @@
     relations: relations,
     items: itemMap,
     startItems: Object.keys(itemMap).slice(0, 2).map(function (k) { return { id: k, qty: 1 }; }),
-    skills: [{ id: 'observe', name: '观察' }, { id: 'talk', name: '交谈' }],
-    rules: (card.snapshot && card.snapshot.rules) || [],
+    skills: (card.skills && card.skills.length ? card.skills : [{ id: 'observe', name: '观察' }, { id: 'talk', name: '交谈' }]),
+    rules: (card.rules && card.rules.length ? card.rules : (card.snapshot && card.snapshot.rules) || (card.world ? String(card.world).split('\n').filter(Boolean).slice(0,4) : [])),
     places: places.slice(0, 8).map(function (p, i) { return { name: p.name || ('地点 ' + (i + 1)), desc: [p.type, p.desc].filter(Boolean).join(' · '), unlocked: i < 4 }; }),
     freeActions: [
       { keys: ['观察', '看', '四周'], text: '你停下来观察四周，空气里有某种说不清的变化。', eff: { stats: { resolve: 2, clues: 1 } } },

@@ -222,7 +222,7 @@ body.sb .side{transform:none;box-shadow:26px 0 70px rgba(0,0,0,.5)}
 .hero .hk::before{content:"";width:22px;height:1.5px;background:linear-gradient(90deg,#8B5CF6,transparent)}
 .hero h1{
   margin:0 0 12px;font-size:clamp(24px,3.6vw,38px);line-height:1.24;letter-spacing:.4px;font-weight:800;
-  background:linear-gradient(96deg,#fff,#EDE4FF 34%,#B69CFF 62%,#5CE1F0);
+  background:linear-gradient(96deg,#fff,#F3E8FF 34%,#C4B5FD 62%,#A78BFA);
   -webkit-background-clip:text;background-clip:text;color:transparent;max-width:800px
 }
 .hero p{margin:0;color:var(--sub);font-size:13px;line-height:1.9;max-width:680px}
@@ -237,7 +237,7 @@ body.sb .side{transform:none;box-shadow:26px 0 70px rgba(0,0,0,.5)}
   border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);color:#F1EAFF;transition:.2s var(--ease)
 }
 .hero .hacts button.pri,.hero .hacts a.pri{
-  border:0;color:#0B0619;background:linear-gradient(135deg,#BFA6FF,#22D3EE);box-shadow:0 12px 34px rgba(124,58,237,.42)
+  border:0;color:#0B0619;background:linear-gradient(135deg,#DDD0FF,#A78BFA);box-shadow:0 12px 34px rgba(124,58,237,.42)
 }
 .hero .hacts button:hover,.hero .hacts a:hover{transform:translateY(-2px)}
 /* 问候 */
@@ -900,6 +900,64 @@ body.mode-kids .hd::before{background:linear-gradient(180deg,#FBBF24,#38BDF8)}
 <link rel="stylesheet" href="sl-search-plus.css">
 <link rel="stylesheet" href="assets/ui/ui.css?v=12">
 <link rel="stylesheet" href="assets/ui/v12.css?v=8">
+<style id="sl-violet-v850">
+:root{
+  --acc:#8b5cf6;--acc2:#c084fc;--acc3:#e879f9;
+  --v12-cyan:#c084fc;--v12-cyan-deep:#a855f7;--v12-violet:#8b5cf6;
+  --line2:rgba(196,181,253,.22);--line3:rgba(196,181,253,.38);
+  --glow:0 0 0 1px rgba(192,132,252,.18),0 14px 40px rgba(0,0,0,.4);
+}
+html,body{background:#07040d !important;}
+body{background:
+  radial-gradient(1100px 680px at 82% -10%,rgba(168,85,247,.14),transparent 62%),
+  radial-gradient(1000px 700px at 8% 108%,rgba(99,102,241,.10),transparent 62%),
+  linear-gradient(180deg,#0b0614,#07040d 55%,#06030b) !important;}
+.nav{background:rgba(9,5,16,.84) !important;border-bottom-color:rgba(196,181,253,.12) !important;}
+.nav-logo{height:40px !important;width:40px !important;max-width:40px !important;border-radius:11px !important;
+  border:1px solid rgba(196,181,253,.22) !important;background:transparent !important;object-fit:contain !important;
+  padding:2px !important;filter:drop-shadow(0 0 10px rgba(168,85,247,.35)) !important;}
+.nav-search{border-color:rgba(196,181,253,.12) !important;}
+.nav-search:hover{border-color:rgba(196,181,253,.32) !important;}
+.nav-search kbd{color:#c4b5fd !important;}
+section.hero.hero-v11{
+  grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr) !important;
+  background:
+    radial-gradient(700px 380px at 92% 0%,rgba(168,85,247,.16),transparent 64%),
+    radial-gradient(540px 360px at 0% 100%,rgba(99,102,241,.13),transparent 62%),
+    linear-gradient(135deg,rgba(24,12,40,.95),rgba(10,5,20,.99)) !important;
+  border-color:rgba(196,181,253,.16) !important;
+}
+.hero.hero-v11::before{background:radial-gradient(circle,rgba(168,85,247,.18),transparent 66%) !important;}
+.hero-v11 .hk{color:#c4b5fd !important;}
+.hero-v11 .hk::before{background:linear-gradient(90deg,#a855f7,transparent) !important;}
+.hero.hero-v11 h1 em{background:linear-gradient(92deg,#F5D0FE,#C4B5FD 46%,#8B5CF6) !important;-webkit-background-clip:text !important;background-clip:text !important;color:transparent !important;}
+.hero.hero-v11 .hacts .pri{background:linear-gradient(135deg,#F3E8FF,#C084FC) !important;color:#1a0b2e !important;box-shadow:0 12px 28px -14px rgba(168,85,247,.75) !important;}
+.hero.hero-v11 .hacts a:not(.pri):hover{border-color:rgba(196,181,253,.36) !important;background:rgba(168,85,247,.08) !important;}
+.hero-art{height:clamp(148px,14vw,178px) !important;max-height:178px !important;
+  border-color:rgba(196,181,253,.18) !important;border-radius:14px !important;
+  box-shadow:0 20px 46px -28px rgba(0,0,0,.9),0 0 40px -24px rgba(168,85,247,.5) !important;}
+.hero-art::after{background:linear-gradient(180deg,rgba(9,4,18,0) 52%,rgba(9,4,18,.45)),linear-gradient(90deg,rgba(9,4,18,.28),transparent 35%) !important;}
+.hero-art .art-tag{color:#e9d5ff !important;border-color:rgba(196,181,253,.22) !important;background:rgba(12,5,24,.55) !important;}
+.greet-bar{border-color:rgba(196,181,253,.22) !important;background:linear-gradient(90deg,rgba(168,85,247,.13),rgba(99,102,241,.06)) !important;color:#ddd6fe !important;}
+.greet-track{color:#e9d5ff !important;}
+.hero-meta{color:#8b7aa8 !important;}
+.hero-meta i{background:rgba(196,181,253,.18) !important;}
+@media(max-width:820px){
+  section.hero.hero-v11{grid-template-columns:1fr !important;gap:16px !important;}
+  .hero-art{height:140px !important;max-height:140px !important;order:2;}
+  .hero.hero-v11 h1{font-size:clamp(24px,7vw,34px) !important;}
+  .hero.hero-v11 .hstats{grid-template-columns:repeat(3,minmax(0,1fr)) !important;}
+}
+</style>
+<style id="sl-layout-fix">
+@media (min-width:1240px){
+  body:not(.sb) .main{padding-left:332px !important}
+  body:not(.sb) #srView{left:292px}
+}
+@media (max-width:1239px){
+  .main{padding-left:14px !important}
+}
+</style>
 </head>
 <body><script>/* v8.1.0 单文件·数据惰性解析：站点数据改成 application/json 静默块，首屏不再一次性执行 1.3MB JS。
    任何代码访问 window.SLDATA["id"] 时才即时 JSON.parse 并缓存，行为与原来自动加载完全一致。 */
@@ -996,7 +1054,8 @@ body.mode-kids .hd::before{background:linear-gradient(180deg,#FBBF24,#38BDF8)}
 <div class="nav">
   <button class="menu" id="navMenuBtn" type="button" aria-label="打开侧栏"><i class="fas fa-bars"></i></button>
   <div class="nav-brand">
-    <img class="nav-logo" src="https://aka.doubaocdn.com/s/mNU1LEPqWE" alt="巳泷资源库 · 蛇形标志">
+    <!-- 站点 Logo：新蛇形徽标，透明 PNG，替换时改这一处 -->
+    <img class="nav-logo" src="assets/ui/logo_new.png" alt="巳泷资源库 · 蛇形标志">
     <div class="nav-txt"><b>巳泷资源库</b><em>SHENGLONG · UNIVERSE</em></div>
   </div>
   <button class="nav-search" id="navSearchBtn" type="button" aria-label="搜索">
@@ -1182,6 +1241,7 @@ body.mode-kids .hd::before{background:linear-gradient(180deg,#FBBF24,#38BDF8)}
 <script src="data/api-app.js"></script>
 <script src="data/api-web.js"></script>
 <script src="data/ai-limit.js"></script>
+<script src="butler/config/injection.js"></script>
 <script>/* v9.9.0：链接数据层（自动生成，请勿手改）。URL 以 Base64 存放，页面用 SL_D 解码。 */
 (function(){
 var L={lbt:[['lbt/opt1.jpg','aHR0cHM6Ly94aWFvbGFuMS5jb20vdmlkZW9zL2NhdGVnb3J5L2FpZ2Mv'],['lbt/opt2.jpg','aHR0cHM6Ly9wb2lwaWt1LmNvbS8xMjA4MjkwMS8='],['lbt/opt3.jpg','aHR0cHM6Ly85MW50NDMuY29tLw=='],['lbt/opt4.jpg','aHR0cHM6Ly9zaWxvbmctcmVzcG9vbC5naXRodWIuaW8vZ2F5L3l4ai5odG1s'],['lbt/opt5.jpg','aHR0cHM6Ly9hY3F1YWludGUueHl6L3poL2V4cGxvcmUvYXBwcz9yYW5raW5nPWRhaWx5X3JhbmsmZGlzcGxheT1zaW1wbGU='],['lbt/opt6.jpg','aHR0cHM6Ly9qbTE4Yy1vZWMuY2Mvc2VhcmNoL3Bob3Rvcz9zZWFyY2hfcXVlcnk9eWFvaSZzZWFyY2gtdHlwZT1waG90b3MmbWFpbl90YWc9MA==']],
@@ -1354,6 +1414,7 @@ window.SLMODE=(function(){
 })();
 
 </script>
+<script>window.__SL_ERR=[];window.addEventListener("error",function(e){try{window.__SL_ERR.push((e.message||"error")+" @"+(e.lineno||0)+":"+(e.colno||0))}catch(_){}});</script>
 <script>
 
 
@@ -1677,13 +1738,15 @@ function aiPop(opts){dockSay(opts)}
   loadChar();
   dockReset();syncDockH();
 })();
+function slSys(extra){var g=String(window.SL_INJECTION||'').trim();return g?[{role:'system',content:g}]:[];}
 function aiGenerate(template,context){
   if(!GREET_KEY||!GREET_BASE)return Promise.resolve('');
+  if(window.SL_AI_LIMIT&&!window.SL_DEV){var _q=SL_AI_LIMIT.take();if(!_q.ok)return Promise.resolve('');}
   var prompt='你是巳泷资源库的全能管家玉珩，说话温柔、自然、不重复套话。请把下面这句兜底提示改写成一句更自然的中文提示，意思必须保持一致，不要加引号，不要解释。\n兜底：'+template+'\n场景：'+(context||'主页资源检索');
   var ctrl=new AbortController();var to=setTimeout(function(){ctrl.abort()},6500);
   return fetch(GREET_BASE.replace(/\/+$/,'')+'/chat/completions',{method:'POST',
     headers:{'Content-Type':'application/json','Authorization':'Bearer '+GREET_KEY},
-    body:JSON.stringify({model:GREET_MODEL,messages:[{role:'user',content:prompt}],temperature:1.0,max_tokens:90}),signal:ctrl.signal})
+    body:JSON.stringify({model:GREET_MODEL,messages:slSys().concat([{role:'user',content:prompt}]),temperature:1.0,max_tokens:90}),signal:ctrl.signal})
     .then(function(r){if(!r.ok)throw new Error('http');return r.json()})
     .then(function(j){var c=j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;return String(c||'').trim()})
     .finally(function(){clearTimeout(to)});
@@ -1766,6 +1829,7 @@ function aiIntent(q){
   var fallback=localIntent(q);
   var remote=new Promise(function(resolve){
     if(!GREET_KEY||!GREET_BASE){resolve(fallback);return}
+    if(window.SL_AI_LIMIT&&!window.SL_DEV){var _q=SL_AI_LIMIT.take();if(!_q.ok){resolve(fallback);return}}
     var ctrl=new AbortController();var to=setTimeout(function(){ctrl.abort()},5000);
     var prompt='你是巳泷资源库的管家玉珩。请判断用户这句话的意图，只输出一个 JSON，不要解释、不要代码块。\n'+
       '格式：{"intent":"search|chat|open","keyword":"检索关键词","module":"music|games|video|imagepro|codeeditor|favorites|level2d|tip"}\n'+
@@ -1773,7 +1837,7 @@ function aiIntent(q){
       '用户：'+String(q||'');
     fetch(GREET_BASE.replace(/\/+$/,'')+'/chat/completions',{method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+GREET_KEY},
-      body:JSON.stringify({model:GREET_MODEL,messages:[{role:'user',content:prompt}],temperature:.2,max_tokens:90}),signal:ctrl.signal})
+      body:JSON.stringify({model:GREET_MODEL,messages:slSys().concat([{role:'user',content:prompt}]),temperature:.2,max_tokens:90}),signal:ctrl.signal})
       .then(function(r){if(!r.ok)throw new Error('http');return r.json()})
       .then(function(j){
         var c=j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content;
@@ -2061,7 +2125,7 @@ function homeTopHtml(){
     '<div class="greet-bar on" id="greetBar"><div class="greet-track" id="greetTxt">✦ '+esc(greetFallback(new Date().getHours()))+' ✦</div></div>'+
     '<section class="hero hero-v11">'+
       '<div class="hero-copy">'+
-        '<div class="hk">SHENGLONG · RESOURCE UNIVERSE · V12</div>'+
+        '<div class="hk">SHENGLONG · RESOURCE UNIVERSE · V8.5.0</div>'+
         '<h1><span>把整个互联网</span><br><em>折叠成一张星图</em></h1>'+
         '<p>'+esc(__heroP)+'</p>'+
         '<div class="hstats">'+
@@ -2080,7 +2144,7 @@ function homeTopHtml(){
         '</div>'+
         '<div class="hero-meta"><span>26 路全网聚合</span><i></i><span>AI 文游宇宙</span><i></i><span>影视 · 音乐 · 漫画 · 图像</span></div>'+
       '</div>'+
-      '<figure class="hero-art"><img src="https://aka.doubaocdn.com/s/JnkJlVNXN4" alt="深空星球主视觉" loading="eager"><span class="art-tag">DEEP SPACE · SHENGLONG</span></figure>'+
+      /* 首页主视觉：紫罗兰星球，替换时只改下面这张图 */ '<figure class="hero-art"><img src="assets/ui/hero_violet.jpg" alt="紫罗兰星球主视觉" loading="eager"><span class="art-tag">VIOLET SPACE · SHENGLONG</span></figure>'+
     '</section>'+
     lbtBlock+
     '<div class="quick-links" id="qlBar"><div class="ql-line ql-row1">'+ql1+'</div><div class="ql-line ql-row2" id="qlRow2">'+ql2+'</div></div>'+

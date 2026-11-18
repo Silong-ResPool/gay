@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>巳泷图像工坊 · 影盾版</title>
 <meta name="description" content="单文件在线图像工坊：图层绘画、修图调色、滤镜、PSD 导入导出、幻影坦克、隐写与批量处理。">
+<!-- BASE64-IMAGE: 图像工坊 favicon（浏览器标签图标，替换时只改下一行 data:image） -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%238b5cf6'/%3E%3Cstop offset='1' stop-color='%23f472b6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='24' height='24' rx='6' fill='%230b0716'/%3E%3Cpath d='M5 16.5 12 5l7 11.5H5z' fill='none' stroke='url(%23g)' stroke-width='1.6'/%3E%3C/svg%3E">
 <style>
 :root{
@@ -123,7 +124,7 @@ body:not(.side-open) .side{display:none}
   color:var(--text);font-size:11.5px;font-family:var(--mono);width:56px;transition:.15s}
 .inp:focus{outline:none;border-color:var(--acc3);box-shadow:0 0 0 3px rgba(139,92,246,.15)}
 .sel{height:24px;background:#150f28;border:1px solid var(--line2);border-radius:6px;padding:0 22px 0 7px;font-size:11.5px;
-  color:var(--text);appearance:none;background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a99bc9' fill='none' stroke-width='1.4'/%3E%3C/svg%3E");
+  color:var(--text);appearance:none;/* BASE64-IMAGE: 下拉选择框箭头（UI 图标，不是封面/Logo） */ background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a99bc9' fill='none' stroke-width='1.4'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 7px center;cursor:pointer}
 .sel:focus{outline:none;border-color:var(--acc3)}
 .tgl{height:24px;min-width:26px;display:grid;place-items:center;border-radius:6px;border:1px solid var(--line2);
@@ -340,7 +341,7 @@ body:not(.side-open) .side{display:none}
 .txt:focus{outline:none;border-color:var(--acc3);box-shadow:0 0 0 3px rgba(139,92,246,.16)}
 textarea.txt{height:auto;min-height:62px;padding:8px 9px;line-height:1.6;resize:vertical}
 .dropdown-sel{height:28px;background:#150f28;border:1px solid var(--line2);border-radius:7px;padding:0 24px 0 8px;width:100%;
-  font-size:12px;color:#f2edff;appearance:none;background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a99bc9' fill='none' stroke-width='1.4'/%3E%3C/svg%3E");
+  font-size:12px;color:#f2edff;appearance:none;/* BASE64-IMAGE: 下拉选择框箭头（UI 图标，不是封面/Logo） */ background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a99bc9' fill='none' stroke-width='1.4'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 8px center;cursor:pointer}
 .rng{width:100%;accent-color:var(--acc2)}
 .rng-val{font-family:var(--mono);font-size:11px;color:#e9e1ff;width:46px;text-align:right;flex:none}
@@ -5829,6 +5830,7 @@ function addFiles(pane,files,opt){
       if(!/image|psd/i.test(f.type)&&!/\.(png|jpe?g|webp|gif|bmp|svg|psd)$/i.test(f.name))continue;
       try{list.push(await fileToCanvas(f))}catch(err){console.warn(err);toast(f.name+' 读取失败','err')}
     }
+    if(!list.length){modal&&modal.querySelector('.modal-bg')?.click();toast('没有读到图片。请确认格式为 JPG/PNG/WEBP/BMP/GIF/SVG/PSD，或换一张图重试。','err',3200);return}
     if(opt.single){SH.files[pane]=list.slice(0,1)}else{SH.files[pane]=(SH.files[pane]||[]).concat(list).slice(0,40)}
     modal&&modal.querySelector('.modal-bg')?.click();
     shGo(PANE_OF[pane]||pane);
@@ -5919,15 +5921,28 @@ function paintDropPreview(zone,f){
   zone.classList.add('on');
 }
 function bindDrop(el,multiple,onFiles){
-  el.onclick=()=>{
-    const inp=document.createElement('input');inp.type='file';inp.accept='image/*,.psd';inp.multiple=multiple;
-    inp.onchange=()=>{if(inp.files&&inp.files.length)onFiles([...inp.files])};
-    inp.click();
+  // 固定挂到 DOM 的隐藏 input：部分手机浏览器/鸿蒙 WebView 不允许点击未挂载的 input
+  let inp=el.__slFileInput;
+  if(!inp){
+    inp=document.createElement('input');
+    inp.type='file';inp.accept='image/*,.psd';inp.multiple=!!multiple;
+    inp.id='slDropFile'+(window.__slDropSeq=(window.__slDropSeq||0)+1);
+    inp.style.cssText='position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;pointer-events:none';
+    document.body.appendChild(inp);
+    el.__slFileInput=inp;
+  }
+  inp.multiple=!!multiple;
+  inp.onchange=()=>{
+    const files=inp.files?[...inp.files]:[];
+    if(files.length)onFiles(files);
+    inp.value='';
   };
+  el.onclick=(e)=>{e.preventDefault();e.stopPropagation();inp.value='';inp.click()};
   el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('on')});
   el.addEventListener('dragleave',()=>el.classList.remove('on'));
   el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('on');
-    if(e.dataTransfer.files.length)onFiles([...e.dataTransfer.files])});
+    const fs=e.dataTransfer&&e.dataTransfer.files?[...e.dataTransfer.files]:[];
+    if(fs.length)onFiles(fs)});
 }
 
 /* 主流程 */

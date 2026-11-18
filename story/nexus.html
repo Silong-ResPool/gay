@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#06070d">
 <title>世界观中枢 · 巳泷资源库</title>
 <meta name="description" content="宇宙法则、规则系、修仙魔法学习、物品制作、食材毒性、物种人物档案、语言创造与本地音乐合成器。">
-<link rel="stylesheet" href="nexus.css?v=4">
+<link rel="stylesheet" href="nexus.css?v=7">
 </head>
 <body>
 <div class="nx-shell">
@@ -88,7 +88,7 @@
           <h3>新增法则</h3>
           <div class="nx-fields">
             <div class="nx-field"><label>名称</label><input name="name" placeholder="例如：重力常数 / 以太活性" required></div>
-            <div class="nx-field"><label>类型</label><select name="type"><option>物理常数</option><option>化学性质</option><option>数学方程</option><option>世界法则</option></select></div>
+            <div class="nx-field"><label>类型</label><select name="type"><option>物理常数</option><option>化学性质</option><option>数学方程</option><option>世界法则</option><option>元素 / 以太</option><option>空间法则</option><option>时间法则</option><option>灵魂 / 意识</option><option>因果 / 命运</option><option>生物法则</option><option>社会 / 经济法则</option><option>禁忌 / 封印</option></select></div>
             <div class="nx-field"><label>数值 / 表达式</label><input name="value" placeholder="例如：9.8 m/s² 或 E=mc²"></div>
             <div class="nx-field"><label>单位 / 量纲</label><input name="unit" placeholder="m/s² / 无量纲"></div>
             <div class="nx-field full"><label>说明与约束</label><textarea name="note" placeholder="这条法则如何影响世界？哪些规则依赖它？"></textarea></div>
@@ -321,6 +321,41 @@
           </div>
           <div class="nx-note" id="musicResult">尚未合成。选择情绪与乐器，点「生成并播放」。</div>
         </form>
+
+        <div class="nx-editor" id="musicEditor">
+          <div class="nx-editor-head">
+            <div><h3>音源时间线编辑器</h3><p>乐器 / 环境声 / 音效与变声 / 录音 / 上传。节点可拖动，左右改开始时间，右下角改时长；每个节点可选单次或循环。</p></div>
+            <div class="nx-editor-tools">
+              <select id="teKind">
+                <option value="instrument">乐器</option>
+                <option value="ambient">环境声</option>
+                <option value="sfx">音效</option>
+                <option value="voice">变声 / 人声</option>
+                <option value="audio">上传音频</option>
+              </select>
+              <input id="teName" placeholder="音源名称，如：雨声 / 低音弦">
+              <label class="te-mini">起点<input id="teStart" type="number" min="0" max="29.8" step="0.1" value="0">s</label>
+              <label class="te-mini">时长<input id="teDur" type="number" min="0.2" max="30" step="0.1" value="4">s</label>
+              <label class="te-mini te-loop"><input id="teLoop" type="checkbox"> 循环</label>
+              <button class="nx-btn pri" id="teAdd" type="button">添加音源</button>
+              <button class="nx-btn" id="teRecord" type="button">录音</button>
+              <label class="nx-btn" for="teFile">上传音频</label>
+              <input id="teFile" type="file" accept="audio/*" hidden>
+              <button class="nx-btn" id="tePlay" type="button">播放时间线</button>
+              <button class="nx-btn" id="teStop" type="button">停止</button>
+              <button class="nx-btn" id="teDel" type="button">删除选中</button>
+              <button class="nx-btn" id="teClear" type="button">清空</button>
+            </div>
+          </div>
+          <div class="nx-timeline" id="teTimeline">
+            <div class="nx-timeline-ruler"><span>0s</span><span>5</span><span>10</span><span>15</span><span>20</span><span>25</span><span>30s</span></div>
+            <div class="te-lane" data-kind="instrument"><label>乐器</label><div class="te-track"></div></div>
+            <div class="te-lane" data-kind="ambient"><label>环境声</label><div class="te-track"></div></div>
+            <div class="te-lane" data-kind="sfx"><label>音效 / 变声</label><div class="te-track"></div></div>
+            <div class="te-lane" data-kind="audio"><label>录音 / 上传</label><div class="te-track"></div></div>
+          </div>
+          <div class="nx-editor-foot"><span id="teInfo">0 个音源 · 总长 30 秒 · 自动保存在本机</span><span>提示：循环节点会在 30 秒窗口内反复播放；上传与录音永久保存在本地。</span></div>
+        </div>
         <div class="nx-toolbar"><span class="nx-pill" id="musicCount">0 段配置</span></div>
         <div class="nx-grid" id="musicList"></div>
         <form class="nx-form" id="audioForm">
@@ -340,6 +375,13 @@
 <div class="nx-toast" id="nxToast"></div>
 <div class="nx-modal" id="nxModal"><div class="nx-modal-box"><h3 id="modalTitle">数据</h3><pre id="modalBody"></pre><div class="bar"><button class="nx-btn" id="modalClose">关闭</button></div></div></div>
 
-<script src="nexus.js?v=5"></script>
+<script src="../data/env.js?v=2"></script>
+<script src="../data/api-app.js?v=2"></script>
+<script src="../data/api-web.js?v=2"></script>
+<script src="../data/ai-limit.js?v=2"></script>
+<script src="../butler/config/injection.js?v=2"></script>
+<script src="nexus.js?v=6"></script>
+<script src="nexus-ai.js?v=1"></script>
+<script src="nexus-music-editor.js?v=1"></script>
 </body>
 </html>

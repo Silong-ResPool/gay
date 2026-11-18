@@ -1,136 +1,147 @@
-/* 世界：战国妖神录 / 新版引擎 · 古风志怪 · 双男主 */
+/* 世界：战国·妖神录 / 霜见京 · 原人物与世界观恢复版 */
 window.SL_PACK = {
-  id: 'zgysl', title: '战国·妖神录', subtitle: '昭元三年 · 白霜城',
-  kicker: 'WAR · FOX SPIRIT', theme: 'ancient', layout: 'dashboard', modeLabel: '志怪权谋', mode: 'ancient',
-  accent: '#f59e0b', accent2: '#b91c1c', bg: '#0b0705', bg2: '#1a0d08',
-  cover: 'https://aka.doubaocdn.com/s/dH5cGfyFrh', turnsPerDay: 4, eventChance: 0.45,
-  freePlaceholder: '自由行动：巡城 / 查案 / 去茶楼 / 找谢昭 / 找白狸 / 画符 / 练剑',
+  id: 'zgysl', title: '战国·妖神录', subtitle: '昭元三年 · 霜见京',
+  kicker: 'SENGOKU · YOKAI', theme: 'xianxia', layout: 'cinema', modeLabel: '守棠人 · 妖神录', mode: 'yokai',
+  accent: '#e0b15a', accent2: '#9f1239', bg: '#0b0805', bg2: '#1a1210',
+  cover: '../../assets/ui/world_zgysl.jpg', turnsPerDay: 5, eventChance: 0.38,
+  freePlaceholder: '自由行动：回府 / 去议事厅 / 巡西坊 / 找燎 / 问长明 / 下归墟 / 看封印',
   bgm: [
-    { id: 'snow', name: '白霜城的雪', mood: 'daily', tempo: 64, scale: 'minor', lead: 'guqin', pad: 'snow' },
-    { id: 'fox', name: '狐火', mood: 'horror', tempo: 52, scale: 'phrygian', lead: 'dizi', pad: 'fire' },
-    { id: 'war', name: '城头鼓', mood: 'tense', tempo: 100, scale: 'minor', lead: 'pipa', pad: 'drum' }
+    { id: 'snow', name: '霜见京的雨', mood: 'daily', tempo: 62, scale: 'pentatonic', lead: 'guqin', pad: 'warm' },
+    { id: 'banquet', name: '妖市夜宴', mood: 'tense', tempo: 92, scale: 'minor', lead: 'pipa', pad: 'dark' },
+    { id: 'tree', name: '棠树之下', mood: 'romance', tempo: 70, scale: 'dorian', lead: 'dizi', pad: 'soft' },
+    { id: 'seal', name: '九千丈封印', mood: 'horror', tempo: 56, scale: 'phrygian', lead: 'lowStrings', pad: 'dark' }
   ],
   stats: [
-    { key: 'hp', label: '气血', init: 78, max: 100, danger: true },
-    { key: 'mind', label: '心念', init: 55, max: 100, danger: true },
-    { key: 'blade', label: '锋刃', init: 20, max: 100 },
-    { key: 'suspicion', label: '城中疑云', init: 12, max: 100, danger: true },
-    { key: 'talismans', label: '符纸', init: 3, max: 20 }
+    { key: 'hp', label: '气血', init: 100, max: 100, danger: true },
+    { key: 'xin', label: '心念', init: 40, max: 100 },
+    { key: 'feng', label: '锋刃', init: 20, max: 100 },
+    { key: 'yao', label: '妖力', init: 5, max: 100, danger: true }
   ],
   relations: [
-    { key: 'zhao', name: '谢昭', role: '白霜城少将 · 冷面刀客', init: 18, max: 100 },
-    { key: 'li', name: '白狸', role: '妖神录残页化形 · 狐妖', init: 8, max: 100 },
-    { key: 'shen', name: '沈砚', role: '茶楼说书人 · 情报贩子', init: 0, max: 100 }
+    { key: 'liao', name: '神乐·燎', role: '神乐家次子 · 掌妖兵', init: 10, max: 100 },
+    { key: 'chomei', name: '长明', role: '青铜灯器灵 · 等你回家', init: 24, max: 100 },
+    { key: 'nagi', name: '奈岐', role: '天外古蛇神 · 镇缝者', init: 8, max: 100 },
+    { key: 'shirai', name: '白芨', role: '灰狼妖 · 青婆婆赎出', init: 14, max: 100 },
+    { key: 'aoi', name: '青婆婆', role: '八百年槐妖 · 归墟守夜人', init: 6, max: 100 }
   ],
   items: {
-    sword: { name: '照胆刀', desc: '谢昭的佩刀，刀鞘上刻着一行小字：不负', tags: ['武器', '信物'], icon: '刀' },
-    page: { name: '妖神录残页', desc: '纸页摸起来像雪，字迹会移动', tags: ['关键', '危险'], icon: '页' },
-    talisman: { name: '镇狐符', desc: '画到最后一笔时，手会自己停下来', tags: ['符箓', '消耗'], icon: '符' },
-    tea: { name: '白霜茶', desc: '茶楼特供，喝下去能看见雪里的脚印', tags: ['食物', '线索'], icon: '茶' },
-    jade: { name: '半块玉佩', desc: '和谢昭腰间那块正好拼成一只狐', tags: ['信物', '感情'], icon: '玉' },
-    letter: { name: '密信', desc: '写着三日后城破，落款是当朝国师', tags: ['证据', '危险'], icon: '信' }
+    zhaoye: { name: '照夜', desc: '父亲留下的佩剑。剑鞘内侧刻着“守棠人”三个字。', tags: ['武器', '信物', '关键'], icon: '剑' },
+    jingshi: { name: '斩妖令', desc: '神乐家的令牌，见令如见城守。对妖物有压制。', tags: ['权力', '关键'], icon: '令' },
+    doupeng: { name: '旧斗篷', desc: '从霜见京带回来的斗篷，领口还沾着三年未散的药味。', tags: ['防具', '旧物'], icon: '篷' },
+    huaizhi: { name: '青婆婆的槐枝', desc: '一枝还活着的槐，断口会渗出温热的汁。', tags: ['妖物', '信物'], icon: '枝' },
+    linpian: { name: '奈岐的鳞片', desc: '一片温凉的蛇鳞，贴近皮肤时能听见很远的水声。', tags: ['神物', '关键'], icon: '鳞' },
+    deng: { name: '长明的青铜灯', desc: '灯芯不需要油，照的是骨头里的东西。', tags: ['照明', '器灵'], icon: '灯' }
   },
-  startItems: [{ id: 'sword', qty: 1 }, { id: 'page', qty: 1 }, { id: 'talismans', qty: 3 }],
-  skills: [{ id: 'blade', name: '照胆刀法' }, { id: 'seal', name: '镇狐符' }],
+  startItems: [{ id: 'zhaoye', qty: 1 }, { id: 'jingshi', qty: 1 }, { id: 'doupeng', qty: 1 }],
+  skills: [{ id: 'sword', name: '照夜剑式' }, { id: 'seal', name: '守棠印' }, { id: 'yokai', name: '听妖' }],
   rules: [
-    { text: '白霜城的雪只落在活人肩上，妖物走过的地方是干的。', code: 'Z-01' },
-    { text: '妖神录一共四卷，读完的人会忘记自己的名字。', code: 'Z-02' },
-    { text: '谢昭的刀从不出鞘；出鞘时，城里一定有人要死。', code: 'Z-03' },
-    { text: '茶楼的说书人知道所有秘密，但他只讲一半。', code: 'Z-04' },
-    { text: '狐妖认主之前，会先偷走你的一样东西。', code: 'Z-05' }
+    { text: '守棠人不得在棠树下说谎；树会替你说出真话。', code: 'S-01' },
+    { text: '九千丈封印每十九年松一次，必须用守棠人的血喂它。', code: 'S-02' },
+    { text: '斩妖令只对“有名之妖”有效；没有名字的东西，令会失效。', code: 'S-03' },
+    { text: '归墟的灯灭时，不要回头；回头的人会被当作祭品。', code: 'S-04' },
+    { text: '神乐家的次子掌妖兵，但妖兵只认血，不认姓。', code: 'S-05' }
   ],
   places: [
-    { name: '白霜城头', desc: '谢昭每日巡城', unlocked: true },
-    { name: '茶楼', desc: '说书人沈砚的地盘', unlocked: true },
-    { name: '城西旧宅', desc: '妖神录残页出现的地方', unlocked: true },
-    { name: '雪巷', desc: '没有脚印的巷子', unlocked: true },
-    { name: '国师府', desc: '城破密信的来源', unlocked: false },
-    { name: '狐火祠', desc: '白狸的真身所在', unlocked: false }
+    { name: '落星谷', desc: '你从霜见京回来的地方', unlocked: true },
+    { name: '神乐府', desc: '父亲、燎与雨宫澪所在', unlocked: true },
+    { name: '议事厅', desc: '裁军与粮饷的争论', unlocked: true },
+    { name: '西坊', desc: '妖物与人的混居街', unlocked: true },
+    { name: '归墟', desc: '九千丈封印的裂口', unlocked: false },
+    { name: '白霜城头', desc: '妖兵与序使的战场', unlocked: false }
   ],
   freeActions: [
-    { keys: ['巡城', '城头', '谢昭'], text: '你和谢昭并肩巡城。他替你拂掉肩上的雪，动作比刀还轻。', eff: { stats: { blade: 4 }, rel: { zhao: 6 } } },
-    { keys: ['查案', '调查', '线索'], text: '你在雪巷尽头找到一串没有脚印的痕迹，痕迹一直延伸到城西旧宅。', eff: { stats: { suspicion: 4 }, flags: { dryFootprints: true } } },
-    { keys: ['茶楼', '沈砚', '听书'], text: '沈砚把醒木一拍，讲了一个狐妖替人挡劫的故事。散场后，他塞给你半张城防图。', eff: { rel: { shen: 8 }, stats: { suspicion: 2 }, flags: { cityMap: true } } },
-    { keys: ['白狸', '狐妖', '交谈'], text: '白狸从梁上跳下来，尾巴扫过你的手腕：“你身上有谢昭的味道。”', eff: { rel: { li: 8 }, stats: { mind: -2 } } },
-    { keys: ['画符', '符纸', '镇狐'], text: '你画镇狐符，最后一笔又停住了。白狸在旁边笑：“你舍不得镇我。”', eff: { stats: { talismans: -1, mind: 3 }, rel: { li: 5 } } },
-    { keys: ['练刀', '刀法', '练'], text: '谢昭按住你的手腕，教你把刀势收住：“刀不是用来杀人的，是用来让人不敢动。”', eff: { stats: { blade: 8 }, rel: { zhao: 6 } } },
-    { keys: ['旧宅', '妖神录', '残页'], text: '旧宅的墙上浮现出妖神录第二卷。你只看了三行，就听见有人在你身后叫你的名字。', eff: { stats: { mind: -6 }, flags: { secondPage: true } } }
+    { keys: ['回府', '神乐府', '父亲'], text: '你回到神乐府，父亲的书房门虚掩着。案上摊着斩妖令，旁边是一封没有署名的信。', eff: { stats: { xin: 4 }, flags: { sawLetter: true } } },
+    { keys: ['议事厅', '裁军', '粮饷'], text: '议事厅里有人提“裁掉三成守棠人”。你没有说话，只把照夜放在案上，厅里静了一瞬。', eff: { stats: { feng: 6 }, flags: { councilSilenced: true } } },
+    { keys: ['西坊', '巡', '妖物'], text: '西坊的墙根下躺着半具妖骨。长明替你照亮，青色的火照出骨头里还卡着一枚神乐家的箭头。', eff: { rel: { chomei: 8 }, flags: { westClue: true } } },
+    { keys: ['燎', '次子', '妖兵'], text: '燎在城西兵营里数妖兵。他看见你，手里的名册合上了一半：“大哥，你来抢我的兵？”', eff: { rel: { liao: 8 }, stats: { yao: 2 } } },
+    { keys: ['长明', '灯', '交谈'], text: '长明贴着你的耳边说：“那不是妖，是神。你父亲的斩妖令，压不住它。”', eff: { rel: { chomei: 10 }, flags: { chomeiTruth: true } } },
+    { keys: ['青婆婆', '槐枝', '归墟'], text: '青婆婆从黑暗里递出一枝槐：“你母亲十九岁那年，也站在这棵树下。”', eff: { rel: { aoi: 8 }, addItems: [{ id: 'huaizhi', qty: 1 }] } },
+    { keys: ['奈岐', '蛇神', '封印'], text: '奈岐坐在棠树下，像坐了一万年。他抬眼：“你身上有守棠人的血。过来。”', eff: { rel: { nagi: 10 }, stats: { yao: 3 } } },
+    { keys: ['白芨', '灰狼', '妖市'], text: '白芨从屋顶跳下来，右耳缺了一块。他闻了闻你的袖口：“你身上有笼子的味道。”', eff: { rel: { shirai: 8 }, flags: { wolfTrust: true } } }
   ],
-  start: 'wall',
+  start: 'return',
   scenes: {
-    wall: {
-      chapter: '第 1 日 · 城头', place: '白霜城头', title: '雪只落在活人肩上',
-      text: '昭元三年，白霜城的雪下了整整一月。\n你站在城头，看见雪落在每一个活人肩上，唯独城西那条巷子，干干净净。\n谢昭按着刀走过来，把一件大氅披在你身上：“别看了。那条巷子，昨晚又少了一个人。”\n他腰间挂着半块玉佩，形状像一只狐。',
+    return: {
+      chapter: '卷一 · 归乡', place: '落星谷', title: '霜见京的雨',
+      text: '你二十二岁，从霜见京养了三年病回来。\n落星谷的雨把山路泡得发亮，照夜在你腰上，斩妖令在袖里。\n府门前的棠树比记忆里高了一截，树下的石阶上坐着一个人。\n他穿青铜色的旧袍，手里提着一盏没有火的灯，抬头看你：“你终于回来了。”\n他是长明，神乐家守了三十年的灯灵。',
       choices: [
-        { label: '跟谢昭去城西查案', hint: '谢昭 +12，线索 +1', eff: { rel: { zhao: 12 }, flags: { goWest: true } }, next: 'alley' },
-        { label: '先去茶楼，找沈砚打听', hint: '沈砚 +10，线索 +1', eff: { rel: { shen: 10 }, stats: { suspicion: 2 }, flags: { teaFirst: true } }, next: 'teahouse' },
-        { label: '独自去城西旧宅，找妖神录', hint: '心念 -6，线索 +2', eff: { stats: { mind: -6 }, flags: { soloWest: true } }, next: 'alley' }
+        { label: '先问长明，父亲的斩妖令为何在书房', hint: '长明 +10，线索', eff: { rel: { chomei: 10 }, flags: { askFather: true } }, next: 'hall' },
+        { label: '把照夜解下来，让他看看剑鞘里的字', hint: '锋刃 +5，长明 +8', eff: { stats: { feng: 5 }, rel: { chomei: 8 }, flags: { showedSword: true } }, next: 'hall' },
+        { label: '不进门，先去西坊看妖物的动静', hint: '妖力 +4，危险', eff: { stats: { yao: 4 }, flags: { wentWest: true } }, next: 'hall' }
       ]
     },
-    alley: {
-      chapter: '第 2 日 · 雪巷', place: '雪巷', title: '没有脚印的人',
-      text: '雪巷里没有脚印。\n巷子尽头，一个穿白衣的人背对着你站着，肩上没有雪。\n他回过头，脸是空的。\n谢昭的刀在鞘里响了一声。\n你听见白狸在屋顶笑：“别怕，他只是忘了自己长什么样。”',
+    hall: {
+      chapter: '卷二 · 议事厅', place: '议事厅', title: '裁掉三成',
+      text: '议事厅里坐满了人。\n父亲不在。雨宫·澪坐在侧席，眉眼柔和，替你倒了一杯茶。\n“白霜城养不起这么多守棠人。”她说，“裁掉三成，妖兵就能多发三个月粮。”\n燎站在她身后，个子已经比你高半头。他看着你，像在等你先开口。\n你想起三年前，他也是这样站在门外，端着一碗凉掉的参汤。',
       choices: [
-        { label: '拔刀挡在谢昭身前', hint: '锋刃 +6，谢昭 +14', eff: { stats: { blade: 6 }, rel: { zhao: 14 }, flags: { protectZhao: true } }, next: 'teahouse' },
-        { label: '问白狸，这个人是谁', hint: '白狸 +12，线索 +2', eff: { rel: { li: 12 }, stats: { mind: -3 }, flags: { emptyFace: true } }, next: 'teahouse' },
-        { label: '用镇狐符试探空脸人', hint: '符纸 -1，线索 +1', eff: { stats: { talismans: -1, suspicion: 3 }, flags: { usedTalisman: true } }, next: 'teahouse' }
+        { label: '把斩妖令放在案上，反对裁人', hint: '威信 +8，雨宫澪 -6', eff: { stats: { xin: 8 }, rel: { liao: 4 }, flags: { againstCut: true } }, next: 'west' },
+        { label: '支持裁人，但要妖兵先交出兵器', hint: '锋刃 +4，燎 +8', eff: { stats: { feng: 4 }, rel: { liao: 8 }, flags: { disarmedYokai: true } }, next: 'west' },
+        { label: '不表态，先问九千丈封印的裂缝', hint: '真相，青婆婆 +6', eff: { stats: { xin: 4 }, rel: { aoi: 6 }, flags: { askedSeal: true } }, next: 'west' }
       ]
     },
-    teahouse: {
-      chapter: '第 3 日 · 茶楼', place: '茶楼', title: '说书人的半张图',
-      text: '茶楼里坐满了人。\n沈砚一拍醒木，讲起二十年前的旧事：国师以妖神录为饵，把整座白霜城炼成阵眼。\n散场后，他把半张城防图塞给你：“另外半张，在国师府。”\n谢昭坐在二楼，面前的茶一口没动。',
+    west: {
+      chapter: '卷三 · 西坊', place: '西坊', title: '墙下的妖骨',
+      text: '西坊的雨比落星谷更脏。\n墙根下堆着半具妖骨，骨缝里卡着一枚神乐家的箭头。\n白芨蹲在屋顶，右耳缺了一块，冲你低吼：“别碰。那是你父亲的人射的。”\n长明把灯举高，青色的火照出骨头上密密麻麻的名字——全是这三年里失踪的守棠人。\n巷子深处，燎的妖兵正在换防。',
       choices: [
-        { label: '把城防图交给谢昭', hint: '谢昭 +16，线索 +1', eff: { rel: { zhao: 16 }, flags: { mapToZhao: true } }, next: 'house' },
-        { label: '问沈砚，为什么要帮你', hint: '沈砚 +12，线索 +1', eff: { rel: { shen: 12 }, flags: { shenWhy: true } }, next: 'house' },
-        { label: '把图收起来，谁也不告诉', hint: '心念 -4，危险 +4', eff: { stats: { mind: -4, suspicion: 4 }, flags: { secretMap: true } }, next: 'house' }
+        { label: '把箭头拔出来，带回议事厅', hint: '证据，危险 +4', eff: { stats: { feng: 5, xin: 4 }, flags: { arrowEvidence: true } }, next: 'market' },
+        { label: '让白芨带路，去见青婆婆', hint: '白芨 +10，青婆婆 +6', eff: { rel: { shirai: 10, aoi: 6 }, flags: { metAoi: true } }, next: 'market' },
+        { label: '直接去妖市找燎，问他知不知情', hint: '燎 +10，妖力 +3', eff: { rel: { liao: 10 }, stats: { yao: 3 }, flags: { askedLiao: true } }, next: 'market' }
       ]
     },
-    house: {
-      chapter: '第 4 日 · 旧宅', place: '城西旧宅', title: '妖神录第二卷',
-      text: '旧宅的墙上浮出妖神录第二卷。\n字迹像雪一样落下来，拼成一句话：\"城破之日，需一活人祭阵。\"\n白狸蹲在梁上，尾巴垂下来：“谢昭的玉佩，就是阵眼的钥匙。”\n门外，谢昭的脚步声停了。',
+    market: {
+      chapter: '卷四 · 妖市', place: '妖市', title: '长明照骨',
+      text: '妖市在夜里才开。\n灯笼挂在没有门的铺子上，卖的是记忆、名字和一小截寿命。\n长明把灯放在你脚边，青色的火照过每一个摊主的脸——没有一张是人的脸。\n“你父亲的斩妖令，在这里只能买一杯酒。”长明说。\n燎站在街尾，手里提着妖兵的名册，名册上第一个名字是你的。',
       choices: [
-        { label: '把残页藏起来，不让谢昭看见', hint: '谢昭 +10，心念 -4', eff: { rel: { zhao: 10 }, stats: { mind: -4 }, flags: { hidPage: true } }, next: 'temple' },
-        { label: '把真相告诉谢昭', hint: '谢昭 +18，线索 +2', eff: { rel: { zhao: 18 }, flags: { toldZhao: true } }, next: 'temple' },
-        { label: '问白狸，能不能替你祭阵', hint: '白狸 +15，危险 +6', eff: { rel: { li: 15 }, stats: { suspicion: 6 }, flags: { foxOffer: true } }, next: 'temple' }
+        { label: '当众翻开名册，问燎为什么写你的名字', hint: '燎 +12，威信 +4', eff: { rel: { liao: 12 }, stats: { xin: 4 }, flags: { readRoster: true } }, next: 'seal' },
+        { label: '不动声色，跟长明去查名册的来处', hint: '线索，长明 +8', eff: { rel: { chomei: 8 }, flags: { rosterClue: true } }, next: 'seal' },
+        { label: '买下一段“守棠人的记忆”', hint: '真相，理智 -4', eff: { stats: { xin: -4, yao: 4 }, flags: { boughtMemory: true } }, next: 'seal' }
       ]
     },
-    temple: {
-      chapter: '第 5 日 · 狐火祠', place: '狐火祠', title: '狐火',
-      text: '狐火祠在城西地下，入口被雪封了三年。\n白狸用尾巴扫开雪，露出里面的九尾壁画。\n“我不是妖神。”他说，“我是被妖神录吃掉的人留下的执念。”\n谢昭站在壁画前，半块玉佩在手里发热。\n壁画上的狐狸，正好缺了半边脸。',
+    seal: {
+      chapter: '卷五 · 归墟', place: '归墟', title: '九千丈之下',
+      text: '归墟的入口在棠树底下。\n你顺着根须往下走了九千丈，直到脚底踩到一片会呼吸的黑暗。\n青婆婆坐在封印的裂口上，根须扎进每一道缝。她的掌心不是手纹，是一圈一圈的树轮。\n“你母亲十九岁那年，也来过这里。”她说，“她没下去。你父亲下去了，带上来一把剑。”\n封印下面，奈岐睁开眼。',
       choices: [
-        { label: '把自己的血滴在壁画上', hint: '心念 -8，线索 +2', eff: { stats: { mind: -8, hp: -5 }, flags: { bloodWall: true } }, next: 'finale' },
-        { label: '把玉佩交给白狸，让他补全壁画', hint: '白狸 +20，谢昭 -6', eff: { rel: { li: 20, zhao: -6 }, flags: { jadeToFox: true } }, next: 'finale' },
-        { label: '拉住谢昭，先离开狐火祠', hint: '谢昭 +14，危险 -4', eff: { rel: { zhao: 14 }, stats: { suspicion: -4 }, flags: { leftTemple: true } }, next: 'finale' }
+        { label: '把手贴在封印上，替青婆婆撑住', hint: '青婆婆 +14，妖力 +5', eff: { rel: { aoi: 14 }, stats: { yao: 5, hp: -4 }, flags: { heldSeal: true } }, next: 'tree' },
+        { label: '问奈岐，下面压的到底是什么', hint: '奈岐 +12，真相', eff: { rel: { nagi: 12 }, flags: { nagiTruth: true } }, next: 'tree' },
+        { label: '拔出照夜，先斩断第一根松动的锁链', hint: '锋刃 +8，危险 +8', eff: { stats: { feng: 8, yao: 4 }, flags: { cutChain: true } }, next: 'tree' }
+      ]
+    },
+    tree: {
+      chapter: '卷六 · 棠树', place: '神乐府', title: '树下的人',
+      text: '你从归墟上来时，棠树开花了。\n花是白的，落在石阶上像一层薄雪。\n长明在树下等你，灯芯终于有了火。燎站在他身后，手里没有名册，只有一只旧铜盒。\n“母亲让我把这个给你。”燎说，“她说，守棠人的血，总要有一个人先流。”\n奈岐的影子落在树根上，像一条很长的河。',
+      choices: [
+        { label: '接过铜盒，先问燎愿不愿意一起守', hint: '燎 +16，共同线', eff: { rel: { liao: 16 }, stats: { xin: 6 }, flags: { together: true } }, next: 'finale' },
+        { label: '把铜盒还给燎，让他自己选', hint: '燎 +12，尊重线', eff: { rel: { liao: 12 }, flags: { liaoChoice: true } }, next: 'finale' },
+        { label: '打开铜盒，里面是母亲留下的守棠印', hint: '真相，妖力 +8', eff: { stats: { yao: 8, xin: 4 }, flags: { motherSeal: true } }, next: 'finale' }
       ]
     },
     finale: {
-      chapter: '终章 · 城头', place: '白霜城头', title: '城破之日',
-      text: '第三日，国师的兵到了城下。\n白霜城的雪忽然停了。\n谢昭拔刀，刀光照亮半座城。\n沈砚站在城楼阴影里，手里拿着另外半张城防图。\n白狸落在你肩上，问：“阵眼、城、还是人，你选哪个？”',
+      chapter: '终章 · 白霜城头', place: '白霜城头', title: '序使叩关',
+      text: '白霜城头点起九盏灯。\n城外的雾里站着序使，它们没有脸，只有一个接一个的名字。\n燎带着三百妖兵站在你左侧，白芨伏在城垛上，长明的灯照出每一根从雾里伸出来的手指。\n奈岐从地底升起，蛇身盘住城墙。\n“这一次，”他说，“你还要一个人下去吗？”',
       choices: [
-        { label: '和谢昭一起守城，把阵眼留给自己', hint: '谢昭结局', eff: { rel: { zhao: 25 }, flags: { guardWithZhao: true } }, next: 'end' },
-        { label: '跟白狸进狐火祠，关闭妖神录', hint: '白狸结局', eff: { rel: { li: 25 }, flags: { closeBook: true } }, next: 'end' },
-        { label: '把城防图交给沈砚，让全城撤离', hint: '沈砚结局', eff: { rel: { shen: 20 }, flags: { evacuate: true } }, next: 'end' }
+        { label: '握住燎的手，一起把妖兵压上城头', hint: '结局 · 双守棠人', eff: { rel: { liao: 20 }, stats: { feng: 10 }, flags: { defendTogether: true } }, next: 'end' },
+        { label: '让奈岐封住裂缝，你带人撤进归墟', hint: '结局 · 归墟守夜', eff: { rel: { nagi: 18, aoi: 10 }, flags: { retreat: true } }, next: 'end' },
+        { label: '把守棠印交给燎，自己提灯出城', hint: '结局 · 长明不灭', eff: { rel: { chomei: 18, liao: 8 }, flags: { lampOut: true } }, next: 'end' }
       ]
     },
-    end: { chapter: '终章', place: '白霜城', title: '雪停', text: '雪终于停了。', choices: [] }
+    end: { chapter: '终章', place: '白霜城头', title: '霜后见春', text: '城头的灯一盏一盏亮起来。', choices: [] }
   },
   events: [
-    { id: 'missing', title: '城西又少一个人', if: function (s) { return s.day >= 1; }, text: '更夫说，城西昨晚少了一个人。雪地上没有脚印，只有半块冷掉的饼。', eff: { stats: { suspicion: 3 }, flags: { missingPerson: true } } },
-    { id: 'fox_tail', title: '窗外的狐狸尾巴', if: function (s) { return s.rel.li >= 20; }, text: '半夜，一条白色的尾巴从窗缝垂进来，轻轻卷走你桌上的半块玉佩。', eff: { rel: { li: 6 }, stats: { mind: -2 } } },
-    { id: 'zhao_wound', title: '谢昭的旧伤', if: function (s) { return s.rel.zhao >= 30; }, text: '谢昭在城头换药，背上有三道旧刀伤。他说是二十年前留下的，可伤口的形状像狐爪。', eff: { rel: { zhao: 8 }, addItems: [{ id: 'jade', qty: 1 }] } },
-    { id: 'tea_dream', title: '茶里的雪', if: function (s) { return s.flags.teaFirst; }, text: '你喝下白霜茶，看见雪地里有一行脚印，一直走到国师府后门。', eff: { stats: { suspicion: 4 }, flags: { teaVision: true } } },
-    { id: 'book_voice', title: '妖神录在叫你的名字', if: function (s) { return s.stats.mind <= 45; }, text: '你听见妖神录在叫你。声音像谢昭，也像白狸，最后变成你自己的。', eff: { stats: { mind: -6 } } },
-    { id: 'army', title: '城下鼓声', if: function (s) { return s.day >= 4; }, text: '城下传来第一声战鼓。谢昭把刀横在膝上，一整夜没有睡。', eff: { stats: { suspicion: 6 }, rel: { zhao: 5 } } }
+    { id: 'rain', title: '落星谷的雨', if: function (s) { return s.day >= 2; }, text: '雨把落星谷的路冲出一条新沟。沟底露出半截旧剑鞘，刻着神乐家的棠纹。', eff: { stats: { xin: 4 }, flags: { oldSheath: true } } },
+    { id: 'liao_drink', title: '燎端来的参汤', if: function (s) { return s.rel.liao >= 25; }, text: '燎端着一碗参汤站在门外。汤是热的，他却像三年前一样，不敢敲门。', eff: { rel: { liao: 8 }, stats: { hp: 4 } } },
+    { id: 'chomei_memory', title: '长明的旧火', if: function (s) { return s.rel.chomei >= 30; }, text: '长明的灯芯忽然爆了一下。他低声说：“三十年前，我也这样等过一个人。”', eff: { rel: { chomei: 8 }, stats: { xin: 3 } } },
+    { id: 'seal_loose', title: '封印又松了一寸', if: function (s) { return s.day >= 4; }, text: '棠树底下的根须断了一根。青婆婆没有说，但她的树轮少了一圈。', eff: { stats: { yao: 4, hp: -3 }, flags: { sealLoose: true } } },
+    { id: 'wolf', title: '白芨的耳朵', if: function (s) { return s.rel.shirai >= 25; }, text: '白芨把缺了一块的右耳贴在你手背上：“以后有人欺负你，我能先听见。”', eff: { rel: { shirai: 8 } } }
   ],
   endings: [
-    { id: 'zhao', title: '照胆', if: function (s) { return s.flags.guardWithZhao; }, text: '城守住了。\n谢昭的刀断成两截，一截插在城头，一截留在你手里。\n他把半块玉佩放进你掌心：“以后白霜城的雪，落在我们两个人肩上。”' },
-    { id: 'fox', title: '狐火人间', if: function (s) { return s.flags.closeBook; }, text: '妖神录在狐火里烧尽。白狸的第九条尾巴化成一场雪，落在你手背上。\n“我本来就没有脸。”他笑，“现在有了。”\n你伸手碰了碰他的脸，是温的。' },
-    { id: 'shen', title: '满城灯火', if: function (s) { return s.flags.evacuate; }, text: '沈砚把城防图摊开，带着百姓从暗道撤离。\n白霜城空了，国师的兵扑了个空。\n你站在城头，看见谢昭和白狸一左一右，替你挡住最后一阵箭雨。' },
-    { id: 'fall', title: '雪埋白霜', if: function (s) { return s.stats.mind <= 5 || s.stats.suspicion >= 95; }, text: '城破那天，雪下得很大。\n妖神录从城西旧宅一直烧到城头，把所有人的脸都烧成了空白。\n只有半块玉佩留在雪里，像一只没有眼睛的狐。' }
+    { id: 'together', title: '双守棠人', if: function (s) { return s.flags.defendTogether; }, text: '你和燎并肩站在白霜城头。妖兵与守棠人的血混在一起，把城墙染成深色。\n序使退去时，燎把名册扔进火里：“以后我的兵，也听你的。”\n长明在城下举灯，照见两个人的影子叠在一起。' },
+    { id: 'retreat', title: '归墟守夜', if: function (s) { return s.flags.retreat; }, text: '你带人退进归墟。奈岐的蛇身封住入口，青婆婆的根须从黑暗里垂下来，替你们挡住第一波序使。\n燎坐在你身边，把刀横在膝上。\n“这一次，”他说，“我跟你一起守。”' },
+    { id: 'lamp', title: '长明不灭', if: function (s) { return s.flags.lampOut; }, text: '你提着长明走出城门。灯油是你的血，火是你的名字。\n燎在城头喊你，你没有回头。\n后来白霜城改名叫霜见，取“霜后见春”的意思。\n城门口多了一盏永远不灭的灯，和一个每年春天都来添油的人。' },
+    { id: 'fall', title: '九千丈下', if: function (s) { return s.stats.hp <= 15 || s.stats.yao >= 95; }, text: '封印裂开时，你被根须拖进九千丈之下。\n奈岐用蛇身压住裂口，青婆婆把最后一圈树轮给了你。\n霜见京的雨下了七天。\n第八天，棠树下多了一枝新槐。' }
   ],
   nexusLinks: [
-    { label: '法则：妖神录的代价', kind: '宇宙法则', target: 'law' },
-    { label: '规则：白霜城夜行守则', kind: '规则系', target: 'rules' },
-    { label: '物品：照胆刀 / 镇狐符', kind: '物品', target: 'items' }
+    { label: '法则：守棠人的血', kind: '宇宙法则', target: 'law' },
+    { label: '规则：霜见京守则', kind: '规则系', target: 'rules' },
+    { label: '人物：神乐·朔 / 燎 / 奈岐', kind: '人物', target: 'chars' }
   ]
 };

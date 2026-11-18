@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="620" viewBox="0 0 420 620">
+<defs><radialGradient id="g" cx="50%" cy="28%" r="90%"><stop offset="0" stop-color="#7f1d1d"/><stop offset="1" stop-color="#240b16"/></radialGradient><linearGradient id="h" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fecaca" stop-opacity=".85"/><stop offset="1" stop-color="#fecaca" stop-opacity="0"/></linearGradient></defs>
+<rect width="420" height="620" fill="url(#g)"/>
+<circle cx="300" cy="150" r="120" fill="none" stroke="#fecaca" stroke-opacity=".25" stroke-width="2"/>
+<circle cx="300" cy="150" r="82" fill="#fecaca" fill-opacity=".08"/>
+<path d="M0 430 L420 300 L420 620 L0 620 Z" fill="#240b16" fill-opacity=".55"/>
+<path d="M0 470 L420 350" stroke="#fecaca" stroke-opacity=".28" stroke-width="1.4"/>
+<g opacity=".28" stroke="#fecaca" fill="none"><rect x="38" y="38" width="344" height="544" rx="14"/><rect x="48" y="48" width="324" height="524" rx="10"/></g>
+<g fill="#fecaca" fill-opacity=".22"><circle cx="54" cy="602" r="3"/><circle cx="72" cy="602" r="3"/><circle cx="90" cy="602" r="3"/><circle cx="108" cy="602" r="3"/><circle cx="126" cy="602" r="3"/><circle cx="144" cy="602" r="3"/></g>
+<path d="M34 118 C120 80 180 170 260 120 C330 76 370 120 392 152" stroke="url(#h)" stroke-width="3" fill="none"/>
+</svg>

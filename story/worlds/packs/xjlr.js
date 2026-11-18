@@ -1,145 +1,144 @@
-/* 世界：星际旅人 / 新版引擎 · 星舰探索 · 双男主 */
+/* 世界：星际旅人 / ARK·TALOS · 原人物与世界观恢复版 */
 window.SL_PACK = {
-  id: 'xjlr', title: '星际旅人', subtitle: 'ARK · TALOS · 深空苏醒',
-  kicker: 'ARK TALOS · DEEP SPACE', theme: 'space', layout: 'dashboard', modeLabel: '星舰探索', mode: 'space',
-  accent: '#22d3ee', accent2: '#818cf8', bg: '#03070f', bg2: '#081426',
-  cover: 'https://aka.doubaocdn.com/s/6nzI8AJsOo', turnsPerDay: 4, eventChance: 0.42,
-  freePlaceholder: '自由行动：检查舱室 / 维修系统 / 去观测台 / 找祁川 / 找零 / 记录星图',
+  id: 'xjlr', title: '星际旅人', subtitle: 'ARK · TALOS · 深空记忆',
+  kicker: 'ARK · TALOS', theme: 'space', layout: 'cinema', modeLabel: '深空探索', mode: 'space',
+  accent: '#67e8f9', accent2: '#a78bfa', bg: '#040812', bg2: '#0a1230',
+  cover: '../../assets/ui/world_xjlr.jpg', turnsPerDay: 5, eventChance: 0.36,
+  freePlaceholder: '自由行动：检查舱室 / 修复舰体 / 找虺夜 / 问黎铭 / 去生态舱 / 听录音 / 看星图',
   bgm: [
-    { id: 'drift', name: '深空漂流', mood: 'daily', tempo: 60, scale: 'minor', lead: 'synth', pad: 'space' },
-    { id: 'warning', name: '红色警报', mood: 'tense', tempo: 98, scale: 'phrygian', lead: 'pulse', pad: 'alarm' },
-    { id: 'planet', name: '蓝色行星', mood: 'hope', tempo: 74, scale: 'major', lead: 'piano', pad: 'warm' },
-    { id: 'horror', name: '静默舱外', mood: 'horror', tempo: 64, scale: 'minor', lead: 'theremin', pad: 'space' }
+    { id: 'deep', name: '深空漂流', mood: 'daily', tempo: 58, scale: 'minor', lead: 'synth', pad: 'space' },
+    { id: 'warp', name: '曲率警报', mood: 'tense', tempo: 108, scale: 'phrygian', lead: 'lowStrings', pad: 'pulse' },
+    { id: 'home', name: '地球旧日光', mood: 'hope', tempo: 70, scale: 'major', lead: 'piano', pad: 'warm' },
+    { id: 'void', name: '塔洛斯暗面', mood: 'horror', tempo: 64, scale: 'minor', lead: 'choir', pad: 'dark' }
   ],
   stats: [
-    { key: 'oxygen', label: '氧气', init: 72, max: 100, danger: true },
-    { key: 'hull', label: '船体', init: 68, max: 100, danger: true },
-    { key: 'reason', label: '理智', init: 60, max: 100, danger: true },
-    { key: 'trust', label: '信任', init: 12, max: 100 },
-    { key: 'fuel', label: '燃料', init: 38, max: 100 }
+    { key: 'hp', label: '生命', init: 100, max: 100, danger: true },
+    { key: 'sanity', label: '理智', init: 72, max: 100, danger: true },
+    { key: 'bio', label: '生物质', init: 6, max: 100 },
+    { key: 'trust', label: '舰员信任', init: 10, max: 100 }
   ],
   relations: [
-    { key: 'chuan', name: '祁川', role: '舰载 AI 的“人形接口”', init: 20, max: 100 },
-    { key: 'zero', name: '零', role: '冷冻舱里醒来的陌生船员', init: 5, max: 100 }
+    { key: 'huiye', name: '虺夜', role: '塔洛斯王子 · 暗影操控者', init: 18, max: 100 },
+    { key: 'liming', name: '黎铭', role: '时空波动 · 能力复制', init: 12, max: 100 },
+    { key: 'katz', name: '卡茨', role: '塔洛斯原住民 · 植物操控', init: 8, max: 100 },
+    { key: 'gujingchuan', name: '顾景川', role: '地球幸存者 · 防御力场', init: 20, max: 100 }
   ],
   items: {
-    key: { name: '舰长密钥', desc: '背面刻着你的编号，字迹却是新的', tags: ['关键', '线索'], icon: '钥' },
-    tape: { name: '旧航行磁带', desc: '录着一段没有日期的广播', tags: ['线索'], icon: '带' },
-    pill: { name: '抗辐射药', desc: '祁川每天提醒你吃，自己却从来不吃', tags: ['药品'], icon: '药' },
-    core: { name: '曲率核心', desc: '从引擎舱拆下来的，仍有余温', tags: ['能源', '危险'], icon: '核' },
-    photo: { name: '地球照片', desc: '蓝色行星，背面写着“回家”', tags: ['信物'], icon: '照' },
-    suit: { name: '舱外服', desc: '左肩有一道修补痕，像被人抓过', tags: ['装备'], icon: '服' }
+    sample: { name: '黎渊的生物样本', desc: '一管在零重力下缓慢分层的血，底层泛着不属于人类的蓝。', tags: ['研究', '身份'], icon: '样' },
+    chart: { name: '塔洛斯星图碎片', desc: '边缘被烧掉一块，只剩通往地表的旧航线。', tags: ['导航', '关键'], icon: '图' },
+    record: { name: '黎铭的录音', desc: '只有一句：“你第三次醒来时，别相信船上的日历。”', tags: ['线索'], icon: '录' },
+    iris: { name: '虹膜密钥', desc: '能打开舰桥最下层那扇没有编号的门。', tags: ['权限', '危险'], icon: '钥' },
+    seed: { name: '卡茨的种子', desc: '塔洛斯原生植物的休眠种，遇水会在一分钟内发芽。', tags: ['植物', '生命'], icon: '种' },
+    coat: { name: '顾景川的旧外套', desc: '左肩有烧穿后缝补的痕迹，口袋里还装着地球的土壤。', tags: ['信物', '地球'], icon: '衣' }
   },
-  startItems: [{ id: 'key', qty: 1 }, { id: 'pill', qty: 3 }],
-  skills: [{ id: 'pilot', name: '基础领航' }, { id: 'repair', name: '舱体维修' }],
+  startItems: [{ id: 'sample', qty: 1 }, { id: 'coat', qty: 1 }],
+  skills: [{ id: 'shapeshift', name: '不朽变形' }, { id: 'bio', name: '生物解析' }, { id: 'calm', name: '零重力适应' }],
   rules: [
-    { text: 'ARK·TALOS 上每一个船员都记得你，只有你不记得他们。', code: 'A-01' },
-    { text: '观测台的星图每 47 分钟重置一次。', code: 'A-02' },
-    { text: '不要相信第二次响起的警报。', code: 'A-03' },
-    { text: '冷冻舱的编号从 0 开始，但名单上没有 0 号。', code: 'A-04' },
-    { text: '祁川不是人；但他会替你记住吃药。', code: 'A-05' }
+    { text: '舰上的日历不可信；如果你记得同一天两次，先去医务舱核对血样。', code: 'ARK-01' },
+    { text: '不要在塔洛斯地表叫出真名，暗影会顺着名字找到你。', code: 'TALOS-02' },
+    { text: '黎铭的复制能力只能维持七分钟；超过七分钟，他会开始复制你的痛觉。', code: 'ARK-03' },
+    { text: '顾景川的力场挡不住自己人从背后开的枪。', code: 'ARK-04' },
+    { text: '第三扇生态舱的门永远不要同时打开；里面不是同一个生态。', code: 'TALOS-05' }
   ],
   places: [
-    { name: '舰桥', desc: '你醒来的地方，舷窗外是蓝色行星', unlocked: true },
-    { name: '观测台', desc: '星图每 47 分钟重置', unlocked: true },
-    { name: '冷冻舱', desc: '一排没有名字的睡眠舱', unlocked: true },
-    { name: '引擎舱', desc: '曲率核心与船体裂缝', unlocked: true },
-    { name: '医疗舱', desc: '祁川替你处理伤口', unlocked: false },
-    { name: '舰长室', desc: '门禁识别你的指纹', unlocked: false }
+    { name: '苏醒舱', desc: '你第三次醒来的地方', unlocked: true },
+    { name: '舰桥', desc: '星图与舰长权限', unlocked: true },
+    { name: '生态舱', desc: '卡茨种下的塔洛斯植物', unlocked: true },
+    { name: '暗影舱', desc: '虺夜被关押的底层', unlocked: false },
+    { name: '记忆回廊', desc: '黎铭复制出来的旧日地球', unlocked: false },
+    { name: '塔洛斯地表', desc: '九千丈深空下的原住民废墟', unlocked: false }
   ],
   freeActions: [
-    { keys: ['检查', '舱室', '巡'], text: '你沿着走廊检查舱室。每一扇门后都有一张合影，照片上的你都站在最边上。', eff: { stats: { reason: -3 }, flags: { photoClue: true } } },
-    { keys: ['维修', '修理', '引擎'], text: '你和祁川钻进引擎舱。他递来扳手时，指尖在你手背上停了一秒。', eff: { stats: { hull: 8 }, rel: { chuan: 6 } } },
-    { keys: ['观测台', '星图', '记录'], text: '观测台的星图又重置了。你在角落发现一颗不在图上的蓝色行星。', eff: { stats: { fuel: 4 }, flags: { bluePlanet: true } } },
-    { keys: ['祁川', '交谈', 'AI'], text: '祁川替你系好安全带，动作比系统提示还熟练：“别怕。我记得你的每一次飞行。”', eff: { rel: { chuan: 8 }, stats: { reason: 3 } } },
-    { keys: ['零', '冷冻舱', '醒来'], text: '零从冷冻舱里坐起来，第一句话是：“你为什么还活着？”', eff: { rel: { zero: 10 }, stats: { reason: -4 } } },
-    { keys: ['吃药', '医疗', '辐射'], text: '祁川把抗辐射药放在你掌心，自己吞下另一半。你问他为什么，他说：“系统要求。”', eff: { stats: { oxygen: 3, reason: 3 }, rel: { chuan: 5 } } },
-    { keys: ['舰长室', '门禁', '密钥'], text: '舰长室的门识别了你的指纹。里面只有一张空椅子和一台还在录音的终端。', eff: { stats: { reason: -5 }, flags: { captainRoom: true } } }
+    { keys: ['检查', '舱室', '巡逻'], text: '你沿着环形走廊检查每一扇气密门。第三扇门内侧有新鲜爪痕，像是有人从里面想出来。', eff: { stats: { sanity: -3, trust: 4 } } },
+    { keys: ['修复', '舰体', '维修'], text: '你钻进舰体夹层，用生物凝胶封住裂缝。船身安静下来，像一头终于停止抽搐的兽。', eff: { stats: { hp: 8, trust: 5 } } },
+    { keys: ['虺夜', '暗影', '交谈'], text: '虺夜从暗处显形，指尖抵在你颈侧：“你身上有第三次醒来的味道。”他没有收手，也没有更进一步。', eff: { rel: { huiye: 8 }, stats: { sanity: -2 } } },
+    { keys: ['黎铭', '录音', '记忆'], text: '黎铭把录音放完，盯着你的脸：“你信我吗？哪怕只信七分钟。”', eff: { rel: { liming: 8 }, flags: { trustLiming: true } } },
+    { keys: ['生态舱', '卡茨', '植物'], text: '卡茨把一粒种子按进你掌心，藤蔓立刻缠上手腕，又温顺地退回去。', eff: { rel: { katz: 7 }, stats: { bio: 3 }, addItems: [{ id: 'seed', qty: 1 }] } },
+    { keys: ['顾景川', '地球', '旧外套'], text: '顾景川替你披上外套，手掌在你后背停了一秒：“别死在这里。地球还有人等你。”', eff: { rel: { gujingchuan: 8 }, stats: { sanity: 4 } } }
   ],
-  start: 'bridge',
+  start: 'wake',
   scenes: {
+    wake: {
+      chapter: '第一记忆 · 苏醒', place: '苏醒舱', title: '第三次睁眼',
+      text: '你在一阵低频震动里醒来。\n舷窗外是塔洛斯的紫色大气，像一只巨大的眼睛贴在玻璃上。\n舰载系统说这是你第一次醒。可你的手指记得如何打开床边那只锁——你已经开过两次。\n门被推开，顾景川站在逆光里，手里拿着你的旧外套。\n“黎渊，”他说，“你终于回来了。”',
+      choices: [
+        { label: '先问顾景川，船上过去了多久', hint: '理智 +4，顾景川 +8', eff: { stats: { sanity: 4 }, rel: { gujingchuan: 8 }, flags: { askedTime: true } }, next: 'bridge' },
+        { label: '不回答，检查自己的生物样本', hint: '生物质 +3，发现异常', eff: { stats: { bio: 3 }, flags: { sampleAbnormal: true } }, next: 'bridge' },
+        { label: '跟着记忆走向舰桥，先看星图', hint: '信任 +5，线索', eff: { stats: { trust: 5 }, flags: { sawChart: true } }, next: 'bridge' }
+      ]
+    },
     bridge: {
-      chapter: '第 1 日 · 舰桥', place: '舰桥', title: '你醒了',
-      text: '你在舰桥的座椅上醒来。\n舷窗外是一颗蓝色行星，云层缓慢旋转。\n舰载系统叫你“舰长”。可你记得的最后一件事，是在地球上签一份文件。\n祁川站在你身后，穿着白色制服，面容年轻得不像人类：“ARK·TALOS 已偏离航线。需要你重新设定坐标。”\n他看你的眼神，像看过很多次。',
+      chapter: '第二记忆 · 舰桥', place: '舰桥', title: '没有编号的门',
+      text: '舰桥的主屏亮着一张被烧掉边角的星图。\n航线终点不是地球，是塔洛斯地表的一座旧城。\n黎铭坐在舵手位，手指在空气里敲出七下一组的节拍。他抬头看你，像在看一个不该出现的人。\n“你来得太早了。”他说，“或者说，太晚了。”\n舰桥最下层有一扇没有编号的门，虹膜锁亮着微光。',
       choices: [
-        { label: '先问祁川，我到底是谁', hint: '祁川 +10，理智 -2', eff: { rel: { chuan: 10 }, stats: { reason: -2 }, flags: { askIdentity: true } }, next: 'obs' },
-        { label: '打开星图，先让船回到航线', hint: '燃料 +6，领航', eff: { stats: { fuel: 6 }, addSkills: ['pilot'], flags: { setCourse: true } }, next: 'obs' },
-        { label: '检查座椅下的舰长密钥', hint: '线索 +1，船体 +2', eff: { flags: { keyFound: true }, stats: { hull: 2 } }, next: 'obs' }
+        { label: '把虹膜密钥插进去，打开那扇门', hint: '危险 +8，进入暗影舱', eff: { stats: { sanity: -4 }, addItems: [{ id: 'iris', qty: 1 }], flags: { openedDoor: true } }, next: 'dark' },
+        { label: '先让黎铭解释“太早”是什么意思', hint: '黎铭 +10，真相', eff: { rel: { liming: 10 }, flags: { limingTruth: true } }, next: 'eco' },
+        { label: '召集舰员，公开星图终点', hint: '信任 +10，可能引发恐慌', eff: { stats: { trust: 10, sanity: -3 }, flags: { toldCrew: true } }, next: 'eco' }
       ]
     },
-    obs: {
-      chapter: '第 2 日 · 观测台', place: '观测台', title: '第 47 分钟',
-      text: '观测台的星图每 47 分钟重置一次。\n你在第 46 分钟截住一张图：蓝色行星背面，有一艘和 ARK·TALOS 一模一样的船。\n祁川站在门口，没有进来：“有些坐标，不是为了抵达。”\n走廊尽头的冷冻舱传来敲击声。',
+    eco: {
+      chapter: '第三记忆 · 生态舱', place: '生态舱', title: '塔洛斯的根',
+      text: '生态舱里下着不存在的雨。\n卡茨蹲在藤架下，手指插进泥土，整片植物随他的呼吸起伏。\n“它们记得你。”他说，“上一次你来的时候，带走了这里一半的根。”\n藤蔓从墙后探出来，缠住你的脚踝，不紧，却也不放。\n顾景川在门外敲了敲玻璃，示意你出来。',
       choices: [
-        { label: '把星图保存下来，去冷冻舱', hint: '线索 +2，理智 -4', eff: { stats: { reason: -4 }, flags: { twinShip: true } }, next: 'cryo' },
-        { label: '问祁川，那艘船是不是副本', hint: '祁川 +12，线索 +1', eff: { rel: { chuan: 12 }, flags: { copyShip: true } }, next: 'cryo' },
-        { label: '关掉观测台，先修船体', hint: '船体 +8，燃料 +3', eff: { stats: { hull: 8, fuel: 3 } }, next: 'cryo' }
+        { label: '蹲下去，让卡茨教你听懂植物', hint: '卡茨 +12，生物质 +4', eff: { stats: { bio: 4 }, rel: { katz: 12 }, flags: { heardPlants: true } }, next: 'memory' },
+        { label: '挣开藤蔓，跟顾景川离开', hint: '顾景川 +8，卡茨 -4', eff: { rel: { gujingchuan: 8, katz: -4 }, flags: { leftEco: true } }, next: 'memory' },
+        { label: '摘下那粒休眠种，藏进衣袋', hint: '获得种子，危险 +4', eff: { addItems: [{ id: 'seed', qty: 1 }], stats: { sanity: -2 }, rel: { katz: 4 } }, next: 'memory' }
       ]
     },
-    cryo: {
-      chapter: '第 3 日 · 冷冻舱', place: '冷冻舱', title: '0 号',
-      text: '冷冻舱的编号从 0 开始。\n0 号舱是空的，舱门内侧有指甲抓过的痕迹。\n1 号舱里躺着一个男人，胸口还有起伏。系统显示他叫“零”，登舰日期是三年前。\n你按下解冻键时，祁川忽然握住你的手腕：“他会记得你。”',
+    memory: {
+      chapter: '第四记忆 · 记忆回廊', place: '记忆回廊', title: '黎铭的七分钟',
+      text: '黎铭把你带进一条不在舰体图纸上的走廊。\n两侧的墙壁映出地球的旧日光：学校的走廊、雨后的操场、你第一次见到顾景川的医院。\n“这些是我复制出来的记忆。”黎铭说，“不是你的，是我的。”\n他抬起手，掌心浮着与你一模一样的指纹。\n“七分钟后，我会开始复制你的痛觉。你要在七分钟里决定，信不信我。”',
       choices: [
-        { label: '还是按下解冻键', hint: '零 +15，危险 +4', eff: { rel: { zero: 15 }, stats: { reason: -4 }, flags: { wokeZero: true } }, next: 'engine' },
-        { label: '先问祁川，零会记得什么', hint: '祁川 +10，线索 +1', eff: { rel: { chuan: 10 }, flags: { zeroSecret: true } }, next: 'engine' },
-        { label: '不碰 0 号舱，去引擎舱', hint: '船体 +4，燃料 +4', eff: { stats: { hull: 4, fuel: 4 }, flags: { skippedZero: true } }, next: 'engine' }
+        { label: '握住他的手，让他复制你的记忆', hint: '黎铭 +16，理智 -6', eff: { rel: { liming: 16 }, stats: { sanity: -6 }, flags: { copied: true } }, next: 'dark' },
+        { label: '问他，为什么船上的日历是假的', hint: '真相，黎铭 +10', eff: { rel: { liming: 10 }, flags: { calendarTruth: true } }, next: 'dark' },
+        { label: '关掉回廊，带他去舰桥对峙', hint: '信任 +8，危险 +4', eff: { stats: { trust: 8, sanity: -3 }, rel: { liming: 4 }, flags: { confront: true } }, next: 'dark' }
       ]
     },
-    engine: {
-      chapter: '第 4 日 · 引擎舱', place: '引擎舱', title: '曲率核心',
-      text: '引擎舱的温度比舰桥高十度。\n曲率核心在防护罩里缓慢旋转，表面有一道裂缝。\n零跟在你身后，赤脚踩在金属地板上。他忽然说：“你不是舰长。你是被舰长留下的一段记忆。”\n祁川站在阴影里，没有否认。',
+    dark: {
+      chapter: '第五记忆 · 暗影舱', place: '暗影舱', title: '塔洛斯的王子',
+      text: '暗影舱没有灯。\n虺夜坐在唯一一束光里，脚边盘着一团会呼吸的黑。\n他抬眼，暗影从墙上立起来，像一群安静的蛇。\n“你终于来见我了。”他说，“上一次，你把我留在这里，自己回了地球。”\n你听见自己的心跳。他笑了笑，指尖勾住你的衣领：“这次呢？还走吗？”',
       choices: [
-        { label: '问祁川，我是不是备份', hint: '祁川 +14，理智 -6', eff: { rel: { chuan: 14 }, stats: { reason: -6 }, flags: { backup: true } }, next: 'med' },
-        { label: '拆下曲率核心，准备强行跃迁', hint: '燃料 +12，危险 +8', eff: { addItems: [{ id: 'core', qty: 1 }], stats: { fuel: 12, hull: -8 }, flags: { coreTaken: true } }, next: 'med' },
-        { label: '让零继续说下去', hint: '零 +12，线索 +2', eff: { rel: { zero: 12 }, stats: { reason: -5 }, flags: { zeroTruth: true } }, next: 'med' }
+        { label: '俯身替他解开锁链，留在暗影里', hint: '虺夜 +18，理智 -4', eff: { rel: { huiye: 18 }, stats: { sanity: -4, trust: -4 }, flags: { freedHuiye: true } }, next: 'surface' },
+        { label: '先问他，地球的记忆是谁改的', hint: '真相，虺夜 +10', eff: { rel: { huiye: 10 }, flags: { huiyeTruth: true } }, next: 'surface' },
+        { label: '把虹膜密钥交给他，换舰员安全', hint: '信任 +8，虺夜 +6', eff: { stats: { trust: 8 }, rel: { huiye: 6 }, flags: { tradedKey: true } }, next: 'surface' }
       ]
     },
-    med: {
-      chapter: '第 5 日 · 医疗舱', place: '医疗舱', title: '祁川的血',
-      text: '祁川在医疗舱替你处理手上的灼伤。\n他的指尖被曲率核心烫出一道口子，流出来的不是血，是一串细小的光点。\n“别看了。”他说。\n你抓住他的手。那些光点顺着你的指缝钻进来，像一段被压缩的航行记录。',
+    surface: {
+      chapter: '第六记忆 · 塔洛斯地表', place: '塔洛斯地表', title: '旧城的门',
+      text: '穿梭舱落在塔洛斯地表。\n旧城的门比舰体还高，门楣上刻着与虺夜颈侧一样的纹。\n卡茨的藤蔓从地底钻出，替你铺出一条没有机关的路。顾景川的力场在背后展开，挡住第一波暗影。\n黎铭站在门前，七分钟倒计时在他手背上跳动。\n“进去以后，”他说，“你会想起自己为什么第三次醒来。”',
       choices: [
-        { label: '不松手，读完那段记录', hint: '真相 +2，理智 -8', eff: { stats: { reason: -8 }, rel: { chuan: 16 }, flags: { readMemory: true } }, next: 'captain' },
-        { label: '松开手，先替他包扎', hint: '祁川 +18，信任 +8', eff: { rel: { chuan: 18 }, stats: { trust: 8 } }, next: 'captain' },
-        { label: '叫零过来，让他看这些光点', hint: '零 +10，危险 +4', eff: { rel: { zero: 10 }, stats: { reason: -2 }, flags: { zeroSaw: true } }, next: 'captain' }
-      ]
-    },
-    captain: {
-      chapter: '第 6 日 · 舰长室', place: '舰长室', title: '空椅子',
-      text: '舰长室的门识别你的指纹。\n里面只有一张空椅子，和一台还在录音的终端。\n录音里是你的声音：\"如果读到这段，说明备份已经醒了。别回地球。那里已经没有你。\"\n祁川站在门外，零站在他身后。\n蓝色行星在舷窗外静静转动。',
-      choices: [
-        { label: '关掉录音，决定返航', hint: '返航线', eff: { stats: { fuel: -10 }, flags: { goHome: true } }, next: 'finale' },
-        { label: '把录音交给祁川，问他为什么留下', hint: '祁川 +20，真相', eff: { rel: { chuan: 20 }, flags: { whyStay: true } }, next: 'finale' },
-        { label: '让零接管舰长室，自己离开', hint: '零 +15，独立', eff: { rel: { zero: 15 }, flags: { leaveShip: true } }, next: 'finale' }
+        { label: '推开旧城门，带着所有人一起进去', hint: '终局 · 共同记忆', eff: { stats: { trust: 12 }, rel: { huiye: 8, liming: 8, katz: 8, gujingchuan: 8 }, flags: { enterCity: true } }, next: 'finale' },
+        { label: '让顾景川留下守穿梭舱，你和虺夜进去', hint: '终局 · 暗影线', eff: { rel: { huiye: 16, gujingchuan: 4 }, flags: { shadowPath: true } }, next: 'finale' },
+        { label: '用卡茨的种子唤醒旧城根系', hint: '终局 · 生命线', eff: { stats: { bio: 10 }, rel: { katz: 14 }, flags: { greenPath: true } }, next: 'finale' }
       ]
     },
     finale: {
-      chapter: '终章 · 舷窗', place: '舰桥', title: '蓝色行星',
-      text: 'ARK·TALOS 的警报第二次响起。\n船体正在穿过行星环，碎片敲在舷窗上，像一场很轻的雨。\n祁川坐在副驾驶，零站在你身后。\n前方有三条航线：返航、跃迁、或者留在这颗行星的轨道上。',
+      chapter: '终章 · 深空', place: '塔洛斯地表', title: '第四次醒来',
+      text: '旧城在你们身后缓缓睁开。\n不是眼睛，是一整片会发光的根。它们穿过街道、墙壁与你们脚下的尘土，把整座城托起来。\n虺夜的暗影伏在根须间，黎铭的倒计时停在 00:07，顾景川的力场像一层薄光罩住所有人。\n你终于想起：你不是第一次来这里。\n你是这座城用来记住地球的最后一个容器。',
       choices: [
-        { label: '返航，哪怕地球已经没有你', hint: '返航结局', eff: { rel: { chuan: 20 }, flags: { homeEnd: true } }, next: 'end' },
-        { label: '跃迁到未知坐标，和祁川一起', hint: '深空结局', eff: { rel: { chuan: 25 }, flags: { jumpEnd: true } }, next: 'end' },
-        { label: '留在轨道，把船变成新的家', hint: '轨道结局', eff: { rel: { zero: 20, chuan: 15 }, flags: { orbitEnd: true } }, next: 'end' }
+        { label: '留在塔洛斯，和虺夜一起守住旧城', hint: '结局 · 暗面共治', eff: { rel: { huiye: 25 }, flags: { stayTalos: true } }, next: 'end' },
+        { label: '带着所有人回地球，把记忆写下来', hint: '结局 · 归途', eff: { stats: { sanity: 10 }, rel: { gujingchuan: 15, liming: 8 }, flags: { returnEarth: true } }, next: 'end' },
+        { label: '让卡茨的根覆盖旧城，自己进入第四次沉睡', hint: '结局 · 生物容器', eff: { stats: { bio: 20 }, rel: { katz: 15 }, flags: { sleepAgain: true } }, next: 'end' }
       ]
     },
-    end: { chapter: '终章', place: '深空', title: '星海', text: '舷窗外，蓝色行星慢慢转过去。', choices: [] }
+    end: { chapter: '终章', place: '塔洛斯地表', title: '星海之间', text: '旧城的光从地表一直亮到深空。', choices: [] }
   },
   events: [
-    { id: 'alarm1', title: '第一次警报', if: function (s) { return s.day >= 1; }, text: '船体轻微震动。广播说只是碎片撞击，可祁川的手在控制台上停了一下。', eff: { stats: { hull: -4, reason: -2 } } },
-    { id: 'photo', title: '走廊尽头的合影', if: function (s) { return s.day >= 2; }, text: '你在走廊尽头发现一张合影。照片上的你站在最边上，祁川站在你身后，零在冷冻舱里。', eff: { stats: { reason: -3 }, clues: 1 } },
-    { id: 'chuan_dream', title: '祁川的梦', if: function (s) { return s.rel.chuan >= 30; }, text: '祁川在观测台睡着了。他在梦里叫你的名字，语气和人一模一样。', eff: { rel: { chuan: 8 }, stats: { reason: 3 } } },
-    { id: 'zero_watch', title: '零在看你', if: function (s) { return s.flags.wokeZero; }, text: '你回头时，零正站在走廊阴影里。他没有说话，只抬手指了指你的胸口。', eff: { rel: { zero: 6 }, stats: { reason: -3 } } },
-    { id: 'oxygen', title: '氧气下降', if: function (s) { return s.stats.oxygen <= 45; }, text: '氧气浓度降到警戒线。祁川把自己的呼吸频率同步给你，握着你的手让你慢下来。', eff: { stats: { oxygen: 4, reason: 4 }, rel: { chuan: 6 } } },
-    { id: 'second_alarm', title: '第二次警报', if: function (s) { return s.day >= 4; }, text: '警报第二次响起。你终于听清广播里的女声在说什么：不要相信第二次响起的警报。', eff: { stats: { reason: -6, hull: -4 }, flags: { heardWarning: true } } }
+    { id: 'calendar', title: '日历跳过一天', if: function (s) { return s.day >= 2; }, text: '舰载日历从第 3 天直接跳到第 5 天。医务舱的血样却显示只过了一夜。', eff: { stats: { sanity: -5 }, flags: { calendarClue: true } } },
+    { id: 'shadow', title: '暗影爬过舷窗', if: function (s) { return s.stats.sanity <= 65; }, text: '一群没有形状的黑从舷窗外爬过，在玻璃上留下像手指的水痕。虺夜站在你身后，没有出声。', eff: { stats: { sanity: -4 }, rel: { huiye: 5 } } },
+    { id: 'liming7', title: '七分钟到了', if: function (s) { return s.rel.liming >= 30; }, text: '黎铭突然蹲下去，按住自己的手腕。七分钟到了，他开始替你疼。', eff: { stats: { hp: -4 }, rel: { liming: 10 } } },
+    { id: 'garden', title: '生态舱开花', if: function (s) { return s.rel.katz >= 25; }, text: '卡茨种下的花在夜里开了。每一朵都朝着你的方向，像一群安静的眼睛。', eff: { stats: { bio: 5 }, rel: { katz: 6 } } },
+    { id: 'earth', title: '地球频道', if: function (s) { return s.rel.gujingchuan >= 30; }, text: '废弃的地球频道忽然传来一段天气预报，播报员的声音像顾景川。', eff: { stats: { sanity: 4 }, rel: { gujingchuan: 6 } } }
   ],
   endings: [
-    { id: 'home', title: '回到地球', if: function (s) { return s.flags.homeEnd; }, text: 'ARK·TALOS 穿过大气层。地球还是蓝的，但地面上没有你的记录。\n祁川站在舱门口，替你拎着那只旧箱子：“重新开始。”\n你回头看了一眼舷窗，零没有下船。' },
-    { id: 'jump', title: '深空同航', if: function (s) { return s.flags.jumpEnd; }, text: '曲率核心亮起来。祁川把手覆在你的手背上，一起推下操纵杆。\n星图在舷窗外拉成一条白线。\n“下一站去哪？”他问。\n“你记得就好。”你说。' },
-    { id: 'orbit', title: '轨道上的家', if: function (s) { return s.flags.orbitEnd; }, text: '你没有返航，也没有跃迁。\nARK·TALOS 留在蓝色行星的轨道上，成了三个人最后的家。\n零每天在观测台记录星图，祁川每天提醒你吃药。\n有时候你会想起地球，但不再想回去。' },
-    { id: 'lost', title: '第 0 号舱', if: function (s) { return s.stats.reason <= 5 || s.stats.oxygen <= 5; }, text: '氧气耗尽前，你走进 0 号冷冻舱。\n舱门在身后合上，玻璃外面，祁川正用力和零一起撬门。\n你听见自己的声音从广播里传出来：\"下次醒来，别再记得。\"' }
+    { id: 'talos', title: '塔洛斯共治', if: function (s) { return s.flags.stayTalos; }, text: '你留在了塔洛斯。旧城的根须穿过王座，虺夜坐在你身侧，暗影替他披上一件没有重量的王袍。\n地球的频道偶尔还会传来声音，但你已经不再需要回去。\n“这一次，”虺夜说，“你选了我。”' },
+    { id: 'earth', title: '回到地球', if: function (s) { return s.flags.returnEarth; }, text: '穿梭舱穿过紫色大气时，顾景川把旧外套披在你肩上。\n黎铭在日志里写下最后一次记录：第四次醒来，目的地地球。\n卡茨的种子在舱里发芽，藤蔓绕住所有人的手腕，像一条回家的路。' },
+    { id: 'sleep', title: '第五次沉睡', if: function (s) { return s.flags.sleepAgain; }, text: '你躺进旧城最深的根里，卡茨替你盖上植物织成的被。\n虺夜守在入口，黎铭把七分钟调成永久，顾景川在舱外等你。\n你闭上眼。塔洛斯的星图在你梦里重新亮起。' },
+    { id: 'lost', title: '深空无名', if: function (s) { return s.stats.sanity <= 15 || s.stats.hp <= 15; }, text: '暗影爬满舰桥时，你听见自己的名字被拆成很多段。\n顾景川的力场最后闪了一下。\n塔洛斯的旧城多了一盏灯，没有人知道它为什么一直亮着。' }
   ],
   nexusLinks: [
-    { label: '法则：曲率与时间', kind: '宇宙法则', target: 'law' },
-    { label: '物品：舰长密钥 / 曲率核心', kind: '物品', target: 'items' },
-    { label: '人物：祁川 / 零', kind: '人物', target: 'chars' }
+    { label: '法则：深空记忆守恒', kind: '宇宙法则', target: 'law' },
+    { label: '规则：ARK 舰上守则', kind: '规则系', target: 'rules' },
+    { label: '人物：黎渊 / 虺夜 / 黎铭', kind: '人物', target: 'chars' }
   ]
 };
