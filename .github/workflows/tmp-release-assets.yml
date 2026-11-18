@@ -7,6 +7,7 @@ permissions:
 jobs:
   upload:
     runs-on: ubuntu-latest
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - name: Download chunk manifest
@@ -35,7 +36,7 @@ jobs:
                           last=e
                       time.sleep(2)
                   raise RuntimeError(f'{key} chunk {i} failed: {last}')
-              with concurrent.futures.ThreadPoolExecutor(max_workers=20) as ex:
+              with concurrent.futures.ThreadPoolExecutor(max_workers=24) as ex:
                   list(ex.map(fetch, enumerate(urls)))
               with open(key+'.bin','wb') as out:
                   for i in range(len(urls)):
