@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Download chunk manifest
-        run: curl -L --retry 5 --retry-delay 3 -o chunks.json "https://aka.doubaocdn.com/s/Py7U7WS5vb"
+        run: curl -L --retry 5 --retry-delay 3 --max-time 60 -o chunks.json "https://63b762826f075b.app.lhr.life/tunnel_chunks.json"
       - name: Download and assemble assets in parallel
         run: |
           python3 - <<'PY'
@@ -22,17 +22,19 @@ jobs:
                   i,url=item
                   path=outdir/f'part{i:02d}'
                   last=None
-                  for attempt in range(5):
+                  for attempt in range(4):
                       try:
                           req=urllib.request.Request(url,headers={'User-Agent':'silong-release'})
-                          with urllib.request.urlopen(req,timeout=300) as r, open(path,'wb') as f:
+                          with urllib.request.urlopen(req,timeout=240) as r, open(path,'wb') as f:
                               shutil.copyfileobj(r,f)
-                          if path.stat().st_size>0:
+                          if path.stat().st_size==10*1024*1024 or i==len(urls)-1:
                               print(key,i,path.stat().st_size,flush=True); return
+                          last=Exception('short file '+str(path.stat().st_size))
                       except Exception as e:
-                          last=e; time.sleep(3)
+                          last=e
+                      time.sleep(2)
                   raise RuntimeError(f'{key} chunk {i} failed: {last}')
-              with concurrent.futures.ThreadPoolExecutor(max_workers=8) as ex:
+              with concurrent.futures.ThreadPoolExecutor(max_workers=12) as ex:
                   list(ex.map(fetch, enumerate(urls)))
               with open(key+'.bin','wb') as out:
                   for i in range(len(urls)):
@@ -47,4 +49,3 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release upload gay "Silong-ResPool_v8.5.0_Android.apk" "Silong-ResPool_v8.5.0_Harmony.apk" "Silong-ResPool_v8.5.0_Windows.exe" --clobber
-          gh api -X PATCH repos/Silong-ResPool/gay/releases/431055237 -f name="Silong ResPool v8.5.0"
