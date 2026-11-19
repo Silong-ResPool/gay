@@ -316,7 +316,7 @@
   }
   function glyphThumb(strokes) {
     var c = document.createElement('canvas'); c.width = 220; c.height = 130;
-    var g = c.getContext('2d'); g.fillStyle = '#070a10'; g.fillRect(0, 0, c.width, c.height);
+    var g = c.getContext('2d'); g.fillStyle = '#0d0710'; g.fillRect(0, 0, c.width, c.height);
     g.strokeStyle = '#d8b36a'; g.lineWidth = 2.4; g.lineCap = 'round';
     (strokes || []).forEach(function (s) {
       if (!s || s.length < 2) return;
@@ -334,7 +334,7 @@
     $$('[data-glyph-canvas]').forEach(function (c) {
       var g = DB.glyphs.filter(function (x) { return x.id === c.getAttribute('data-glyph-canvas'); })[0];
       if (!g) return;
-      var ctx2 = c.getContext('2d'); ctx2.fillStyle = '#070a10'; ctx2.fillRect(0, 0, c.width, c.height);
+      var ctx2 = c.getContext('2d'); ctx2.fillStyle = '#0d0710'; ctx2.fillRect(0, 0, c.width, c.height);
       ctx2.strokeStyle = '#d8b36a'; ctx2.lineWidth = 2.4; ctx2.lineCap = 'round';
       (g.strokes || []).forEach(function (s) {
         if (!s || s.length < 2) return;
@@ -684,6 +684,21 @@
     reload: function () { DB = load(); renderAll(); }
   };
   if (!hadStored) save();
+  /* v8.5.3：返回上一级 —— 优先回到打开中枢的世界页，而不是直接回主页 */
+  (function bindBackLevel(){
+    var b = document.getElementById('nxBackLevel'); if (!b) return;
+    function safe(u){
+      try{ var x = new URL(u, location.href); return x.origin === location.origin ? x.href : ''; }catch(e){ return ''; }
+    }
+    var from = new URLSearchParams(location.search).get('from') || '';
+    var ref = document.referrer || '';
+    var target = from ? safe(from) : (/\/story\/worlds\//.test(ref) ? safe(ref) : '');
+    if (target) { b.setAttribute('href', target); }
+    else {
+      b.setAttribute('href', 'index.html');
+      b.addEventListener('click', function(e){ if (history.length > 1) { e.preventDefault(); history.back(); } });
+    }
+  })();
   renderAll();
   if (location.hash && $('#tab-' + location.hash.slice(1))) switchTab(location.hash.slice(1));
   else switchTab('home');

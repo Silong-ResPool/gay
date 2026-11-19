@@ -8,7 +8,7 @@
     var d = document.createElement('div');
     d.id = 'sl-plugin-night-eye';
     d.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:2147483600;' +
-      'pointer-events:none;background:rgba(255,176,80,0.10);';
+      'pointer-events:none;background:rgb(255,176,80,0.10);';
     (document.body || document.documentElement).appendChild(d);
   } catch (e) {}
 })();

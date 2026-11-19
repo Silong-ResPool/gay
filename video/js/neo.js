@@ -50,7 +50,7 @@
     searching: false, searchAbort: null, found: 0, lastQuery: '', engineMode: 'site',
     browseSrc: '', browseCats: [], browseType: '', browsePage: 1, browsePageCount: 1,
     browseItems: [], browseLoading: false, detail: null, detailRoad: 0, detailGroup: null,
-    homeItems: []
+    homeItems: [], homeSrc: null, homePage: 1, homePageCount: 1, homeLoading: false
   };
 
   function allKeys() { return SOURCES.map(function (s) { return s.key; }); }
@@ -202,8 +202,14 @@
       var items = (j.list || []).map(function (it) { return mapMaccms(it, src); });
       state.browsePage = parseInt(j.page, 10) || page;
       state.browsePageCount = parseInt(j.pagecount, 10) || 1;
-      if (page === 1) state.browseItems = items; else state.browseItems = state.browseItems.concat(items);
-      renderGrid($('browseGrid'), state.browseItems, 'item');
+      if (page === 1) {
+        state.browseItems = items;
+        renderGrid($('browseGrid'), state.browseItems, 'item');
+      } else {
+        var before = state.browseItems.length;
+        state.browseItems = state.browseItems.concat(items);
+        appendGrid($('browseGrid'), items, 'item', before);
+      }
       var catName = '全部';
       state.browseCats.forEach(function (c) { if (String(c.id) === String(state.browseType)) catName = c.name; });
       $('browseMeta').textContent = src.name + ' · ' + catName + ' · 第 ' + state.browsePage + ' / ' + state.browsePageCount + ' 页 · 共 ' + (j.total || state.browseItems.length) + ' 条';
@@ -214,7 +220,10 @@
         $('browseGrid').innerHTML = '<div class="empty">这个源暂时无法读取列表，换一个源或稍后再试。</div>';
       }
       $('browseMeta').textContent = '读取失败：' + src.name;
-    }).finally(function () { state.browseLoading = false; });
+    }).finally(function () {
+      state.browseLoading = false;
+      setTimeout(maybeAutoMore, 160);
+    });
   }
 
   /* ---------------- 卡片 ---------------- */
@@ -300,6 +309,20 @@
     el.__items = items; el.__kind = kind;
     el.innerHTML = items.length ? items.map(function (it, i) { return kind === 'group' ? groupCard(it, i) : itemCard(it, i); }).join('')
       : '<div class="empty">暂无内容。</div>';
+  }
+  function appendGrid(el, items, kind, start) {
+    if (!items.length) return;
+    var empty = el.querySelector('.empty'); if (empty) el.innerHTML = '';
+    el.insertAdjacentHTML('beforeend', items.map(function (it, i) { return kind === 'group' ? groupCard(it, start + i) : itemCard(it, start + i); }).join(''));
+    el.__items = state.browseItems; el.__kind = kind;
+  }
+  var _moreTick = 0;
+  function maybeAutoMore() {
+    if (state.view !== 'browse' || state.browseLoading) return;
+    var btn = $('moreBtn'); if (!btn || btn.hidden) return;
+    var r = btn.getBoundingClientRect();
+    var vh = window.innerHeight || document.documentElement.clientHeight || 800;
+    if (r.top < vh + 520 || r.bottom < vh + 520) loadBrowseList(state.browsePage + 1);
   }
 
   /* ---------------- 搜索 ---------------- */
@@ -460,14 +483,50 @@
       var src = cands[i];
       $('homeSrc').textContent = '正在连接 ' + src.name + '…';
       fetch('/api/list?customApi=' + enc(src.api) + '&pg=1').then(function (r) { return r.json(); }).then(function (j) {
-        var items = (j.list || []).slice(0, 18).map(function (it) { return mapMaccms(it, src); });
+        var items = (j.list || []).map(function (it) { return mapMaccms(it, src); });
         if (!items.length) return tryNext(i + 1);
+        state.homeSrc = src; state.homePage = parseInt(j.page, 10) || 1; state.homePageCount = parseInt(j.pagecount, 10) || 1;
         state.homeItems = items;
         renderGrid($('homeGrid'), items, 'item');
-        $('homeSrc').textContent = '来自 ' + src.name + ' · 默认全源已启用';
+        $('homeSrc').textContent = '来自 ' + src.name + ' · 默认全源已启用 · 第 ' + state.homePage + ' / ' + state.homePageCount + ' 页';
+        $('homeMoreWrap').hidden = state.homePage >= state.homePageCount;
       }).catch(function () { tryNext(i + 1); });
     }
     tryNext(0);
+  }
+
+  function appendHomeGrid(items) {
+    if (!items.length) return;
+    var el = $('homeGrid'); if (!el) return;
+    var start = state.homeItems.length;
+    el.insertAdjacentHTML('beforeend', items.map(function (it, i) { return itemCard(it, start + i); }).join(''));
+    state.homeItems = state.homeItems.concat(items);
+  }
+  function loadHomeMore() {
+    if (state.view !== 'search' || state.homeLoading || !state.homeSrc) return;
+    if (state.homePage >= state.homePageCount) { $('homeMoreWrap').hidden = true; return; }
+    state.homeLoading = true;
+    $('homeMore').textContent = '正在加载…';
+    var src = state.homeSrc, page = state.homePage + 1;
+    fetch('/api/list?customApi=' + enc(src.api) + '&pg=' + page).then(function (r) { return r.json(); }).then(function (j) {
+      var items = (j.list || []).map(function (it) { return mapMaccms(it, src); });
+      state.homePage = parseInt(j.page, 10) || page;
+      state.homePageCount = parseInt(j.pagecount, 10) || state.homePageCount;
+      appendHomeGrid(items);
+      $('homeSrc').textContent = '来自 ' + src.name + ' · 默认全源已启用 · 第 ' + state.homePage + ' / ' + state.homePageCount + ' 页';
+      $('homeMoreWrap').hidden = state.homePage >= state.homePageCount;
+      $('homeMore').textContent = '继续加载（向下滚动会自动加载）';
+    }).catch(function () {
+      $('homeMore').textContent = '继续加载（向下滚动会自动加载）';
+      toast('下一页加载失败，稍后重试。');
+    }).finally(function () { state.homeLoading = false; setTimeout(maybeAutoHomeMore, 160); });
+  }
+  function maybeAutoHomeMore() {
+    if (state.view !== 'search' || state.homeLoading) return;
+    var wrap = $('homeMoreWrap'); if (!wrap || wrap.hidden) return;
+    var r = wrap.getBoundingClientRect();
+    var vh = window.innerHeight || document.documentElement.clientHeight || 800;
+    if (r.top < vh + 520 || r.bottom < vh + 520) loadHomeMore();
   }
 
   /* ---------------- 详情 ---------------- */
@@ -606,6 +665,7 @@
     $('viewBrowse').hidden = v !== 'browse';
     if (v === 'browse' && !state.browseSrc) initBrowse();
     if (v === 'browse' && state.browseSrc && !state.browseItems.length) initBrowse();
+    if (v === 'browse') setTimeout(maybeAutoMore, 220);
   }
 
   /* ---------------- 事件 ---------------- */
@@ -658,6 +718,15 @@
       renderBrowseCats(); loadBrowseList(1);
     });
     $('moreBtn').onclick = function () { loadBrowseList(state.browsePage + 1); };
+    if ($('homeMore')) $('homeMore').onclick = function () { loadHomeMore(); };
+    window.addEventListener('scroll', function () {
+      if (_moreTick) return;
+      _moreTick = setTimeout(function () { _moreTick = 0; maybeAutoMore(); maybeAutoHomeMore(); }, 140);
+    }, { passive: true });
+    window.addEventListener('resize', function () {
+      if (_moreTick) return;
+      _moreTick = setTimeout(function () { _moreTick = 0; maybeAutoMore(); maybeAutoHomeMore(); }, 160);
+    });
     document.addEventListener('click', function (e) {
       var card = e.target.closest('.card');
       if (card) {

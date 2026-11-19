@@ -2,7 +2,7 @@
 window.SL_PACK = {
   id: 'yxsx', title: '云墟双修', subtitle: '国风修仙 · 丹符器宠',
   kicker: 'CLOUD RUINS · CULTIVATION', theme: 'xianxia', layout: 'scroll', modeLabel: '修仙经营', mode: 'cultivation',
-  accent: '#d4af37', accent2: '#67e8f9', bg: '#080705', bg2: '#15120b', cover: 'https://aka.doubaocdn.com/s/aVqvXbYJ22',
+  accent: '#d4af37', accent2: '#ddd6fe', bg: '#080705', bg2: '#15120b', cover: 'https://aka.doubaocdn.com/s/aVqvXbYJ22',
   turnsPerDay: 7, eventChance: 0.35, freePlaceholder: '自由行动：打坐 / 采药 / 炼丹 / 炼器 / 画符 / 喂养赤璃 / 和墨渊双修',
   bgm: [
     { id: 'daily', name: '云海', mood: 'daily', tempo: 56, scale: 'pentatonic', lead: 'dizi', pad: 'soft' },

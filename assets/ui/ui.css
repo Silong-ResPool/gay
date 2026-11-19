@@ -1,19 +1,19 @@
 /* 巳泷 V10 品牌资产层：主页 hero 底图与 logo 光效 */
 .nav-logo{
   height:40px; width:auto; max-width:158px; object-fit:contain;
-  filter:drop-shadow(0 0 18px rgba(139,92,246,.55)) drop-shadow(0 0 3px rgba(34,211,238,.35));
+  filter:drop-shadow(0 0 18px rgb(139,92,246,.55)) drop-shadow(0 0 3px rgb(167,139,250,.35));
 }
 section.hero{
   position:relative; overflow:hidden;
   background-image:
-    linear-gradient(100deg, rgba(5,4,12,.96) 6%, rgba(5,4,12,.58) 52%, rgba(5,4,12,.92) 100%),
+    linear-gradient(100deg, rgb(5,4,12,.96) 6%, rgb(5,4,12,.58) 52%, rgb(5,4,12,.92) 100%),
     url("hero_main.jpg") !important;
   background-size:cover !important;
   background-position:center !important;
-  border:1px solid rgba(167,139,250,.22);
-  box-shadow:0 26px 70px -30px rgba(139,92,246,.55), inset 0 0 0 1px rgba(255,255,255,.04);
+  border:1px solid rgb(167,139,250,.22);
+  box-shadow:0 26px 70px -30px rgb(139,92,246,.55), inset 0 0 0 1px rgb(255,255,255,.04);
 }
-section.hero h1{ text-shadow:0 10px 40px rgba(0,0,0,.8); }
+section.hero h1{ text-shadow:0 10px 40px rgb(0,0,0,.8); }
 @media (max-width:720px){
   section.hero{ background-position:center right !important; }
 }
@@ -25,24 +25,24 @@ section.hero.hero-v11{
   display:flex; flex-direction:column; justify-content:center;
   padding:64px 52px 56px;
   border-radius:26px !important;
-  border:1px solid rgba(167,139,250,.24) !important;
+  border:1px solid rgb(167,139,250,.24) !important;
   background-image:
-    linear-gradient(180deg, rgba(5,4,12,.46) 0%, rgba(5,4,12,.66) 44%, rgba(5,4,12,.95) 100%),
+    linear-gradient(180deg, rgb(5,4,12,.46) 0%, rgb(5,4,12,.66) 44%, rgb(5,4,12,.95) 100%),
     url("hero_main.jpg") !important;
   background-size:cover !important;
   background-position:center 44% !important;
-  box-shadow:0 40px 110px -46px rgba(139,92,246,.75), inset 0 0 0 1px rgba(255,255,255,.05) !important;
+  box-shadow:0 40px 110px -46px rgb(139,92,246,.75), inset 0 0 0 1px rgb(255,255,255,.05) !important;
 }
 .hero-veil{
   position:absolute; inset:-20% -10% auto -10%; height:80%; pointer-events:none;
   background:
-    radial-gradient(58% 60% at 50% 34%, rgba(139,92,246,.34), transparent 66%),
-    radial-gradient(40% 44% at 78% 22%, rgba(34,211,238,.26), transparent 70%),
-    radial-gradient(40% 44% at 22% 78%, rgba(244,114,182,.20), transparent 72%);
+    radial-gradient(58% 60% at 50% 34%, rgb(139,92,246,.34), transparent 66%),
+    radial-gradient(40% 44% at 78% 22%, rgb(167,139,250,.26), transparent 70%),
+    radial-gradient(40% 44% at 22% 78%, rgb(244,114,182,.20), transparent 72%);
   filter:blur(2px);
 }
 .hero.hero-v11 > *{ position:relative; z-index:2; }
-.hero.hero-v11 .hk{ font-size:11px; letter-spacing:.34em; color:#a5f3fc; opacity:.92 }
+.hero.hero-v11 .hk{ font-size:11px; letter-spacing:.34em; color:#ede9fe; opacity:.92 }
 .hero.hero-v11 h1{
   margin:14px 0 14px;
   font-size:clamp(38px,6.2vw,86px) !important;
@@ -53,55 +53,55 @@ section.hero.hero-v11{
 .hero.hero-v11 h1 span{
   background:linear-gradient(96deg,#ffffff,#e8deff 58%,#c7b6ff);
   -webkit-background-clip:text; background-clip:text; color:transparent;
-  text-shadow:0 20px 60px rgba(0,0,0,.55);
+  text-shadow:0 20px 60px rgb(0,0,0,.55);
 }
 .hero.hero-v11 h1 em{
   font-style:normal;
-  background:linear-gradient(96deg,#a78bfa,#22d3ee 58%,#f472b6);
+  background:linear-gradient(96deg,#a78bfa,#a78bfa 58%,#f472b6);
   -webkit-background-clip:text; background-clip:text; color:transparent;
-  filter:drop-shadow(0 12px 44px rgba(139,92,246,.55));
+  filter:drop-shadow(0 12px 44px rgb(139,92,246,.55));
 }
 .hero.hero-v11 p{
   max-width:66ch; font-size:14px !important; line-height:1.85;
-  color:rgba(232,224,255,.9) !important; text-shadow:0 4px 24px rgba(0,0,0,.7);
+  color:rgb(232,224,255,.9) !important; text-shadow:0 4px 24px rgb(0,0,0,.7);
 }
 .hero.hero-v11 .hstats{ margin:24px 0 4px; gap:10px }
 .hero.hero-v11 .hstats span{
   padding:9px 15px; border-radius:999px;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(10,7,22,.5);
+  border:1px solid rgb(255,255,255,.14);
+  background:rgb(10,7,22,.5);
   backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
-  font-size:11.5px; color:rgba(226,218,255,.86);
+  font-size:11.5px; color:rgb(226,218,255,.86);
 }
 .hero.hero-v11 .hstats b{
   font-size:20px; font-weight:900;
-  background:linear-gradient(100deg,#fff,#a5f3fc);
+  background:linear-gradient(100deg,#ffffff,#ede9fe);
   -webkit-background-clip:text; background-clip:text; color:transparent;
 }
 .hero.hero-v11 .hacts{ margin-top:26px; gap:11px }
 .hero.hero-v11 .hacts .pri{
-  box-shadow:0 18px 44px -18px rgba(139,92,246,.95), inset 0 0 0 1px rgba(255,255,255,.16);
+  box-shadow:0 18px 44px -18px rgb(139,92,246,.95), inset 0 0 0 1px rgb(255,255,255,.16);
 }
 .hero.hero-v11 .hacts a:not(.pri){
   display:inline-flex; align-items:center; gap:7px;
   padding:11px 20px; border-radius:999px;
-  border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.06);
+  border:1px solid rgb(255,255,255,.16); background:rgb(255,255,255,.06);
   color:#e9e1ff; font-size:12.5px; font-weight:700; text-decoration:none;
   backdrop-filter:blur(10px); transition:.18s ease;
 }
-.hero.hero-v11 .hacts a:not(.pri):hover{ transform:translateY(-2px); border-color:rgba(167,139,250,.5); background:rgba(139,92,246,.18); }
+.hero.hero-v11 .hacts a:not(.pri):hover{ transform:translateY(-2px); border-color:rgb(167,139,250,.5); background:rgb(139,92,246,.18); }
 .hero-meta{
   display:flex; align-items:center; gap:12px; flex-wrap:wrap;
-  margin-top:22px; font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:rgba(180,168,214,.72);
+  margin-top:22px; font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:rgb(180,168,214,.72);
 }
-.hero-meta i{ width:1px; height:11px; background:rgba(255,255,255,.18); }
+.hero-meta i{ width:1px; height:11px; background:rgb(255,255,255,.18); }
 .hero-scroll{
   display:flex; align-items:center; gap:10px; margin-top:34px;
-  font-size:9.5px; letter-spacing:.34em; color:rgba(165,243,252,.7);
+  font-size:9.5px; letter-spacing:.34em; color:rgb(237,233,254,.7);
 }
 .hero-scroll b{
   display:block; width:54px; height:2px; border-radius:2px;
-  background:linear-gradient(90deg,rgba(34,211,238,.9),rgba(139,92,246,0));
+  background:linear-gradient(90deg,rgb(167,139,250,.9),rgb(139,92,246,0));
   animation:slScroll 2.6s ease-in-out infinite;
 }
 @keyframes slScroll{0%,100%{transform:translateX(0);opacity:.5}50%{transform:translateX(14px);opacity:1}}
@@ -110,10 +110,10 @@ section.hero.hero-v11{
 #slTopSearch .yhost{
   display:inline-flex; align-items:center; gap:7px; flex:0 0 auto;
   height:46px; padding:0 12px; border-radius:99px;
-  border:1px solid rgba(167,139,250,.28); background:rgba(255,255,255,.05);
+  border:1px solid rgb(167,139,250,.28); background:rgb(255,255,255,.05);
   color:#cbb8ff;
 }
-#slTopSearch .yhost i{ font-size:12px; color:#a5f3fc }
+#slTopSearch .yhost i{ font-size:12px; color:#ede9fe }
 #slTopSearch .yhost select{
   border:0; background:transparent; color:#efe8ff; font-size:12px; font-weight:700;
   outline:none; padding:0 2px; max-width:112px;

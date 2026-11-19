@@ -9,31 +9,32 @@
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;min-height:100vh;font-family:'PingFang SC','Microsoft YaHei',system-ui,sans-serif;color:#f3e9ff;
-  background:radial-gradient(1100px 600px at 15% -10%,rgba(192,132,252,.28),transparent 60%),radial-gradient(900px 500px at 90% 15%,rgba(232,121,249,.2),transparent 60%),#0a0612}
-body.day{background:radial-gradient(1100px 600px at 15% -10%,rgba(192,132,252,.22),transparent 60%),radial-gradient(900px 500px at 90% 15%,rgba(232,121,249,.16),transparent 60%),#fbf8ff;color:#2a1b3d}
+  background:radial-gradient(1100px 600px at 15% -10%,rgb(192,132,252,.28),transparent 60%),radial-gradient(900px 500px at 90% 15%,rgb(232,121,249,.2),transparent 60%),#0a0612}
+body.day{background:radial-gradient(1100px 600px at 15% -10%,rgb(192,132,252,.22),transparent 60%),radial-gradient(900px 500px at 90% 15%,rgb(232,121,249,.16),transparent 60%),#fbf8ff;color:#2a1b3d}
 .page{max-width:540px;margin:0 auto;padding:28px 20px 60px}
 .hero{text-align:center;margin-bottom:22px}
 .hero h1{font-size:26px;margin:0 0 10px;letter-spacing:2px;background:linear-gradient(90deg,#c084fc,#e879f9,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero p{margin:0;font-size:13px;line-height:1.9;color:#b7a4d3}
 body.day .hero p{color:#6e5a88}
-.card{padding:20px;border-radius:22px;border:1px solid rgba(192,132,252,.32);background:linear-gradient(145deg,rgba(124,58,237,.16),rgba(232,121,249,.08));backdrop-filter:blur(16px);box-shadow:0 18px 60px rgba(88,28,135,.25);margin-bottom:18px}
-body.day .card{background:rgba(255,255,255,.82);border-color:#e5d8f8;box-shadow:0 18px 50px rgba(124,58,237,.12)}
+.card{padding:20px;border-radius:22px;border:1px solid rgb(192,132,252,.32);background:linear-gradient(145deg,rgb(124,58,237,.16),rgb(232,121,249,.08));backdrop-filter:blur(16px);box-shadow:0 18px 60px rgb(88,28,135,.25);margin-bottom:18px}
+body.day .card{background:rgb(255,255,255,.82);border-color:#e5d8f8;box-shadow:0 18px 50px rgb(124,58,237,.12)}
 .card h2{margin:0 0 10px;font-size:16px;color:#e9d5ff}
 body.day .card h2{color:#6d28d9}
 .card p{margin:0 0 8px;font-size:12.8px;line-height:1.9;color:#c9b8e2}
 body.day .card p{color:#5e4b78}
 .free{font-weight:800;color:#ffd6f4}
 .qr-wrap{text-align:center;margin:18px 0 10px}
-.qr{width:min(76vw,300px);border-radius:18px;display:block;margin:0 auto;border:2px solid rgba(232,121,249,.45);box-shadow:0 10px 40px rgba(232,121,249,.2)}
+.qr{width:min(76vw,300px);border-radius:18px;display:block;margin:0 auto;border:2px solid rgb(232,121,249,.45);box-shadow:0 10px 40px rgb(232,121,249,.2)}
 .qr-tip{font-size:11.5px;color:#a892c4;line-height:1.8;margin-top:10px}
 .btns{display:flex;flex-direction:column;gap:10px;margin-top:16px}
 .btn{border:0;border-radius:14px;padding:14px 18px;font-size:14px;font-weight:800;cursor:pointer;
-  background:linear-gradient(135deg,#7c3aed,#a855f7,#e879f9);color:#fff;box-shadow:0 10px 30px rgba(168,85,247,.35)}
-.btn.ghost{background:transparent;border:1px solid rgba(192,132,252,.4);color:#d8bffa;box-shadow:none}
+  background:linear-gradient(135deg,#7c3aed,#a855f7,#e879f9);color:#ffffff;box-shadow:0 10px 30px rgb(168,85,247,.35)}
+.btn.ghost{background:transparent;border:1px solid rgb(192,132,252,.4);color:#d8bffa;box-shadow:none}
 .foot{text-align:center;margin-top:22px;font-size:11px;color:#8873a4;line-height:1.9}
-.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;padding:11px 20px;border-radius:12px;background:rgba(30,18,48,.97);border:1px solid rgba(232,121,249,.45);color:#fff;font-size:12px;z-index:99;transition:.25s}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;padding:11px 20px;border-radius:12px;background:rgb(30,18,48,.97);border:1px solid rgb(232,121,249,.45);color:#ffffff;font-size:12px;z-index:99;transition:.25s}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
+<link rel="stylesheet" href="../assets/ui/purple-lock.css?v=8505">
 </head>
 <body>
 <script id="sl-force-night">
@@ -95,7 +96,7 @@ body.day .card p{color:#5e4b78}
   <div class="card">
     <h2>打赏码</h2>
     <div class="qr-wrap">
-      <img class="qr" id="payImg" src="./收款码/赞赏码.jpg" onerror="this.style.display='none';document.getElementById('qrFallback').style.display='block'" alt="打赏码">
+      <img loading="lazy" decoding="async" class="qr" id="payImg" src="./收款码/赞赏码.jpg" onerror="this.style.display='none';document.getElementById('qrFallback').style.display='block'" alt="打赏码">
       <div class="qr-tip">可长按图片保存，再打开微信「扫一扫」→ 相册选择这张图。<br>或点击下方按钮调用系统扫码。</div>
     </div>
     <div class="btns">
@@ -141,21 +142,21 @@ $('backBtn').onclick=function(){ try{history.back()}catch(e){location.href='../i
   --sl-surface:#150f24;
   --sl-surface-2:#1e1633;
   --sl-surface-3:#281d40;
-  --sl-glass:rgba(18,11,32,.72);
-  --sl-glass-strong:rgba(22,13,38,.92);
+  --sl-glass:rgb(18,11,32,.72);
+  --sl-glass-strong:rgb(22,13,38,.92);
   /* 颜色 · 主色与强调 */
   --sl-primary:#8b5cf6;
   --sl-primary-2:#6d28d9;
-  --sl-accent:#22d3ee;
+  --sl-accent:#a78bfa;
   --sl-pink:#ff6ec7;
-  --sl-glow:rgba(139,92,246,.45);
+  --sl-glow:rgb(139,92,246,.45);
   /* 颜色 · 文字 */
   --sl-text:#f6f3ff;
   --sl-text-2:#d9d0ec;
   --sl-muted:#a293c0;
   /* 颜色 · 描边 */
-  --sl-line:rgba(139,92,246,.22);
-  --sl-line-strong:rgba(139,92,246,.42);
+  --sl-line:rgb(139,92,246,.22);
+  --sl-line-strong:rgb(139,92,246,.42);
   /* 颜色 · 状态 */
   --sl-success:#34d399;
   --sl-danger:#f87171;
@@ -177,10 +178,10 @@ $('backBtn').onclick=function(){ try{history.back()}catch(e){location.href='../i
   --sl-sp-5:24px;
   --sl-sp-6:32px;
   /* 阴影 */
-  --sl-shadow-sm:0 2px 10px rgba(0,0,0,.35);
-  --sl-shadow:0 10px 30px rgba(0,0,0,.45);
-  --sl-shadow-lg:0 20px 60px rgba(0,0,0,.55);
-  --sl-glow-line:0 0 0 1px rgba(139,92,246,.18),0 0 24px rgba(139,92,246,.18);
+  --sl-shadow-sm:0 2px 10px rgb(0,0,0,.35);
+  --sl-shadow:0 10px 30px rgb(0,0,0,.45);
+  --sl-shadow-lg:0 20px 60px rgb(0,0,0,.55);
+  --sl-glow-line:0 0 0 1px rgb(139,92,246,.18),0 0 24px rgb(139,92,246,.18);
   /* 层级 */
   --sl-z-nav:100;
   --sl-z-panel:300;
@@ -214,20 +215,20 @@ html,body{
 body{
   min-height:100vh;
   background-image:
-    radial-gradient(1000px 520px at 10% -8%,rgba(124,58,237,.20),transparent 60%),
-    radial-gradient(820px 440px at 100% 2%,rgba(34,211,238,.08),transparent 58%),
-    radial-gradient(820px 480px at 50% 112%,rgba(255,110,199,.08),transparent 60%);
+    radial-gradient(1000px 520px at 10% -8%,rgb(124,58,237,.20),transparent 60%),
+    radial-gradient(820px 440px at 100% 2%,rgb(167,139,250,.08),transparent 58%),
+    radial-gradient(820px 480px at 50% 112%,rgb(255,110,199,.08),transparent 60%);
   background-attachment:fixed;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-::selection{background:rgba(139,92,246,.38);color:#fff}
-*{scrollbar-width:thin;scrollbar-color:rgba(139,92,246,.55) transparent}
+::selection{background:rgb(139,92,246,.38);color:#ffffff}
+*{scrollbar-width:thin;scrollbar-color:rgb(139,92,246,.55) transparent}
 ::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-thumb{background:rgba(139,92,246,.45);border-radius:var(--sl-r-pill)}
+::-webkit-scrollbar-thumb{background:rgb(139,92,246,.45);border-radius:var(--sl-r-pill)}
 ::-webkit-scrollbar-track{background:transparent}
-*:focus-visible{outline:2px solid rgba(34,211,238,.55);outline-offset:2px}
+*:focus-visible{outline:2px solid rgb(167,139,250,.55);outline-offset:2px}
 a{color:#c4b5fd}
-a:hover{color:#fff}
+a:hover{color:#ffffff}
 
 /* ---------- 顶部栏 / 导航：深色玻璃 + 紫罗兰描边 + 顶部微光 ---------- */
 .navbar,.v-head,.sl-top,.topbar,.top-bar,#topbar,.app-header,.header,
@@ -283,32 +284,32 @@ a:hover{color:#fff}
 .primary,.pbtn,.btn.pri,.btn.primary,.go,.primary-btn{
   background-image:linear-gradient(135deg,var(--sl-primary-2),var(--sl-primary))!important;
   border-color:transparent!important;
-  color:#fff!important;
-  box-shadow:0 8px 22px rgba(124,58,237,.36);
+  color:#ffffff!important;
+  box-shadow:0 8px 22px rgb(124,58,237,.36);
 }
 /* 次级：玻璃描边 */
 .btn.gho,.btn.ghost,.mini,.icon-btn,.sl-nb,.ibtn,.back,.back-btn,.bt{
-  background:rgba(139,92,246,.10)!important;
+  background:rgb(139,92,246,.10)!important;
   border:1px solid var(--sl-line)!important;
   color:var(--sl-text-2)!important;
 }
 .btn.gho:hover,.mini:hover,.icon-btn:hover,.sl-nb:hover,.ibtn:hover,.back:hover,.back-btn:hover,.bt:hover{
-  background:rgba(139,92,246,.22)!important;
+  background:rgb(139,92,246,.22)!important;
   border-color:var(--sl-line-strong)!important;
-  color:#fff!important;
+  color:#ffffff!important;
 }
 
 /* ---------- 标签 / 分段选择 ---------- */
 .chip,.tab-btn{
-  background:rgba(139,92,246,.08);
+  background:rgb(139,92,246,.08);
   border:1px solid var(--sl-line);
   color:var(--sl-text-2);
 }
 .chip.on,.tab-btn.on,.chip.active,.tab-btn.active{
   background:linear-gradient(135deg,var(--sl-primary-2),var(--sl-primary))!important;
-  border-color:rgba(255,255,255,.16)!important;
-  color:#fff!important;
-  box-shadow:0 6px 18px rgba(124,58,237,.34);
+  border-color:rgb(255,255,255,.16)!important;
+  color:#ffffff!important;
+  box-shadow:0 6px 18px rgb(124,58,237,.34);
 }
 
 /* ---------- 输入类（排除勾选/滑杆/取色/文件） ---------- */
@@ -323,7 +324,7 @@ textarea,select{
 input::placeholder,textarea::placeholder{color:var(--sl-muted)}
 input:focus,textarea:focus,select:focus{
   border-color:var(--sl-primary)!important;
-  box-shadow:0 0 0 3px rgba(139,92,246,.16);
+  box-shadow:0 0 0 3px rgb(139,92,246,.16);
 }
 
 /* ---------- 文字层级 ---------- */
@@ -333,8 +334,8 @@ input:focus,textarea:focus,select:focus{
 
 /* ---------- 徽章 / 计数 ---------- */
 .badge,.count-badge,.countBadge{
-  background:rgba(8,4,16,.62);
-  border:1px solid rgba(255,255,255,.16);
+  background:rgb(8,4,16,.62);
+  border:1px solid rgb(255,255,255,.16);
   color:var(--sl-text-2);
   border-radius:var(--sl-r-pill);
 }
@@ -351,8 +352,8 @@ input:focus,textarea:focus,select:focus{
 /* ---------- 轻提示条 ---------- */
 .tip,.tipbar,.note,.warn{
   color:var(--sl-text-2);
-  background:rgba(139,92,246,.08);
-  border:1px solid rgba(139,92,246,.18);
+  background:rgb(139,92,246,.08);
+  border:1px solid rgb(139,92,246,.18);
   border-radius:var(--sl-r-md);
 }
 
@@ -363,19 +364,19 @@ input:focus,textarea:focus,select:focus{
 }
 .mask{
   position:fixed;inset:0;z-index:var(--sl-z-modal);
-  background:rgba(4,2,10,.72);
+  background:rgb(4,2,10,.72);
   backdrop-filter:blur(14px) saturate(150%);
   -webkit-backdrop-filter:blur(14px) saturate(150%);
 }
 
 /* 统一自定义弹窗（替代原生白色 confirm / alert / prompt） */
 .sl-mask{position:fixed;inset:0;z-index:var(--sl-z-toast);display:flex;align-items:center;justify-content:center;
-  padding:24px;background:rgba(4,2,10,.72);backdrop-filter:blur(16px) saturate(150%);
+  padding:24px;background:rgb(4,2,10,.72);backdrop-filter:blur(16px) saturate(150%);
   -webkit-backdrop-filter:blur(16px) saturate(150%);animation:slMIn .18s ease-out}
 .sl-dialog{width:min(400px,94vw);max-height:82vh;overflow:auto;padding:22px 22px 18px;
-  color:var(--sl-text);background:linear-gradient(168deg,rgba(32,20,54,.98),rgba(16,10,30,.98));
+  color:var(--sl-text);background:linear-gradient(168deg,rgb(32,20,54,.98),rgb(16,10,30,.98));
   border:1px solid var(--sl-line-strong);border-radius:var(--sl-r-xl);
-  box-shadow:var(--sl-shadow-lg),0 0 0 1px rgba(139,92,246,.16),0 0 40px rgba(139,92,246,.18);
+  box-shadow:var(--sl-shadow-lg),0 0 0 1px rgb(139,92,246,.16),0 0 40px rgb(139,92,246,.18);
   animation:slDIn .2s cubic-bezier(.2,.9,.3,1.2)}
 .sl-dialog h3{margin:0 0 10px;font-size:16px;font-weight:800;letter-spacing:.4px;
   background:linear-gradient(90deg,var(--sl-text),var(--sl-accent));-webkit-background-clip:text;
@@ -386,20 +387,20 @@ input:focus,textarea:focus,select:focus{
 .sl-dialog .sl-d-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap}
 .sl-dialog button{min-width:96px;padding:10px 16px;border-radius:var(--sl-r-md);font-size:13px;
   font-weight:700;font-family:var(--sl-font);cursor:pointer;transition:.16s ease;
-  background:rgba(139,92,246,.12);border:1px solid var(--sl-line);color:var(--sl-text-2)}
-.sl-dialog button:hover{background:rgba(139,92,246,.22);border-color:var(--sl-line-strong)}
+  background:rgb(139,92,246,.12);border:1px solid var(--sl-line);color:var(--sl-text-2)}
+.sl-dialog button:hover{background:rgb(139,92,246,.22);border-color:var(--sl-line-strong)}
 .sl-dialog button.ok{background:linear-gradient(135deg,var(--sl-primary-2),var(--sl-primary));
-  border-color:transparent;color:#fff;box-shadow:0 6px 18px rgba(124,58,237,.35)}
-.sl-dialog button.danger{background:rgba(248,113,113,.14);border-color:rgba(248,113,113,.35);color:#fecaca}
+  border-color:transparent;color:#ffffff;box-shadow:0 6px 18px rgb(124,58,237,.35)}
+.sl-dialog button.danger{background:rgb(248,113,113,.14);border-color:rgb(248,113,113,.35);color:#fecaca}
 .sl-dialog button:active{transform:scale(.97)}
 @keyframes slMIn{from{opacity:0}to{opacity:1}}
 @keyframes slDIn{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
 
 /* ---------- 浮动提示 ---------- */
 .toast{
-  background:rgba(30,18,48,.96);
-  border:1px solid rgba(139,92,246,.4);
-  color:#eee;
+  background:rgb(30,18,48,.96);
+  border:1px solid rgb(139,92,246,.4);
+  color:#eeeeee;
   border-radius:var(--sl-r-pill);
   box-shadow:var(--sl-shadow);
 }
@@ -410,8 +411,8 @@ html.sl-day,html.sl-dusk{
   --txt:var(--sl-text);--mut:var(--sl-muted);--acc:var(--sl-primary);--acc2:var(--sl-accent);
 }
 html.sl-day body,html.sl-dusk body{
-  background:radial-gradient(ellipse at 12% 6%,rgba(139,92,246,.20),transparent 55%),
-             radial-gradient(ellipse at 88% 94%,rgba(255,110,199,.12),transparent 55%),
+  background:radial-gradient(ellipse at 12% 6%,rgb(139,92,246,.20),transparent 55%),
+             radial-gradient(ellipse at 88% 94%,rgb(255,110,199,.12),transparent 55%),
              var(--sl-bg)!important;
   color:var(--sl-text)!important;
 }
@@ -438,6 +439,6 @@ body.mode-daily .side a:hover,body.mode-daily .side a.on{color:var(--sl-text)!im
 }
 
 </style>
-<link rel="stylesheet" href="assets/ui/theme-lock.css?v=11">
+<link rel="stylesheet" href="../assets/ui/theme-lock.css?v=13">
 </body>
 </html>

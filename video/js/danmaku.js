@@ -121,7 +121,7 @@
   DM.addLocal = function (name, ep, text, color, timeSec) {
     try {
       var list = DM.localList(name, ep);
-      list.push({ t: Math.max(0, Number(timeSec) || 0), text: String(text).slice(0, 60), color: color || '#FFFFFF' });
+      list.push({ t: Math.max(0, Number(timeSec) || 0), text: String(text).slice(0, 60), color: color || '#ffffff' });
       if (list.length > 800) list = list.slice(-800);
       localStorage.setItem(keyOf(name, ep), JSON.stringify(list));
       return true;
@@ -155,14 +155,14 @@
      若用户配置了自定义弹幕 API（视频弹幕中转服务 / 弹弹play），则自动用 API 的弹幕替换内置弹幕
      ========================================================================== */
   var DM_BUILTIN_POOL = [
-    ['前方高能预警！', '#FF6B6B'], ['来了来了', '#FFD93D'], ['名场面名场面', '#6BCB77'],
-    ['哈哈哈哈哈哈', '#4D96FF'], ['泪目了', '#96C7FF'], ['太强了吧', '#FF9F43'],
-    ['经典永流传', '#C084FC'], ['打卡留念', '#7DE3C8'], ['这画质爱了', '#FFB3C1'],
-    ['细节拉满', '#FFE3A3'], ['必须二刷', '#B0F3AB'], ['导演加鸡腿', '#FFC6D9'],
-    ['弹幕护体！', '#AEFFFF'], ['已收藏慢慢看', '#FFF9C4'], ['谁懂啊这段', '#D8C7FF'],
-    ['好看不火没天理', '#FFB4A2'], ['教科书级操作', '#B8E4FF'], ['这节奏舒服', '#D7FFB8'],
-    ['弹幕高能区域', '#FFE07A'], ['路过膜拜', '#C1FFD7'], ['回头再看一遍', '#F7C8E0'],
-    ['高燃片段++', '#FFE066'], ['收藏夹+1', '#A9DEF9'], ['这段值得反复看', '#EAD7FF']
+    ['前方高能预警！', '#ff6b6b'], ['来了来了', '#ffd93d'], ['名场面名场面', '#6bcb77'],
+    ['哈哈哈哈哈哈', '#cb4dff'], ['泪目了', '#e096ff'], ['太强了吧', '#ff9f43'],
+    ['经典永流传', '#c084fc'], ['打卡留念', '#7de3c8'], ['这画质爱了', '#ffb3c1'],
+    ['细节拉满', '#ffe3a3'], ['必须二刷', '#b0f3ab'], ['导演加鸡腿', '#ffc6d9'],
+    ['弹幕护体！', '#e7aeff'], ['已收藏慢慢看', '#fff9c4'], ['谁懂啊这段', '#d8c7ff'],
+    ['好看不火没天理', '#ffb4a2'], ['教科书级操作', '#eab8ff'], ['这节奏舒服', '#d7ffb8'],
+    ['弹幕高能区域', '#ffe07a'], ['路过膜拜', '#c1ffd7'], ['回头再看一遍', '#f7c8e0'],
+    ['高燃片段++', '#ffe066'], ['收藏夹+1', '#e1a9f9'], ['这段值得反复看', '#ead7ff']
   ];
   function dmHash(str) {
     var h = 5381;
@@ -218,7 +218,7 @@
         if (!c || c.text == null) continue;
         var t = parseFloat(c.time == null ? c.t : c.time);
         if (!isFinite(t)) continue;
-        var col = c.color == null ? '#FFFFFF' : (String(c.color).charAt(0) === '#' ? String(c.color) : ('#' + Number(c.color).toString(16).padStart(6, '0')));
+        var col = c.color == null ? '#ffffff' : (String(c.color).charAt(0) === '#' ? String(c.color) : ('#' + Number(c.color).toString(16).padStart(6, '0')));
         out.push({ t: t, text: String(c.text).slice(0, 60), color: col });
       }
       out.sort(function (a, b) { return a.t - b.t; });
@@ -287,7 +287,7 @@
         out.push({
           t: t,
           text: String(c.m || ''),
-          color: (isFinite(col) ? '#' + ('000000' + col.toString(16)).slice(-6) : '#FFFFFF')
+          color: (isFinite(col) ? '#' + ('000000' + col.toString(16)).slice(-6) : '#ffffff')
         });
       }
       out.sort(function (a, b) { return a.t - b.t; });
@@ -376,7 +376,7 @@
       var d = document.createElement('div');
       d.className = 'dm-item';
       d.textContent = c.text;
-      if (c.color && c.color !== '#FFFFFF') d.style.color = c.color;
+      if (c.color && c.color !== '#ffffff') d.style.color = c.color;
       d.style.top = (lane * per + 2) + 'px';
       l.appendChild(d);
 

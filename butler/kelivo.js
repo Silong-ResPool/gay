@@ -1119,7 +1119,7 @@ function klSetDocChip(name,kind){
   var box=document.querySelector('.input-area'); if(!box) return;
   var chip=$('klDocChip');
   if(!chip){ chip=document.createElement('div'); chip.id='klDocChip'; chip.className='kl-doc-chip'; box.appendChild(chip); }
-  chip.innerHTML='<b>'+klEsc(name)+'</b><span>'+(kind||'已附加')+'</span><button style="border:0;background:transparent;color:#9be7ff;cursor:pointer">×</button>';
+  chip.innerHTML='<b>'+klEsc(name)+'</b><span>'+(kind||'已附加')+'</span><button style="border:0;background:transparent;color:#e29bff;cursor:pointer">×</button>';
   chip.querySelector('button').onclick=function(){ klClearDoc(); };
 }
 function klOfficeText(buf,ext){
@@ -1165,7 +1165,7 @@ function klStitchImages(dataUrls){
           var sizes=imgs.map(function(x){ var w=maxW, h=Math.round(x.height*maxW/x.width); totalH+=h; return {w:w,h:h}; });
           totalH=Math.min(totalH,5000);
           var canvas=document.createElement('canvas'); canvas.width=maxW; canvas.height=totalH;
-          var ctx=canvas.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,maxW,totalH);
+          var ctx=canvas.getContext('2d'); ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,maxW,totalH);
           var y=0;
           for(var i2=0;i2<imgs.length;i2++){
             var s=sizes[i2]; if(y>=totalH) break;
@@ -1454,7 +1454,7 @@ function klRenderMemoryFacts(){
   KL.memoryFacts.slice().reverse().forEach(function(f){
     var row=document.createElement('div'); row.className='kl-mem-fact';
     var main=document.createElement('div'); main.style.flex='1';
-    main.innerHTML='<b style="color:#9be7ff">['+klEsc(f.cat)+']</b> '+klEsc(f.text);
+    main.innerHTML='<b style="color:#e29bff">['+klEsc(f.cat)+']</b> '+klEsc(f.text);
     if(f.archived) main.style.opacity='.45';
     row.appendChild(main);
     var ar=document.createElement('button'); ar.className='kl-btn'; ar.textContent=f.archived?'恢复':'归档';

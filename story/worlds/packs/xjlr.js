@@ -2,7 +2,7 @@
 window.SL_PACK = {
   id: 'xjlr', title: '星际旅人', subtitle: 'ARK · TALOS · 深空记忆',
   kicker: 'ARK · TALOS', theme: 'space', layout: 'cinema', modeLabel: '深空探索', mode: 'space',
-  accent: '#67e8f9', accent2: '#a78bfa', bg: '#040812', bg2: '#0a1230',
+  accent: '#ddd6fe', accent2: '#a78bfa', bg: '#0d0412', bg2: '#130b28',
   cover: '../../assets/ui/world_xjlr.jpg', turnsPerDay: 5, eventChance: 0.36,
   freePlaceholder: '自由行动：检查舱室 / 修复舰体 / 找虺夜 / 问黎铭 / 去生态舱 / 听录音 / 看星图',
   bgm: [

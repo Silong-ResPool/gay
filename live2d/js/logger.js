@@ -1,8 +1,8 @@
 // Styled console log tags per named context.
 const LOG_STYLES = {
   SYSTEM: {
-    tag:  'background:#1e90ff;color:white;font-weight:bold;border-radius:4px 10px 10px 4px;padding:2px 8px 2px 4px;',
-    text: 'background:#4a6a8a;color:white;border-radius:0 4px 4px 0;padding:2px 4px 2px 2px;margin-left:-5px;',
+    tag:  'background:#8b5cf6;color:white;font-weight:bold;border-radius:4px 10px 10px 4px;padding:2px 8px 2px 4px;',
+    text: 'background:#774a8a;color:white;border-radius:0 4px 4px 0;padding:2px 4px 2px 2px;margin-left:-5px;',
   },
   MODEL: {
     tag:  'background:#8c5eff;color:white;font-weight:bold;border-radius:4px 10px 10px 4px;padding:2px 8px 2px 4px;',

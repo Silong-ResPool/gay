@@ -2,7 +2,7 @@
 window.SL_PACK = {
   id: 'fljg', title: '法老金棺', subtitle: '埃及探险 · 诅咒与机关',
   kicker: 'TOMB OF GOLD · EXPEDITION', theme: 'dungeon', layout: 'cinema', modeLabel: '解谜探险', mode: 'adventure',
-  accent: '#fbbf24', accent2: '#38bdf8', bg: '#0d0903', bg2: '#1a1207', cover: 'https://aka.doubaocdn.com/s/4xfz6DQ7w9',
+  accent: '#fbbf24', accent2: '#c4b5fd', bg: '#0d0903', bg2: '#1a1207', cover: 'https://aka.doubaocdn.com/s/4xfz6DQ7w9',
   turnsPerDay: 6, eventChance: 0.4, freePlaceholder: '自由行动：点火 / 探路 / 破译 / 搜刮 / 和纳赛尔交谈',
   bgm: [
     { id: 'daily', name: '沙海低吟', mood: 'daily', tempo: 56, scale: 'minor', lead: 'oud', pad: 'wind' },

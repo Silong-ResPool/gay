@@ -328,7 +328,7 @@ function renderDoubanTags(tags) {
 
     // 先添加标签管理按钮
     const manageBtn = document.createElement('button');
-    manageBtn.className = 'py-1.5 px-3.5 rounded text-sm font-medium transition-all duration-300 bg-[#1a1a1a] text-gray-300 hover:bg-pink-700 hover:text-white border border-[#333] hover:border-white';
+    manageBtn.className = 'py-1.5 px-3.5 rounded text-sm font-medium transition-all duration-300 bg-[#1a1a1a] text-gray-300 hover:bg-pink-700 hover:text-white border border-[#333333] hover:border-white';
     manageBtn.innerHTML = '<span class="flex items-center"><svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>管理标签</span>';
     manageBtn.onclick = function() {
         showTagManageModal();
@@ -346,7 +346,7 @@ function renderDoubanTags(tags) {
         if (tag === doubanCurrentTag) {
             btnClass += 'bg-pink-600 text-white shadow-md border-white';
         } else {
-            btnClass += 'bg-[#1a1a1a] text-gray-300 hover:bg-pink-700 hover:text-white border-[#333] hover:border-white';
+            btnClass += 'bg-[#1a1a1a] text-gray-300 hover:bg-pink-700 hover:text-white border-[#333333] hover:border-white';
         }
         
         btn.className = btnClass;
@@ -516,7 +516,7 @@ function renderDoubanCards(data, container) {
         // 循环创建每个影视卡片
         data.subjects.forEach(item => {
             const card = document.createElement("div");
-            card.className = "bg-[#111] hover:bg-[#222] transition-all duration-300 rounded-lg overflow-hidden flex flex-col transform hover:scale-105 shadow-md hover:shadow-lg";
+            card.className = "bg-[#111111] hover:bg-[#222222] transition-all duration-300 rounded-lg overflow-hidden flex flex-col transform hover:scale-105 shadow-md hover:shadow-lg";
             
             // 生成卡片内容，确保安全显示（防止XSS）
             const safeTitle = item.title
@@ -546,13 +546,13 @@ function renderDoubanCards(data, container) {
                     <div class="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-sm">
                         <span class="text-yellow-400">★</span> ${safeRate}
                     </div>
-                    <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-sm hover:bg-[#333] transition-colors">
+                    <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-sm hover:bg-[#333333] transition-colors">
                         <a href="${item.url}" target="_blank" rel="noopener noreferrer" title="在豆瓣查看" onclick="event.stopPropagation();">
                             🔗
                         </a>
                     </div>
                 </div>
-                <div class="p-2 text-center bg-[#111]">
+                <div class="p-2 text-center bg-[#111111]">
                     <button onclick="fillAndSearchWithDouban('${safeTitle}')" 
                             class="text-sm font-medium text-white truncate w-full hover:text-pink-400 transition"
                             title="${safeTitle}">
@@ -634,7 +634,7 @@ function showTagManageModal() {
                 <h4 class="text-lg font-medium text-gray-300 mb-3">添加新标签</h4>
                 <form id="addTagForm" class="flex items-center">
                     <input type="text" id="newTagInput" placeholder="输入标签名称..." 
-                           class="flex-1 bg-[#222] text-white border border-gray-700 rounded px-3 py-2 focus:outline-none focus:border-pink-500">
+                           class="flex-1 bg-[#222222] text-white border border-gray-700 rounded px-3 py-2 focus:outline-none focus:border-pink-500">
                     <button type="submit" class="ml-2 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded">添加</button>
                 </form>
                 <p class="text-xs text-gray-500 mt-2">提示：标签名称不能为空，不能重复，不能包含特殊字符</p>

@@ -88,7 +88,7 @@ function initAPICheckboxes() {
         checkbox.className = 'flex items-center';
         checkbox.innerHTML = `
             <input type="checkbox" id="api_${apiKey}" 
-                   class="form-checkbox h-3 w-3 text-blue-600 bg-[#222] border border-[#333]" 
+                   class="form-checkbox h-3 w-3 text-blue-600 bg-[#222222] border border-[#333333]" 
                    ${checked ? 'checked' : ''} 
                    data-api="${apiKey}">
             <label for="api_${apiKey}" class="ml-1 text-xs text-gray-400 truncate">${api.name}</label>
@@ -140,7 +140,7 @@ function addAdultAPI() {
             checkbox.className = 'flex items-center';
             checkbox.innerHTML = `
                 <input type="checkbox" id="api_${apiKey}" 
-                       class="form-checkbox h-3 w-3 text-blue-600 bg-[#222] border border-[#333] api-adult" 
+                       class="form-checkbox h-3 w-3 text-blue-600 bg-[#222222] border border-[#333333] api-adult" 
                        ${checked ? 'checked' : ''} 
                        data-api="${apiKey}">
                 <label for="api_${apiKey}" class="ml-1 text-xs text-pink-400 truncate">${api.name}</label>
@@ -221,7 +221,7 @@ function renderCustomAPIsList() {
     container.innerHTML = '';
     customAPIs.forEach((api, index) => {
         const apiItem = document.createElement('div');
-        apiItem.className = 'flex items-center justify-between p-1 mb-1 bg-[#222] rounded';
+        apiItem.className = 'flex items-center justify-between p-1 mb-1 bg-[#222222] rounded';
         const textColorClass = api.isAdult ? 'text-pink-400' : 'text-white';
         const adultTag = api.isAdult ? '<span class="text-xs text-pink-400 mr-1">(18+)</span>' : '';
         // 新增 detail 地址显示
@@ -268,7 +268,7 @@ function editCustomApi(index) {
         const buttonContainer = form.querySelector('div:last-child');
         buttonContainer.innerHTML = `
             <button onclick="updateCustomApi(${index})" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs">更新</button>
-            <button onclick="cancelEditCustomApi()" class="bg-[#444] hover:bg-[#555] text-white px-3 py-1 rounded text-xs">取消</button>
+            <button onclick="cancelEditCustomApi()" class="bg-[#444444] hover:bg-[#555555] text-white px-3 py-1 rounded text-xs">取消</button>
         `;
     }
 }
@@ -329,7 +329,7 @@ function restoreAddCustomApiButtons() {
     const buttonContainer = form.querySelector('div:last-child');
     buttonContainer.innerHTML = `
         <button onclick="addCustomApi()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs">添加</button>
-        <button onclick="cancelAddCustomApi()" class="bg-[#444] hover:bg-[#555] text-white px-3 py-1 rounded text-xs">取消</button>
+        <button onclick="cancelAddCustomApi()" class="bg-[#444444] hover:bg-[#555555] text-white px-3 py-1 rounded text-xs">取消</button>
     `;
 }
 
@@ -738,7 +738,7 @@ async function search() {
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;');
             const sourceInfo = item.source_name ?
-                `<span class="bg-[#222] text-xs px-1.5 py-0.5 rounded-full">${item.source_name}</span>` : '';
+                `<span class="bg-[#222222] text-xs px-1.5 py-0.5 rounded-full">${item.source_name}</span>` : '';
             const sourceCode = item.source_code || '';
 
             // 添加API URL属性，用于详情获取
@@ -749,7 +749,7 @@ async function search() {
             const hasCover = item.vod_pic && item.vod_pic.startsWith('http');
 
             return `
-                <div class="card-hover bg-[#111] rounded-lg overflow-hidden cursor-pointer transition-all hover:scale-[1.02] h-full shadow-sm hover:shadow-md" 
+                <div class="card-hover bg-[#111111] rounded-lg overflow-hidden cursor-pointer transition-all hover:scale-[1.02] h-full shadow-sm hover:shadow-md" 
                      onclick="showDetails('${safeId}','${safeName}','${sourceCode}')" ${apiUrlAttr}>
                     <div class="flex h-full">
                         ${hasCover ? `
@@ -954,7 +954,7 @@ async function showDetails(id, vod_name, sourceCode) {
                 <div class="flex flex-wrap items-center justify-between mb-4 gap-2">
                     <div class="flex items-center gap-2">
                         <button onclick="toggleEpisodeOrder('${sourceCode}', '${id}')" 
-                                class="px-3 py-1.5 bg-[#333] hover:bg-[#444] border border-[#444] rounded text-sm transition-colors flex items-center gap-1">
+                                class="px-3 py-1.5 bg-[#333333] hover:bg-[#444444] border border-[#444444] rounded text-sm transition-colors flex items-center gap-1">
                             <svg class="w-4 h-4 transform ${episodesReversed ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
                             </svg>
@@ -1101,7 +1101,7 @@ function renderEpisodes(vodName, sourceCode, vodId) {
         const realIndex = episodesReversed ? currentEpisodes.length - 1 - index : index;
         return `
             <button id="episode-${realIndex}" onclick="playVideo('${episode}','${vodName.replace(/"/g, '&quot;')}', '${sourceCode}', ${realIndex}, '${vodId}')" 
-                    class="px-4 py-2 bg-[#222] hover:bg-[#333] border border-[#333] rounded-lg transition-colors text-center episode-btn">
+                    class="px-4 py-2 bg-[#222222] hover:bg-[#333333] border border-[#333333] rounded-lg transition-colors text-center episode-btn">
                 ${realIndex + 1}
             </button>
         `;
@@ -1159,12 +1159,12 @@ async function importConfigFromUrl() {
             
             <div class="mb-4">
                 <input type="text" id="configUrl" placeholder="输入配置文件URL" 
-                       class="w-full px-3 py-2 bg-[#222] border border-[#333] rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+                       class="w-full px-3 py-2 bg-[#222222] border border-[#333333] rounded-lg text-white focus:outline-none focus:ring-1 focus:ring-blue-500">
             </div>
             
             <div class="flex justify-end space-x-2">
                 <button id="confirmUrlImport" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">导入</button>
-                <button id="cancelUrlImport" class="bg-[#444] hover:bg-[#555] text-white px-4 py-2 rounded">取消</button>
+                <button id="cancelUrlImport" class="bg-[#444444] hover:bg-[#555555] text-white px-4 py-2 rounded">取消</button>
             </div>
         </div>`;
 

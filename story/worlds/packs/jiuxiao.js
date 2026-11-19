@@ -2,7 +2,7 @@
 window.SL_PACK = {
   id:'jiuxiao', title:'九霄灵契', subtitle:'云海仙门 · 双修与妖宠',
   kicker:'NINE HEAVENS', theme:'xianxia', layout:'cinema', modeLabel:'修仙试炼', mode:'xianxia',
-  accent:'#e0b15a', accent2:'#67e8f9', bg:'#080b08', bg2:'#16120a',
+  accent:'#e0b15a', accent2:'#ddd6fe', bg:'#080b08', bg2:'#16120a',
   cover:'../../assets/ui/world_xianxia2.jpg', turnsPerDay:5, eventChance:.38,
   freePlaceholder:'自由行动：打坐 / 双修 / 炼丹 / 炼器 / 画符 / 喂妖宠 / 进秘境 / 找玄烬',
   bgm:[

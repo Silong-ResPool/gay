@@ -37,7 +37,7 @@
   function blankWorld(name) {
     var w = {
       id: uid('w'), name: name || '未命名世界', tagline: '', desc: '', genre: '幻想',
-      accent: ['#7c3aed', '#22d3ee'], cover: '', calendar: '', era: '',
+      accent: ['#7c3aed', '#a78bfa'], cover: '', calendar: '', era: '',
       created: now(), updated: now()
     };
     LISTS.forEach(function (k) { w[k] = []; });
@@ -192,7 +192,7 @@
   }
 
   /* ---------------- 世界列表 ---------------- */
-  function accent(c) { return c && c.length === 2 ? c : ['#7c3aed', '#22d3ee']; }
+  function accent(c) { return c && c.length === 2 ? c : ['#7c3aed', '#a78bfa']; }
   function renderWorlds() {
     document.body.setAttribute('data-view', 'worlds');
     $('tabs').hidden = true;
@@ -572,7 +572,7 @@
     ]},
     statusPanels: { title: '状态面板', fields: [
       F('name', '面板名称', { req: 1 }), F('nick', '状态昵称'),
-      F('color', '进度条颜色', { select: ['#7c3aed', '#22d3ee', '#dc2626', '#16a34a', '#f59e0b', '#f472b6', '#64748b'] }),
+      F('color', '进度条颜色', { select: ['#7c3aed', '#a78bfa', '#dc2626', '#16a34a', '#f59e0b', '#f472b6', '#7f648b'] }),
       F('max', '最大值'), F('value', '当前值'),
       F('rule', '增减规则', { area: 1 }),
       F('code', '本地代码规则（可选，变量 p / text）', { area: 1 }),
@@ -659,7 +659,7 @@
     if ((w.chars || []).length < 2) return h + '<div class="empty"><b>至少需要两个角色</b>先去「角色」里建好人物，再回来看关系网。</div>';
     h += '<div class="graph-wrap"><svg id="graph"></svg><div class="graph-tip">拖动节点调整位置 · 点击节点查看档案</div></div>';
     h += '<div class="legend">' + REL_TYPES.map(function (t) {
-      return '<span><i style="background:' + (REL_COLOR[t] || '#94a3b8') + '"></i>' + t + '</span>';
+      return '<span><i style="background:' + (REL_COLOR[t] || '#ad94b8') + '"></i>' + t + '</span>';
     }).join('') + '</div>';
     var list = (w.rels || []).map(function (r) {
       var a = (w.chars || []).filter(function (c) { return c.id === r.a; })[0];
@@ -673,7 +673,7 @@
     return h;
   }
   var REL_TYPES = ['亲属', '恋人', '挚友', '敌对', '师徒', '主仆', '上下级', '同盟', '其他'];
-  var REL_COLOR = { '亲属': '#22d3ee', '恋人': '#f472b6', '挚友': '#34d399', '敌对': '#f87171', '师徒': '#fbbf24', '主仆': '#a78bfa', '上下级': '#60a5fa', '同盟': '#2dd4bf', '其他': '#94a3b8' };
+  var REL_COLOR = { '亲属': '#a78bfa', '恋人': '#f472b6', '挚友': '#34d399', '敌对': '#f87171', '师徒': '#fbbf24', '主仆': '#a78bfa', '上下级': '#c4b5fd', '同盟': '#2dd4bf', '其他': '#ad94b8' };
 
   /* ---------------- 子模块视图 ---------------- */
   function subChips(tab, list) {
@@ -1012,7 +1012,7 @@
     (w.rels || []).forEach(function (r) {
       var a = w.graphPos[r.a], b = w.graphPos[r.b];
       if (!a || !b) return;
-      var col = REL_COLOR[r.type] || '#94a3b8';
+      var col = REL_COLOR[r.type] || '#ad94b8';
       html += '<line x1="' + a.x + '" y1="' + a.y + '" x2="' + b.x + '" y2="' + b.y + '" stroke="' + col + '" stroke-opacity=".45" stroke-width="' + (1 + (r.intensity || 2) * 0.4) + '"/>';
       html += '<text x="' + ((a.x + b.x) / 2) + '" y="' + (((a.y + b.y) / 2) - 4) + '" fill="' + col + '" font-size="9" text-anchor="middle" opacity=".85">' + esc(r.type || '') + '</text>';
     });
@@ -1020,8 +1020,8 @@
       var p = w.graphPos[c.id];
       var sel = S.sel === c.id;
       html += '<g data-node="' + esc(c.id) + '" style="cursor:grab">' +
-        '<circle cx="' + p.x + '" cy="' + p.y + '" r="' + (sel ? 21 : 18) + '" fill="rgba(124,58,237,.26)" stroke="' + (sel ? '#22d3ee' : '#8b5cf6') + '" stroke-width="' + (sel ? 2.4 : 1.4) + '" filter="url(#glow)"/>' +
-        '<text x="' + p.x + '" y="' + (p.y + 4) + '" fill="#fff" font-size="11" text-anchor="middle" font-weight="700">' + esc(String(c.name || '?').slice(0, 2)) + '</text>' +
+        '<circle cx="' + p.x + '" cy="' + p.y + '" r="' + (sel ? 21 : 18) + '" fill="rgb(124,58,237,.26)" stroke="' + (sel ? '#a78bfa' : '#8b5cf6') + '" stroke-width="' + (sel ? 2.4 : 1.4) + '" filter="url(#glow)"/>' +
+        '<text x="' + p.x + '" y="' + (p.y + 4) + '" fill="#ffffff" font-size="11" text-anchor="middle" font-weight="700">' + esc(String(c.name || '?').slice(0, 2)) + '</text>' +
         '<text x="' + p.x + '" y="' + (p.y + 34) + '" fill="#c9bfe2" font-size="9.5" text-anchor="middle">' + esc(c.name || '') + '</text></g>';
     });
     svg.innerHTML = html;
@@ -1222,7 +1222,7 @@
     var sheet = modal.querySelector('.sheet'), data = {};
     sheet.querySelectorAll('[data-k]').forEach(function (el) { data[el.getAttribute('data-k')] = el.value.trim(); });
     if (!data.name) { toast('先给世界起个名字'); return; }
-    var acc = ['#7c3aed', '#22d3ee'];   // v9.9.2：固定紫罗兰封面，不再提供封面色选择
+    var acc = ['#7c3aed', '#a78bfa'];   // v9.9.2：固定紫罗兰封面，不再提供封面色选择
     if (id) {
       var w = findWorld(id);
       if (w) {

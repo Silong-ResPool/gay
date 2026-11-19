@@ -16,7 +16,7 @@ const SITE_CONFIG = {
     name: '巳泷影视',
     url: '',
     description: '巳泷影视 · 多源聚合影视乐园',
-    logo: 'image/logo.png',
+    logo: 'image/logo-purple.png',
     version: '10.0.0'
 };
 

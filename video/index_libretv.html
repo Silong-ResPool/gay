@@ -9,14 +9,15 @@
     <meta name="author" content="LibreTV Team">
 
     <!-- Favicon -->
-    <link rel="icon" href="image/logo.png">
-    <link rel="apple-touch-icon" href="image/logo-black.png">
+    <link rel="icon" href="image/logo-purple.png">
+    <link rel="apple-touch-icon" href="image/logo-purple.png">
     <link rel="manifest" href="manifest.json">
     
     <script src="libs/tailwindcss.min.js"></script>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/silong.css">
+<link rel="stylesheet" href="../assets/ui/purple-lock.css?v=8505">
 </head>
 <body class="page-bg text-white">
     <header class="sl-nav">
@@ -36,7 +37,7 @@
     </header>
     <!-- 将历史记录按钮移到左上角，并缩小尺寸 -->
     <div class="fixed top-4 left-4 z-10">
-        <button onclick="toggleHistory(event)" class="bg-[#222] hover:bg-[#333] border border-[#333] hover:border-white rounded-lg px-3 py-1.5 transition-colors" aria-label="观看历史">
+        <button onclick="toggleHistory(event)" class="bg-[#222222] hover:bg-[#333333] border border-[#333333] hover:border-white rounded-lg px-3 py-1.5 transition-colors" aria-label="观看历史">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
@@ -45,7 +46,7 @@
 
     <!-- 设置按钮保留在右上角，并缩小尺寸 -->
     <div class="fixed top-4 right-4 z-10">
-        <button onclick="toggleSettings(event)" class="bg-[#222] hover:bg-[#333] border border-[#333] hover:border-white rounded-lg px-3 py-1.5 transition-colors" aria-label="打开设置">
+        <button onclick="toggleSettings(event)" class="bg-[#222222] hover:bg-[#333333] border border-[#333333] hover:border-white rounded-lg px-3 py-1.5 transition-colors" aria-label="打开设置">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -54,7 +55,7 @@
     </div>
     
     <!-- 历史记录面板 - 标题居中 -->
-    <div id="historyPanel" class="history-panel fixed left-0 top-0 h-full bg-[#111] border-r border-[#333] p-6 z-40 transform -translate-x-full transition-transform duration-300" aria-label="观看历史" aria-hidden="true">
+    <div id="historyPanel" class="history-panel fixed left-0 top-0 h-full bg-[#111111] border-r border-[#333333] p-6 z-40 transform -translate-x-full transition-transform duration-300" aria-label="观看历史" aria-hidden="true">
         <div class="flex justify-between items-center mb-6">
                 <button onclick="toggleHistory()" class="close-btn">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -68,7 +69,7 @@
             <!-- 历史记录将在这里动态显示 -->
             <div class="text-center text-gray-500 py-8">暂无观看记录</div>
         </div>
-        <div class="mt-4 text-center sticky bottom-0 pb-2 pt-2 bg-[#111]">
+        <div class="mt-4 text-center sticky bottom-0 pb-2 pt-2 bg-[#111111]">
             <button onclick="clearViewingHistory()" class="px-4 py-2 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white rounded-lg text-sm transition-all duration-300 shadow-md hover:shadow-lg">
                 清空历史记录
             </button>
@@ -76,7 +77,7 @@
     </div>
 
     <!-- 设置面板 -->
-    <div id="settingsPanel" class="settings-panel fixed right-0 top-0 h-full w-80 bg-[#111] border-l border-[#333] p-6 z-40 overflow-y-auto" aria-label="设置面板" aria-hidden="true">
+    <div id="settingsPanel" class="settings-panel fixed right-0 top-0 h-full w-80 bg-[#111111] border-l border-[#333333] p-6 z-40 overflow-y-auto" aria-label="设置面板" aria-hidden="true">
         <div class="flex justify-between items-center mb-6">
             <h3 class="text-xl font-bold gradient-text">设置</h3>
             <button onclick="toggleSettings()" class="close-btn">
@@ -88,13 +89,13 @@
         <div class="space-y-5">
             <!-- 数据源设置区域 -->
             <div class="p-3 bg-[#151515] rounded-lg shadow-inner">
-                <label class="block text-sm font-medium text-gray-400 mb-3 border-b border-[#333] pb-1">数据源设置</label>
+                <label class="block text-sm font-medium text-gray-400 mb-3 border-b border-[#333333] pb-1">数据源设置</label>
                 
                 <!-- 批量操作按钮 -->
                 <div class="flex space-x-2 mb-3">
-                    <button onclick="selectAllAPIs(true)" class="px-2 py-1 bg-[#333] hover:bg-[#444] text-white text-xs rounded">全选</button>
-                    <button onclick="selectAllAPIs(false)" class="px-2 py-1 bg-[#333] hover:bg-[#444] text-white text-xs rounded">全不选</button>
-                    <button onclick="selectAllAPIs(true, true)" class="px-2 py-1 bg-[#333] hover:bg-[#444] text-white text-xs rounded">全选普通资源</button>
+                    <button onclick="selectAllAPIs(true)" class="px-2 py-1 bg-[#333333] hover:bg-[#444444] text-white text-xs rounded">全选</button>
+                    <button onclick="selectAllAPIs(false)" class="px-2 py-1 bg-[#333333] hover:bg-[#444444] text-white text-xs rounded">全不选</button>
+                    <button onclick="selectAllAPIs(true, true)" class="px-2 py-1 bg-[#333333] hover:bg-[#444444] text-white text-xs rounded">全选普通资源</button>
                 </div>
                 
                 <!-- API选择区域 - 使用滚动区域 -->
@@ -114,8 +115,8 @@
             <!-- 自定义API管理区域 -->
             <div class="p-3 bg-[#151515] rounded-lg shadow-inner">
                 <div class="flex justify-between items-center mb-2">
-                    <label class="block text-sm font-medium text-gray-400 border-b border-[#333] w-full pb-1">自定义API</label>
-                    <button onclick="showAddCustomApiForm()" class="bg-[#333] hover:bg-[#444] text-white w-6 h-6 rounded-full text-center leading-none text-lg ml-1">+</button>
+                    <label class="block text-sm font-medium text-gray-400 border-b border-[#333333] w-full pb-1">自定义API</label>
+                    <button onclick="showAddCustomApiForm()" class="bg-[#333333] hover:bg-[#444444] text-white w-6 h-6 rounded-full text-center leading-none text-lg ml-1">+</button>
                 </div>
                 <div id="customApisList" class="max-h-32 overflow-y-auto mb-2">
                     <!-- 自定义API将显示在这里 -->
@@ -123,30 +124,30 @@
                 
                 <!-- 添加自定义API表单 (默认隐藏) -->
                 <div id="addCustomApiForm" class="hidden mt-2 p-2 bg-[#191919] rounded-lg">
-                    <input type="text" id="customApiName" placeholder="API名称" class="w-full bg-[#222] border border-[#333] text-white px-2 py-1 rounded mb-2" autocomplete="off">
-                    <input type="text" id="customApiUrl" placeholder="https://abc.com" class="w-full bg-[#222] border border-[#333] text-white px-2 py-1 rounded mb-2" autocomplete="off">
+                    <input type="text" id="customApiName" placeholder="API名称" class="w-full bg-[#222222] border border-[#333333] text-white px-2 py-1 rounded mb-2" autocomplete="off">
+                    <input type="text" id="customApiUrl" placeholder="https://abc.com" class="w-full bg-[#222222] border border-[#333333] text-white px-2 py-1 rounded mb-2" autocomplete="off">
                     <!-- 新增 detail 地址输入框 -->
-                    <input type="text" id="customApiDetail" placeholder="detail地址（可选）" class="w-full bg-[#222] border border-[#333] text-white px-2 py-1 rounded mb-2" autocomplete="off">
+                    <input type="text" id="customApiDetail" placeholder="detail地址（可选）" class="w-full bg-[#222222] border border-[#333333] text-white px-2 py-1 rounded mb-2" autocomplete="off">
                     <!-- 添加成人内容切换 -->
                     <div class="flex items-center mb-2">
-                        <input type="checkbox" id="customApiIsAdult" class="form-checkbox h-4 w-4 text-pink-500 bg-[#222] border border-[#333]">
+                        <input type="checkbox" id="customApiIsAdult" class="form-checkbox h-4 w-4 text-pink-500 bg-[#222222] border border-[#333333]">
                         <label for="customApiIsAdult" class="ml-2 text-xs text-pink-400">黄色资源站</label>
                     </div>
                     <div class="flex space-x-2">
                         <button onclick="addCustomApi()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs">添加</button>
-                        <button onclick="cancelAddCustomApi()" class="bg-[#444] hover:bg-[#555] text-white px-3 py-1 rounded text-xs">取消</button>
+                        <button onclick="cancelAddCustomApi()" class="bg-[#444444] hover:bg-[#555555] text-white px-3 py-1 rounded text-xs">取消</button>
                     </div>
                 </div>
             </div>
             
             <!-- 管理员设置区域 -->
         <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-400 mb-3 border-b border-[#333] pb-1">管理员设置</label>
+            <label class="block text-sm font-medium text-gray-400 mb-3 border-b border-[#333333] pb-1">管理员设置</label>
             <div class="space-y-2">
-                <button onclick="openCloudPasswordManager()" class="w-full px-3 py-2 text-left text-sm bg-[#222] hover:bg-[#333] border border-[#333] hover:border-[#4CAF50] rounded transition-colors">
+                <button onclick="openCloudPasswordManager()" class="w-full px-3 py-2 text-left text-sm bg-[#222222] hover:bg-[#333333] border border-[#333333] hover:border-[#4caf50] rounded transition-colors">
                     ☁️ 云端密码管理
                 </button>
-                <button onclick="openAdminSettings()" class="w-full px-3 py-2 text-left text-sm bg-[#222] hover:bg-[#333] border border-[#333] hover:border-[#2196F3] rounded transition-colors">
+                <button onclick="openAdminSettings()" class="w-full px-3 py-2 text-left text-sm bg-[#222222] hover:bg-[#333333] border border-[#333333] hover:border-[#8b5cf6] rounded transition-colors">
                     ⚙️ 简单管理
                 </button>
             </div>
@@ -154,10 +155,10 @@
 
         <!-- 内容过滤设置区域 -->
             <div class="p-3 bg-[#151515] rounded-lg shadow-inner">
-                <label class="block text-sm font-medium text-gray-400 mb-3 border-b border-[#333] pb-1">功能开关</label>
+                <label class="block text-sm font-medium text-gray-400 mb-3 border-b border-[#333333] pb-1">功能开关</label>
                 
                 <!-- 黄色内容过滤开关 -->
-                <div class="flex flex-col mb-3 pb-3 border-b border-[#222] relative">
+                <div class="flex flex-col mb-3 pb-3 border-b border-[#222222] relative">
                     <div class="flex items-center justify-between">
                         <div>
                             <label class="text-sm font-medium text-gray-400">黄色内容过滤</label>
@@ -165,7 +166,7 @@
                         </div>
                         <div class="relative inline-block w-12 align-middle select-none">
                             <input type="checkbox" id="yellowFilterToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10">
-                            <div class="toggle-bg bg-[#333] w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
+                            <div class="toggle-bg bg-[#333333] w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
                             <div class="toggle-dot absolute w-5 h-5 bg-white rounded-full top-0.5 left-0.5 transition-transform duration-300 ease-in-out"></div>
                         </div>
                     </div>
@@ -173,14 +174,14 @@
                 </div>
                 
                 <!-- 广告过滤开关 -->
-                <div class="flex items-center justify-between mb-3 pb-3 border-b border-[#222]">
+                <div class="flex items-center justify-between mb-3 pb-3 border-b border-[#222222]">
                     <div>
                         <label class="text-sm font-medium text-gray-400">分片广告过滤</label>
                         <p class="text-xs text-gray-500 mt-1">关闭可减少旧版浏览器卡顿</p>
                     </div>
                     <div class="relative inline-block w-12 align-middle select-none">
                         <input type="checkbox" id="adFilterToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10">
-                        <div class="toggle-bg bg-[#333] w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
+                        <div class="toggle-bg bg-[#333333] w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
                         <div class="toggle-dot absolute w-5 h-5 bg-white rounded-full top-0.5 left-0.5 transition-transform duration-300 ease-in-out"></div>
                     </div>
                 </div>
@@ -193,7 +194,7 @@
                     </div>
                     <div class="relative inline-block w-12 align-middle select-none">
                         <input type="checkbox" id="doubanToggle" class="opacity-0 absolute w-full h-full cursor-pointer z-10">
-                        <div class="toggle-bg bg-[#333] w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
+                        <div class="toggle-bg bg-[#333333] w-12 h-6 rounded-full transition-colors duration-300 ease-in-out"></div>
                         <div class="toggle-dot absolute w-5 h-5 bg-white rounded-full top-0.5 left-0.5 transition-transform duration-300 ease-in-out"></div>
                     </div>
                 </div>
@@ -201,7 +202,7 @@
 
             <!-- 一般功能区域 -->
             <div class="p-3 bg-[#151515] rounded-lg shadow-inner">
-                <label class="block text-sm font-medium text-gray-400 mb-3 border-b border-[#333] pb-1">一般功能</label>
+                <label class="block text-sm font-medium text-gray-400 mb-3 border-b border-[#333333] pb-1">一般功能</label>
                 <button onclick="importConfig()" class="px-4 py-2 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white rounded-lg text-sm transition-all duration-300 shadow-md hover:shadow-lg mb-2">导入配置</button>
                 <button onclick="exportConfig()" class="px-4 py-2 mb-2 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white rounded-lg text-sm transition-all duration-300 shadow-md hover:shadow-lg">导出配置</button>
                 <button onclick="clearLocalStorage()" class="px-4 py-2 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 text-white rounded-lg text-sm transition-all duration-300 shadow-md hover:shadow-lg">清除Cookie</button>
@@ -237,14 +238,14 @@
                         <!-- 搜索输入 -->
                         <input type="text" 
                                id="searchInput" 
-                               class="flex-1 bg-[#111] border-y border-[#333] text-white px-6 py-0 focus:outline-none transition-colors min-w-0" 
+                               class="flex-1 bg-[#111111] border-y border-[#333333] text-white px-6 py-0 focus:outline-none transition-colors min-w-0" 
                                placeholder="搜索你喜欢的视频..." 
                                autocomplete="off"
                                aria-label="视频搜索框"
                                oninput="toggleClearButton()">
                         <!-- 清空按钮 -->
                         <button id="clearSearchInput" 
-                                class="flex pr-2 bg-[#111] border-y border-[#333] items-center justify-center text-gray-400 hover:text-white hidden"
+                                class="flex pr-2 bg-[#111111] border-y border-[#333333] items-center justify-center text-gray-400 hover:text-white hidden"
                                 onclick="clearSearchInput()"
                                 aria-label="清空搜索框"
                                 title="清空搜索框">
@@ -285,7 +286,7 @@
                             <div class="flex items-center">
                                 <h2 class="text-xl font-bold text-white mr-4">豆瓣热门</h2>
                                 <!-- 添加电影/电视剧切换开关 -->
-                                <div class="flex items-center bg-[#222] rounded-full p-1">
+                                <div class="flex items-center bg-[#222222] rounded-full p-1">
                                     <button id="douban-movie-toggle" class="px-3 py-1 text-sm rounded-full bg-pink-600 text-white">电影</button>
                                     <button id="douban-tv-toggle" class="px-3 py-1 text-sm rounded-full text-gray-300 hover:text-white">电视剧</button>
                                 </div>
@@ -326,7 +327,7 @@
     </div>
 
     <!-- 页脚区域 -->
-    <footer class="footer mt-8 py-6 border-t border-[#333] bg-[#0a0a0a]">
+    <footer class="footer mt-8 py-6 border-t border-[#333333] bg-[#0a0a0a]">
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-4 md:mb-0">
@@ -356,7 +357,7 @@
 
     <!-- 详情模态框 -->
     <div id="modal" class="fixed inset-0 bg-black/95 hidden flex items-center justify-center transition-opacity duration-300 z-40">
-        <div class="bg-[#111] p-8 rounded-lg w-11/12 max-w-4xl border border-[#333] max-h-[90vh] flex flex-col">
+        <div class="bg-[#111111] p-8 rounded-lg w-11/12 max-w-4xl border border-[#333333] max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center mb-6 flex-none">
                 <h2 id="modalTitle" class="text-2xl font-bold gradient-text break-words pr-4 max-w-[80%]"></h2>
                 <button onclick="closeModal()" class="text-gray-400 hover:text-white text-2xl transition-colors flex-shrink-0">&times;</button>
@@ -370,7 +371,7 @@
 
     <!-- 密码验证弹窗 -->
     <div id="passwordModal" class="fixed inset-0 bg-black/95 hidden items-center justify-center z-[65] transition-opacity duration-300">
-        <div class="bg-[#111] p-8 rounded-lg w-11/12 max-w-md border border-[#333] max-h-[90vh] flex flex-col">
+        <div class="bg-[#111111] p-8 rounded-lg w-11/12 max-w-md border border-[#333333] max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center mb-6 flex-none">
                 <h2 class="text-2xl font-bold gradient-text">访问验证</h2>
             </div>
@@ -378,7 +379,7 @@
                 <p class="text-gray-300 mb-4">请输入密码继续访问</p>
                 <form id="passwordForm" onsubmit="handlePasswordSubmit(); return false;">
                     <input type="text" name="username" id="username" autocomplete="username" style="display:none" tabindex="-1" aria-hidden="true">
-                    <input type="password" id="passwordInput" class="w-full bg-[#111] border border-[#333] text-white px-4 py-3 rounded-lg focus:outline-none focus:border-white transition-colors" placeholder="密码..." autocomplete="new-password">
+                    <input type="password" id="passwordInput" class="w-full bg-[#111111] border border-[#333333] text-white px-4 py-3 rounded-lg focus:outline-none focus:border-white transition-colors" placeholder="密码..." autocomplete="new-password">
                     <div class="mt-4 w-full flex space-x-4">
                         <button id="passwordSubmitBtn" type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">提交</button>
                         <button id="passwordCancelBtn" type="button" onclick="hidePasswordModal()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">取消</button>
@@ -391,7 +392,7 @@
 
     <!-- 版权声明弹窗 -->
     <div id="disclaimerModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[60]">
-        <div class="bg-[#111] p-8 rounded-lg border border-[#333] w-11/12 max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div class="bg-[#111111] p-8 rounded-lg border border-[#333333] w-11/12 max-w-2xl max-h-[90vh] overflow-y-auto">
             <h2 class="text-2xl font-bold gradient-text mb-6 text-center">使用声明</h2>
             <div class="text-gray-300 space-y-4">
                 <p>
@@ -422,7 +423,7 @@
 
     <!-- 添加 loading 提示框 -->
     <div id="loading" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50">
-        <div class="bg-[#111] p-8 rounded-lg border border-[#333] flex items-center space-x-4">
+        <div class="bg-[#111111] p-8 rounded-lg border border-[#333333] flex items-center space-x-4">
             <div class="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
             <p class="text-white text-lg">加载中...</p>
         </div>
@@ -460,7 +461,7 @@
     <script src="js/app.js"></script>
 
     <!-- PWA 注册 -->
-    <script src="js/pwa-register.js"></script>
+
 
     <!-- 版本检测脚本 -->
     <script src="js/version-check.js"></script>
@@ -481,21 +482,21 @@
   --sl-surface:#150f24;
   --sl-surface-2:#1e1633;
   --sl-surface-3:#281d40;
-  --sl-glass:rgba(18,11,32,.72);
-  --sl-glass-strong:rgba(22,13,38,.92);
+  --sl-glass:rgb(18,11,32,.72);
+  --sl-glass-strong:rgb(22,13,38,.92);
   /* 颜色 · 主色与强调 */
   --sl-primary:#8b5cf6;
   --sl-primary-2:#6d28d9;
-  --sl-accent:#22d3ee;
+  --sl-accent:#a78bfa;
   --sl-pink:#ff6ec7;
-  --sl-glow:rgba(139,92,246,.45);
+  --sl-glow:rgb(139,92,246,.45);
   /* 颜色 · 文字 */
   --sl-text:#f6f3ff;
   --sl-text-2:#d9d0ec;
   --sl-muted:#a293c0;
   /* 颜色 · 描边 */
-  --sl-line:rgba(139,92,246,.22);
-  --sl-line-strong:rgba(139,92,246,.42);
+  --sl-line:rgb(139,92,246,.22);
+  --sl-line-strong:rgb(139,92,246,.42);
   /* 颜色 · 状态 */
   --sl-success:#34d399;
   --sl-danger:#f87171;
@@ -517,10 +518,10 @@
   --sl-sp-5:24px;
   --sl-sp-6:32px;
   /* 阴影 */
-  --sl-shadow-sm:0 2px 10px rgba(0,0,0,.35);
-  --sl-shadow:0 10px 30px rgba(0,0,0,.45);
-  --sl-shadow-lg:0 20px 60px rgba(0,0,0,.55);
-  --sl-glow-line:0 0 0 1px rgba(139,92,246,.18),0 0 24px rgba(139,92,246,.18);
+  --sl-shadow-sm:0 2px 10px rgb(0,0,0,.35);
+  --sl-shadow:0 10px 30px rgb(0,0,0,.45);
+  --sl-shadow-lg:0 20px 60px rgb(0,0,0,.55);
+  --sl-glow-line:0 0 0 1px rgb(139,92,246,.18),0 0 24px rgb(139,92,246,.18);
   /* 层级 */
   --sl-z-nav:100;
   --sl-z-panel:300;
@@ -554,20 +555,20 @@ html,body{
 body{
   min-height:100vh;
   background-image:
-    radial-gradient(1000px 520px at 10% -8%,rgba(124,58,237,.20),transparent 60%),
-    radial-gradient(820px 440px at 100% 2%,rgba(34,211,238,.08),transparent 58%),
-    radial-gradient(820px 480px at 50% 112%,rgba(255,110,199,.08),transparent 60%);
+    radial-gradient(1000px 520px at 10% -8%,rgb(124,58,237,.20),transparent 60%),
+    radial-gradient(820px 440px at 100% 2%,rgb(167,139,250,.08),transparent 58%),
+    radial-gradient(820px 480px at 50% 112%,rgb(255,110,199,.08),transparent 60%);
   background-attachment:fixed;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-::selection{background:rgba(139,92,246,.38);color:#fff}
-*{scrollbar-width:thin;scrollbar-color:rgba(139,92,246,.55) transparent}
+::selection{background:rgb(139,92,246,.38);color:#ffffff}
+*{scrollbar-width:thin;scrollbar-color:rgb(139,92,246,.55) transparent}
 ::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-thumb{background:rgba(139,92,246,.45);border-radius:var(--sl-r-pill)}
+::-webkit-scrollbar-thumb{background:rgb(139,92,246,.45);border-radius:var(--sl-r-pill)}
 ::-webkit-scrollbar-track{background:transparent}
-*:focus-visible{outline:2px solid rgba(34,211,238,.55);outline-offset:2px}
+*:focus-visible{outline:2px solid rgb(167,139,250,.55);outline-offset:2px}
 a{color:#c4b5fd}
-a:hover{color:#fff}
+a:hover{color:#ffffff}
 
 /* ---------- 顶部栏 / 导航：深色玻璃 + 紫罗兰描边 + 顶部微光 ---------- */
 .navbar,.v-head,.sl-top,.topbar,.top-bar,#topbar,.app-header,.header,
@@ -623,32 +624,32 @@ a:hover{color:#fff}
 .primary,.pbtn,.btn.pri,.btn.primary,.go,.primary-btn{
   background-image:linear-gradient(135deg,var(--sl-primary-2),var(--sl-primary))!important;
   border-color:transparent!important;
-  color:#fff!important;
-  box-shadow:0 8px 22px rgba(124,58,237,.36);
+  color:#ffffff!important;
+  box-shadow:0 8px 22px rgb(124,58,237,.36);
 }
 /* 次级：玻璃描边 */
 .btn.gho,.btn.ghost,.mini,.icon-btn,.sl-nb,.ibtn,.back,.back-btn,.bt{
-  background:rgba(139,92,246,.10)!important;
+  background:rgb(139,92,246,.10)!important;
   border:1px solid var(--sl-line)!important;
   color:var(--sl-text-2)!important;
 }
 .btn.gho:hover,.mini:hover,.icon-btn:hover,.sl-nb:hover,.ibtn:hover,.back:hover,.back-btn:hover,.bt:hover{
-  background:rgba(139,92,246,.22)!important;
+  background:rgb(139,92,246,.22)!important;
   border-color:var(--sl-line-strong)!important;
-  color:#fff!important;
+  color:#ffffff!important;
 }
 
 /* ---------- 标签 / 分段选择 ---------- */
 .chip,.tab-btn{
-  background:rgba(139,92,246,.08);
+  background:rgb(139,92,246,.08);
   border:1px solid var(--sl-line);
   color:var(--sl-text-2);
 }
 .chip.on,.tab-btn.on,.chip.active,.tab-btn.active{
   background:linear-gradient(135deg,var(--sl-primary-2),var(--sl-primary))!important;
-  border-color:rgba(255,255,255,.16)!important;
-  color:#fff!important;
-  box-shadow:0 6px 18px rgba(124,58,237,.34);
+  border-color:rgb(255,255,255,.16)!important;
+  color:#ffffff!important;
+  box-shadow:0 6px 18px rgb(124,58,237,.34);
 }
 
 /* ---------- 输入类（排除勾选/滑杆/取色/文件） ---------- */
@@ -663,7 +664,7 @@ textarea,select{
 input::placeholder,textarea::placeholder{color:var(--sl-muted)}
 input:focus,textarea:focus,select:focus{
   border-color:var(--sl-primary)!important;
-  box-shadow:0 0 0 3px rgba(139,92,246,.16);
+  box-shadow:0 0 0 3px rgb(139,92,246,.16);
 }
 
 /* ---------- 文字层级 ---------- */
@@ -673,8 +674,8 @@ input:focus,textarea:focus,select:focus{
 
 /* ---------- 徽章 / 计数 ---------- */
 .badge,.count-badge,.countBadge{
-  background:rgba(8,4,16,.62);
-  border:1px solid rgba(255,255,255,.16);
+  background:rgb(8,4,16,.62);
+  border:1px solid rgb(255,255,255,.16);
   color:var(--sl-text-2);
   border-radius:var(--sl-r-pill);
 }
@@ -691,8 +692,8 @@ input:focus,textarea:focus,select:focus{
 /* ---------- 轻提示条 ---------- */
 .tip,.tipbar,.note,.warn{
   color:var(--sl-text-2);
-  background:rgba(139,92,246,.08);
-  border:1px solid rgba(139,92,246,.18);
+  background:rgb(139,92,246,.08);
+  border:1px solid rgb(139,92,246,.18);
   border-radius:var(--sl-r-md);
 }
 
@@ -703,19 +704,19 @@ input:focus,textarea:focus,select:focus{
 }
 .mask{
   position:fixed;inset:0;z-index:var(--sl-z-modal);
-  background:rgba(4,2,10,.72);
+  background:rgb(4,2,10,.72);
   backdrop-filter:blur(14px) saturate(150%);
   -webkit-backdrop-filter:blur(14px) saturate(150%);
 }
 
 /* 统一自定义弹窗（替代原生白色 confirm / alert / prompt） */
 .sl-mask{position:fixed;inset:0;z-index:var(--sl-z-toast);display:flex;align-items:center;justify-content:center;
-  padding:24px;background:rgba(4,2,10,.72);backdrop-filter:blur(16px) saturate(150%);
+  padding:24px;background:rgb(4,2,10,.72);backdrop-filter:blur(16px) saturate(150%);
   -webkit-backdrop-filter:blur(16px) saturate(150%);animation:slMIn .18s ease-out}
 .sl-dialog{width:min(400px,94vw);max-height:82vh;overflow:auto;padding:22px 22px 18px;
-  color:var(--sl-text);background:linear-gradient(168deg,rgba(32,20,54,.98),rgba(16,10,30,.98));
+  color:var(--sl-text);background:linear-gradient(168deg,rgb(32,20,54,.98),rgb(16,10,30,.98));
   border:1px solid var(--sl-line-strong);border-radius:var(--sl-r-xl);
-  box-shadow:var(--sl-shadow-lg),0 0 0 1px rgba(139,92,246,.16),0 0 40px rgba(139,92,246,.18);
+  box-shadow:var(--sl-shadow-lg),0 0 0 1px rgb(139,92,246,.16),0 0 40px rgb(139,92,246,.18);
   animation:slDIn .2s cubic-bezier(.2,.9,.3,1.2)}
 .sl-dialog h3{margin:0 0 10px;font-size:16px;font-weight:800;letter-spacing:.4px;
   background:linear-gradient(90deg,var(--sl-text),var(--sl-accent));-webkit-background-clip:text;
@@ -726,20 +727,20 @@ input:focus,textarea:focus,select:focus{
 .sl-dialog .sl-d-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap}
 .sl-dialog button{min-width:96px;padding:10px 16px;border-radius:var(--sl-r-md);font-size:13px;
   font-weight:700;font-family:var(--sl-font);cursor:pointer;transition:.16s ease;
-  background:rgba(139,92,246,.12);border:1px solid var(--sl-line);color:var(--sl-text-2)}
-.sl-dialog button:hover{background:rgba(139,92,246,.22);border-color:var(--sl-line-strong)}
+  background:rgb(139,92,246,.12);border:1px solid var(--sl-line);color:var(--sl-text-2)}
+.sl-dialog button:hover{background:rgb(139,92,246,.22);border-color:var(--sl-line-strong)}
 .sl-dialog button.ok{background:linear-gradient(135deg,var(--sl-primary-2),var(--sl-primary));
-  border-color:transparent;color:#fff;box-shadow:0 6px 18px rgba(124,58,237,.35)}
-.sl-dialog button.danger{background:rgba(248,113,113,.14);border-color:rgba(248,113,113,.35);color:#fecaca}
+  border-color:transparent;color:#ffffff;box-shadow:0 6px 18px rgb(124,58,237,.35)}
+.sl-dialog button.danger{background:rgb(248,113,113,.14);border-color:rgb(248,113,113,.35);color:#fecaca}
 .sl-dialog button:active{transform:scale(.97)}
 @keyframes slMIn{from{opacity:0}to{opacity:1}}
 @keyframes slDIn{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
 
 /* ---------- 浮动提示 ---------- */
 .toast{
-  background:rgba(30,18,48,.96);
-  border:1px solid rgba(139,92,246,.4);
-  color:#eee;
+  background:rgb(30,18,48,.96);
+  border:1px solid rgb(139,92,246,.4);
+  color:#eeeeee;
   border-radius:var(--sl-r-pill);
   box-shadow:var(--sl-shadow);
 }
@@ -750,8 +751,8 @@ html.sl-day,html.sl-dusk{
   --txt:var(--sl-text);--mut:var(--sl-muted);--acc:var(--sl-primary);--acc2:var(--sl-accent);
 }
 html.sl-day body,html.sl-dusk body{
-  background:radial-gradient(ellipse at 12% 6%,rgba(139,92,246,.20),transparent 55%),
-             radial-gradient(ellipse at 88% 94%,rgba(255,110,199,.12),transparent 55%),
+  background:radial-gradient(ellipse at 12% 6%,rgb(139,92,246,.20),transparent 55%),
+             radial-gradient(ellipse at 88% 94%,rgb(255,110,199,.12),transparent 55%),
              var(--sl-bg)!important;
   color:var(--sl-text)!important;
 }
@@ -778,6 +779,6 @@ body.mode-daily .side a:hover,body.mode-daily .side a.on{color:var(--sl-text)!im
 }
 
 </style>
-<link rel="stylesheet" href="assets/ui/theme-lock.css?v=11">
+<link rel="stylesheet" href="../assets/ui/theme-lock.css?v=13">
 </body>
 </html>

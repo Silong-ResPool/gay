@@ -53,8 +53,8 @@
         if (p) html += '<p style="margin:0 0 14px">' + esc(p) + '</p>';
       }
       html += '<button id="sl-plugin-reader-exit" style="position:fixed;right:14px;bottom:18px;z-index:2147483647;' +
-        'border:0;border-radius:22px;padding:11px 18px;background:#7c3aed;color:#fff;font-size:14px;font-weight:700;' +
-        'box-shadow:0 6px 18px rgba(124,58,237,.4)">退出阅读</button>';
+        'border:0;border-radius:22px;padding:11px 18px;background:#7c3aed;color:#ffffff;font-size:14px;font-weight:700;' +
+        'box-shadow:0 6px 18px rgb(124,58,237,.4)">退出阅读</button>';
       box.innerHTML = html;
       (document.body || document.documentElement).appendChild(box);
       var btn = box.querySelector('#sl-plugin-reader-exit');
@@ -68,8 +68,8 @@
     fab.title = '阅读模式';
     fab.textContent = '阅读';
     fab.style.cssText = 'position:fixed;right:12px;bottom:120px;z-index:2147483000;' +
-      'padding:9px 12px;border-radius:20px;background:rgba(124,58,237,.92);color:#fff;' +
-      'font-size:12px;font-weight:700;letter-spacing:1px;box-shadow:0 4px 14px rgba(0,0,0,.35);cursor:pointer;';
+      'padding:9px 12px;border-radius:20px;background:rgb(124,58,237,.92);color:#ffffff;' +
+      'font-size:12px;font-weight:700;letter-spacing:1px;box-shadow:0 4px 14px rgb(0,0,0,.35);cursor:pointer;';
     fab.onclick = function () { if (box) exit(); else enter(); };
     (document.body || document.documentElement).appendChild(fab);
   } catch (e) {}

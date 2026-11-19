@@ -549,7 +549,7 @@ class Live2DApp {
             const groups = this.getMotionGroups();
             
             if (groups.length === 0) {
-                motionList.innerHTML = `<div style="padding: 20px; text-align: center; color: rgba(255,255,255,0.5); font-size: 13px;">${this.t('motion.none')}</div>`;
+                motionList.innerHTML = `<div style="padding: 20px; text-align: center; color: rgb(255,255,255,0.5); font-size: 13px;">${this.t('motion.none')}</div>`;
             } else {
                 groups.forEach(group => {
                     const item = document.createElement('div');
@@ -812,7 +812,7 @@ class Live2DApp {
             document.getElementById('current-expression').textContent = this.t('none');
             document.getElementById('current-motion').textContent = this.t('none');
             document.getElementById('expression-select').innerHTML = `<option value="">${this.t('expression.none')}</option>`;
-            document.getElementById('motion-list').innerHTML = `<div style="padding: 20px; text-align: center; color: rgba(255,255,255,0.5); font-size: 13px;">${this.t('motion.none')}</div>`;
+            document.getElementById('motion-list').innerHTML = `<div style="padding: 20px; text-align: center; color: rgb(255,255,255,0.5); font-size: 13px;">${this.t('motion.none')}</div>`;
             
             // 显示占位符
             if (!this.placeholderText) {

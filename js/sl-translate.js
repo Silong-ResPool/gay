@@ -189,8 +189,8 @@
         badgeEl = document.createElement('div');
         badgeEl.id = 'sl-tr-badge';
         badgeEl.style.cssText = 'position:fixed;right:10px;bottom:12px;z-index:2147483647;' +
-          'background:rgba(20,12,36,.94);color:#fff;border:1px solid rgba(139,92,246,.55);border-radius:14px;' +
-          'padding:8px 12px;font-size:11px;line-height:1.5;box-shadow:0 6px 20px rgba(0,0,0,.45);cursor:pointer;max-width:72vw;';
+          'background:rgb(20,12,36,.94);color:#ffffff;border:1px solid rgb(139,92,246,.55);border-radius:14px;' +
+          'padding:8px 12px;font-size:11px;line-height:1.5;box-shadow:0 6px 20px rgb(0,0,0,.45);cursor:pointer;max-width:72vw;';
         badgeEl.title = '点击恢复原文';
         badgeEl.onclick = function () {
           restore();

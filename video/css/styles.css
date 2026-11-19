@@ -12,8 +12,8 @@ LibreTV 全局样式
     position: absolute;
     top: 12px;
     right: 12px;
-    background: #222;
-    border: 1px solid #333;
+    background: #222222;
+    border: 1px solid #333333;
     border-radius: 8px;
     padding: 6px;
     color: white;
@@ -26,8 +26,8 @@ LibreTV 全局样式
 }
 
 .close-btn:hover {
-    background: #333;
-    border-color: #555;
+    background: #333333;
+    border-color: #555555;
 }
 
 .close-btn svg {
@@ -38,19 +38,19 @@ LibreTV 全局样式
 
 :root {
     /* 赛博影视主题配色方案 - 柔和版 */
-    --primary-color: #00ccff;       /* 霓虹蓝主色调 */
-    --primary-light: #33d6ff;       /* 浅霓虹蓝变体 */
-    --secondary-color: #0f1622;     /* 深蓝黑背景色 */
+    --primary-color: #a78bfa;       /* 霓虹蓝主色调 */
+    --primary-light: #c332ff;       /* 浅霓虹蓝变体 */
+    --secondary-color: #130c22;     /* 深蓝黑背景色 */
     --accent-color: #ff3c78;        /* 霓虹粉强调色 */
     --text-color: #e6f2ff;          /* 柔和的蓝白色文本 */
-    --text-muted: #8599b2;          /* 淡蓝灰色次级文本 */
-    --border-color: rgba(0, 204, 255, 0.15);
-    --page-gradient-start: #0f1622; /* 深蓝黑起始色 */
-    --page-gradient-end: #192231;   /* 深靛蓝结束色 */
-    --card-gradient-start: #121b29; /* 卡片起始色 */
-    --card-gradient-end: #1c2939;   /* 卡片结束色 */
-    --card-accent: rgba(0, 204, 255, 0.12); /* 霓虹蓝卡片强调色 */
-    --card-hover-border: rgba(0, 204, 255, 0.5); /* 悬停边框颜色 */
+    --text-muted: #a485b2;          /* 淡蓝灰色次级文本 */
+    --border-color: rgb(167,139,250,0.15);
+    --page-gradient-start: #130c22; /* 深蓝黑起始色 */
+    --page-gradient-end: #1b1233;   /* 深靛蓝结束色 */
+    --card-gradient-start: #221229; /* 卡片起始色 */
+    --card-gradient-end: #301c39;   /* 卡片结束色 */
+    --card-accent: rgb(167,139,250,0.12); /* 霓虹蓝卡片强调色 */
+    --card-hover-border: rgb(167,139,250,0.5); /* 悬停边框颜色 */
 }
 
 .page-bg {
@@ -59,9 +59,9 @@ LibreTV 全局样式
     /* 柔和赛博点状背景 */
     background-image: 
         linear-gradient(180deg, var(--page-gradient-start), var(--page-gradient-end)),
-        radial-gradient(circle at 25px 25px, rgba(0, 204, 255, 0.04) 2px, transparent 3px),
-        radial-gradient(circle at 75px 75px, rgba(255, 60, 120, 0.02) 1px, transparent 2px),
-        radial-gradient(circle at 50px 50px, rgba(150, 255, 250, 0.015) 1px, transparent 2px);
+        radial-gradient(circle at 25px 25px, rgb(167,139,250,0.04) 2px, transparent 3px),
+        radial-gradient(circle at 75px 75px, rgb(255,60,120, 0.02) 1px, transparent 2px),
+        radial-gradient(circle at 50px 50px, rgb(224,150,255, 0.015) 1px, transparent 2px);
     background-blend-mode: normal;
     background-size: cover, 100px 100px, 50px 50px, 75px 75px;
 }
@@ -74,7 +74,7 @@ button, .card-hover {
 .card-hover {
     border: 1px solid var(--border-color);
     background: linear-gradient(135deg, var(--card-gradient-start), var(--card-gradient-end));
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 12px rgb(0,0,0, 0.5);
     position: relative;
     overflow: hidden;
     border-radius: 6px;
@@ -118,7 +118,7 @@ button, .card-hover {
 .card-hover:hover {
     border-color: var(--card-hover-border);
     transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 6px 12px rgb(0,0,0, 0.5);
 }
 
 .card-hover:hover::before {
@@ -134,7 +134,7 @@ button, .card-hover {
 /* 改进设置面板样式 */
 .settings-panel {
     scrollbar-width: thin;
-    scrollbar-color: #444 #222;
+    scrollbar-color: #444444 #222222;
     transform: translateX(100%);
     transition: transform 0.3s ease;
     background: linear-gradient(135deg, var(--page-gradient-end), var(--page-gradient-start));
@@ -154,7 +154,7 @@ button, .card-hover {
 }
 
 .settings-panel::-webkit-scrollbar-thumb {
-    background-color: #444;
+    background-color: #444444;
     border-radius: 4px;
 }
 
@@ -173,23 +173,23 @@ button, .card-hover {
 }
 
 ::-webkit-scrollbar-track {
-    background: #111;
+    background: #111111;
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #333;
+    background: #333333;
     border-radius: 4px;
     transition: all 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #444;
+    background: #444444;
 }
 
 * {
     scrollbar-width: thin;
-    scrollbar-color: #333 #111;
+    scrollbar-color: #333333 #111111;
 }
 
 .search-tag {
@@ -199,7 +199,7 @@ button, .card-hover {
     border-radius: 0.5rem;
     font-size: 0.875rem;
     border: 1px solid var(--border-color);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px rgb(0,0,0, 0.2);
 }
 
 .search-tag:hover {
@@ -283,20 +283,20 @@ body {
 #modal > div {
     background: linear-gradient(135deg, var(--card-gradient-start), var(--card-gradient-end));
     border: 1px solid var(--primary-color);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 15px rgba(0, 204, 255, 0.1);
+    box-shadow: 0 10px 30px rgb(0,0,0, 0.7), 0 0 15px rgb(167,139,250,0.1);
     border-radius: 8px;
 }
 
 #episodesGrid button {
-    background: rgba(0, 204, 255, 0.08);
-    border: 1px solid rgba(0, 204, 255, 0.2);
+    background: rgb(167,139,250,0.08);
+    border: 1px solid rgb(167,139,250,0.2);
     transition: all 0.2s ease;
 }
 
 #episodesGrid button:hover {
-    background: rgba(0, 204, 255, 0.15);
+    background: rgb(167,139,250,0.15);
     border-color: var(--primary-color);
-    box-shadow: 0 0 8px rgba(0, 204, 255, 0.3);
+    box-shadow: 0 0 8px rgb(167,139,250,0.3);
 }
 
 #yellowFilterToggle:checked + .toggle-bg {
@@ -309,7 +309,7 @@ body {
 
 #yellowFilterToggle:focus + .toggle-bg,
 #yellowFilterToggle:hover + .toggle-bg {
-    box-shadow: 0 0 0 2px rgba(0, 204, 255, 0.3);
+    box-shadow: 0 0 0 2px rgb(167,139,250,0.3);
 }
 
 /* 添加广告过滤开关的CSS */
@@ -323,12 +323,12 @@ body {
 
 #adFilterToggle:focus + .toggle-bg,
 #adFilterToggle:hover + .toggle-bg {
-    box-shadow: 0 0 0 2px rgba(0, 204, 255, 0.3);
+    box-shadow: 0 0 0 2px rgb(167,139,250,0.3);
 }
 
 .toggle-dot {
     transition: transform 0.3s ease-in-out;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgb(0,0,0,0.2);
 }
 
 .toggle-bg {
@@ -336,11 +336,11 @@ body {
 }
 
 #yellowFilterToggle:checked ~ .toggle-dot {
-    box-shadow: 0 2px 4px rgba(0, 204, 255, 0.3);
+    box-shadow: 0 2px 4px rgb(167,139,250,0.3);
 }
 
 #adFilterToggle:checked ~ .toggle-dot {
-    box-shadow: 0 2px 4px rgba(0, 204, 255, 0.3);
+    box-shadow: 0 2px 4px rgb(167,139,250,0.3);
 }
 
 /* 添加API复选框样式 */
@@ -350,8 +350,8 @@ body {
     -moz-appearance: none;
     height: 14px;
     width: 14px;
-    background-color: #222;
-    border: 1px solid #333;
+    background-color: #222222;
+    border: 1px solid #333333;
     border-radius: 3px;
     cursor: pointer;
     position: relative;
@@ -378,7 +378,7 @@ body {
 /* API滚动区域美化 */
 #apiCheckboxes {
     scrollbar-width: thin;
-    scrollbar-color: #444 #222;
+    scrollbar-color: #444444 #222222;
 }
 
 #apiCheckboxes::-webkit-scrollbar {
@@ -386,19 +386,19 @@ body {
 }
 
 #apiCheckboxes::-webkit-scrollbar-track {
-    background: #222;
+    background: #222222;
     border-radius: 4px;
 }
 
 #apiCheckboxes::-webkit-scrollbar-thumb {
-    background-color: #444;
+    background-color: #444444;
     border-radius: 4px;
 }
 
 /* 自定义API列表样式 */
 #customApisList {
     scrollbar-width: thin;
-    scrollbar-color: #444 #222;
+    scrollbar-color: #444444 #222222;
 }
 
 #customApisList::-webkit-scrollbar {
@@ -410,14 +410,14 @@ body {
 }
 
 #customApisList::-webkit-scrollbar-thumb {
-    background-color: #444;
+    background-color: #444444;
     border-radius: 4px;
 }
 
 /* 设置面板滚动样式 */
 .settings-panel {
     scrollbar-width: thin;
-    scrollbar-color: #444 #222;
+    scrollbar-color: #444444 #222222;
 }
 
 .settings-panel::-webkit-scrollbar {
@@ -429,7 +429,7 @@ body {
 }
 
 .settings-panel::-webkit-scrollbar-thumb {
-    background-color: #444;
+    background-color: #444444;
     border-radius: 4px;
 }
 
@@ -483,8 +483,8 @@ body {
     grid-column: span 2;
     padding: 0.25rem 0;
     margin-top: 0.5rem;
-    border-top: 1px solid #333;
-    color: #8599b2;
+    border-top: 1px solid #333333;
+    color: #a485b2;
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -506,7 +506,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgb(0,0,0,0.4);
     border-radius: 0.5rem;
     z-index: 5;
 }
@@ -516,12 +516,12 @@ body {
 }
 
 .filter-disabled .toggle-bg {
-    background-color: #333 !important;
+    background-color: #333333 !important;
 }
 
 .filter-disabled .toggle-dot {
     transform: translateX(0) !important;
-    background-color: #666 !important;
+    background-color: #666666 !important;
 }
 
 /* 改进过滤器禁用样式 */
@@ -543,7 +543,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.3);
+    background-color: rgb(0,0,0,0.3);
     border-radius: 0.5rem;
     z-index: 5;
 }
@@ -558,25 +558,25 @@ body {
     color: #ff7b9d !important; /* 更亮的粉色 */
     font-style: italic;
     font-weight: 500;
-    text-shadow: 0 0 2px rgba(0,0,0,0.8); /* 添加文字阴影提高对比度 */
+    text-shadow: 0 0 2px rgb(0,0,0,0.8); /* 添加文字阴影提高对比度 */
 }
 
 /* 开关的禁用样式 */
 .filter-disabled .toggle-bg {
-    background-color: #444 !important;
+    background-color: #444444 !important;
     opacity: 0.8;
 }
 
 .filter-disabled .toggle-dot {
     transform: translateX(0) ;
-    background-color: #777 ;
+    background-color: #777777 ;
     opacity: 0.9;
 }
 
 /* 警告提示样式改进 */
 .filter-tooltip {
-    background-color: rgba(255, 61, 87, 0.1);
-    border: 1px solid rgba(255, 61, 87, 0.2);
+    background-color: rgb(255,61,87, 0.1);
+    border: 1px solid rgb(255,61,87, 0.2);
     border-radius: 0.25rem;
     padding: 0.5rem;
     margin-top: 0.5rem;
@@ -597,12 +597,12 @@ body {
 
 /* 编辑按钮样式 */
 .custom-api-edit {
-    color: #3b82f6;
+    color: #8b5cf6;
     transition: color 0.2s ease;
 }
 
 .custom-api-edit:hover {
-    color: #2563eb;
+    color: #7c3aed;
 }
 
 /* 自定义API条目样式改进 */
@@ -612,7 +612,7 @@ body {
     justify-content: space-between;
     padding: 0.25rem 0.5rem;
     margin-bottom: 0.25rem;
-    background-color: #222;
+    background-color: #222222;
     border-radius: 0.25rem;
     transition: background-color 0.2s ease;
 }
@@ -633,7 +633,7 @@ body {
 
 /* 历史记录面板样式 */
 .history-panel {
-    box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+    box-shadow: 2px 0 10px rgb(0,0,0,0.5);
     transition: transform 0.3s ease-in-out;
     overflow-y: scroll; /* 始终显示滚动条，防止宽度变化 */
     overflow-x: hidden; /* 防止水平滚动 */
@@ -654,7 +654,7 @@ body {
 .history-item {
     background: #1a1a1a;
     border-radius: 6px; /* 减小圆角 */
-    border: 1px solid #333;
+    border: 1px solid #333333;
     overflow: hidden;
     transition: all 0.2s ease;
     padding: 10px 14px;
@@ -665,8 +665,8 @@ body {
 
 .history-item:hover {
     transform: translateY(-2px);
-    border-color: #444;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    border-color: #444444;
+    box-shadow: 0 4px 8px rgb(0,0,0,0.2);
 }
 
 /* 添加组悬停效果，使删除按钮在悬停时显示 */
@@ -694,7 +694,7 @@ body {
 }
 
 .history-meta {
-    color: #bbb;
+    color: #bbbbbb;
     font-size: 0.75rem; /* 减小字体大小 */
     display: flex;
     flex-wrap: wrap;
@@ -702,7 +702,7 @@ body {
 }
 
 .history-episode {
-    color: #3b82f6;
+    color: #8b5cf6;
 }
 
 .history-source {
@@ -710,19 +710,19 @@ body {
 }
 
 .history-time {
-    color: #888;
+    color: #888888;
     font-size: 0.7rem; /* 减小字体大小 */
     margin-top: 1px; /* 减小顶部边距 */
 }
 
 .history-separator {
-    color: #666;
+    color: #666666;
 }
 
 .history-thumbnail {
     width: 100%;
     height: 90px;
-    background-color: #222;
+    background-color: #222222;
     overflow: hidden;
 }
 
@@ -737,7 +737,7 @@ body {
 }
 
 .history-time {
-    color: #888;
+    color: #888888;
     font-size: 0.8rem;
     margin-top: 4px;
 }
@@ -756,7 +756,7 @@ body {
 
 .progress-bar {
     height: 3px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgb(255,255,255, 0.1);
     border-radius: 2px;
     overflow: hidden;
     margin-bottom: 2px;
@@ -764,13 +764,13 @@ body {
 
 .progress-filled {
     height: 100%;
-    background: linear-gradient(to right, #00ccff, #3b82f6);
+    background: linear-gradient(to right, #a78bfa, #8b5cf6);
     border-radius: 2px;
 }
 
 .progress-text {
     font-size: 10px;
-    color: #888;
+    color: #888888;
     text-align: right;
 }
 
@@ -780,7 +780,7 @@ body {
     bottom: 60px;
     left: 50%;
     transform: translateX(-50%) translateY(20px);
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgb(0,0,0, 0.7);
     color: white;
     padding: 8px 16px;
     border-radius: 4px;
@@ -918,7 +918,7 @@ body {
 /* 确保Toast显示在顶层并有适当的转换效果 */
 #toast {
     z-index: 9999; /* 确保显示在最上层 */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px rgb(0,0,0, 0.3);
     min-width: 200px;
     text-align: center;
     pointer-events: none; /* 防止toast阻挡点击事件 */
@@ -933,8 +933,8 @@ body {
 
 /* 详情模态框样式优化 */
 #modal .modal-detail-info {
-    background: linear-gradient(135deg, #0a0a0a, #111);
-    border: 1px solid #222;
+    background: linear-gradient(135deg, #0a0a0a, #111111);
+    border: 1px solid #222222;
     border-radius: 8px;
     padding: 1rem;
     margin-bottom: 1.5rem;
@@ -975,7 +975,7 @@ body {
 #modal .detail-desc {
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid #333;
+    border-top: 1px solid #333333;
 }
 
 #modal .detail-desc-content {
@@ -985,7 +985,7 @@ body {
     max-height: 8rem;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: #444 #222;
+    scrollbar-color: #444444 #222222;
 }
 
 #modal .detail-desc-content::-webkit-scrollbar {
@@ -993,12 +993,12 @@ body {
 }
 
 #modal .detail-desc-content::-webkit-scrollbar-track {
-    background: #222;
+    background: #222222;
     border-radius: 4px;
 }
 
 #modal .detail-desc-content::-webkit-scrollbar-thumb {
-    background-color: #444;
+    background-color: #444444;
     border-radius: 4px;
 }
 

@@ -10,7 +10,7 @@
   background: var(--bg-element);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 28px rgb(0,0,0, 0.45), 0 2px 8px rgb(0,0,0, 0.3);
   backdrop-filter: blur(6px);
   animation: context-pop 0.12s ease-out both;
   transform-origin: top left;

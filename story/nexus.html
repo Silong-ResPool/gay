@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#06070d">
+<meta name="theme-color" content="#0a060d">
 <title>世界观中枢 · 巳泷资源库</title>
 <meta name="description" content="宇宙法则、规则系、修仙魔法学习、物品制作、食材毒性、物种人物档案、语言创造与本地音乐合成器。">
-<link rel="stylesheet" href="nexus.css?v=7">
+<link rel="stylesheet" href="nexus.css?v=8">
+<link rel="stylesheet" href="../assets/ui/purple-lock.css?v=8505">
 </head>
 <body>
 <div class="nx-shell">
@@ -14,6 +15,7 @@
     <div class="nx-logo">枢</div>
     <div class="nx-brand"><b>世界观中枢</b><em>SHENGLONG · NEXUS</em></div>
     <div class="sp"></div>
+    <a class="nx-btn" id="nxBackLevel" href="index.html" title="返回到打开中枢的世界页"><span>返回上一级</span></a>
     <a href="index.html"><span>世界书架</span> 书架</a>
     <a href="../index.html"><span>站点主页</span> 主页</a>
     <button class="nx-btn" id="exportAll">导出全部</button>
@@ -324,19 +326,26 @@
 
         <div class="nx-editor" id="musicEditor">
           <div class="nx-editor-head">
-            <div><h3>音源时间线编辑器</h3><p>乐器 / 环境声 / 音效与变声 / 录音 / 上传。节点可拖动，左右改开始时间，右下角改时长；每个节点可选单次或循环。</p></div>
+            <div><h3>音源时间线 · 百万调音台</h3><p>按乐器、环境声、音效与变声器分类取用音源；节点可拖动、拉伸、叠加，逐节点调节音量、声像、速率、循环模板和效果链。录音与上传的音频写入本机 IndexedDB，长期保留。</p></div>
+            <div class="te-tabs" id="teTabs" role="tablist" aria-label="音源分类">
+              <button type="button" data-cat="instrument" class="on">乐器</button>
+              <button type="button" data-cat="ambient">环境声</button>
+              <button type="button" data-cat="sfx">音效与变声器</button>
+              <button type="button" data-cat="audio">我的录音 / 上传</button>
+            </div>
+            <div class="te-lib" id="teLib" aria-label="音源库"></div>
             <div class="nx-editor-tools">
-              <select id="teKind">
+              <select id="teKind" aria-label="音源类型">
                 <option value="instrument">乐器</option>
                 <option value="ambient">环境声</option>
                 <option value="sfx">音效</option>
                 <option value="voice">变声 / 人声</option>
-                <option value="audio">上传音频</option>
+                <option value="audio">上传 / 录音</option>
               </select>
               <input id="teName" placeholder="音源名称，如：雨声 / 低音弦">
               <label class="te-mini">起点<input id="teStart" type="number" min="0" max="29.8" step="0.1" value="0">s</label>
               <label class="te-mini">时长<input id="teDur" type="number" min="0.2" max="30" step="0.1" value="4">s</label>
-              <label class="te-mini te-loop"><input id="teLoop" type="checkbox"> 循环</label>
+              <label class="te-mini">循环模板<select id="teLoopMode"><option value="once">单次</option><option value="2">循环 2 次</option><option value="4">循环 4 次</option><option value="inf">无限循环</option></select></label>
               <button class="nx-btn pri" id="teAdd" type="button">添加音源</button>
               <button class="nx-btn" id="teRecord" type="button">录音</button>
               <label class="nx-btn" for="teFile">上传音频</label>
@@ -354,7 +363,24 @@
             <div class="te-lane" data-kind="sfx"><label>音效 / 变声</label><div class="te-track"></div></div>
             <div class="te-lane" data-kind="audio"><label>录音 / 上传</label><div class="te-track"></div></div>
           </div>
-          <div class="nx-editor-foot"><span id="teInfo">0 个音源 · 总长 30 秒 · 自动保存在本机</span><span>提示：循环节点会在 30 秒窗口内反复播放；上传与录音永久保存在本地。</span></div>
+          <div class="te-inspector" id="teInspector">
+            <div class="te-inspector-head"><b>节点检视器</b><span>点选时间线节点后，下面的参数会实时写回该节点。</span></div>
+            <div class="te-inspector-grid">
+              <label>名称<input id="tiName2" maxlength="40" placeholder="音源名称"></label>
+              <label>类型<select id="tiKind"><option value="instrument">乐器</option><option value="ambient">环境声</option><option value="sfx">音效</option><option value="voice">变声 / 人声</option><option value="audio">上传 / 录音</option></select></label>
+              <label>起点 s<input id="tiStart" type="number" min="0" max="29.8" step="0.1"></label>
+              <label>时长 s<input id="tiDur" type="number" min="0.2" max="30" step="0.1"></label>
+              <label>音量<input id="tiGain" type="number" min="0" max="1" step="0.01"></label>
+              <label>声像<input id="tiPan" type="number" min="-1" max="1" step="0.01"></label>
+              <label>速率<input id="tiRate" type="number" min="0.4" max="2.2" step="0.01"></label>
+              <label>效果<select id="tiEffect"><option value="none">无</option><option value="reverb">混响</option><option value="delay">延迟</option><option value="distortion">失真</option><option value="chorus">合唱</option><option value="filter">滤波</option><option value="robot">机器人</option><option value="whisper">耳语</option><option value="deep">低沉</option></select></label>
+              <label>效果量<input id="tiAmount" type="number" min="0" max="1" step="0.01"></label>
+              <label>循环<select id="tiLoop"><option value="once">单次</option><option value="2">2 次</option><option value="4">4 次</option><option value="inf">无限</option></select></label>
+            </div>
+            <canvas id="teWave" width="880" height="64" aria-label="音频波形预览"></canvas>
+            <div class="te-inspector-actions"><button class="nx-btn" id="tiDup" type="button">复制节点</button><button class="nx-btn" id="tiDel" type="button">删除节点</button></div>
+          </div>
+          <div class="nx-editor-foot"><span id="teInfo">0 个音源 · 总长 30 秒 · 参数与音频自动保存在本机</span><span>提示：单次节点只播放一遍；循环模板可叠在任意节点上。录音与上传文件永久保存在本机浏览器。</span></div>
         </div>
         <div class="nx-toolbar"><span class="nx-pill" id="musicCount">0 段配置</span></div>
         <div class="nx-grid" id="musicList"></div>
@@ -380,8 +406,8 @@
 <script src="../data/api-web.js?v=2"></script>
 <script src="../data/ai-limit.js?v=2"></script>
 <script src="../butler/config/injection.js?v=2"></script>
-<script src="nexus.js?v=6"></script>
+<script src="nexus.js?v=7"></script>
 <script src="nexus-ai.js?v=1"></script>
-<script src="nexus-music-editor.js?v=1"></script>
+<script src="nexus-music-editor.js?v=2"></script>
 </body>
 </html>

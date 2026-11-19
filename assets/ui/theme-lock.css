@@ -8,15 +8,15 @@
 
   --bg:#05040c; --bg2:#0a0718; --bg3:#0d0919; --bg-deep:#04030a;
   --panel:#0d0919; --panel2:#120c22; --panel3:#170f2b;
-  --line:rgba(167,139,250,.16); --line2:rgba(167,139,250,.30); --line3:rgba(196,181,253,.45);
+  --line:rgb(167,139,250,.16); --line2:rgb(167,139,250,.30); --line3:rgb(196,181,253,.45);
   --text:#f2edff; --text2:#cfc2e9; --text3:#b8a9d6; --muted:#9d8fbe; --dim:#6f6390;
-  --acc:#8b5cf6; --acc2:#a855f7; --acc3:#c084fc; --cyan:#67e8f9; --pink:#f472b6;
+  --acc:#8b5cf6; --acc2:#a855f7; --acc3:#c084fc; --cyan:#ddd6fe; --pink:#f472b6;
   --ok:#34d399; --warn:#fbbf24; --danger:#fb7185;
 
   --p:#8b5cf6; --p2:#a855f7; --txt:#f2edff; --sub:#cfc2e9; --mut:#9d8fbe;
   --r:14px; --r2:10px; --r-s:7px; --r-l:14px; --r-xl:18px;
-  --sh-s:0 2px 8px rgba(0,0,0,.35); --sh:0 10px 34px rgba(0,0,0,.45); --sh-l:0 24px 70px rgba(0,0,0,.6);
-  --glow:0 0 0 1px rgba(139,92,246,.28),0 8px 22px rgba(109,40,217,.32);
+  --sh-s:0 2px 8px rgb(0,0,0,.35); --sh:0 10px 34px rgb(0,0,0,.45); --sh-l:0 24px 70px rgb(0,0,0,.6);
+  --glow:0 0 0 1px rgb(139,92,246,.28),0 8px 22px rgb(109,40,217,.32);
 }
 html{
   -webkit-text-size-adjust:100%; text-size-adjust:100%;

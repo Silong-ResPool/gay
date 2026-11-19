@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   var P = window.SL_PACK;
-  if (!P) { document.body.innerHTML = '<p style="padding:30px;color:#fff">世界包未加载。</p>'; return; }
+  if (!P) { document.body.innerHTML = '<p style="padding:30px;color:#ffffff">世界包未加载。</p>'; return; }
   var LS = 'sl_world_' + P.id + '_v1';
   var NEXUS = 'sl_nexus_v1';
   var CN = ['零','一','二','三','四','五','六','七','八','九','十','十一','十二','十三','十四','十五'];
@@ -583,7 +583,7 @@
     if (nx) {
       var links = P.nexusLinks || [];
       nx.innerHTML = links.length ? links.map(function (x) {
-        return '<a class="wg-nexus-link" href="../nexus.html#' + encodeURIComponent(x.target || '') + '"><span>' + esc(x.label || x) + '</span><em>' + esc(x.kind || '关联') + '</em></a>';
+        return '<a class="wg-nexus-link" href="' + nexusHref(x.target || '') + '"><span>' + esc(x.label || x) + '</span><em>' + esc(x.kind || '关联') + '</em></a>';
       }).join('') : '<div class="wg-empty">未登记中枢关联。</div>';
     }
     var idbox = $('wgIdentity');
@@ -634,13 +634,16 @@
     if (!el) return;
     el.innerHTML = S.log.slice(-30).reverse().map(function (x) { return '<div class="wg-log-row" data-detail="log"><b>D' + x.t + '</b> ' + esc(x.text) + '</div>'; }).join('') || '<div class="wg-empty">还没有记录。你的选择会写进这里。</div>';
   }
+  function nexusHref(hash) {
+    return '../nexus.html?from=' + encodeURIComponent(location.href.split('#')[0]) + (hash ? '#' + encodeURIComponent(hash) : '');
+  }
   function shell() {
     document.body.dataset.theme = P.theme || 'dashboard';
     document.body.dataset.layout = P.layout || 'dashboard';
-    document.body.style.setProperty('--w-accent', P.accent || '#67e8f9');
+    document.body.style.setProperty('--w-accent', P.accent || '#ddd6fe');
     document.body.style.setProperty('--w-accent2', P.accent2 || '#8b7dff');
-    document.body.style.setProperty('--w-bg', P.bg || '#05070d');
-    document.body.style.setProperty('--w-bg2', P.bg2 || '#0a0e18');
+    document.body.style.setProperty('--w-bg', P.bg || '#0a040d');
+    document.body.style.setProperty('--w-bg2', P.bg2 || '#130918');
     document.body.style.setProperty('--w-cover', 'url("' + P.cover + '")');
     var root = document.createElement('div'); root.className = 'wg-root';
     root.innerHTML =
@@ -650,7 +653,7 @@
         '<div class="wg-brand"><b>' + esc(P.title) + '</b><em>' + esc(P.subtitle || '') + '</em></div>' +
         '<div class="wg-spacer"></div>' +
         '<div class="wg-actions">' +
-          '<a href="../nexus.html" title="世界观中枢"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/></svg><span>中枢</span></a>' +
+          '<a href="' + nexusHref() + '" title="世界观中枢"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/></svg><span>中枢</span></a>' +
           '<button id="wgBgmBtn" data-wg="bgm" title="背景音乐"><svg viewBox="0 0 24 24"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg><span>音乐</span></button>' +
           '<button data-wg="save" title="保存"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v6h8M8 20v-6h8"/></svg><span>保存</span></button>' +
           '<button data-wg="restart" title="重开"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.3-5.7"/><path d="M4 4v5h5"/></svg><span>重开</span></button>' +

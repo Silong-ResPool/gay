@@ -2,7 +2,7 @@
 window.SL_PACK = {
   id:'hanji', title:'永冻觉醒', subtitle:'零下八十七度 · 异能刷怪',
   kicker:'FROZEN AWAKENING', theme:'survival', layout:'dashboard', modeLabel:'末世刷怪', mode:'survival',
-  accent:'#7dd3fc', accent2:'#a78bfa', bg:'#040b14', bg2:'#0d1b2a',
+  accent:'#ddd6fe', accent2:'#a78bfa', bg:'#0f0314', bg2:'#160e2a',
   cover:'../../assets/ui/world_hanji.jpg', turnsPerDay:5, eventChance:.45,
   freePlaceholder:'自由行动：刷冰尸 / 吸晶核 / 生火 / 找秦野 / 修避难所 / 搜物资 / 觉醒技能',
   bgm:[

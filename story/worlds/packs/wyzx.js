@@ -2,7 +2,7 @@
 window.SL_PACK = {
   id: 'wyzx', title: '午夜自习', subtitle: '校园怪谈 · 第十三节课',
   kicker: 'MIDNIGHT STUDY · CAMPUS HORROR', theme: 'school', layout: 'dashboard', modeLabel: '校园怪谈', mode: 'rule',
-  accent: '#4ade80', accent2: '#60a5fa', bg: '#050a08', bg2: '#0b1410', cover: 'https://aka.doubaocdn.com/s/lpJeTrKJwS',
+  accent: '#4ade80', accent2: '#c4b5fd', bg: '#050a08', bg2: '#0b1410', cover: 'https://aka.doubaocdn.com/s/lpJeTrKJwS',
   turnsPerDay: 5, eventChance: 0.42, freePlaceholder: '自由行动：翻书 / 照手电 / 查课表 / 去走廊 / 和陆星交谈',
   bgm: [
     { id: 'daily', name: '晚自习', mood: 'daily', tempo: 58, scale: 'minor', lead: 'guqin', pad: 'soft' },

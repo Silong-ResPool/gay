@@ -2,7 +2,7 @@
 window.SL_PACK = {
   id: 'hxy', title: '孤海邮轮', subtitle: '现代悬疑 · 无人生还的航线',
   kicker: 'GHOST LINER · AT SEA', theme: 'mystery', layout: 'dashboard', modeLabel: '悬疑解谜', mode: 'mystery',
-  accent: '#38bdf8', accent2: '#c084fc', bg: '#04090f', bg2: '#0b1020',
+  accent: '#c4b5fd', accent2: '#c084fc', bg: '#0b040f', bg2: '#140c24',
   cover: 'https://aka.doubaocdn.com/s/FVOQh0yEe9', turnsPerDay: 4, eventChance: 0.46,
   freePlaceholder: '自由行动：查乘客名单 / 去甲板 / 搜房间 / 修电台 / 找顾言 / 找陆时',
   bgm: [

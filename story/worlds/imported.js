@@ -10,7 +10,7 @@
   var card = null;
   for (var i = 0; i < arr.length; i++) if (String(arr[i].id) === String(id)) { card = arr[i]; break; }
   if (!card) {
-    document.body.innerHTML = '<div style="padding:32px;color:#fff;font-family:sans-serif;line-height:1.8">找不到这张导入卡。请回到书架重新导入，或检查本地存档是否被清除。<br><a style="color:#a78bfa" href="../index.html">回书架</a></div>';
+    document.body.innerHTML = '<div style="padding:32px;color:#ffffff;font-family:sans-serif;line-height:1.8">找不到这张导入卡。请回到书架重新导入，或检查本地存档是否被清除。<br><a style="color:#a78bfa" href="../index.html">回书架</a></div>';
     window.SL_PACK = null;
     return;
   }
@@ -47,7 +47,7 @@
   var pack = {
     id: 'imported_' + card.id, title: card.title || '导入世界卡', subtitle: card.subtitle || '本地导入 · 统一引擎',
     kicker: 'IMPORTED · WORLD CARD', theme: 'dashboard', layout: 'dashboard', modeLabel: '导入世界', mode: 'imported',
-    accent: (card.accent && card.accent[0]) || '#a78bfa', accent2: (card.accent && card.accent[1]) || '#22d3ee',
+    accent: (card.accent && card.accent[0]) || '#a78bfa', accent2: (card.accent && card.accent[1]) || '#a78bfa',
     bg: '#070512', bg2: '#110b22', cover: card.cover || 'https://aka.doubaocdn.com/s/86vIuO1odF',
     turnsPerDay: 4, eventChance: 0.32,
     freePlaceholder: '自由行动：观察 / 交谈 / 探索 / 调查 / 休息 / 继续剧情',

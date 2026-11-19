@@ -703,7 +703,7 @@
       var href = a.getAttribute('href') || '';
       if (!href || href === '#') continue;
       var txt = (a.textContent || '').trim() || '快捷链接';
-      sites.push({ t: txt, u: s2hex(href), c: '#7B4F9D' });
+      sites.push({ t: txt, u: s2hex(href), c: '#7b4f9d' });
     }
     var badge = d.querySelector('[data-expbadge="' + id + '"]');
     if (badge) badge.textContent = sites.length + ' 站';
@@ -778,7 +778,7 @@
             if (!nm) return;
             var desc = a.getAttribute('data-desc') || '';
             var feats = a.getAttribute('data-features') || '';
-            sites.push({ t: nm, u: s2hex(href), d: desc, f: feats, c: '#7B4F9D' });
+            sites.push({ t: nm, u: s2hex(href), d: desc, f: feats, c: '#7b4f9d' });
           });
           // 去重
           var seen = {}, uniq = [];
@@ -834,7 +834,7 @@
     var url = hex2s(s.u);
     var name = s.t || '';
     var desc = s.desc || '';
-    var color = s.c || '#7B4F9D';
+    var color = s.c || '#7b4f9d';
     var imgText = s.it || name;
     var imgSrc = s.img || '';   // 预览图链接（相对 previews/ 或 https）；'#' = 暂无
     // 巳泷 v9.0.5：无站点自带图时优先使用仓库 xqyN.jpg（上传到仓库即可生效）
@@ -993,7 +993,7 @@
     var desc = item.d || '';
     var features = item.f || '';
     var pw = hex2s(item.pw);
-    var color = item.c || '#7B4F9D';
+    var color = item.c || '#7b4f9d';
 
     if (detailTitleEl) detailTitleEl.textContent = name;
     if (detailUrlEl) detailUrlEl.textContent = url || '无网址';
@@ -1189,7 +1189,7 @@
         a.addEventListener('click', function (e) {
           e.preventDefault();
           e.stopPropagation();
-          var item = { t: txt, d: '', f: '快捷直达', u: hex2hex(href), c: '#7B4F9D' };
+          var item = { t: txt, d: '', f: '快捷直达', u: hex2hex(href), c: '#7b4f9d' };
           openDetail(item);
         });
       })(links[i]);
@@ -1274,7 +1274,7 @@
   var THEME_DOTS = {
     default: '#a855f7', black: '#0c0a12', brown: '#a06a3a', pink: '#ff6ec7',
     red: '#ff4d4d', orange: '#ff9f43', yellow: '#ffd93d', green: '#2ed573',
-    cyan: '#22d3ee', blue: '#3b82f6', purple: '#8b48eb'
+    cyan: '#a78bfa', blue: '#8b5cf6', purple: '#8b48eb'
   };
   function currentTheme() {
     var t = '';
@@ -1347,7 +1347,7 @@
       themeChip('red') + themeChip('orange') + themeChip('yellow') + themeChip('green') +
       themeChip('cyan') + themeChip('blue') + themeChip('purple') +
       '<button class="sl-theme-chip sl-theme-custom" id="slThemeCustom" type="button">' +
-      '<span class="sl-theme-dot" style="background:conic-gradient(#ff6ec7,#ffd93d,#2ed573,#22d3ee,#a855f7,#ff6ec7);"></span>' +
+      '<span class="sl-theme-dot" style="background:conic-gradient(#ff6ec7,#ffd93d,#2ed573,#a78bfa,#a855f7,#ff6ec7);"></span>' +
       '<span class="sl-theme-chip-name">自定义</span></button>' +
       '</div>' +
       '<div class="sl-theme-tip">默认梦幻紫；黑/棕为极简风，其余为霓虹单色主题；最右「自定义」可任意调色并支持渐变</div>';
@@ -1440,7 +1440,7 @@
       '--sl-glass2:' + rgba(glass, 0.5) + ';' +
       '--sl-border:' + rgba(a1, Math.max(0.12, aStr * 0.55)) + ';' +
       '--sl-card:' + rgba(card, 0.7) + ';' +
-      '--sl-site:rgba(255,255,255,.05);' +
+      '--sl-site:rgb(255,255,255,.05);' +
       '--sl-tx1:' + tx1 + ';' +
       '--sl-tx2:' + tx2 + ';' +
       '--sl-tx3:' + tx3 + ';' +

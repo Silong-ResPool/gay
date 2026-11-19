@@ -2,7 +2,7 @@
 window.SL_PACK = {
   id: 'xlm', title: '仙门卧底', subtitle: '修仙 · 宗门权谋 · 双修试炼',
   kicker: 'IMMORTAL · UNDERCOVER', theme: 'xianxia', layout: 'dashboard', modeLabel: '宗门修行', mode: 'cultivation',
-  accent: '#67e8f9', accent2: '#eab308', bg: '#050b0a', bg2: '#0b1816',
+  accent: '#ddd6fe', accent2: '#eab308', bg: '#050b0a', bg2: '#0b1816',
   cover: 'https://aka.doubaocdn.com/s/k7wpRcAVFX', turnsPerDay: 4, eventChance: 0.42,
   freePlaceholder: '自由行动：打坐 / 炼丹 / 画符 / 喂妖宠 / 去剑坪 / 找谢无咎 / 调查魔气',
   bgm: [

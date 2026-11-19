@@ -10,7 +10,7 @@
   var W = 1000, H = 700;
   var M = { worldId: '', sel: '', mode: '', region: [], layers: { places: true, chars: true, factions: true, events: true, links: true, regions: true } };
   var TYPE = {
-    place: { label: '地点', icon: '📍', color: '#22d3ee', ref: 'places' },
+    place: { label: '地点', icon: '📍', color: '#a78bfa', ref: 'places' },
     char: { label: '角色', icon: '👤', color: '#a78bfa', ref: 'chars' },
     faction: { label: '势力', icon: '🏛', color: '#fbbf24', ref: 'factions' },
     event: { label: '事件', icon: '⚡', color: '#f87171', ref: 'events' },
@@ -19,9 +19,9 @@
 
   var TERRAIN_BUILTIN = [
     { id: 'land', name: '陆地', color: '#7c9a52', rule: '' },
-    { id: 'ocean', name: '海洋', color: '#2f6fb3', rule: '跨越大洋需要乘坐轮船；远航耗时更长，可能遇到风暴。' },
+    { id: 'ocean', name: '海洋', color: '#8c2eb3', rule: '跨越大洋需要乘坐轮船；远航耗时更长，可能遇到风暴。' },
     { id: 'desert', name: '沙漠', color: '#d8b45a', rule: '沙漠中水分消耗加快，需要及时补水；可以寻找储水的仙人掌。' },
-    { id: 'snow', name: '雪地', color: '#bfdbfe', rule: '雪地与寒冷地带需要厚实衣物或生火取暖，否则极寒值上升，达到 100% 会冻死。' },
+    { id: 'snow', name: '雪地', color: '#ddd6fe', rule: '雪地与寒冷地带需要厚实衣物或生火取暖，否则极寒值上升，达到 100% 会冻死。' },
     { id: 'forest', name: '森林', color: '#2f7d4f', rule: '' },
     { id: 'rainforest', name: '雨林', color: '#15803d', rule: '雨林中行进缓慢，容易迷路，注意毒虫与瘴气。' },
     { id: 'mountain', name: '山脉', color: '#8b7355', rule: '穿越山脉消耗体力，可能需要绕行或寻找隘口。' },
@@ -94,12 +94,12 @@
     var b = terrainBrush(m, cur);
     var h = '<div class="run-card" id="tbrushBar"><h3>地形笔刷</h3><div style="display:flex;gap:6px;flex-wrap:wrap">';
     (m.terrain || []).forEach(function (t) {
-      h += '<button class="mini" data-tb="' + esc(t.id) + '" style="' + (cur === t.id ? 'background:' + t.color + ';color:#111;' : '') + 'border:1px solid ' + t.color + '">' + esc(t.name) + '</button>';
+      h += '<button class="mini" data-tb="' + esc(t.id) + '" style="' + (cur === t.id ? 'background:' + t.color + ';color:#111111;' : '') + 'border:1px solid ' + t.color + '">' + esc(t.name) + '</button>';
     });
     h += '</div><div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap">' +
       '<span class="muted" style="font-size:11px">笔刷 ' + (M.tsize || 24) + 'px</span>' +
       '<input id="tSize" type="range" min="8" max="80" value="' + (M.tsize || 24) + '" style="flex:1;min-width:120px">' +
-      '<button class="mini" data-tb-erase="1" style="' + (M.terase ? 'background:#b91c1c;color:#fff;' : '') + '">' + (M.terase ? '擦除中' : '擦除') + '</button>' +
+      '<button class="mini" data-tb-erase="1" style="' + (M.terase ? 'background:#b91c1c;color:#ffffff;' : '') + '">' + (M.terase ? '擦除中' : '擦除') + '</button>' +
       '<button class="mini" data-tb-new="1">＋ 自定义笔刷</button>' +
       '<button class="mini danger" data-tb-clear="1">清空</button></div>' +
       '<div class="hint">在地图上按住涂抹即可绘制；「擦除」可擦掉已画区域。规则会进入 AI 叙事：跨海坐船、雪地极寒值、沙漠补水等。</div>';
@@ -182,13 +182,13 @@
     var html = '';
     html += '<defs>' +
       '<linearGradient id="paperBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e8d8b8"/><stop offset=".55" stop-color="#d9c49a"/><stop offset="1" stop-color="#c9ae7d"/></linearGradient>' +
-      '<radialGradient id="paperVig" cx=".5" cy=".45" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#5b3d19" stop-opacity=".34"/></radialGradient>' +
-      '<radialGradient id="starBg" cx=".5" cy=".42" r=".85"><stop offset="0" stop-color="#182247"/><stop offset=".55" stop-color="#0a0f24"/><stop offset="1" stop-color="#04060f"/></radialGradient>' +
+      '<radialGradient id="paperVig" cx=".5" cy=".45" r=".75"><stop offset=".55" stop-color="#000000" stop-opacity="0"/><stop offset="1" stop-color="#5b3d19" stop-opacity=".34"/></radialGradient>' +
+      '<radialGradient id="starBg" cx=".5" cy=".42" r=".85"><stop offset="0" stop-color="#1c1140"/><stop offset=".55" stop-color="#1c0a24"/><stop offset="1" stop-color="#0b040f"/></radialGradient>' +
       '<radialGradient id="neb1" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#7c3aed" stop-opacity=".42"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>' +
-      '<radialGradient id="neb2" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#22d3ee" stop-opacity=".28"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/></radialGradient>' +
+      '<radialGradient id="neb2" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#a78bfa" stop-opacity=".28"/><stop offset="1" stop-color="#a78bfa" stop-opacity="0"/></radialGradient>' +
       '<filter id="mgrain"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".07"/></feComponentTransfer><feBlend in="SourceGraphic" mode="multiply"/></filter>' +
       '<filter id="mglow"><feGaussianBlur stdDeviation="3.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>' +
-      '<filter id="mshadow"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000" flood-opacity=".45"/></filter>' +
+      '<filter id="mshadow"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000000" flood-opacity=".45"/></filter>' +
       '</defs>';
     html += '<g transform="translate(' + tx + ',' + ty + ') scale(' + z + ')">';
     // 背景
@@ -203,22 +203,22 @@
         seed = (seed * 9301 + 49297) % 233280;
         var sy = (seed / 233280) * H;
         var sr = 0.6 + (i % 4) * 0.4;
-        html += '<circle cx="' + sx.toFixed(1) + '" cy="' + sy.toFixed(1) + '" r="' + sr + '" fill="#dbeafe" opacity="' + (0.25 + (i % 5) * 0.12) + '"/>';
+        html += '<circle cx="' + sx.toFixed(1) + '" cy="' + sy.toFixed(1) + '" r="' + sr + '" fill="#ede9fe" opacity="' + (0.25 + (i % 5) * 0.12) + '"/>';
       }
-      html += '<g stroke="rgba(148,163,184,.10)" stroke-width="1">';
+      html += '<g stroke="rgb(173,148,184,.10)" stroke-width="1">';
       for (var gx = 0; gx <= W; gx += 100) html += '<line x1="' + gx + '" y1="0" x2="' + gx + '" y2="' + H + '"/>';
       for (var gy = 0; gy <= H; gy += 100) html += '<line x1="0" y1="' + gy + '" x2="' + W + '" y2="' + gy + '"/>';
       html += '</g>';
     } else {
       html += '<rect width="' + W + '" height="' + H + '" fill="url(#paperBg)"/>';
-      html += '<g stroke="rgba(92,62,28,.12)" stroke-width="1">';
+      html += '<g stroke="rgb(92,62,28,.12)" stroke-width="1">';
       for (var px = 0; px <= W; px += 50) html += '<line x1="' + px + '" y1="0" x2="' + px + '" y2="' + H + '"/>';
       for (var py = 0; py <= H; py += 50) html += '<line x1="0" y1="' + py + '" x2="' + W + '" y2="' + py + '"/>';
       html += '</g>';
-      html += '<rect x="22" y="22" width="' + (W - 44) + '" height="' + (H - 44) + '" fill="none" stroke="rgba(92,62,28,.5)" stroke-width="2"/>';
-      html += '<rect x="30" y="30" width="' + (W - 60) + '" height="' + (H - 60) + '" fill="none" stroke="rgba(92,62,28,.25)" stroke-width="1"/>';
+      html += '<rect x="22" y="22" width="' + (W - 44) + '" height="' + (H - 44) + '" fill="none" stroke="rgb(92,62,28,.5)" stroke-width="2"/>';
+      html += '<rect x="30" y="30" width="' + (W - 60) + '" height="' + (H - 60) + '" fill="none" stroke="rgb(92,62,28,.25)" stroke-width="1"/>';
       // 大陆轮廓 / 等高线
-      html += '<g fill="none" stroke="rgba(92,62,28,.22)" stroke-width="1.4">' +
+      html += '<g fill="none" stroke="rgb(92,62,28,.22)" stroke-width="1.4">' +
         '<path d="M120 480 C190 380 260 400 330 330 C400 260 470 280 540 210"/>' +
         '<path d="M160 560 C250 470 300 500 390 430 C470 370 560 380 640 300"/>' +
         '<path d="M420 620 C500 560 560 590 650 520 C720 465 790 480 860 420"/>' +
@@ -226,11 +226,11 @@
         '</g>';
       // 罗盘
       html += '<g transform="translate(890,112)" opacity=".62">' +
-        '<circle r="38" fill="none" stroke="rgba(92,62,28,.55)" stroke-width="1.4"/>' +
-        '<circle r="28" fill="none" stroke="rgba(92,62,28,.35)" stroke-width="1"/>' +
-        '<path d="M0-30 L7 0 L0 30 L-7 0 Z" fill="rgba(92,62,28,.5)"/>' +
-        '<path d="M-30 0 L0 7 L30 0 L0-7 Z" fill="rgba(92,62,28,.26)"/>' +
-        '<text y="-44" text-anchor="middle" font-size="11" fill="rgba(70,45,18,.75)">N</text></g>';
+        '<circle r="38" fill="none" stroke="rgb(92,62,28,.55)" stroke-width="1.4"/>' +
+        '<circle r="28" fill="none" stroke="rgb(92,62,28,.35)" stroke-width="1"/>' +
+        '<path d="M0-30 L7 0 L0 30 L-7 0 Z" fill="rgb(92,62,28,.5)"/>' +
+        '<path d="M-30 0 L0 7 L30 0 L0-7 Z" fill="rgb(92,62,28,.26)"/>' +
+        '<text y="-44" text-anchor="middle" font-size="11" fill="rgb(70,45,18,.75)">N</text></g>';
       html += '<rect width="' + W + '" height="' + H + '" fill="url(#paperVig)"/>';
       html += '<rect width="' + W + '" height="' + H + '" fill="url(#paperBg)" opacity=".06" filter="url(#mgrain)"/>';
     }
@@ -251,11 +251,11 @@
       (m.regions || []).forEach(function (r) {
         if (!r.points || r.points.length < 3) return;
         var pts = r.points.map(function (p) { return p.x + ',' + p.y; }).join(' ');
-        html += '<polygon points="' + pts + '" fill="' + (r.color || 'rgba(34,211,238,.16)') + '" fill-opacity=".18" stroke="' + (r.color || '#22d3ee') + '" stroke-width="1.8" stroke-dasharray="7 5" data-rid="' + esc(r.id) + '"/>';
+        html += '<polygon points="' + pts + '" fill="' + (r.color || 'rgb(167,139,250,.16)') + '" fill-opacity=".18" stroke="' + (r.color || '#a78bfa') + '" stroke-width="1.8" stroke-dasharray="7 5" data-rid="' + esc(r.id) + '"/>';
         var cx = 0, cy = 0;
         r.points.forEach(function (p) { cx += p.x; cy += p.y; });
         cx /= r.points.length; cy /= r.points.length;
-        html += '<text x="' + cx + '" y="' + cy + '" text-anchor="middle" font-size="14" font-weight="700" fill="' + (m.theme === 'star' ? '#e0f2fe' : '#4a2f10') + '" opacity=".85" pointer-events="none">' + esc(r.name || '区域') + '</text>';
+        html += '<text x="' + cx + '" y="' + cy + '" text-anchor="middle" font-size="14" font-weight="700" fill="' + (m.theme === 'star' ? '#ede9fe' : '#4a2f10') + '" opacity=".85" pointer-events="none">' + esc(r.name || '区域') + '</text>';
       });
     }
     // 路线
@@ -280,29 +280,29 @@
       html += '<g class="mk" data-mid="' + esc(mk.id) + '" style="cursor:grab">';
       if (sel) html += '<circle cx="' + mk.x + '" cy="' + mk.y + '" r="24" fill="none" stroke="' + col + '" stroke-width="2" opacity=".9"/>';
       if (mk.type === 'place') {
-        html += '<path d="M' + mk.x + ' ' + (mk.y + 12) + ' C' + (mk.x - 13) + ' ' + (mk.y - 2) + ' ' + (mk.x - 11) + ' ' + (mk.y - 18) + ' ' + mk.x + ' ' + (mk.y - 18) + ' C' + (mk.x + 11) + ' ' + (mk.y - 18) + ' ' + (mk.x + 13) + ' ' + (mk.y - 2) + ' ' + mk.x + ' ' + (mk.y + 12) + ' Z" fill="' + col + '" fill-opacity=".92" stroke="#fff" stroke-opacity=".65" stroke-width="1.2" filter="url(#mshadow)"/>';
-        html += '<circle cx="' + mk.x + '" cy="' + (mk.y - 7) + '" r="5" fill="' + (m.theme === 'star' ? '#0a0f24' : '#5b3d19') + '"/>';
+        html += '<path d="M' + mk.x + ' ' + (mk.y + 12) + ' C' + (mk.x - 13) + ' ' + (mk.y - 2) + ' ' + (mk.x - 11) + ' ' + (mk.y - 18) + ' ' + mk.x + ' ' + (mk.y - 18) + ' C' + (mk.x + 11) + ' ' + (mk.y - 18) + ' ' + (mk.x + 13) + ' ' + (mk.y - 2) + ' ' + mk.x + ' ' + (mk.y + 12) + ' Z" fill="' + col + '" fill-opacity=".92" stroke="#ffffff" stroke-opacity=".65" stroke-width="1.2" filter="url(#mshadow)"/>';
+        html += '<circle cx="' + mk.x + '" cy="' + (mk.y - 7) + '" r="5" fill="' + (m.theme === 'star' ? '#1c0a24' : '#5b3d19') + '"/>';
       } else if (mk.type === 'faction') {
-        html += '<path d="M' + mk.x + ' ' + (mk.y - 17) + ' L' + (mk.x + 14) + ' ' + (mk.y - 10) + ' L' + (mk.x + 11) + ' ' + (mk.y + 10) + ' L' + mk.x + ' ' + (mk.y + 18) + ' L' + (mk.x - 11) + ' ' + (mk.y + 10) + ' L' + (mk.x - 14) + ' ' + (mk.y - 10) + ' Z" fill="' + col + '" fill-opacity=".9" stroke="#fff" stroke-opacity=".6" stroke-width="1.2" filter="url(#mshadow)"/>';
+        html += '<path d="M' + mk.x + ' ' + (mk.y - 17) + ' L' + (mk.x + 14) + ' ' + (mk.y - 10) + ' L' + (mk.x + 11) + ' ' + (mk.y + 10) + ' L' + mk.x + ' ' + (mk.y + 18) + ' L' + (mk.x - 11) + ' ' + (mk.y + 10) + ' L' + (mk.x - 14) + ' ' + (mk.y - 10) + ' Z" fill="' + col + '" fill-opacity=".9" stroke="#ffffff" stroke-opacity=".6" stroke-width="1.2" filter="url(#mshadow)"/>';
         html += '<text x="' + mk.x + '" y="' + (mk.y + 4) + '" text-anchor="middle" font-size="10" fill="#20140a" font-weight="700">' + esc((mk.icon || '🏛').slice(0, 2)) + '</text>';
       } else if (mk.type === 'event') {
-        html += '<path d="M' + mk.x + ' ' + (mk.y - 17) + ' L' + (mk.x + 5) + ' ' + (mk.y - 5) + ' L' + (mk.x + 18) + ' ' + (mk.y - 4) + ' L' + (mk.x + 8) + ' ' + (mk.y + 5) + ' L' + (mk.x + 11) + ' ' + (mk.y + 18) + ' L' + mk.x + ' ' + (mk.y + 10) + ' L' + (mk.x - 11) + ' ' + (mk.y + 18) + ' L' + (mk.x - 8) + ' ' + (mk.y + 5) + ' L' + (mk.x - 18) + ' ' + (mk.y - 4) + ' L' + (mk.x - 5) + ' ' + (mk.y - 5) + ' Z" fill="' + col + '" fill-opacity=".9" stroke="#fff" stroke-opacity=".55" stroke-width="1" filter="url(#mshadow)"/>';
+        html += '<path d="M' + mk.x + ' ' + (mk.y - 17) + ' L' + (mk.x + 5) + ' ' + (mk.y - 5) + ' L' + (mk.x + 18) + ' ' + (mk.y - 4) + ' L' + (mk.x + 8) + ' ' + (mk.y + 5) + ' L' + (mk.x + 11) + ' ' + (mk.y + 18) + ' L' + mk.x + ' ' + (mk.y + 10) + ' L' + (mk.x - 11) + ' ' + (mk.y + 18) + ' L' + (mk.x - 8) + ' ' + (mk.y + 5) + ' L' + (mk.x - 18) + ' ' + (mk.y - 4) + ' L' + (mk.x - 5) + ' ' + (mk.y - 5) + ' Z" fill="' + col + '" fill-opacity=".9" stroke="#ffffff" stroke-opacity=".55" stroke-width="1" filter="url(#mshadow)"/>';
       } else {
-        html += '<circle cx="' + mk.x + '" cy="' + mk.y + '" r="13" fill="' + col + '" fill-opacity=".9" stroke="#fff" stroke-opacity=".6" stroke-width="1.3" filter="url(#mshadow)"/>';
-        html += '<text x="' + mk.x + '" y="' + (mk.y + 4) + '" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">' + esc(mk.type === 'char' ? String(mk.label || '?').slice(0, 1) : (mk.icon || '✦')) + '</text>';
+        html += '<circle cx="' + mk.x + '" cy="' + mk.y + '" r="13" fill="' + col + '" fill-opacity=".9" stroke="#ffffff" stroke-opacity=".6" stroke-width="1.3" filter="url(#mshadow)"/>';
+        html += '<text x="' + mk.x + '" y="' + (mk.y + 4) + '" text-anchor="middle" font-size="10" fill="#ffffff" font-weight="700">' + esc(mk.type === 'char' ? String(mk.label || '?').slice(0, 1) : (mk.icon || '✦')) + '</text>';
       }
       var label = String(mk.label || '');
       if (label) {
         var lw = Math.max(30, label.length * 12 + 12);
-        html += '<rect x="' + (mk.x - lw / 2) + '" y="' + (mk.y + 20) + '" width="' + lw + '" height="17" rx="8" fill="' + (m.theme === 'star' ? 'rgba(6,10,24,.82)' : 'rgba(255,248,230,.88)') + '" stroke="' + col + '" stroke-opacity=".45" stroke-width="1"/>';
-        html += '<text x="' + mk.x + '" y="' + (mk.y + 32) + '" text-anchor="middle" font-size="10.5" fill="' + (m.theme === 'star' ? '#e0f2fe' : '#4a2f10') + '" font-weight="600">' + esc(label) + '</text>';
+        html += '<rect x="' + (mk.x - lw / 2) + '" y="' + (mk.y + 20) + '" width="' + lw + '" height="17" rx="8" fill="' + (m.theme === 'star' ? 'rgb(18,6,24,.82)' : 'rgb(255,248,230,.88)') + '" stroke="' + col + '" stroke-opacity=".45" stroke-width="1"/>';
+        html += '<text x="' + mk.x + '" y="' + (mk.y + 32) + '" text-anchor="middle" font-size="10.5" fill="' + (m.theme === 'star' ? '#ede9fe' : '#4a2f10') + '" font-weight="600">' + esc(label) + '</text>';
       }
       html += '</g>';
     });
     // 正在绘制的区域
     if (M.mode === 'region' && M.region.length) {
-      html += '<polyline points="' + M.region.map(function (p) { return p.x + ',' + p.y; }).join(' ') + '" fill="rgba(34,211,238,.12)" stroke="#22d3ee" stroke-width="2" stroke-dasharray="6 4"/>';
-      M.region.forEach(function (p) { html += '<circle cx="' + p.x + '" cy="' + p.y + '" r="4" fill="#22d3ee"/>'; });
+      html += '<polyline points="' + M.region.map(function (p) { return p.x + ',' + p.y; }).join(' ') + '" fill="rgb(167,139,250,.12)" stroke="#a78bfa" stroke-width="2" stroke-dasharray="6 4"/>';
+      M.region.forEach(function (p) { html += '<circle cx="' + p.x + '" cy="' + p.y + '" r="4" fill="#a78bfa"/>'; });
     }
     html += '</g>';
     svg.innerHTML = html;
@@ -464,7 +464,7 @@
       '</select></div><div class="field"><label>关联条目</label><select id="mkRef"></select></div></div>' +
       '<div class="field"><label>显示名称</label><input id="mkLabel" placeholder="地图上显示的名字"></div>' +
       '<div class="row2"><div class="field"><label>图标文字（可选）</label><input id="mkIcon" placeholder="例如：⛩"></div>' +
-      '<div class="field"><label>颜色</label><input id="mkColor" type="color" value="#22d3ee"></div></div>' +
+      '<div class="field"><label>颜色</label><input id="mkColor" type="color" value="#a78bfa"></div></div>' +
       '<div class="hint">没有关联条目时，可以直接填写显示名称，作为自定义标注。</div>' +
       '<div class="acts"><button class="btn gho" data-a="closeMask">取消</button><button class="btn pri" data-a="mapAddSave">保存标注</button></div></div></div>';
     C.modal.innerHTML = h;
@@ -499,7 +499,7 @@
     var h = '<div class="mask" data-a="closeMask"><div class="sheet"><h3>编辑标注</h3>' +
       '<div class="field"><label>显示名称</label><input id="mkLabel" value="' + esc(mk.label || '') + '"></div>' +
       '<div class="row2"><div class="field"><label>图标文字</label><input id="mkIcon" value="' + esc(mk.icon || '') + '"></div>' +
-      '<div class="field"><label>颜色</label><input id="mkColor" type="color" value="' + (mk.color || '#22d3ee') + '"></div></div>' +
+      '<div class="field"><label>颜色</label><input id="mkColor" type="color" value="' + (mk.color || '#a78bfa') + '"></div></div>' +
       '<div class="acts"><button class="btn gho" data-a="closeMask">取消</button><button class="btn pri" data-a="mapEditSave" data-id="' + esc(id) + '">保存</button></div></div></div>';
     C.modal.innerHTML = h;
   }
@@ -542,13 +542,13 @@
     if (M.region.length < 3) { toast('至少点击 3 个点'); return; }
     var h = '<div class="mask" data-a="closeMask"><div class="sheet"><h3>保存区域</h3>' +
       '<div class="field"><label>区域名称</label><input id="rgName" placeholder="例如：北境 / 赤月大陆"></div>' +
-      '<div class="field"><label>颜色</label><input id="rgColor" type="color" value="#22d3ee"></div>' +
+      '<div class="field"><label>颜色</label><input id="rgColor" type="color" value="#a78bfa"></div>' +
       '<div class="acts"><button class="btn gho" data-a="closeMask">取消</button><button class="btn pri" data-a="mapRegionSave">保存区域</button></div></div></div>';
     C.modal.innerHTML = h;
   }
   function regionSave() {
     var w = C.cur(), m = mapOf(w);
-    m.regions.push({ id: uid('rg'), name: (document.getElementById('rgName').value || '').trim() || '区域', color: document.getElementById('rgColor').value || '#22d3ee', points: M.region.slice() });
+    m.regions.push({ id: uid('rg'), name: (document.getElementById('rgName').value || '').trim() || '区域', color: document.getElementById('rgColor').value || '#a78bfa', points: M.region.slice() });
     M.region = []; M.mode = '';
     C.touch(); C.modal.innerHTML = ''; C.renderEditor(); toast('区域已保存');
   }
@@ -565,7 +565,7 @@
     var places = w.places || [];
     places.forEach(function (p, i) {
       var ang = i * 2.4, rad = 90 + i * 26;
-      m.markers.push({ id: uid('mk'), type: 'place', refId: p.id, label: p.name || '地点', icon: '', color: '#22d3ee',
+      m.markers.push({ id: uid('mk'), type: 'place', refId: p.id, label: p.name || '地点', icon: '', color: '#a78bfa',
         x: Math.max(70, Math.min(W - 70, W / 2 + Math.cos(ang) * rad)), y: Math.max(70, Math.min(H - 70, H / 2 + Math.sin(ang) * rad)) });
     });
     if (!places.length) {

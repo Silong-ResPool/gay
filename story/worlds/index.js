@@ -17,7 +17,7 @@ window.SL_WORLDS = [
     id: 'xjlr', title: '星际旅人', subtitle: 'ARK · TALOS',
     file: 'worlds/xjlr.html', tags: ['科幻', '星舰', '探索', '剧情/MUD'],
     desc: '你是 ARK·TALOS 上唯一的旅人。星舰在深空里醒来，船上的每一个人都记得你，而你并不记得他们。探索舱室、维系关系、在理智与欲望之间做出选择。',
-    mark: '星', accent: ['#22d3ee', '#6366f1'], cover: '../assets/ui/world_xjlr.jpg', adult: false
+    mark: '星', accent: ['#a78bfa', '#8b5cf6'], cover: '../assets/ui/world_xjlr.jpg', adult: false
   },
   {
     id: 'zgysl', title: '战国·妖神录', subtitle: '昭元三年 · 白霜城',
@@ -35,7 +35,7 @@ window.SL_WORLDS = [
     id: 'lxqs', title: '零下七十', subtitle: '极寒末世 · 异能刷怪',
     file: 'worlds/lxqs.html', tags: ['末世', '生存', '异能', '刷怪', '双男主'],
     desc: '零下七十度的末世，你和秦焰、陆沉在冰原上觉醒异能。刷冰尸、吸晶核、守避难所，把体温和人性一起撑到日出。',
-    mark: '寒', accent: ['#7dd3fc', '#818cf8'], cover: '../assets/ui/world_lxqs.jpg', adult: false
+    mark: '寒', accent: ['#ddd6fe', '#a78bfa'], cover: '../assets/ui/world_lxqs.jpg', adult: false
   },
   {
     id: 'cxgd', title: '潮汐孤岛', subtitle: '海岛生存 · 双男',
@@ -47,13 +47,13 @@ window.SL_WORLDS = [
     id: 'fljg', title: '法老金棺', subtitle: '埃及探险 · 机关与逃离',
     file: 'worlds/fljg.html', tags: ['埃及', '探险', '机关', '双男主', '惊悚'],
     desc: '沙下的金棺里躺着一位不该醒来的法老。火把、宝藏、诅咒与机关，你们必须在干尸追上之前找到出口。',
-    mark: '埃', accent: ['#fbbf24', '#38bdf8'], cover: '../assets/ui/world_fljg.jpg', adult: false
+    mark: '埃', accent: ['#fbbf24', '#c4b5fd'], cover: '../assets/ui/world_fljg.jpg', adult: false
   },
   {
     id: 'yxsx', title: '云墟双修', subtitle: '国风修仙 · 秘境试炼',
     file: 'worlds/yxsx.html', tags: ['修仙', '双修', '炼丹', '妖宠', '双男主'],
     desc: '外门弟子与剑修在云墟相遇。双修、妖宠、炼丹炼器符箓、秘境试炼与雷劫，大道三千，你们只走彼此这一条。',
-    mark: '云', accent: ['#d4af37', '#67e8f9'], cover: '../assets/ui/world_yxsx.jpg', adult: false
+    mark: '云', accent: ['#d4af37', '#ddd6fe'], cover: '../assets/ui/world_yxsx.jpg', adult: false
   },
   {
     id: 'lbyy', title: '龙堡银月', subtitle: '异世界 · 魔法与恶龙',
@@ -89,7 +89,7 @@ window.SL_WORLDS = [
     id: 'wyzx', title: '午夜自习', subtitle: '校园怪谈 · 第十三节课',
     file: 'worlds/wyzx.html', tags: ['校园', '怪谈', '规则', '双男主'],
     desc: '23:00 后教学楼只许进不许出。查寝老师敲三下，敲四下的是别的东西；第 13 节自习，黑板上写着你的名字。',
-    mark: '夜', accent: ['#4ade80', '#60a5fa'], cover: '../assets/ui/world_wyzx.jpg', adult: false
+    mark: '夜', accent: ['#4ade80', '#c4b5fd'], cover: '../assets/ui/world_wyzx.jpg', adult: false
   },
   {
     id: 'jycs', title: '黑牢翻盘', subtitle: '冤狱 · 监狱争霸',
@@ -107,13 +107,13 @@ window.SL_WORLDS = [
     id: 'xlm', title: '仙门卧底', subtitle: '修仙权谋 · 炼丹符箓',
     file: 'worlds/xlm.html', tags: ['修仙', '卧底', '宗门', '炼丹', '双男主'],
     desc: '你带着一枚不能示人的妖纹混进仙门。谢无咎教你剑，裴照教你符，虞长老在丹炉前等你露馅。炼丹、炼器、符箓、妖宠，一步走错就是万劫不复。',
-    mark: '仙', accent: ['#67e8f9', '#eab308'], cover: '../assets/ui/world_xlm.jpg', adult: false
+    mark: '仙', accent: ['#ddd6fe', '#eab308'], cover: '../assets/ui/world_xlm.jpg', adult: false
   },
   {
     id: 'hxy', title: '孤海邮轮', subtitle: '风暴 · 无人生还的名单',
     file: 'worlds/hxy.html', tags: ['悬疑', '邮轮', '密室', '双男主', '解谜'],
     desc: '醒来时邮轮已离港三天。乘客名单上第 47 号被划掉三次，保安陆时在监控里看见另一个你。顾言记得你，但名单上你们从不相识。',
-    mark: '海', accent: ['#38bdf8', '#c084fc'], cover: '../assets/ui/world_hxy.jpg', adult: false
+    mark: '海', accent: ['#c4b5fd', '#c084fc'], cover: '../assets/ui/world_hxy.jpg', adult: false
   },
   {
     id: 'ylq', title: '顶流契约', subtitle: '娱乐圈 BL · 影帝与新人',
@@ -138,7 +138,7 @@ window.SL_WORLDS = [
     id: 'hanji', title: '永冻觉醒', subtitle: '零下八十七度 · 异能刷怪',
     file: 'worlds/hanji.html', tags: ['末世', '极寒', '异能', '刷怪', '双男主'],
     desc: '零下八十七度，火种塔只剩一人高的火。秦野是最后的火系觉醒者，你是刚能听见晶核心跳的人。刷冰尸、吸晶核、守避难所，把体温与人性一起撑到春天。',
-    mark: '冻', accent: ['#7dd3fc', '#a78bfa'], cover: '../assets/ui/world_hanji.jpg', adult: false
+    mark: '冻', accent: ['#ddd6fe', '#a78bfa'], cover: '../assets/ui/world_hanji.jpg', adult: false
   },
   {
     id: 'huangdao', title: '荒岛契约', subtitle: '潮汐 · 淡水 · 两个人的岛',
@@ -156,7 +156,7 @@ window.SL_WORLDS = [
     id: 'jiuxiao', title: '九霄灵契', subtitle: '云海仙门 · 双修与妖宠',
     file: 'worlds/jiuxiao.html', tags: ['修仙', '双修', '妖宠', '炼丹炼器', '双男主'],
     desc: '外门竹舍只剩一间，你和剑修玄烬同住。双修、炼丹、炼器、符箓与九尾男妖宠白团，秘境七日与雷劫台，大道三千，你们只走彼此这一条。',
-    mark: '霄', accent: ['#e0b15a', '#67e8f9'], cover: '../assets/ui/world_xianxia2.jpg', adult: false
+    mark: '霄', accent: ['#e0b15a', '#ddd6fe'], cover: '../assets/ui/world_xianxia2.jpg', adult: false
   }
 
 ];

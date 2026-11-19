@@ -120,7 +120,7 @@ const populatePanel = (type, model) => {
     box = document.createElement('input');
     box.className = 'panel-filter';
     box.placeholder = '搜索' + ({ expressions: '表情', motions: '动作', hitareas: '触发区' }[type] || '');
-    box.style.cssText = 'width:100%;margin:0 0 8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(177,108,255,.35);background:rgba(20,10,40,.65);color:#f3e8ff;font-size:12px;outline:none';
+    box.style.cssText = 'width:100%;margin:0 0 8px;padding:8px 10px;border-radius:10px;border:1px solid rgb(177,108,255,.35);background:rgb(20,10,40,.65);color:#f3e8ff;font-size:12px;outline:none';
     container.parentElement.insertBefore(box, container);
   }
   const buttons = [];

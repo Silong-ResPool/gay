@@ -6,15 +6,15 @@
 
 :root {
   /* Color Palette */
-  --bg-primary:   #0f0f1a;
-  --bg-secondary: #1a1a2e;
-  --bg-element:   #262639;
-  --bg-interact:  #3a3a50;
+  --bg-primary:   #160e1a;
+  --bg-secondary: #281a2e;
+  --bg-element:   #332639;
+  --bg-interact:  #493a50;
   --accent-main:  #8c5eff;
   --accent-alt:   #ff67d7;
   --text-main:    #ffffff;
   --text-muted:   #b8b8d0;
-  --border:       #40405a;
+  --border:       #52405a;
   --error:        #ff4757;
   --success:      #2ecc71;
 
@@ -41,8 +41,8 @@
   /* Effects & Transitions */
   --radius:      0.75rem;
   --radius-sm:   0.5rem;
-  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.25);
-  --shadow-mid:  0 6px 20px rgba(0, 0, 0, 0.3);
+  --shadow-soft: 0 4px 12px rgb(0,0,0, 0.25);
+  --shadow-mid:  0 6px 20px rgb(0,0,0, 0.3);
   --glow-main:   0 0 15px rgba(var(--accent-main-rgb), 0.3);
   --glow-alt:    0 0 15px rgba(var(--accent-alt-rgb), 0.3);
   --glow-error:  0 0 15px rgba(var(--error-rgb), 0.3);
@@ -578,7 +578,7 @@ body {
   background-color: rgba(var(--bg-primary-rgb), 0.3);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgb(0,0,0, 0.1);
 
   h3 {
     display: flex;
@@ -671,7 +671,7 @@ body {
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 -2px 8px rgb(0,0,0, 0.15);
 
   p {
     margin: 0;

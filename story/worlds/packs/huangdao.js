@@ -2,7 +2,7 @@
 window.SL_PACK = {
   id:'huangdao', title:'荒岛契约', subtitle:'潮汐 · 淡水 · 两个人的岛',
   kicker:'ISLAND PACT', theme:'island', layout:'dashboard', modeLabel:'海岛生存', mode:'island',
-  accent:'#2dd4bf', accent2:'#fbbf24', bg:'#04110f', bg2:'#0b1f1d',
+  accent:'#2dd4bf', accent2:'#fbbf24', bg:'#04110f', bg2:'#190b1f',
   cover:'../../assets/ui/world_island.jpg', turnsPerDay:4, eventChance:.4,
   freePlaceholder:'自由行动：找淡水 / 捕鱼 / 修庇护所 / 找阿澜 / 发信号 / 探索礁洞 / 生火',
   bgm:[
