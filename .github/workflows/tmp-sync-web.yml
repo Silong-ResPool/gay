@@ -1,0 +1,21 @@
+name: tmp-sync-web
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Pull and overlay web update
+        run: |
+          curl -L --fail --retry 3 'https://aka.doubaocdn.com/s/OeUXqu79Dr' -o /tmp/web_update.zip
+          unzip -qo /tmp/web_update.zip -d .
+          git config user.name 'silong-sync-bot'
+          git config user.email 'silong-sync-bot@users.noreply.github.com'
+          git add -A
+          git diff --cached --quiet || git commit -m 'chore(web): sync v8.5.0 UI fixes and assets'
+          git push origin main
