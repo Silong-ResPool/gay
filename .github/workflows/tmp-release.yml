@@ -6,38 +6,53 @@ on:
       - '.release-trigger'
 permissions:
   contents: write
+concurrency:
+  group: v850-release
+  cancel-in-progress: true
 jobs:
   upload:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-      - name: Download package parts and assemble
+      - name: Download package parts in parallel and assemble
         run: |
           python - <<'PY'
-          import urllib.request, os, time
+          import urllib.request, os
+          from concurrent.futures import ThreadPoolExecutor
           parts = {
             'Silong-ResPool_v8.5.0_Android.apk': ['rWNMHcg7Ej','Ej6yhLBMTV','xP4LTFTSyD','MZV7QbCh5c','UWUu2xhw14','seZEtfZsZs','iE7BpzQmFn','zNsSoAUzvf','hMOSiWkOzr','UEikX7FzqX'],
             'Silong-ResPool_v8.5.0_Harmony.apk': ['GWYVHyNII9','EyU022SyIl','TF1bbtILXC','qyWW4I6rA8','Tzgq20vWWC','8I6PPovC9U','AXnyqajt8k','PeXpQ7onRt','Nto6LU0Rcd','9GxKlojJ5s'],
             'Silong-ResPool_v8.5.0_Windows.exe': ['mgNJSWmcUo','qCZMiwwMnC','fjcGttKAl0','rRCBuQsddu','DEpUVJGJi7','Vrnc2D6Bfa','GeytdSuzl0','Pc9mUfcUM0','zzCGRAozJb','aBF4OIHiLc','SSwrbZAkKB'],
           }
           headers = {'User-Agent':'Mozilla/5.0','Referer':'https://www.doubao.com/'}
+          def dl(task):
+              name, idx, pid = task
+              url = 'https://aka.doubaocdn.com/s/' + pid
+              last = None
+              for attempt in range(3):
+                  try:
+                      req = urllib.request.Request(url, headers=headers)
+                      data = urllib.request.urlopen(req, timeout=180).read()
+                      path = f'/tmp/{name}.{idx:02d}'
+                      open(path, 'wb').write(data)
+                      print(pid, len(data), flush=True)
+                      return path
+                  except Exception as e:
+                      last = e
+                      print('retry', pid, e, flush=True)
+              raise RuntimeError(f'part failed: {pid}: {last}')
+          tasks = []
           for name, ids in parts.items():
-              path = '/tmp/' + name
-              with open(path, 'wb') as f:
-                  for pid in ids:
-                      url = 'https://aka.doubaocdn.com/s/' + pid
-                      for attempt in range(3):
-                          try:
-                              req = urllib.request.Request(url, headers=headers)
-                              data = urllib.request.urlopen(req, timeout=180).read()
-                              print(pid, len(data))
-                              break
-                          except Exception as e:
-                              print('retry', pid, e)
-                              time.sleep(2)
-                      else:
-                          raise RuntimeError('part failed: ' + pid)
-                      f.write(data)
-              print(name, os.path.getsize(path))
+              for idx, pid in enumerate(ids):
+                  tasks.append((name, idx, pid))
+          with ThreadPoolExecutor(max_workers=8) as ex:
+              list(ex.map(dl, tasks))
+          for name, ids in parts.items():
+              with open('/tmp/' + name, 'wb') as f:
+                  for idx in range(len(ids)):
+                      with open(f'/tmp/{name}.{idx:02d}', 'rb') as p:
+                          f.write(p.read())
+              print(name, os.path.getsize('/tmp/' + name))
           PY
           ls -lh /tmp/Silong-ResPool_v8.5.0_*
       - name: Upload to existing release
