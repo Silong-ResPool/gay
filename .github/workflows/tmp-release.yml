@@ -1,0 +1,39 @@
+name: tmp-release-v850
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.release-trigger'
+permissions:
+  contents: write
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download package parts and assemble
+        run: |
+          python - <<'PY'
+          import urllib.request, os
+          parts = {
+            'Silong-ResPool_v8.5.0_Android.apk': ['rWNMHcg7Ej','Ej6yhLBMTV','xP4LTFTSyD','MZV7QbCh5c','UWUu2xhw14','seZEtfZsZs','iE7BpzQmFn','zNsSoAUzvf','hMOSiWkOzr','UEikX7FzqX'],
+            'Silong-ResPool_v8.5.0_Harmony.apk': ['GWYVHyNII9','EyU022SyIl','TF1bbtILXC','qyWW4I6rA8','Tzgq20vWWC','8I6PPovC9U','AXnyqajt8k','PeXpQ7onRt','Nto6LU0Rcd','9GxKlojJ5s'],
+            'Silong-ResPool_v8.5.0_Windows.exe': ['mgNJSWmcUo','qCZMiwwMnC','fjcGttKAl0','rRCBuQsddu','DEpUVJGJi7','Vrnc2D6Bfa','GeytdSuzl0','Pc9mUfcUM0','zzCGRAozJb','aBF4OIHiLc','3WnlapmY6U'],
+          }
+          headers = {'User-Agent':'Mozilla/5.0','Referer':'https://www.doubao.com/'}
+          for name, ids in parts.items():
+              path = '/tmp/' + name
+              with open(path, 'wb') as f:
+                  for pid in ids:
+                      url = 'https://aka.doubaocdn.com/s/' + pid
+                      req = urllib.request.Request(url, headers=headers)
+                      data = urllib.request.urlopen(req, timeout=120).read()
+                      print(pid, len(data))
+                      f.write(data)
+              print(name, os.path.getsize(path))
+          PY
+          ls -lh /tmp/Silong-ResPool_v8.5.0_*
+      - name: Upload to existing release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload gay /tmp/Silong-ResPool_v8.5.0_Android.apk /tmp/Silong-ResPool_v8.5.0_Harmony.apk /tmp/Silong-ResPool_v8.5.0_Windows.exe --clobber
