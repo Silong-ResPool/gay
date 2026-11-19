@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a060d">
+<title>世界观中枢 · 巳泷资源库</title>
+<meta name="description" content="宇宙法则、规则系、修仙魔法学习、物品制作、食材毒性、物种人物档案、语言创造与本地音乐合成器。">
+<link rel="stylesheet" href="nexus.css?v=8">
+<link rel="stylesheet" href="../assets/ui/purple-lock.css?v=8505">
+</head>
+<body>
+<div class="nx-shell">
+  <header class="nx-top">
+    <div class="nx-logo">枢</div>
+    <div class="nx-brand"><b>世界观中枢</b><em>SHENGLONG · NEXUS</em></div>
+    <div class="sp"></div>
+    <a class="nx-btn" id="nxBackLevel" href="index.html" title="返回到打开中枢的世界页"><span>返回上一级</span></a>
+    <a href="index.html"><span>世界书架</span> 书架</a>
+    <a href="../index.html"><span>站点主页</span> 主页</a>
+    <button class="nx-btn" id="exportAll">导出全部</button>
+    <label class="nx-btn" for="importAll">导入全部</label>
+    <input id="importAll" type="file" accept="application/json,.json" hidden>
+  </header>
+
+  <section class="nx-hero">
+    <div>
+      <div class="nx-kicker">WORLD BUILDING · LOCAL FIRST</div>
+      <h1 class="nx-title">万物在此<span>互相咬合</span></h1>
+      <p class="nx-lead">法则决定规则，规则生成世界，学习拆解功法与魔法，物品串联食材与物种，语言与音乐给世界留下声音。所有数据保存在本机，可整包导出、跨设备导入。</p>
+    </div>
+    <div class="nx-hero-stats" id="heroStats">
+      <div class="nx-stat"><b id="statLaw">0</b><span>法则条目</span></div>
+      <div class="nx-stat"><b id="statRule">0</b><span>规则条目</span></div>
+      <div class="nx-stat"><b id="statItem">0</b><span>物品 / 食材</span></div>
+      <div class="nx-stat"><b id="statGlyph">0</b><span>自绘文字</span></div>
+    </div>
+  </section>
+
+  <nav class="nx-nav" id="nxNav">
+    <button class="nx-tab on" data-tab="home">总览</button>
+    <button class="nx-tab" data-tab="law">宇宙法则</button>
+    <button class="nx-tab" data-tab="rules">规则系</button>
+    <button class="nx-tab" data-tab="concept">概念代码</button>
+    <button class="nx-tab" data-tab="study">学习</button>
+    <button class="nx-tab" data-tab="craft">物品与制作</button>
+    <button class="nx-tab" data-tab="food">食材与毒性</button>
+    <button class="nx-tab" data-tab="species">物种 / 人物</button>
+    <button class="nx-tab" data-tab="language">语言创造</button>
+    <button class="nx-tab" data-tab="music">音乐合成</button>
+  </nav>
+
+  <div class="nx-layout">
+    <aside class="nx-side">
+      <h3>中枢索引</h3>
+      <div class="nx-jump" id="nxJump">
+        <button data-tab="law"><b>宇宙法则</b><em id="cLaw">0</em></button>
+        <button data-tab="rules"><b>规则系</b><em id="cRule">0</em></button>
+        <button data-tab="concept"><b>概念代码</b><em id="cConcept">0</em></button>
+        <button data-tab="study"><b>学习</b><em id="cStudy">0</em></button>
+        <button data-tab="craft"><b>物品与制作</b><em id="cItem">0</em></button>
+        <button data-tab="food"><b>食材与毒性</b><em id="cFood">0</em></button>
+        <button data-tab="species"><b>物种 / 人物</b><em id="cSpecies">0</em></button>
+        <button data-tab="language"><b>语言创造</b><em id="cGlyph">0</em></button>
+        <button data-tab="music"><b>音乐合成</b><em id="cMusic">0</em></button>
+      </div>
+      <div class="nx-side-note">世界页侧栏的「中枢关联」会跳到对应分区。规则、物品、食材、人物、音乐都带世界标签，AI 与本地推演读取同一份数据。</div>
+    </aside>
+
+    <main class="nx-main">
+      <section class="nx-section on" id="tab-home">
+        <div class="nx-head"><div><h2>中枢总览</h2><p>先立宇宙，再写规则；先有材料，才有食物与毒性。下面是当前的关联链路。</p></div><span class="nx-pill" id="homeStamp">LOCAL</span></div>
+        <div class="nx-note"><b>链路：</b>宇宙法则 → 规则系 → 世界；物种 / 作物 → 食材 → 食物 / 毒性代码；学习配方 → 物品制作 → 世界掉落；语言与音乐 → 世界标签。</div>
+        <div class="nx-grid" id="homeCards">
+          <article class="nx-card"><div class="sub">LAW</div><h4>物理常数与化学性质</h4><p>自定义重力、光速、元素活性；规则系引用它们，世界推演读取同一套常数。</p><div class="meta"><span class="nx-chip acc">可自定义</span><span class="nx-chip">数学方程</span></div></article>
+          <article class="nx-card"><div class="sub">RULE</div><h4>规则怪谈的骨架</h4><p>编号、触发、效果、严重度与世界标签；规则怪谈世界直接引用，不另写一份。</p><div class="meta"><span class="nx-chip code">RULE-CODE</span><span class="nx-chip">可被世界读取</span></div></article>
+          <article class="nx-card"><div class="sub">CRAFT</div><h4>修仙与魔法两条学习线</h4><p>古风：功法 / 丹方 / 器方 / 符箓；魔法：药品调配 / 魔法书。每条配方都能落到物品。</p><div class="meta"><span class="nx-chip">古风</span><span class="nx-chip">魔法</span></div></article>
+          <article class="nx-card"><div class="sub">FOOD</div><h4>毒性是代码，不只是形容词</h4><p>相冲、毒性等级、可食用标签写成 #TOXIC / #SAFE 代码，AI 与本地推演都按同一标记判定。</p><div class="meta"><span class="nx-chip code">#TOXIC-3</span><span class="nx-chip code">#SAFE</span></div></article>
+          <article class="nx-card"><div class="sub">SPECIES</div><h4>图片档案</h4><p>物种、作物、人物支持上传图片，压缩后存本机；人物卡可直接被世界侧栏引用。</p><div class="meta"><span class="nx-chip acc">上传图片</span><span class="nx-chip">人物 / 物种</span></div></article>
+          <article class="nx-card"><div class="sub">LANGUAGE</div><h4>笔触坐标永久保存</h4><p>画字形、填含义与组合词，保存笔触顺序和坐标；导出 JSON，下次导入还原。</p><div class="meta"><span class="nx-chip code">STROKE JSON</span><span class="nx-chip">可导出</span></div></article>
+          <article class="nx-card"><div class="sub">MUSIC</div><h4>本地合成器</h4><p>多乐器、音阶、情绪与基调；按世界标签自动组合，支持上传音频与导出 WAV。</p><div class="meta"><span class="nx-chip acc">Web Audio</span><span class="nx-chip">WAV 导出</span></div></article>
+          <article class="nx-card"><div class="sub">CONCEPT</div><h4>概念即代码</h4><p>中毒只是预设之一；治愈、死亡、繁衍、致富、诅咒、觉醒都能自定义代码、标签与触发事件，本地推演按代码判定。</p><div class="meta"><span class="nx-chip code">#CONCEPT</span><span class="nx-chip acc">可绑定事件</span></div></article>
+          <article class="nx-card"><div class="sub">SYNC</div><h4>一份数据，全站共用</h4><p>所有条目写入 localStorage 的 sl_nexus_v1，世界引擎读取 sl_nexus_v1.items 与规则。</p><div class="meta"><span class="nx-chip code">sl_nexus_v1</span><span class="nx-chip">本机优先</span></div></article>
+        </div>
+      </section>
+
+      <section class="nx-section" id="tab-law">
+        <div class="nx-head"><div><h2>宇宙法则</h2><p>物理常数、化学性质、数学方程。填进去的每一条都可以被规则系和世界引用。</p></div><span class="nx-pill">LAW</span></div>
+        <form class="nx-form" id="lawForm">
+          <h3>新增法则</h3>
+          <div class="nx-fields">
+            <div class="nx-field"><label>名称</label><input name="name" placeholder="例如：重力常数 / 以太活性" required></div>
+            <div class="nx-field"><label>类型</label><select name="type"><option>物理常数</option><option>化学性质</option><option>数学方程</option><option>世界法则</option><option>元素 / 以太</option><option>空间法则</option><option>时间法则</option><option>灵魂 / 意识</option><option>因果 / 命运</option><option>生物法则</option><option>社会 / 经济法则</option><option>禁忌 / 封印</option></select></div>
+            <div class="nx-field"><label>数值 / 表达式</label><input name="value" placeholder="例如：9.8 m/s² 或 E=mc²"></div>
+            <div class="nx-field"><label>单位 / 量纲</label><input name="unit" placeholder="m/s² / 无量纲"></div>
+            <div class="nx-field full"><label>说明与约束</label><textarea name="note" placeholder="这条法则如何影响世界？哪些规则依赖它？"></textarea></div>
+          </div>
+          <div class="bar"><button class="nx-btn pri" type="submit">写入法则</button></div>
+        </form>
+        <div class="nx-toolbar"><input class="nx-search" placeholder="搜索法则…" data-filter="law"><span class="nx-pill" id="lawCount">0 条</span></div>
+        <div class="nx-grid" id="lawList"></div>
+      </section>
+
+      <section class="nx-section" id="tab-rules">
+        <div class="nx-head"><div><h2>规则系</h2><p>规则怪谈、校园宵禁、地府罪值、军阀军法都在这里写。带编号的规则会被世界页直接引用。</p></div><span class="nx-pill">RULE</span></div>
+        <form class="nx-form" id="ruleForm">
+          <h3>新增规则</h3>
+          <div class="nx-fields">
+            <div class="nx-field"><label>规则编号</label><input name="code" placeholder="例如：C-06 / S-06"></div>
+            <div class="nx-field"><label>规则名</label><input name="name" placeholder="例如：查寝敲四下" required></div>
+            <div class="nx-field"><label>严重度</label><select name="severity"><option>提示</option><option>危险</option><option>致命</option><option>世界法则</option></select></div>
+            <div class="nx-field"><label>触发条件</label><input name="trigger" placeholder="例如：23:00 后走廊听到第四下敲门"></div>
+            <div class="nx-field"><label>世界标签</label><input name="world" placeholder="例如：校园怪谈 / 槐阴公寓"></div>
+            <div class="nx-field"><label>关联法则</label><input name="law" placeholder="填写已建法则名，可留空"></div>
+            <div class="nx-field full"><label>效果 / 后果</label><textarea name="effect" placeholder="违反后发生什么？如何破解、拯救或逃离？"></textarea></div>
+          </div>
+          <div class="bar"><button class="nx-btn pri" type="submit">写入规则</button></div>
+        </form>
+        <div class="nx-toolbar"><input class="nx-search" placeholder="搜索规则…" data-filter="rules"><span class="nx-pill" id="ruleCount">0 条</span></div>
+        <div class="nx-grid" id="ruleList"></div>
+      </section>
+
+      <section class="nx-section" id="tab-concept">
+        <div class="nx-head"><div><h2>概念代码</h2><p>治愈、死亡、中毒、繁衍、致富、诅咒……每个概念都带代码、标签、触发事件与影响，本地推演和 AI 读取同一套标记。</p></div><span class="nx-pill">CONCEPT</span></div>
+        <div class="nx-note"><b>用法：</b>代码写进食材、物品、事件或世界卡后，引擎会把概念当作硬规则处理；例如 #TOXIC-3 必然判定为中毒，不依赖模型临场发挥。</div>
+        <form class="nx-form" id="conceptForm">
+          <h3>新增概念 / 自定义代码</h3>
+          <div class="nx-fields">
+            <div class="nx-field"><label>概念名</label><input name="name" placeholder="例如：治愈 / 死亡 / 种族延续" required></div>
+            <div class="nx-field"><label>代码</label><input name="code" placeholder="例如：#HEAL-2 / #DEATH / #WEALTH"></div>
+            <div class="nx-field"><label>分类</label><select name="kind"><option>状态</option><option>事件</option><option>种族</option><option>经济</option><option>规则</option><option>自定义</option></select></div>
+            <div class="nx-field"><label>标签</label><input name="tags" placeholder="用逗号分隔，例如：治愈、恢复、正面"></div>
+            <div class="nx-field"><label>严重度 / 强度</label><select name="severity"><option>轻微</option><option>中等</option><option>严重</option><option>致命</option><option>世界级</option></select></div>
+            <div class="nx-field"><label>作用范围</label><input name="scope" placeholder="例如：单人 / 全城 / 种族 / 全世界"></div>
+            <div class="nx-field full"><label>触发事件</label><textarea name="trigger" placeholder="哪些事件会触发？例如：角色生命低于 20 / 食用冰原苔 / 城破"></textarea></div>
+            <div class="nx-field full"><label>影响与后果</label><textarea name="effect" placeholder="会导致什么？恢复、死亡、变异、致富、种族存亡……"></textarea></div>
+            <div class="nx-field full"><label>本地推演代码（可选）</label><textarea name="codejs" placeholder="例如：return hp + 20; 或 { race: '延续', wealth: +10 }。留空则按代码与标签判定。"></textarea></div>
+          </div>
+          <div class="bar"><button class="nx-btn pri" type="submit">写入概念</button></div>
+        </form>
+        <div class="nx-toolbar"><input class="nx-search" placeholder="搜索概念 / 代码 / 标签…" data-filter="concepts"><span class="nx-pill" id="conceptCount">0 条</span></div>
+        <div class="nx-grid" id="conceptList"></div>
+      </section>
+
+      <section class="nx-section" id="tab-study">
+        <div class="nx-head"><div><h2>学习</h2><p>古风分支：功法、炼丹、炼器、符箓；魔法分支：药品调配、魔法书。每条都能继续拆成材料与物品。</p></div><span class="nx-pill">STUDY</span></div>
+        <div class="nx-subtabs" id="studyTabs">
+          <button class="nx-subtab on" data-study="ancient">古风 · 修仙</button>
+          <button class="nx-subtab" data-study="magic">魔法 · 药剂</button>
+        </div>
+        <form class="nx-form" id="studyForm">
+          <h3 id="studyFormTitle">新增古风功法 / 配方</h3>
+          <div class="nx-fields">
+            <div class="nx-field"><label>大类</label><select name="branch" id="studyBranch"><option value="ancient">古风 · 修仙</option><option value="magic">魔法 · 药剂</option></select></div>
+            <div class="nx-field"><label>类型</label><input name="type" id="studyType" placeholder="功法 / 丹方 / 器方 / 符箓 / 药品 / 魔法书" required></div>
+            <div class="nx-field"><label>名称</label><input name="name" placeholder="例如：云墟双修诀 / 银月镇静剂" required></div>
+            <div class="nx-field"><label>境界 / 等级</label><input name="rank" placeholder="例如：筑基 / 三星 / 学徒"></div>
+            <div class="nx-field"><label>材料</label><input name="materials" placeholder="用逗号分隔，例如：灵草、妖丹、符纸"></div>
+            <div class="nx-field"><label>关联物品</label><input name="refs" placeholder="已建物品名，可留空"></div>
+            <div class="nx-field full"><label>步骤 / 修炼法</label><textarea name="steps" placeholder="第一步…第二步…火候、咒语、笔顺、失败后果"></textarea></div>
+            <div class="nx-field full"><label>效果 / 代价</label><textarea name="effect" placeholder="成功后的效果、反噬或副作用"></textarea></div>
+          </div>
+          <div class="bar"><button class="nx-btn pri" type="submit">写入学习条目</button></div>
+        </form>
+        <div class="nx-toolbar"><input class="nx-search" placeholder="搜索学习条目…" data-filter="study"><span class="nx-pill" id="studyCount">0 条</span></div>
+        <div class="nx-grid" id="studyList"></div>
+      </section>
+
+      <section class="nx-section" id="tab-craft">
+        <div class="nx-head"><div><h2>物品与制作</h2><p>武器、信物、药品、符纸、机关零件。材料可以引用食材与物种，成品可以回到世界背包。</p></div><span class="nx-pill">CRAFT</span></div>
+        <form class="nx-form" id="craftForm">
+          <h3>新增物品 / 制作配方</h3>
+          <div class="nx-fields">
+            <div class="nx-field"><label>物品名</label><input name="name" placeholder="例如：引魂灯 / 冰晶核" required></div>
+            <div class="nx-field"><label>分类</label><select name="category"><option>武器</option><option>防具</option><option>药品</option><option>信物</option><option>工具</option><option>符箓</option><option>机关</option><option>食材加工</option><option>其他</option></select></div>
+            <div class="nx-field"><label>标签</label><input name="tags" placeholder="用逗号分隔，例如：危险、关键、双男主"></div>
+            <div class="nx-field"><label>材料 / 食材</label><input name="materials" placeholder="引用食材或物种名"></div>
+            <div class="nx-field"><label>关联世界</label><input name="world" placeholder="例如：槐阴公寓 / 云墟双修"></div>
+            <div class="nx-field"><label>上传图片</label><input name="imageFile" type="file" accept="image/*"></div>
+            <div class="nx-field full"><label>制作步骤</label><textarea name="steps" placeholder="材料处理、火候、工序、失败品"></textarea></div>
+            <div class="nx-field full"><label>物品说明 / 效果</label><textarea name="desc" placeholder="它是什么？在世界里怎么用？"></textarea></div>
+            <div class="nx-field full"><label>图片预览</label><div class="nx-imgprev" id="craftPreview">未上传图片</div><input type="hidden" name="image" id="craftImage"></div>
+          </div>
+          <div class="bar"><button class="nx-btn pri" type="submit">写入物品</button></div>
+        </form>
+        <div class="nx-toolbar"><input class="nx-search" placeholder="搜索物品…" data-filter="items"><span class="nx-pill" id="itemCount">0 件</span></div>
+        <div class="nx-grid" id="craftList"></div>
+      </section>
+
+      <section class="nx-section" id="tab-food">
+        <div class="nx-head"><div><h2>食材与毒性</h2><p>记录食材特性、处理步骤、相冲关系与毒性等级。代码标记会同时被 AI 和本地推演识别。</p></div><span class="nx-pill">FOOD</span></div>
+        <form class="nx-form" id="foodForm">
+          <h3>新增食材 / 食物</h3>
+          <div class="nx-fields">
+            <div class="nx-field"><label>名称</label><input name="name" placeholder="例如：冰原苔 / 孟婆汤" required></div>
+            <div class="nx-field"><label>类型</label><select name="kind"><option>食材</option><option>食物</option><option>饮品</option><option>毒物</option><option>药材</option></select></div>
+            <div class="nx-field"><label>毒性等级（0—5）</label><input name="toxicity" type="number" min="0" max="5" value="0"></div>
+            <div class="nx-field"><label>代码标记</label><input name="code" placeholder="例如：#TOXIC-3 / #SAFE / #HALLUCINOGEN"></div>
+            <div class="nx-field"><label>特性标签</label><input name="traits" placeholder="寒性、致幻、补气、相冲…"></div>
+            <div class="nx-field"><label>关联物种 / 作物</label><input name="refs" placeholder="引用物种档案名"></div>
+            <div class="nx-field full"><label>处理 / 制作步骤</label><textarea name="steps" placeholder="清洗、去毒、火候、搭配禁忌"></textarea></div>
+            <div class="nx-field full"><label>相冲与后果</label><textarea name="conflicts" placeholder="与什么同食会中毒？谁不能吃？"></textarea></div>
+          </div>
+          <div class="bar"><button class="nx-btn pri" type="submit">写入食材</button></div>
+        </form>
+        <div class="nx-toolbar"><input class="nx-search" placeholder="搜索食材…" data-filter="foods"><span class="nx-pill" id="foodCount">0 条</span></div>
+        <div class="nx-grid" id="foodList"></div>
+      </section>
+
+      <section class="nx-section" id="tab-species">
+        <div class="nx-head"><div><h2>物种 / 作物 / 人物档案</h2><p>都必须支持图片。人物卡可以写关系、攻略线；物种卡可以写栖息地与可食用部位。</p></div><span class="nx-pill">ARCHIVE</span></div>
+        <form class="nx-form" id="speciesForm">
+          <h3>新增档案</h3>
+          <div class="nx-fields">
+            <div class="nx-field"><label>名称</label><input name="name" placeholder="例如：冰尸 / 灵稻 / 段峥" required></div>
+            <div class="nx-field"><label>类型</label><select name="kind"><option>人物</option><option>物种</option><option>作物</option><option>妖宠</option><option>鬼怪</option><option>机关造物</option></select></div>
+            <div class="nx-field"><label>关联世界</label><input name="world" placeholder="例如：零下七十 / 烽烟照胆"></div>
+            <div class="nx-field"><label>特性 / 属性</label><input name="traits" placeholder="冰属性、群居、可食用、可攻略…"></div>
+            <div class="nx-field full"><label>设定 / 背景</label><textarea name="lore" placeholder="它从哪来？和主角是什么关系？弱点与禁忌"></textarea></div>
+            <div class="nx-field"><label>上传图片</label><input name="imageFile" type="file" accept="image/*"></div>
+            <div class="nx-field full"><label>图片预览</label><div class="nx-imgprev" id="speciesPreview">未上传图片</div><input type="hidden" name="image" id="speciesImage"></div>
+          </div>
+          <div class="bar"><button class="nx-btn pri" type="submit">写入档案</button></div>
+        </form>
+        <div class="nx-toolbar"><input class="nx-search" placeholder="搜索档案…" data-filter="species"><span class="nx-pill" id="speciesCount">0 条</span></div>
+        <div class="nx-grid" id="speciesList"></div>
+      </section>
+
+      <section class="nx-section" id="tab-language">
+        <div class="nx-head"><div><h2>语言创造</h2><p>在格子里画一个字，写下含义与可组合词。笔触顺序和坐标会完整存进本机，也能导出成 JSON。</p></div><span class="nx-pill">GLYPH</span></div>
+        <div class="nx-note"><b>存储格式：</b>每个字形保存 strokes 数组，每个点是归一化坐标 {x,y}，顺序即笔顺；导入时按同一格式还原。</div>
+        <form class="nx-form" id="glyphForm">
+          <div class="nx-fields two">
+            <div class="nx-field"><label>字形名</label><input name="name" id="glyphName" placeholder="例如：渊 / 火 / 门" required></div>
+            <div class="nx-field"><label>含义</label><input name="meaning" id="glyphMeaning" placeholder="例如：深水、归处、禁止进入"></div>
+            <div class="nx-field full"><label>可组合词</label><input name="combine" id="glyphCombine" placeholder="用逗号分隔，例如：深渊、归渊、渊门"></div>
+          </div>
+          <div class="nx-canvas-wrap"><canvas id="glyphCanvas" width="760" height="460"></canvas></div>
+          <div class="bar">
+            <button class="nx-btn" type="button" id="glyphUndo">撤销一笔</button>
+            <button class="nx-btn" type="button" id="glyphClear">清空画布</button>
+            <button class="nx-btn pri" type="submit">保存字形</button>
+          </div>
+        </form>
+        <div class="nx-toolbar">
+          <button class="nx-btn" id="glyphExport">导出字形 JSON</button>
+          <label class="nx-btn" for="glyphImport">导入字形 JSON</label>
+          <input id="glyphImport" type="file" accept="application/json,.json" hidden>
+          <span class="nx-pill" id="glyphCount">0 个字形</span>
+        </div>
+        <div class="nx-glyphs" id="glyphList"></div>
+      </section>
+
+      <section class="nx-section" id="tab-music">
+        <div class="nx-head"><div><h2>本地音乐合成器</h2><p>多乐器、音阶、情绪与基调。按世界标签自动组合，也能上传自己的音频；导出的 WAV 可直接放进世界页。</p></div><span class="nx-pill">WEB AUDIO</span></div>
+        <form class="nx-form" id="musicForm">
+          <h3>组合一段世界背景音乐</h3>
+          <div class="nx-fields">
+            <div class="nx-field"><label>情绪 / 基调</label><select name="mood" id="musicMood">
+              <option value="joy">欢乐 · 明亮</option><option value="bleak">悲观 · 荒凉</option><option value="war">战争 · 振奋</option><option value="chill">休闲 · 海风</option><option value="romance">言情 · 温柔</option><option value="mystic">神秘 · 怪谈</option>
+            </select></div>
+            <div class="nx-field"><label>音阶</label><select name="scale" id="musicScale">
+              <option value="penta">五声音阶</option><option value="major">自然大调</option><option value="minor">自然小调</option><option value="dorian">多利亚</option><option value="whole">全音阶</option>
+            </select></div>
+            <div class="nx-field"><label>速度 BPM</label><input name="tempo" id="musicTempo" type="number" min="40" max="180" value="96"></div>
+            <div class="nx-field"><label>时长（秒）</label><input name="duration" id="musicDuration" type="number" min="6" max="30" value="12"></div>
+            <div class="nx-field"><label>世界标签</label><input name="tag" id="musicTag" placeholder="例如：中式恐怖 / 修仙 / 都市 BL"></div>
+            <div class="nx-field full"><label>乐器（可多选）</label><div class="nx-insts" id="instList">
+              <label class="nx-inst"><input type="checkbox" value="piano" checked> 钢琴</label>
+              <label class="nx-inst"><input type="checkbox" value="strings" checked> 弦乐</label>
+              <label class="nx-inst"><input type="checkbox" value="flute"> 长笛</label>
+              <label class="nx-inst"><input type="checkbox" value="synth"> 合成器</label>
+              <label class="nx-inst"><input type="checkbox" value="drums"> 鼓</label>
+              <label class="nx-inst"><input type="checkbox" value="bass"> 低音</label>
+              <label class="nx-inst"><input type="checkbox" value="guzheng"> 古筝</label>
+              <label class="nx-inst"><input type="checkbox" value="erhu"> 二胡</label>
+              <label class="nx-inst"><input type="checkbox" value="bell"> 钟铃</label>
+              <label class="nx-inst"><input type="checkbox" value="choir"> 人声合唱</label>
+              <label class="nx-inst"><input type="checkbox" value="guitar"> 吉他</label>
+              <label class="nx-inst"><input type="checkbox" value="harp"> 竖琴</label>
+              <label class="nx-inst"><input type="checkbox" value="trumpet"> 小号</label>
+              <label class="nx-inst"><input type="checkbox" value="sax"> 萨克斯</label>
+              <label class="nx-inst"><input type="checkbox" value="organ"> 管风琴</label>
+              <label class="nx-inst"><input type="checkbox" value="koto"> 日本筝</label>
+              <label class="nx-inst"><input type="checkbox" value="cello"> 大提琴</label>
+              <label class="nx-inst"><input type="checkbox" value="violin"> 小提琴</label>
+              <label class="nx-inst"><input type="checkbox" value="accordion"> 手风琴</label>
+              <label class="nx-inst"><input type="checkbox" value="suona"> 唢呐</label>
+              <label class="nx-inst"><input type="checkbox" value="pipa"> 琵琶</label>
+              <label class="nx-inst"><input type="checkbox" value="dizi"> 笛子</label>
+              <label class="nx-inst"><input type="checkbox" value="qin"> 古琴</label>
+              <label class="nx-inst"><input type="checkbox" value="harmonica"> 口琴</label>
+              <label class="nx-inst"><input type="checkbox" value="sitar"> 西塔琴</label>
+              <label class="nx-inst"><input type="checkbox" value="oud"> 乌德琴</label>
+              <label class="nx-inst"><input type="checkbox" value="duduk"> 杜杜克</label>
+              <label class="nx-inst"><input type="checkbox" value="didgeridoo"> 迪吉里杜管</label>
+              <label class="nx-inst"><input type="checkbox" value="taiko"> 太鼓</label>
+              <label class="nx-inst"><input type="checkbox" value="tabla"> 塔布拉</label>
+              <label class="nx-inst"><input type="checkbox" value="marimba"> 马林巴</label>
+              <label class="nx-inst"><input type="checkbox" value="kalimba"> 卡林巴</label>
+              <label class="nx-inst"><input type="checkbox" value="gamelan"> 甘美兰</label>
+              <label class="nx-inst"><input type="checkbox" value="theremin"> 特雷门</label>
+              <label class="nx-inst"><input type="checkbox" value="brass"> 铜管</label>
+              <label class="nx-inst"><input type="checkbox" value="ukulele"> 尤克里里</label>
+              <label class="nx-inst"><input type="checkbox" value="banjo"> 班卓琴</label>
+              <label class="nx-inst"><input type="checkbox" value="charango"> 恰朗戈</label>
+              <label class="nx-inst"><input type="checkbox" value="panflute"> 排箫</label>
+              <label class="nx-inst"><input type="checkbox" value="shakuhachi"> 尺八</label>
+              <label class="nx-inst"><input type="checkbox" value="bansuri"> 班苏里</label>
+              <label class="nx-inst"><input type="checkbox" value="gayageum"> 伽倻琴</label>
+              <label class="nx-inst"><input type="checkbox" value="dombra"> 冬不拉</label>
+              <label class="nx-inst"><input type="checkbox" value="morinkhuur"> 马头琴</label>
+              <label class="nx-inst"><input type="checkbox" value="balafon"> 巴拉风</label>
+              <label class="nx-inst"><input type="checkbox" value="steelpan"> 钢鼓</label>
+              <label class="nx-inst"><input type="checkbox" value="hurdygurdy"> 手摇琴</label>
+            </div></div>
+          </div>
+          <div class="bar">
+            <button class="nx-btn" type="button" id="musicAuto">按世界标签自动组合</button>
+            <button class="nx-btn pri" type="button" id="musicPlay">生成并播放</button>
+            <button class="nx-btn" type="button" id="musicWav">导出 WAV</button>
+            <button class="nx-btn" type="submit">保存配置</button>
+          </div>
+          <div class="nx-note" id="musicResult">尚未合成。选择情绪与乐器，点「生成并播放」。</div>
+        </form>
+
+        <div class="nx-editor" id="musicEditor">
+          <div class="nx-editor-head">
+            <div><h3>音源时间线 · 百万调音台</h3><p>按乐器、环境声、音效与变声器分类取用音源；节点可拖动、拉伸、叠加，逐节点调节音量、声像、速率、循环模板和效果链。录音与上传的音频写入本机 IndexedDB，长期保留。</p></div>
+            <div class="te-tabs" id="teTabs" role="tablist" aria-label="音源分类">
+              <button type="button" data-cat="instrument" class="on">乐器</button>
+              <button type="button" data-cat="ambient">环境声</button>
+              <button type="button" data-cat="sfx">音效与变声器</button>
+              <button type="button" data-cat="audio">我的录音 / 上传</button>
+            </div>
+            <div class="te-lib" id="teLib" aria-label="音源库"></div>
+            <div class="nx-editor-tools">
+              <select id="teKind" aria-label="音源类型">
+                <option value="instrument">乐器</option>
+                <option value="ambient">环境声</option>
+                <option value="sfx">音效</option>
+                <option value="voice">变声 / 人声</option>
+                <option value="audio">上传 / 录音</option>
+              </select>
+              <input id="teName" placeholder="音源名称，如：雨声 / 低音弦">
+              <label class="te-mini">起点<input id="teStart" type="number" min="0" max="29.8" step="0.1" value="0">s</label>
+              <label class="te-mini">时长<input id="teDur" type="number" min="0.2" max="30" step="0.1" value="4">s</label>
+              <label class="te-mini">循环模板<select id="teLoopMode"><option value="once">单次</option><option value="2">循环 2 次</option><option value="4">循环 4 次</option><option value="inf">无限循环</option></select></label>
+              <button class="nx-btn pri" id="teAdd" type="button">添加音源</button>
+              <button class="nx-btn" id="teRecord" type="button">录音</button>
+              <label class="nx-btn" for="teFile">上传音频</label>
+              <input id="teFile" type="file" accept="audio/*" hidden>
+              <button class="nx-btn" id="tePlay" type="button">播放时间线</button>
+              <button class="nx-btn" id="teStop" type="button">停止</button>
+              <button class="nx-btn" id="teDel" type="button">删除选中</button>
+              <button class="nx-btn" id="teClear" type="button">清空</button>
+            </div>
+          </div>
+          <div class="nx-timeline" id="teTimeline">
+            <div class="nx-timeline-ruler"><span>0s</span><span>5</span><span>10</span><span>15</span><span>20</span><span>25</span><span>30s</span></div>
+            <div class="te-lane" data-kind="instrument"><label>乐器</label><div class="te-track"></div></div>
+            <div class="te-lane" data-kind="ambient"><label>环境声</label><div class="te-track"></div></div>
+            <div class="te-lane" data-kind="sfx"><label>音效 / 变声</label><div class="te-track"></div></div>
+            <div class="te-lane" data-kind="audio"><label>录音 / 上传</label><div class="te-track"></div></div>
+          </div>
+          <div class="te-inspector" id="teInspector">
+            <div class="te-inspector-head"><b>节点检视器</b><span>点选时间线节点后，下面的参数会实时写回该节点。</span></div>
+            <div class="te-inspector-grid">
+              <label>名称<input id="tiName2" maxlength="40" placeholder="音源名称"></label>
+              <label>类型<select id="tiKind"><option value="instrument">乐器</option><option value="ambient">环境声</option><option value="sfx">音效</option><option value="voice">变声 / 人声</option><option value="audio">上传 / 录音</option></select></label>
+              <label>起点 s<input id="tiStart" type="number" min="0" max="29.8" step="0.1"></label>
+              <label>时长 s<input id="tiDur" type="number" min="0.2" max="30" step="0.1"></label>
+              <label>音量<input id="tiGain" type="number" min="0" max="1" step="0.01"></label>
+              <label>声像<input id="tiPan" type="number" min="-1" max="1" step="0.01"></label>
+              <label>速率<input id="tiRate" type="number" min="0.4" max="2.2" step="0.01"></label>
+              <label>效果<select id="tiEffect"><option value="none">无</option><option value="reverb">混响</option><option value="delay">延迟</option><option value="distortion">失真</option><option value="chorus">合唱</option><option value="filter">滤波</option><option value="robot">机器人</option><option value="whisper">耳语</option><option value="deep">低沉</option></select></label>
+              <label>效果量<input id="tiAmount" type="number" min="0" max="1" step="0.01"></label>
+              <label>循环<select id="tiLoop"><option value="once">单次</option><option value="2">2 次</option><option value="4">4 次</option><option value="inf">无限</option></select></label>
+            </div>
+            <canvas id="teWave" width="880" height="64" aria-label="音频波形预览"></canvas>
+            <div class="te-inspector-actions"><button class="nx-btn" id="tiDup" type="button">复制节点</button><button class="nx-btn" id="tiDel" type="button">删除节点</button></div>
+          </div>
+          <div class="nx-editor-foot"><span id="teInfo">0 个音源 · 总长 30 秒 · 参数与音频自动保存在本机</span><span>提示：单次节点只播放一遍；循环模板可叠在任意节点上。录音与上传文件永久保存在本机浏览器。</span></div>
+        </div>
+        <div class="nx-toolbar"><span class="nx-pill" id="musicCount">0 段配置</span></div>
+        <div class="nx-grid" id="musicList"></div>
+        <form class="nx-form" id="audioForm">
+          <h3>上传自己的音频 / 生成背景音乐</h3>
+          <div class="nx-fields two">
+            <div class="nx-field"><label>音频名</label><input name="name" placeholder="例如：槐阴公寓 · 楼道风声" required></div>
+            <div class="nx-field"><label>选择音频文件</label><input name="file" type="file" accept="audio/*" required></div>
+          </div>
+          <div class="bar"><button class="nx-btn pri" type="submit">保存到本机</button></div>
+        </form>
+        <div class="nx-audio" id="audioList"></div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="nx-toast" id="nxToast"></div>
+<div class="nx-modal" id="nxModal"><div class="nx-modal-box"><h3 id="modalTitle">数据</h3><pre id="modalBody"></pre><div class="bar"><button class="nx-btn" id="modalClose">关闭</button></div></div></div>
+
+<script src="../data/env.js?v=2"></script>
+<script src="../data/api-app.js?v=2"></script>
+<script src="../data/api-web.js?v=2"></script>
+<script src="../data/ai-limit.js?v=2"></script>
+<script src="../butler/config/injection.js?v=2"></script>
+<script src="nexus.js?v=7"></script>
+<script src="nexus-ai.js?v=1"></script>
+<script src="nexus-music-editor.js?v=2"></script>
+</body>
+</html>

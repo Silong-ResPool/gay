@@ -1,0 +1,443 @@
+/* ============================================================
+   巳泷 · 音律 V10「黑胶星轨」重构皮肤
+   叠加在 music/index.html 原样式之上：只换视觉与排布层级，
+   不改任何按钮 id / 事件 / 播放逻辑，功能项一个不少。
+   ============================================================ */
+:root{
+  --m-bg:#05040c;
+  --m-panel:rgb(18,12,34,.84);
+  --m-panel2:rgb(26,19,48,.7);
+  --m-line:rgb(255,255,255,.08);
+  --m-line2:rgb(160,120,255,.32);
+  --m-ink:#f4f0ff;
+  --m-ink2:#c6badd;
+  --m-mut:#8b7ba8;
+  --m-p:#8b5cf6;
+  --m-acc:#a78bfa;
+  --m-pink:#f472b6;
+  --m-gold:#fbbf24;
+  --m-r:18px;
+  --m-sh:0 20px 50px -22px rgb(0,0,0,.92);
+}
+
+html,body{
+  background:#05040c !important;
+  color:var(--m-ink) !important;
+  font-family:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",system-ui,-apple-system,sans-serif !important;
+}
+body{
+  background:
+    radial-gradient(1000px 600px at 12% -6%, rgb(139,92,246,.22), transparent 62%),
+    radial-gradient(900px 560px at 92% 4%, rgb(167,139,250,.14), transparent 60%),
+    radial-gradient(900px 700px at 55% 108%, rgb(244,114,182,.12), transparent 62%),
+    linear-gradient(180deg,#08060f,#04030a) !important;
+  background-attachment:fixed !important;
+}
+#bgart,#bgvid,#vig,#fx{ pointer-events:none; }
+#vig{
+  background:radial-gradient(120% 90% at 50% 40%, transparent 40%, rgb(4,3,10,.72) 100%) !important;
+}
+
+/* ---------------- 视图容器 ---------------- */
+.view{
+  min-height:100vh;
+  padding-bottom:118px;
+}
+.body{
+  max-width:1080px; margin:0 auto;
+  padding:6px 14px 20px;
+}
+
+/* ---------------- 顶栏（悬浮胶囊） ---------------- */
+.hbar{
+  position:sticky; top:0; z-index:60;
+  display:flex; align-items:center; gap:10px;
+  max-width:1080px; margin:0 auto 10px;
+  padding:11px 14px;
+  border-radius:0 0 20px 20px;
+  background:linear-gradient(180deg, rgb(10,8,22,.94), rgb(8,6,18,.7));
+  border-bottom:1px solid var(--m-line);
+  backdrop-filter:blur(22px) saturate(1.5); -webkit-backdrop-filter:blur(22px) saturate(1.5);
+}
+.hbrand{
+  flex:1; min-width:0;
+  font-size:15px; font-weight:800; letter-spacing:.08em;
+  background:linear-gradient(100deg,#ffffff,#d8ccff 56%,#ede9fe);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.bk,.icb{
+  width:36px; height:36px; display:grid; place-items:center; flex:0 0 auto;
+  border-radius:12px; border:1px solid var(--m-line);
+  background:rgb(255,255,255,.045); color:var(--m-ink2);
+  transition:.18s ease; cursor:pointer;
+}
+.bk:hover,.icb:hover{ color:#ffffff; border-color:var(--m-line2); background:rgb(139,92,246,.16); transform:translateY(-1px); }
+.bk:active,.icb:active{ transform:scale(.94); }
+
+/* ---------------- CarPlay 主卡（黑胶面板） ---------------- */
+.carplay{
+  position:relative;
+  display:flex; gap:22px; align-items:stretch;
+  margin:4px 0 22px;
+  padding:22px 18px 22px 20px;
+  border-radius:26px;
+  border:1px solid rgb(167,139,250,.26);
+  background:
+    radial-gradient(620px 320px at 88% -14%, rgb(167,139,250,.16), transparent 62%),
+    radial-gradient(700px 420px at 6% 118%, rgb(139,92,246,.26), transparent 64%),
+    linear-gradient(155deg, rgb(24,16,46,.92), rgb(8,6,18,.94));
+  box-shadow:var(--m-sh), inset 0 0 0 1px rgb(255,255,255,.04);
+  overflow:hidden;
+}
+.carplay::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:
+    repeating-linear-gradient(90deg, rgb(255,255,255,.03) 0 1px, transparent 1px 4px);
+  opacity:.5; mix-blend-mode:overlay;
+}
+.cp-left{ flex:1; min-width:0; display:flex; flex-direction:column; }
+.cp-right{ flex:0 0 clamp(230px,34%,340px); display:flex; flex-direction:column; justify-content:space-between; }
+.cp-hd{ display:flex; align-items:center; gap:9px; margin-bottom:12px; }
+.cp-tag{
+  font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+  padding:5px 11px; border-radius:999px;
+  color:#dffbff; background:rgb(167,139,250,.16); border:1px solid rgb(167,139,250,.34);
+}
+.cp-pick,.cp-gear{
+  width:32px; height:32px; display:grid; place-items:center;
+  border-radius:10px; border:1px solid var(--m-line);
+  background:rgb(255,255,255,.05); color:var(--m-ink2); cursor:pointer; transition:.16s ease;
+}
+.cp-pick:hover,.cp-gear:hover{ color:#ffffff; border-color:var(--m-line2); }
+.cp-stack{
+  display:flex; gap:12px; align-items:flex-end;
+  perspective:900px;
+}
+.cd{
+  position:relative; flex:1 1 0; min-width:0;
+  aspect-ratio:1/1;
+  border-radius:16px; overflow:hidden;
+  border:1px solid rgb(255,255,255,.1);
+  background:linear-gradient(150deg,#1b1236,#0a0718);
+  box-shadow:0 16px 40px -18px rgb(0,0,0,.95);
+  transition:.3s cubic-bezier(.22,.8,.28,1);
+}
+.cd img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.cd::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, transparent 46%, rgb(4,3,10,.86));
+  pointer-events:none;
+}
+.cd:nth-child(1){ transform:rotate(-3.2deg) translateY(6px) scale(.965); z-index:1; }
+.cd:nth-child(2){ transform:translateY(-2px) scale(1.02); z-index:2; }
+.cd:nth-child(3){ transform:rotate(3.2deg) translateY(6px) scale(.965); z-index:1; }
+.cd:hover{ transform:translateY(-6px) rotate(0deg) scale(1.04); z-index:5;
+  box-shadow:0 26px 60px -22px rgb(139,92,246,.7), 0 0 0 1px rgb(167,139,250,.4); }
+.cd .ph{ position:absolute; inset:0; display:grid; place-items:center; font-size:26px; color:rgb(255,255,255,.28); }
+
+.cp-info{ margin-top:14px; }
+.cp-name{
+  font-size:15.5px; font-weight:800; letter-spacing:.02em;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.cp-artist{ margin-top:2px; font-size:11.5px; color:var(--m-mut); }
+.cp-ctrl{ display:flex; align-items:center; gap:9px; margin-top:14px; }
+.cp-ctrl .pb{
+  width:46px; height:46px; border-radius:50%;
+  display:grid; place-items:center;
+  border:0; color:#ffffff; cursor:pointer;
+  background:linear-gradient(135deg,#7c3aed,#8b5cf6 44%,#a78bfa);
+  box-shadow:0 14px 34px -14px rgb(139,92,246,.95), inset 0 0 0 1px rgb(255,255,255,.16);
+  transition:.18s ease;
+}
+.cp-ctrl .pb:hover{ filter:brightness(1.1); transform:scale(1.04); }
+.cp-ctrl .btnp{
+  width:36px; height:36px; border-radius:11px;
+  display:grid; place-items:center;
+  border:1px solid var(--m-line); background:rgb(255,255,255,.05); color:var(--m-ink2); cursor:pointer;
+}
+.cp-ctrl .btnp:hover{ color:#ffffff; border-color:var(--m-line2); }
+.cp-idx{ font-size:10.5px; color:var(--m-mut); letter-spacing:.1em; margin-top:8px; }
+.cp-bg,.cp-art{
+  position:absolute; inset:0; pointer-events:none;
+  background-size:cover; background-position:center;
+}
+.cp-bg{ filter:blur(26px) saturate(1.2); opacity:.28; transform:scale(1.08); }
+
+/* ---------------- 分类胶囊 ---------------- */
+.catrow,.catrows{
+  display:flex; gap:8px; flex-wrap:nowrap; overflow-x:auto;
+  padding:2px 0 12px; scrollbar-width:none;
+}
+.catrow::-webkit-scrollbar,.catrows::-webkit-scrollbar{ display:none; }
+.cat,.chip,.ctag{
+  flex:0 0 auto;
+  padding:7px 15px; border-radius:999px;
+  border:1px solid var(--m-line);
+  background:rgb(255,255,255,.04);
+  color:var(--m-ink2); font-size:12px; font-weight:700; letter-spacing:.03em;
+  cursor:pointer; transition:.18s ease; white-space:nowrap;
+}
+.cat:hover,.chip:hover,.ctag:hover{ color:#ffffff; border-color:var(--m-line2); background:rgb(139,92,246,.14); }
+.cat.on,.chip.on,.ctag.on,.cat.cur,.chip.cur{
+  color:#ffffff; border-color:transparent;
+  background:linear-gradient(120deg,#7c3aed,#8b5cf6 44%,#a78bfa);
+  box-shadow:0 10px 26px -12px rgb(139,92,246,.95), inset 0 0 0 1px rgb(255,255,255,.16);
+}
+
+/* ---------------- 列表 ---------------- */
+.list{
+  display:flex; flex-direction:column; gap:8px;
+  padding:2px 0;
+}
+.orow{
+  position:relative;
+  display:flex; align-items:center; gap:12px;
+  padding:11px 13px;
+  border-radius:15px;
+  border:1px solid var(--m-line);
+  background:linear-gradient(160deg, rgb(24,18,46,.55), rgb(9,7,20,.72));
+  cursor:pointer;
+  transition:.2s cubic-bezier(.22,.8,.28,1);
+  overflow:hidden;
+}
+.orow::before{
+  content:""; position:absolute; inset:0; opacity:0; transition:.24s ease;
+  background:linear-gradient(90deg, rgb(139,92,246,.22), transparent 78%);
+}
+.orow:hover{ transform:translateX(3px); border-color:var(--m-line2); box-shadow:0 14px 34px -20px rgb(139,92,246,.65); }
+.orow:hover::before{ opacity:1; }
+.orow.on{
+  border-color:rgb(167,139,250,.45);
+  background:linear-gradient(160deg, rgb(167,139,250,.14), rgb(139,92,246,.12));
+  box-shadow:0 0 0 1px rgb(167,139,250,.18), 0 16px 40px -22px rgb(167,139,250,.55);
+}
+.otrail{ position:absolute; left:0; top:0; bottom:0; width:3px;
+  background:linear-gradient(180deg,#a78bfa,#a78bfa); opacity:0; }
+.orow.on .otrail{ opacity:1; }
+.oglow{
+  position:absolute; right:-40px; top:-40px; width:120px; height:120px;
+  background:radial-gradient(circle, rgb(139,92,246,.5), transparent 68%);
+  filter:blur(12px); opacity:0; transition:.3s ease; pointer-events:none;
+}
+.orow.on .oglow{ opacity:1; }
+.odisc,.thumb,.qv,.mlempty img{
+  width:46px; height:46px; flex:0 0 auto;
+  border-radius:12px; overflow:hidden;
+  border:1px solid rgb(255,255,255,.1);
+  background:linear-gradient(150deg,#1b1236,#0a0718);
+  object-fit:cover;
+  box-shadow:0 8px 22px -12px rgb(0,0,0,.9);
+}
+.mno{
+  flex:0 0 auto; min-width:22px; text-align:center;
+  font-size:11.5px; font-weight:800; color:var(--m-mut);
+  font-variant-numeric:tabular-nums;
+}
+.mt{ flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+.mt1{
+  font-size:13.5px; font-weight:750; letter-spacing:.01em;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.mt2{ font-size:11px; color:var(--m-mut); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tag{
+  flex:0 0 auto; padding:2px 9px; border-radius:999px;
+  font-size:9.5px; letter-spacing:.08em; color:#ede9fe;
+  background:rgb(167,139,250,.14); border:1px solid rgb(167,139,250,.28);
+}
+.fn{ flex:0 0 auto; font-size:11px; color:var(--m-mut); font-variant-numeric:tabular-nums; }
+.mops{ display:flex; gap:4px; flex:0 0 auto; }
+.mops .mi,.mi{
+  width:30px; height:30px; display:grid; place-items:center;
+  border-radius:9px; border:1px solid var(--m-line);
+  background:rgb(255,255,255,.04); color:var(--m-ink2); cursor:pointer; font-size:11.5px;
+  transition:.16s ease;
+}
+.mi:hover{ color:#ffffff; border-color:var(--m-line2); background:rgb(139,92,246,.16); }
+.mi.fav.on,.mi.on{ color:#ffb3d1; border-color:rgb(244,114,182,.45); background:rgb(244,114,182,.14); }
+
+/* ---------------- 段标题 ---------------- */
+.hd,.hd2{
+  display:flex; align-items:center; gap:9px;
+  margin:18px 0 10px;
+  font-size:11px; font-weight:800; letter-spacing:.2em; text-transform:uppercase;
+  color:#c9b8ff;
+}
+.hd::after{ content:""; flex:1; height:1px;
+  background:linear-gradient(90deg, rgb(139,92,246,.5), transparent); }
+
+/* ---------------- 底部播放条 ---------------- */
+.fl-bar{
+  position:fixed; left:0; right:0; bottom:0; z-index:80;
+  padding:10px 14px calc(12px + env(safe-area-inset-bottom));
+  background:linear-gradient(0deg, rgb(5,4,12,.97), rgb(5,4,12,.66) 62%, transparent);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--m-line);
+}
+.fl-slots{
+  max-width:1000px; margin:0 auto; display:flex; align-items:center; gap:12px;
+  padding:9px 12px; border-radius:20px;
+  border:1px solid rgb(167,139,250,.26);
+  background:linear-gradient(150deg, rgb(26,19,48,.92), rgb(10,7,22,.94));
+  box-shadow:0 18px 44px -20px rgb(0,0,0,.95), inset 0 0 0 1px rgb(255,255,255,.04);
+}
+.fl-txt{ flex:1; min-width:0; }
+.fl-txt b{ display:block; font-size:12.5px; font-weight:800;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.fl-txt span{ font-size:10.5px; color:var(--m-mut); }
+.fl-tip{ font-size:10px; color:var(--m-mut); letter-spacing:.06em; }
+.fl-cfg{
+  width:32px; height:32px; display:grid; place-items:center; flex:0 0 auto;
+  border-radius:10px; border:1px solid var(--m-line);
+  background:rgb(255,255,255,.05); color:var(--m-ink2); cursor:pointer;
+}
+.fl-cfg:hover{ color:#ffffff; border-color:var(--m-line2); }
+
+/* 进度条 */
+.pb,.prog,.tr{
+  position:relative;
+}
+.prog,.fl-bar .prog{
+  height:5px; border-radius:999px;
+  background:rgb(255,255,255,.09);
+  overflow:hidden;
+}
+.prog i,.prog > b,.fl-bar .prog i{
+  display:block; height:100%; border-radius:inherit;
+  background:linear-gradient(90deg,#8b5cf6,#a78bfa);
+  box-shadow:0 0 14px rgb(167,139,250,.55);
+}
+
+/* ---------------- 歌词 ---------------- */
+.lrc-col,.lyr,.lrc{
+  padding:18px 16px;
+  border-radius:18px;
+  border:1px solid var(--m-line);
+  background:linear-gradient(170deg, rgb(20,14,38,.7), rgb(8,6,18,.8));
+  color:var(--m-ink2);
+  line-height:2;
+}
+.lrc-col .tl,.lrc .tl{ color:#ffffff; font-weight:800; }
+.lrc-col .cur,.lrc .cur{ color:#ede9fe; text-shadow:0 0 18px rgb(167,139,250,.6); }
+
+/* ---------------- 弹层 / 全屏 ---------------- */
+.mask{
+  background:rgb(3,2,8,.72) !important;
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+}
+.sheet{
+  border-radius:22px !important;
+  border:1px solid rgb(167,139,250,.28) !important;
+  background:linear-gradient(170deg, rgb(26,19,50,.98), rgb(10,7,22,.99)) !important;
+  box-shadow:0 40px 90px -30px rgb(0,0,0,.95), inset 0 0 0 1px rgb(255,255,255,.05) !important;
+  padding:18px 16px !important;
+}
+.top{
+  position:sticky; top:0; z-index:5;
+  display:flex; align-items:center; gap:9px;
+  padding:6px 2px 14px;
+  background:linear-gradient(180deg, rgb(20,14,38,.98), rgb(20,14,38,.8));
+  border-bottom:1px solid var(--m-line);
+  margin:-18px -16px 14px;
+  padding-left:16px; padding-right:16px;
+}
+.top h3,.top .tt{ margin:0; font-size:15px; font-weight:800; }
+.hx{
+  width:32px; height:32px; display:grid; place-items:center; margin-left:auto;
+  border-radius:10px; border:1px solid var(--m-line);
+  background:rgb(255,255,255,.05); color:var(--m-ink2); cursor:pointer;
+}
+.hx:hover{ color:#ffffff; border-color:var(--m-line2); }
+
+/* 全屏播放 */
+.full-bg{
+  background:
+    radial-gradient(900px 600px at 20% 8%, rgb(139,92,246,.3), transparent 62%),
+    radial-gradient(800px 560px at 88% 96%, rgb(167,139,250,.22), transparent 60%),
+    linear-gradient(180deg,#0a0718,#04030a) !important;
+}
+.full-top{
+  padding:14px 16px;
+  border-bottom:1px solid var(--m-line);
+  background:rgb(8,6,18,.7);
+  backdrop-filter:blur(16px);
+}
+.full-cfg,.full-tools{
+  border-radius:13px; border:1px solid var(--m-line);
+  background:rgb(255,255,255,.05); color:var(--m-ink2);
+}
+.odisc{
+  border-radius:18px;
+  border:1px solid rgb(167,139,250,.3);
+  box-shadow:0 30px 80px -30px rgb(139,92,246,.8);
+}
+.info,.dmeta,.dnm{ color:var(--m-ink2); }
+.dnm{ font-size:20px; font-weight:900; color:#ffffff; }
+
+/* ---------------- 输入 & 设置 ---------------- */
+input,textarea,select{
+  border-radius:11px !important;
+  border:1px solid var(--m-line) !important;
+  background:rgb(255,255,255,.05) !important;
+  color:var(--m-ink) !important;
+  padding:9px 12px !important;
+  font:inherit; font-size:13px;
+}
+input:focus,textarea:focus,select:focus{
+  outline:none; border-color:rgb(139,92,246,.7) !important;
+  box-shadow:0 0 0 3px rgb(139,92,246,.16) !important;
+}
+.setrow,.setgrp{
+  border-radius:15px; border:1px solid var(--m-line);
+  background:rgb(255,255,255,.03);
+  padding:12px 13px; margin-bottom:10px;
+}
+.setrow label,.setgrp h4{ color:#c9b8ff; font-size:11px; letter-spacing:.1em; }
+
+/* 提示 */
+.toast{
+  position:fixed; left:50%; bottom:118px; transform:translateX(-50%) translateY(10px);
+  z-index:120; padding:10px 18px; border-radius:999px;
+  border:1px solid rgb(167,139,250,.4);
+  background:rgb(16,11,32,.95); color:#ffffff; font-size:12.5px;
+  box-shadow:var(--m-sh); opacity:0; pointer-events:none;
+  transition:.24s ease; backdrop-filter:blur(12px);
+}
+.toast.show,.toast.on{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+::-webkit-scrollbar{ width:9px; height:9px; }
+::-webkit-scrollbar-thumb{ background:linear-gradient(180deg,#7c5cf0,#a78bfa); border-radius:9px; }
+::selection{ background:rgb(139,92,246,.4); color:#ffffff; }
+
+/* ---------------- 响应式 ---------------- */
+@media (max-width:860px){
+  .carplay{ flex-direction:column; gap:16px; padding:18px 15px; border-radius:22px; }
+  .cp-right{ flex:0 0 auto; }
+  .cp-stack{ max-width:100%; }
+  .cp-right{ order:-1; }
+  .fl-slots{ border-radius:18px; }
+}
+@media (max-width:520px){
+  .body{ padding:4px 10px 20px; }
+  .hbar{ padding:9px 11px; }
+  .hbrand{ font-size:13.5px; }
+  .odisc,.thumb,.qv{ width:40px; height:40px; }
+  .mno{ display:none; }
+  .mt1{ font-size:12.5px; }
+  .tag{ display:none; }
+  .orow{ padding:9px 10px; gap:9px; }
+  .carplay{ padding:15px 12px; }
+  .fl-bar{ padding:8px 10px calc(10px + env(safe-area-inset-bottom)); }
+  .fl-slots{ padding:7px 9px; gap:9px; }
+}
+
+
+/* ---------------- V10 黑胶封面底图 ---------------- */
+.carplay{
+  background-image:
+    linear-gradient(115deg, rgb(10,7,22,.9) 0%, rgb(10,7,22,.62) 46%, rgb(6,4,14,.95) 100%),
+    url("../assets/ui/cover_music.png") !important;
+  background-size:cover !important;
+  background-position:center !important;
+}
+.carplay::before{ opacity:.34; }

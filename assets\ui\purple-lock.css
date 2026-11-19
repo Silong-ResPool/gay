@@ -1,0 +1,69 @@
+/* 2026-11-19 全站梦幻紫罗兰锁色 · 统一色相与深浅模式 */
+:root,html,body{color-scheme:dark!important;forced-color-adjust:none!important}
+:root,html,body{
+  --cyan:#c084fc!important;--sky:#a78bfa!important;--blue:#8b5cf6!important;
+  --acc2:#a855f7!important;--sl-accent:#c084fc!important;--sl-primary:#8b5cf6!important;
+  --w-accent:#c084fc!important;--w-accent2:#a855f7!important;
+}
+@media (prefers-color-scheme:light){
+  :root,html,body{color-scheme:dark!important}
+  html,body{background-color:var(--bg,#07040e)!important;color:var(--txt,#f6f3ff)!important}
+  html{filter:none!important}
+}
+a{color:#c4b5fd!important}
+::selection{background:rgb(139,92,246,.42);color:#ffffff}
+*{accent-color:#8b5cf6}
+/* Tailwind 蓝色系类名兜底 */
+.bg-blue-300,.bg-sky-300,.bg-cyan-300{background-color:#ddd6fe!important}
+.bg-blue-400,.bg-sky-400,.bg-cyan-400{background-color:#c4b5fd!important}
+.bg-blue-500,.bg-sky-500,.bg-cyan-500,.bg-teal-500{background-color:#8b5cf6!important}
+.bg-blue-600,.bg-sky-600,.bg-cyan-600,.bg-teal-600{background-color:#7c3aed!important}
+.bg-blue-700,.bg-sky-700,.bg-cyan-700,.bg-teal-700{background-color:#6d28d9!important}
+.bg-blue-800,.bg-sky-800,.bg-cyan-800{background-color:#5b21b6!important}
+.bg-blue-900,.bg-sky-900,.bg-cyan-900{background-color:#4c1d95!important}
+.hover\:bg-blue-700:hover,.hover\:bg-sky-700:hover,.hover\:bg-cyan-700:hover{background-color:#6d28d9!important}
+.text-blue-300,.text-sky-300,.text-cyan-300{color:#ddd6fe!important}
+.text-blue-400,.text-sky-400,.text-cyan-400{color:#c4b5fd!important}
+.text-blue-500,.text-sky-500,.text-cyan-500,.text-teal-500{color:#a78bfa!important}
+.text-blue-600,.text-sky-600,.text-cyan-600,.text-teal-600{color:#a78bfa!important}
+.text-blue-700,.text-sky-700,.text-cyan-700{color:#8b5cf6!important}
+.text-blue-800,.text-sky-800{color:#7c3aed!important}
+.border-blue-300,.border-sky-300,.border-cyan-300{border-color:#ddd6fe!important}
+.border-blue-400,.border-sky-400,.border-cyan-400{border-color:#c4b5fd!important}
+.border-blue-500,.border-sky-500,.border-cyan-500{border-color:#a78bfa!important}
+.border-blue-600,.border-sky-600,.border-cyan-600{border-color:#8b5cf6!important}
+.focus\:ring-blue-500:focus,.focus\:ring-sky-500:focus{--tw-ring-color:#a78bfa!important}
+.bg-indigo-400,.bg-indigo-500{background-color:#7c3aed!important}
+.bg-indigo-600,.bg-indigo-700{background-color:#6d28d9!important}
+.bg-indigo-800,.bg-indigo-900{background-color:#5b21b6!important}
+.text-indigo-300,.text-indigo-400{color:#ddd6fe!important}
+.text-indigo-500,.text-indigo-600{color:#a78bfa!important}
+.text-indigo-700,.text-indigo-800{color:#8b5cf6!important}
+.border-indigo-400,.border-indigo-500,.border-indigo-600{border-color:#a78bfa!important}
+.from-indigo-500,.from-indigo-600{--tw-gradient-from:#8b5cf6!important;--tw-gradient-to:rgb(139,92,246,0)!important;--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)!important}
+.to-indigo-500,.to-indigo-600{--tw-gradient-to:#a78bfa!important}
+.from-blue-500,.from-sky-500,.from-cyan-500{--tw-gradient-from:#8b5cf6!important;--tw-gradient-to:rgb(139,92,246,0)!important;--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)!important}
+.to-blue-500,.to-sky-500,.to-cyan-500{--tw-gradient-to:#a78bfa!important}
+.via-blue-500,.via-sky-500,.via-cyan-500{--tw-gradient-to:rgb(167,139,250,0)!important;--tw-gradient-stops:var(--tw-gradient-from),#a78bfa,var(--tw-gradient-to)!important}
+/* Bootstrap 兼容 */
+.btn-primary,.btn-info{background-color:#7c3aed!important;border-color:#7c3aed!important;color:#ffffff!important}
+.btn-primary:hover,.btn-info:hover{background-color:#6d28d9!important;border-color:#6d28d9!important}
+.btn-outline-primary,.btn-outline-info{color:#c4b5fd!important;border-color:#8b5cf6!important}
+.btn-outline-primary:hover,.btn-outline-info:hover{background:#7c3aed!important;color:#ffffff!important}
+.text-primary,.link-primary,.text-info,.link-info{color:#a78bfa!important}
+.bg-primary,.bg-info{background-color:#7c3aed!important}
+.border-primary,.border-info{border-color:#8b5cf6!important}
+.alert-primary,.alert-info{background-color:rgb(139,92,246,.16)!important;border-color:rgb(196,181,253,.35)!important;color:#ede9fe!important}
+.badge-primary,.badge-info{background-color:#7c3aed!important}
+.progress-bar,.progress-bar-info{background-color:#8b5cf6!important}
+/* 性能：移动端关闭高开销固定背景与过度模糊 */
+@media (max-width:900px){
+  body{background-attachment:scroll!important}
+  .navbar,.v-head,.sl-top,.topbar,.top-bar,#topbar,.app-header,.header,.nav,.top,.page-header,.sl-nav,
+  .side,.side-panel,.side-pane,.src-dock,.panel,.drawer,.settings-panel,.history-panel{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+  .card,.panel,.pty,.world-card{content-visibility:auto;contain-intrinsic-size:auto 320px}
+}
+
+/* 2026-11-19 perf: long lists only render near viewport */
+@media (min-width:901px){ .site,.site-card,.card,.item-card,.poster,.world-card,.nx-card,.music-card,.book-card{content-visibility:auto;contain-intrinsic-size:auto 240px} }
+

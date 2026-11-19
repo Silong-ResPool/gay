@@ -1,0 +1,48 @@
+/* ============================================================
+   巳泷 V11 统一皮肤：色板 / 字体 / 自适应基础
+   在所有页面最后加载，用于收敛跨页配色与字号体系
+   ============================================================ */
+:root{
+  --font-ui:'PingFang SC','HarmonyOS Sans SC','Microsoft YaHei',system-ui,-apple-system,'Segoe UI','Noto Sans SC',sans-serif;
+  --font-mono:'JetBrains Mono','SF Mono','Consolas','Menlo',monospace;
+
+  --bg:#05040c; --bg2:#0a0718; --bg3:#0d0919; --bg-deep:#04030a;
+  --panel:#0d0919; --panel2:#120c22; --panel3:#170f2b;
+  --line:rgb(167,139,250,.16); --line2:rgb(167,139,250,.30); --line3:rgb(196,181,253,.45);
+  --text:#f2edff; --text2:#cfc2e9; --text3:#b8a9d6; --muted:#9d8fbe; --dim:#6f6390;
+  --acc:#8b5cf6; --acc2:#a855f7; --acc3:#c084fc; --cyan:#ddd6fe; --pink:#f472b6;
+  --ok:#34d399; --warn:#fbbf24; --danger:#fb7185;
+
+  --p:#8b5cf6; --p2:#a855f7; --txt:#f2edff; --sub:#cfc2e9; --mut:#9d8fbe;
+  --r:14px; --r2:10px; --r-s:7px; --r-l:14px; --r-xl:18px;
+  --sh-s:0 2px 8px rgb(0,0,0,.35); --sh:0 10px 34px rgb(0,0,0,.45); --sh-l:0 24px 70px rgb(0,0,0,.6);
+  --glow:0 0 0 1px rgb(139,92,246,.28),0 8px 22px rgb(109,40,217,.32);
+}
+html{
+  -webkit-text-size-adjust:100%; text-size-adjust:100%;
+  background:var(--bg);
+}
+body{
+  font-family:var(--font-ui) !important;
+  color:var(--text);
+  letter-spacing:.008em;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
+h1,h2,h3,h4,h5,h6,.title,.hd,.head{ letter-spacing:-.012em; }
+h1{ line-height:1.12 }
+h2{ line-height:1.18 }
+.num,.count,.stat,.meta b,.hstats b{ font-variant-numeric:tabular-nums }
+
+img,video{ max-width:100%; }
+canvas{ max-width:100%; }
+button,input,select,textarea{ font-family:inherit; }
+a{ color:var(--cyan); }
+
+@media (max-width:720px){
+  body{ font-size:13.5px }
+}
+@media (max-width:420px){
+  body{ font-size:13px }
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="dark">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>创世工坊 · 巳泷文游</title>
+<link rel="stylesheet" href="oc.css">
+<link rel="stylesheet" href="neo.css?v=10">
+<link rel="stylesheet" href="../assets/ui/purple-lock.css?v=8505">
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <button class="ibtn" data-a="back" title="返回">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="brand">
+      <span class="mk"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg></span>
+      <b>创世工坊</b><em>WORLD BUILDER</em>
+    </div>
+    <div class="sp"></div>
+    <button class="ibtn" data-a="editWorld" title="世界设置">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>
+    </button>
+    <button class="ibtn" data-a="import" title="导入世界">
+      <svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 21h16"/></svg>
+    </button>
+    <button class="ibtn" data-a="export" title="导出世界">
+      <svg viewBox="0 0 24 24"><path d="M12 21V9M7 14l5-5 5 5"/><path d="M4 3h16"/></svg>
+    </button>
+  </header>
+  <nav class="tabs" id="tabs" hidden></nav>
+  <main><div class="wrap" id="view"></div></main>
+  <div class="fabwrap">
+    <button class="playfab ai" data-a="playAI">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="4"/></svg>
+      AI 开局
+    </button>
+    <button class="playfab" data-a="playScript">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9z"/></svg>
+      按剧情开局
+    </button>
+  </div>
+</div>
+<div id="modal"></div>
+<div id="toast"></div>
+<script src="../data/env.js"></script>
+<script src="../data/api-app.js"></script>
+<script src="../data/api-web.js"></script>
+<script src="../data/ai-limit.js"></script>
+<script src="oc.js?v=992"></script>
+<script src="oc-sim.js?v=992"></script>
+<script src="oc-story.js?v=992"></script>
+<script src="oc-map.js?v=992"></script>
+<script>SLOC.boot();</script>
+<link rel="stylesheet" href="../assets/ui/theme-lock.css?v=13">
+</body>
+</html>
