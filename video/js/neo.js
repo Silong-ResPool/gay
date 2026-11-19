@@ -50,7 +50,8 @@
     searching: false, searchAbort: null, found: 0, lastQuery: '', engineMode: 'site',
     browseSrc: '', browseCats: [], browseType: '', browsePage: 1, browsePageCount: 1,
     browseItems: [], browseLoading: false, detail: null, detailRoad: 0, detailGroup: null,
-    homeItems: [], homeSrc: null, homePage: 1, homePageCount: 1, homeLoading: false
+    homeItems: [], homeSrc: null, homePage: 1, homePageCount: 1, homeLoading: false,
+    homeSources: [], homeIdx: 0, homeSeen: new Set(), homeLoops: 0
   };
 
   function allKeys() { return SOURCES.map(function (s) { return s.key; }); }
@@ -462,34 +463,72 @@
     });
   }
 
-  /* ---------------- 首页热门 ---------------- */
+  /* ---------------- 首页热门（跨源无限流） ---------------- */
+  function homeKey(it) {
+    return String(it.id || '') + '|' + normTitle(it.name) + '|' + String(it.sourceKey || '');
+  }
+  function rememberHomeItems(items) {
+    items.forEach(function (it) { state.homeSeen.add(homeKey(it)); });
+  }
+  function homeLabel(prefix) {
+    var src = state.homeSources[state.homeIdx];
+    if (!src) return '正在连接资源…';
+    return (prefix || '来自 ') + src.name + ' · 第 ' + state.homePage + ' / ' + state.homePageCount + ' 页 · 下滑持续加载';
+  }
+  function nextHomeSource() {
+    if (!state.homeSources.length) return false;
+    state.homeIdx++;
+    if (state.homeIdx >= state.homeSources.length) {
+      state.homeIdx = 0;
+      state.homeLoops++;
+    }
+    state.homePage = 1;
+    state.homePageCount = 1;
+    return true;
+  }
+  function fetchHomeChunk(src, page) {
+    return fetch('/api/list?customApi=' + enc(src.api) + '&pg=' + page)
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        return {
+          items: (j.list || []).map(function (it) { return mapMaccms(it, src); }),
+          page: parseInt(j.page, 10) || page,
+          pageCount: parseInt(j.pagecount, 10) || 1
+        };
+      });
+  }
   function loadHome() {
     var prefer = ['360资源', '量子资源', '非凡资源', '暴风资源', '最大资源', '无尽资源', '极速资源'];
-    var cands = maccmsSources().slice().sort(function (a, b) {
+    state.homeSources = maccmsSources().slice().sort(function (a, b) {
       var ia = prefer.indexOf(a.name), ib = prefer.indexOf(b.name);
       return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
-    }).slice(0, 6);
-    if (!cands.length) {
+    });
+    state.homeIdx = 0; state.homePage = 1; state.homePageCount = 1;
+    state.homeItems = []; state.homeSeen = new Set(); state.homeLoops = 0;
+    if (!state.homeSources.length) {
       $('homeGrid').innerHTML = '<div class="empty">还没有启用的采集源，请打开右上角「源」勾选。</div>';
       $('homeSrc').textContent = '无可用源';
+      $('homeMoreWrap').hidden = true;
       return;
     }
     function tryNext(i) {
-      if (i >= cands.length) {
+      if (i >= state.homeSources.length) {
         $('homeGrid').innerHTML = '<div class="empty">热门推荐暂时无法加载，直接用上方搜索，或到「浏览」按源翻。</div>';
         $('homeSrc').textContent = '暂时不可用';
+        $('homeMoreWrap').hidden = true;
         return;
       }
-      var src = cands[i];
+      var src = state.homeSources[i];
       $('homeSrc').textContent = '正在连接 ' + src.name + '…';
-      fetch('/api/list?customApi=' + enc(src.api) + '&pg=1').then(function (r) { return r.json(); }).then(function (j) {
-        var items = (j.list || []).map(function (it) { return mapMaccms(it, src); });
-        if (!items.length) return tryNext(i + 1);
-        state.homeSrc = src; state.homePage = parseInt(j.page, 10) || 1; state.homePageCount = parseInt(j.pagecount, 10) || 1;
-        state.homeItems = items;
-        renderGrid($('homeGrid'), items, 'item');
-        $('homeSrc').textContent = '来自 ' + src.name + ' · 默认全源已启用 · 第 ' + state.homePage + ' / ' + state.homePageCount + ' 页';
-        $('homeMoreWrap').hidden = state.homePage >= state.homePageCount;
+      fetchHomeChunk(src, 1).then(function (chunk) {
+        if (!chunk.items.length) return tryNext(i + 1);
+        state.homeIdx = i; state.homePage = chunk.page; state.homePageCount = chunk.pageCount;
+        state.homeItems = chunk.items;
+        rememberHomeItems(chunk.items);
+        renderGrid($('homeGrid'), chunk.items, 'item');
+        $('homeSrc').textContent = homeLabel('来自 ');
+        $('homeMoreWrap').hidden = false;
+        $('homeMore').textContent = '继续加载（向下滚动会自动加载）';
       }).catch(function () { tryNext(i + 1); });
     }
     tryNext(0);
@@ -501,32 +540,59 @@
     var start = state.homeItems.length;
     el.insertAdjacentHTML('beforeend', items.map(function (it, i) { return itemCard(it, start + i); }).join(''));
     state.homeItems = state.homeItems.concat(items);
+    rememberHomeItems(items);
   }
   function loadHomeMore() {
-    if (state.view !== 'search' || state.homeLoading || !state.homeSrc) return;
-    if (state.homePage >= state.homePageCount) { $('homeMoreWrap').hidden = true; return; }
+    if (state.view !== 'search' || state.homeLoading || !state.homeSources.length) return;
     state.homeLoading = true;
-    $('homeMore').textContent = '正在加载…';
-    var src = state.homeSrc, page = state.homePage + 1;
-    fetch('/api/list?customApi=' + enc(src.api) + '&pg=' + page).then(function (r) { return r.json(); }).then(function (j) {
-      var items = (j.list || []).map(function (it) { return mapMaccms(it, src); });
-      state.homePage = parseInt(j.page, 10) || page;
-      state.homePageCount = parseInt(j.pagecount, 10) || state.homePageCount;
-      appendHomeGrid(items);
-      $('homeSrc').textContent = '来自 ' + src.name + ' · 默认全源已启用 · 第 ' + state.homePage + ' / ' + state.homePageCount + ' 页';
-      $('homeMoreWrap').hidden = state.homePage >= state.homePageCount;
-      $('homeMore').textContent = '继续加载（向下滚动会自动加载）';
-    }).catch(function () {
-      $('homeMore').textContent = '继续加载（向下滚动会自动加载）';
-      toast('下一页加载失败，稍后重试。');
-    }).finally(function () { state.homeLoading = false; setTimeout(maybeAutoHomeMore, 160); });
+    if ($('homeMore')) $('homeMore').textContent = '正在加载…';
+    var attempts = 0;
+    function step() {
+      if (attempts >= state.homeSources.length * 2 + 2) {
+        state.homeLoading = false;
+        if ($('homeMore')) $('homeMore').textContent = '继续加载（向下滚动会自动加载）';
+        toast('暂时没有更多内容，稍后继续。');
+        return;
+      }
+      var src = state.homeSources[state.homeIdx];
+      if (!src) { state.homeLoading = false; return; }
+      var nextPage = state.homePage + 1;
+      if (nextPage > state.homePageCount) {
+        nextHomeSource();
+        src = state.homeSources[state.homeIdx];
+        nextPage = 1;
+        state.homePage = 0;
+      }
+      fetchHomeChunk(src, nextPage).then(function (chunk) {
+        if (!chunk.items.length) {
+          attempts++; nextHomeSource(); step(); return;
+        }
+        state.homePage = chunk.page; state.homePageCount = chunk.pageCount;
+        var fresh = chunk.items.filter(function (it) { return !state.homeSeen.has(homeKey(it)); });
+        if (fresh.length) appendHomeGrid(fresh);
+        $('homeSrc').textContent = homeLabel('来自 ');
+        $('homeMoreWrap').hidden = false;
+        if ($('homeMore')) $('homeMore').textContent = '继续加载（向下滚动会自动加载）';
+        state.homeLoading = false;
+        setTimeout(maybeAutoHomeMore, 220);
+      }).catch(function () {
+        attempts++;
+        nextHomeSource();
+        step();
+      });
+    }
+    step();
   }
   function maybeAutoHomeMore() {
     if (state.view !== 'search' || state.homeLoading) return;
-    var wrap = $('homeMoreWrap'); if (!wrap || wrap.hidden) return;
-    var r = wrap.getBoundingClientRect();
+    var wrap = $('homeMoreWrap');
+    if (!wrap || wrap.hidden) { 
+      if (state.homeSources && state.homeSources.length) loadHomeMore();
+      return;
+    }
+    var wrapTop = wrap.getBoundingClientRect().top;
     var vh = window.innerHeight || document.documentElement.clientHeight || 800;
-    if (r.top < vh + 520 || r.bottom < vh + 520) loadHomeMore();
+    if (wrapTop < vh + 620) loadHomeMore();
   }
 
   /* ---------------- 详情 ---------------- */
