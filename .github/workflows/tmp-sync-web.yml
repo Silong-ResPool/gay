@@ -1,6 +1,9 @@
 name: tmp-sync-web
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - '.sync-trigger'
 permissions:
   contents: write
 jobs:
