@@ -1,0 +1,26 @@
+name: silong-web-sync
+on:
+  push:
+    paths:
+      - '.github/workflows/silong-web-sync.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download web package
+        run: |
+          curl -L --fail --retry 3 --retry-delay 2 'https://aka.doubaocdn.com/s/VYUU5eE4kD' -o /tmp/silong-web.zip
+          unzip -q -o /tmp/silong-web.zip -d .
+      - name: Commit and push
+        run: |
+          rm -f .github/workflows/silong-web-sync.yml
+          git config user.name 'Silong-ResPool'
+          git config user.email 'silong@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then echo 'no changes'; else git commit -m 'deploy: 2026.2 amethyst layout + performance sync'; git push origin main; fi
