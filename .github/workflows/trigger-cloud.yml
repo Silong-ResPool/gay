@@ -1,0 +1,13 @@
+name: Trigger Cloud Multiplatform Build
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/trigger-cloud.yml]
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch cloud workflow
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run "Cloud Multiplatform Build" --ref main
