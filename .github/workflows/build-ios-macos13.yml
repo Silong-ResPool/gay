@@ -1,0 +1,78 @@
+name: Build unsigned iOS IPA
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "iOS/**"
+      - ".github/workflows/build-ios.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-13
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate app icon and launch assets
+        working-directory: iOS
+        run: |
+          set -euo pipefail
+          python3 -m venv .venv
+          source .venv/bin/activate
+          python -m pip install --upgrade pip pillow
+          python _generate_assets.py
+
+      - name: Generate Xcode project
+        working-directory: iOS
+        run: xcodegen generate
+
+      - name: Archive unsigned app
+        working-directory: iOS
+        run: |
+          set -euo pipefail
+          xcodebuild \
+            -project SilongResource.xcodeproj \
+            -scheme SilongResource \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/SilongResource.xcarchive \
+            archive \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
+
+      - name: Package Payload into IPA
+        working-directory: iOS
+        run: |
+          set -euo pipefail
+          mkdir -p build/Payload
+          cp -R build/SilongResource.xcarchive/Products/Applications/SilongResource.app build/Payload/
+          cd build
+          zip -qry SilongResource-unsigned.ipa Payload
+          ls -lh SilongResource-unsigned.ipa
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SilongResource-unsigned-ipa
+          path: iOS/build/SilongResource-unsigned.ipa
+          if-no-files-found: error
+
+      - name: Publish to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v8.5.0-multiplatform
+          name: 巳泷资源库 8.5.0 多平台包体
+          body: |
+            自动构建的 iOS 未签名 IPA。
+            Android / Windows / macOS 包体由同一版本源码产出。
+          files: iOS/build/SilongResource-unsigned.ipa
+          fail_on_unmatched_files: true
