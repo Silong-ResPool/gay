@@ -1,0 +1,30 @@
+:root{--bg:#08070d;--bg-2:#0d0b14;--surface:rgba(22,19,34,.82);--surface-2:rgba(31,27,48,.72);--line:rgba(199,185,255,.16);--line-strong:rgba(199,185,255,.32);--violet:#8b7cf6;--violet-soft:#c7b9ff;--violet-deep:#5b4b9e;--gold:#c5a66d;--text:#ece8f6;--muted:#a69fb8;--danger:#d58a9c;--radius:18px;--shadow:0 22px 70px rgba(0,0,0,.38)}
+*{box-sizing:border-box}
+html{color-scheme:dark;background:var(--bg);scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:radial-gradient(circle at 50% -10%,rgba(121,98,198,.18),transparent 38rem),linear-gradient(180deg,var(--bg),#07060c 70%);line-height:1.65;overflow-x:hidden}
+h1,h2,h3,h4{font-family:"Noto Serif SC","Songti SC",Georgia,serif;font-weight:650;letter-spacing:.02em;line-height:1.25;color:#f4f0ff}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
+button,a,[role=button]{-webkit-tap-highlight-color:transparent}
+.container,main,section{width:min(100% - 28px,1180px);margin-inline:auto}
+.card,.game-item,.module-card,.panel,article,aside .nav-item{background:linear-gradient(180deg,rgba(35,31,54,.82),rgba(18,16,29,.86));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.card,.game-item,.module-card{padding:16px;transition:border-color .2s ease,transform .2s ease,background .2s ease}
+.card:hover,.game-item:hover,.module-card:hover{border-color:var(--line-strong);transform:translateY(-2px);background:linear-gradient(180deg,rgba(43,38,67,.9),rgba(20,17,32,.9))}
+.btn,button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:10px 16px;border-radius:12px;border:1px solid var(--line-strong);color:var(--text);background:linear-gradient(180deg,rgba(111,94,188,.28),rgba(62,50,105,.32));cursor:pointer}
+.btn:hover,button:hover{border-color:rgba(199,185,255,.55);background:linear-gradient(180deg,rgba(126,108,205,.38),rgba(68,55,112,.38))}
+input,select,textarea{width:100%;min-height:44px;padding:10px 12px;color:var(--text);background:rgba(13,11,20,.78);border:1px solid var(--line);border-radius:12px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:rgba(199,185,255,.62);box-shadow:0 0 0 3px rgba(139,124,246,.12)}
+img,video,canvas{max-width:100%;border-radius:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.eyebrow{color:var(--gold);font-size:12px;letter-spacing:.18em;text-transform:uppercase}
+.muted,small{color:var(--muted)}
+.ov-svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ov-icon-host{font-size:0!important}.ov-icon-host:before{display:none!important}
+.download-hero{padding:42px 0 24px;text-align:center}.download-hero h1{font-size:clamp(30px,6vw,58px);margin:8px 0}
+.platform-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:16px;padding:22px 0 48px}
+.platform-card{display:flex;flex-direction:column;gap:12px;min-height:210px;padding:22px;background:linear-gradient(180deg,rgba(35,31,54,.9),rgba(17,15,27,.92));border:1px solid var(--line);border-radius:20px}
+.platform-card .btn{margin-top:auto}
+@media (max-width:600px){.container,main,section{width:min(100% - 20px,1180px)}body{font-size:14px}.card,.game-item,.module-card{padding:13px;border-radius:15px}.grid{gap:12px;grid-template-columns:1fr}.btn,button{min-height:44px}}
+@media (min-width:601px) and (max-width:1024px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1025px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

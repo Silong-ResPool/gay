@@ -1047,7 +1047,10 @@ section.hero.hero-v11{
   var h=(location.hostname||'').toLowerCase();
   var ok=ALLOW.indexOf(h)>=0 || /(^|\.)silong-respool\.github\.io$/i.test(h);
   if(!ok){
-    document.documentElement.innerHTML='<body style="margin:0;background:#000000;height:100vh"><style>body{margin:0;background:#000000}</style></body>';
+    document.documentElement.innerHTML='<body style="margin:0;background:#000000;height:100vh"><style>body{margin:0;background:#000000}</style><link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23">
+<link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23-late">
+<script src="assets/ui/obsidian-violet.js?v=23"></script>
+</body>';
     throw new Error('unauthorized host');
   }
 })();
@@ -4902,5 +4905,8 @@ window.SL_CHAR_POSTER='https://aka.doubaocdn.com/s/CGT9Fd4YCc';
 })();
 </script>
 <link rel="stylesheet" href="assets/ui/theme-lock.css?v=13">
+<link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23">
+<link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23-late">
+<script src="assets/ui/obsidian-violet.js?v=23"></script>
 </body>
 </html>

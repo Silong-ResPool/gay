@@ -212,7 +212,10 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return
 function b64d(s){try{return decodeURIComponent(escape(atob(s)))}catch(e){try{return atob(s)}catch(e2){return ''}}}
 
 var FKEY='sl_code_files_v1';
-var DEFAULT_HTML='<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>我的页面</title>\n<style>\n  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;\n    font-family:system-ui,sans-serif;background:linear-gradient(135deg,#1a0a2e,#2d1155);color:#ffffff}\n  .card{padding:34px 40px;border-radius:20px;background:rgb(255,255,255,.08);\n    border:1px solid rgb(199,125,255,.35);box-shadow:0 20px 60px rgb(0,0,0,.45)}\n  .card h1{margin:0 0 10px;font-size:28px}\n  .card p{margin:0;color:#cbb6ea}\n</style>\n</head>\n<body>\n  <div class="card">\n    <h1>你好，主人</h1>\n    <p>这是巳泷代码编辑器的实时预览。</p>\n  </div>\n<style id="sl-skeleton">\n</body>\n</html>';
+var DEFAULT_HTML='<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>我的页面</title>\n<style>\n  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;\n    font-family:system-ui,sans-serif;background:linear-gradient(135deg,#1a0a2e,#2d1155);color:#ffffff}\n  .card{padding:34px 40px;border-radius:20px;background:rgb(255,255,255,.08);\n    border:1px solid rgb(199,125,255,.35);box-shadow:0 20px 60px rgb(0,0,0,.45)}\n  .card h1{margin:0 0 10px;font-size:28px}\n  .card p{margin:0;color:#cbb6ea}\n</style>\n</head>\n<body>\n  <div class="card">\n    <h1>你好，主人</h1>\n    <p>这是巳泷代码编辑器的实时预览。</p>\n  </div>\n<style id="sl-skeleton">\n<link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23">
+<link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23-late">
+<script src="assets/ui/obsidian-violet.js?v=23"></script>
+</body>\n</html>';
 var files=[];
 try{files=JSON.parse(localStorage.getItem(FKEY)||'null')||[]}catch(e){files=[]}
 if(!files.length){
@@ -272,7 +275,10 @@ function buildPreview(){
   var css=files.filter(function(f){return langOf(f.name)==='css'}).map(function(f){return f.content}).join('\n');
   var js=files.filter(function(f){return langOf(f.name)==='javascript'}).map(function(f){return f.content}).join('\n;\n');
   if(!htmlFile){
-    return '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="font-family:system-ui;padding:20px"><pre>当前项目没有 HTML 文件，新建 index.html 后即可预览。</pre></body></html>';
+    return '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="font-family:system-ui;padding:20px"><pre>当前项目没有 HTML 文件，新建 index.html 后即可预览。</pre><link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23">
+<link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23-late">
+<script src="assets/ui/obsidian-violet.js?v=23"></script>
+</body></html>';
   }
   var h=htmlFile.content||'';
   if(css){
@@ -281,7 +287,10 @@ function buildPreview(){
   }
   if(js){
     var safe=js.replace(/<\/script>/gi,'<\\/script>');
-    if(/<\/body>/i.test(h)) h=h.replace(/<\/body>/i,'<script>\n'+safe+'\n<\/script>\n</body>');
+    if(/<\/body>/i.test(h)) h=h.replace(/<\/body>/i,'<script>\n'+safe+'\n<\/script>\n<link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23">
+<link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23-late">
+<script src="assets/ui/obsidian-violet.js?v=23"></script>
+</body>');
     else h+='<script>\n'+safe+'\n<\/script>';
   }
   return h;
@@ -518,5 +527,8 @@ renderTabs();switchFile(0);
 })();
 </script>
 <link rel="stylesheet" href="../assets/ui/theme-lock.css?v=13">
+<link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23">
+<link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23-late">
+<script src="assets/ui/obsidian-violet.js?v=23"></script>
 </body>
 </html>
