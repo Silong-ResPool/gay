@@ -1,0 +1,255 @@
+#slOrb .orb-r1{background:conic-gradient(from 20deg,#8b5cf6,#e0b0ff,#ff9ed8,#8b5cf6) !important;opacity:.95 !important}
+#slOrb .orb-r2{inset:4px !important;background:radial-gradient(circle at 32% 24%,#3a2270,#120a26 70%) !important;box-shadow:inset 0 0 26px rgba(167,139,250,.65) !important}
+#slOrb:hover{filter:brightness(1.12) drop-shadow(0 0 26px rgba(167,139,250,.8)) !important}
+
+#slBubble{
+  border-radius:16px !important;
+  border:1px solid rgba(196,170,255,.28) !important;
+  background:linear-gradient(160deg,rgba(36,22,66,.97),rgba(12,8,24,.99)) !important;
+  box-shadow:0 26px 60px -30px rgba(0,0,0,.95) !important
+}
+#slBubble .bb-txt{color:#e8dcff !important;font-size:11.5px !important;line-height:1.8 !important}
+
+#slDock{
+  width:min(640px,94vw) !important;
+  border-radius:24px !important;padding:15px 16px !important;
+  border:1px solid rgba(196,170,255,.26) !important;
+  background:linear-gradient(170deg,rgba(34,21,62,.98),rgba(11,7,24,1)) !important;
+  box-shadow:0 -24px 80px -26px rgba(0,0,0,1),0 0 0 1px rgba(167,139,250,.12) !important
+}
+#slDock .dk-tabs button.on,#slDock .dk-btns button.pri,
+#slDock .dk-tts.on{background:var(--dv-grad) !important;color:#170a2e !important;border-color:transparent !important}
+#slDock .dk-in input{border-radius:12px !important;border:1px solid rgba(196,170,255,.22) !important;background:rgba(255,255,255,.05) !important}
+#slDock .dk-in button{border-radius:12px !important;background:var(--dv-grad) !important;color:#170a2e !important;border:0 !important;font-weight:800 !important}
+#slDock .dk-in input:focus{border-color:rgba(212,190,255,.55) !important;box-shadow:0 0 0 3px rgba(139,92,246,.14) !important}
+
+/* ---------- 13. 快捷导航 / 提示 ---------- */
+#quickNav{right:16px !important;bottom:calc(100px + env(safe-area-inset-bottom,0px)) !important;gap:8px !important}
+#quickNav button{
+  width:40px !important;height:40px !important;border-radius:12px !important;
+  border:1px solid rgba(196,170,255,.18) !important;
+  background:rgba(22,14,42,.78) !important;color:rgba(206,193,234,.8) !important;
+  backdrop-filter:blur(14px) !important;
+  box-shadow:0 12px 28px -22px rgba(0,0,0,.9) !important
+}
+#quickNav button:hover{background:rgba(167,139,250,.24) !important;color:#fff !important;border-color:rgba(212,190,255,.4) !important}
+
+#toast{
+  border-radius:999px !important;border:1px solid rgba(196,170,255,.3) !important;
+  background:rgba(30,18,56,.94) !important;color:#f4ecff !important;
+  box-shadow:0 20px 50px -24px rgba(0,0,0,1) !important;backdrop-filter:blur(16px) !important
+}
+
+/* 滚动进度条（由 dream-violet.js 注入） */
+#dvProgress{
+  position:fixed;left:0;top:0;height:2px;width:0;z-index:200;pointer-events:none;
+  background:linear-gradient(90deg,#8b5cf6,#c4b5fd,#ff9ed8);
+  box-shadow:0 0 18px rgba(167,139,250,.8);
+  transition:width .08s linear
+}
+
+/* ---------- 14. 响应式 ---------- */
+@media (min-width:1560px){
+  .wrap{max-width:1440px !important}
+  body:not(.sb) .side{width:300px !important}
+  body:not(.sb) .main{padding-left:334px !important}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(304px,1fr)) !important}
+  .hero{grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr) !important}
+}
+@media (min-width:1240px){
+  body:not(.sb) .side{transform:none !important;box-shadow:none !important}
+  body:not(.sb) .main{padding-left:320px !important}
+  body:not(.sb) #srView{left:286px !important}
+  body:not(.sb) .mask-side{display:none !important}
+  .nav .menu{display:none !important}
+}
+@media (max-width:1239px){
+  .main{padding-left:clamp(14px,3vw,34px) !important}
+  .side{box-shadow:34px 0 90px -30px rgba(0,0,0,.9) !important}
+}
+@media (max-width:1080px){
+  :root{--nav-h:66px !important}
+  .hero,.hero.hero-v11{padding:26px !important;gap:26px !important}
+  .hero-art{height:clamp(210px,24vw,300px) !important}
+  .hero .hstats{grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+}
+@media (max-width:940px){
+  .nav-search{max-width:none !important}
+  .hero,.hero.hero-v11{grid-template-columns:1fr !important;gap:22px !important}
+  .hero-art{height:clamp(200px,32vw,280px) !important;order:-1 !important}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr)) !important}
+}
+@media (max-width:760px){
+  :root{--nav-h:60px !important}
+  .nav{padding:0 12px !important;gap:9px !important}
+  .nav .menu{width:40px !important;height:40px !important;border-radius:12px !important;font-size:15px !important}
+  .nav-logo{height:36px !important;width:36px !important;max-width:36px !important;border-radius:11px !important}
+  .nav-txt b{font-size:14.5px !important;letter-spacing:1.4px !important}
+  .nav-txt em{display:none !important}
+  .nav-search{height:42px !important;padding:0 13px !important;min-width:0 !important}
+  .nav-search span{font-size:0 !important}
+  .nav-search span::after{content:"搜索资源";font-size:12px}
+  .nav-search kbd{display:none !important}
+  .main{padding:16px 13px calc(104px + env(safe-area-inset-bottom,0px)) !important}
+  .hero,.hero.hero-v11{padding:18px !important;border-radius:24px !important;gap:18px !important;margin-bottom:20px !important}
+  .hero-art{height:clamp(170px,46vw,240px) !important;border-radius:18px !important;order:-1 !important}
+  .hero h1,.hero.hero-v11 h1{font-size:clamp(25px,7vw,34px) !important;line-height:1.16 !important;margin-bottom:12px !important}
+  .hero .hk{font-size:9px !important;letter-spacing:2.6px !important;margin-bottom:12px !important}
+  .hero p{font-size:12.5px !important;line-height:1.85 !important}
+  .hero .hstats,.hero.hero-v11 .hstats{gap:8px !important;margin-top:18px !important}
+  .hero .hstats span,.hero.hero-v11 .hstats span{padding:10px 11px !important;border-radius:12px !important;font-size:9px !important;letter-spacing:.6px !important}
+  .hero .hstats b,.hero.hero-v11 .hstats b{font-size:18px !important}
+  .hero .hacts,.hero.hero-v11 .hacts{display:grid !important;grid-template-columns:1fr 1fr !important;gap:9px !important;margin-top:20px !important}
+  .hero .hacts button,.hero .hacts a{height:44px !important;padding:0 12px !important;font-size:12px !important;justify-content:center !important;width:100% !important}
+  .hero .hacts .pri{grid-column:1 / -1 !important}
+  .hero-meta{display:none !important}
+  .greet-track{padding:11px 14px !important;font-size:12px !important;border-radius:14px !important}
+  .hd{margin:30px 0 14px !important}
+  .hd h2{font-size:15px !important}
+  .hd .cnt{display:none !important}
+  .grid{grid-template-columns:1fr !important;gap:10px !important}
+  .card{padding:15px !important;border-radius:16px !important;gap:12px !important}
+  .card .av{width:42px !important;height:42px !important;border-radius:12px !important;font-size:17px !important}
+  .card .tt{font-size:14px !important}
+  .card .ds{-webkit-line-clamp:2 !important;font-size:11.5px !important;line-height:1.65 !important}
+  .quick-links a,.ql-more{height:40px !important;padding:0 14px !important;font-size:12px !important}
+  #slTopSearch.on{height:70px !important}
+  #slTopSearch .in{height:70px !important;gap:8px !important;padding:0 12px !important}
+  #slTopSearch .box{height:46px !important}
+  #slTopSearch .go{height:46px !important;padding:0 16px !important;font-size:12.5px !important}
+  #slTopSearch .x{width:38px !important;height:38px !important}
+  #slTopSearch .yhost{display:none !important}
+  #slOrb{width:56px !important;height:56px !important;right:14px !important}
+  #quickNav{bottom:calc(92px + env(safe-area-inset-bottom,0px)) !important}
+  #quickNav button{width:38px !important;height:38px !important}
+  #slDock{width:calc(100% - 20px) !important;border-radius:20px !important;padding:13px !important}
+  #detail{width:100% !important;height:92dvh !important;border-radius:22px 22px 0 0 !important}
+  .sr-top{padding:14px 13px 12px !important;gap:10px !important}
+  .sr-search input{height:44px !important}
+  .sr-search button{height:44px !important;padding:0 16px !important}
+}
+@media (max-width:360px){
+  .nav-txt{display:none !important}
+  .nav-search span::after{content:"搜索";font-size:12px}
+  .hero .hstats,.hero.hero-v11 .hstats{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+  .hero .hacts,.hero.hero-v11 .hacts{grid-template-columns:1fr !important}
+  .hero .hacts .pri{grid-column:auto !important}
+  .hero-art{height:180px !important}
+  .hero h1,.hero.hero-v11 h1{font-size:24px !important}
+}
+/* 横屏手机：压缩纵向占用 */
+@media (max-height:520px) and (orientation:landscape){
+  .hero,.hero.hero-v11{grid-template-columns:1.1fr .9fr !important}
+  .hero-art{order:0 !important;height:180px !important;max-height:200px !important}
+  .hero .hstats{grid-template-columns:repeat(3,minmax(0,1fr)) !important;margin-top:14px !important}
+  .hero .hacts{margin-top:14px !important}
+  .greet-bar{display:none !important}
+  #slOrb{width:48px !important;height:48px !important}
+  .side{padding-top:10px !important}
+}
+/* 折叠屏 / 超窄 */
+@media (max-width:340px){
+  .nav{padding:0 9px !important;gap:7px !important}
+  .nav-search{padding:0 10px !important}
+  .hero{padding:15px !important}
+  .hero h1{font-size:22px !important}
+}
+
+/* ---------- 15. 动效与可访问性 ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+  body::after{animation:none !important}
+}
+@media (hover:none){
+  .card:hover{transform:none !important}
+  .quick-links a:hover,.ql-more:hover{transform:none !important}
+}
+
+/* ============================================================
+   16. 终局覆盖层：压过 theme-lock 的炭黑/米色（更高优先级）
+   ============================================================ */
+html body #content .hero.hero-v11{
+  border-radius:30px !important;
+  border:1px solid rgba(196,170,255,.22) !important;
+  background:
+    radial-gradient(700px 440px at 92% 4%,rgba(224,176,255,.18) 0%,rgba(224,176,255,0) 64%),
+    radial-gradient(620px 420px at 0% 106%,rgba(139,92,246,.26) 0%,rgba(139,92,246,0) 62%),
+    linear-gradient(145deg,rgba(43,24,84,.92),rgba(21,12,44,.96) 52%,rgba(12,7,26,.98)) !important;
+  background-image:
+    radial-gradient(700px 440px at 92% 4%,rgba(224,176,255,.18) 0%,rgba(224,176,255,0) 64%),
+    radial-gradient(620px 420px at 0% 106%,rgba(139,92,246,.26) 0%,rgba(139,92,246,0) 62%),
+    linear-gradient(145deg,rgba(43,24,84,.92),rgba(21,12,44,.96) 52%,rgba(12,7,26,.98)) !important;
+  box-shadow:0 50px 120px -60px rgba(124,58,237,.75),0 1px 0 rgba(255,255,255,.06) inset !important;
+  overflow:hidden !important;
+}
+html body #content .hero.hero-v11::before{
+  content:"" !important;display:block !important;position:absolute !important;
+  top:-34% !important;right:-10% !important;bottom:auto !important;left:auto !important;
+  width:66% !important;height:168% !important;border-radius:0 !important;
+  background:radial-gradient(ellipse at 62% 30%,rgba(167,139,250,.18) 0%,rgba(167,139,250,0) 66%) !important;
+  border:0 !important;box-shadow:none !important;opacity:.9 !important;pointer-events:none !important
+}
+html body #content .hero.hero-v11::after{
+  content:"" !important;display:block !important;position:absolute !important;
+  left:0 !important;right:0 !important;top:0 !important;bottom:auto !important;height:1px !important;
+  background:linear-gradient(90deg,rgba(139,92,246,0),rgba(224,176,255,.65) 42%,rgba(139,92,246,.55) 68%,rgba(139,92,246,0)) !important;
+  border:0 !important;border-radius:0 !important;opacity:1 !important
+}
+html body #content .hero.hero-v11 h1{
+  font-size:clamp(30px,3.4vw,52px) !important;line-height:1.12 !important;font-weight:800 !important;
+  letter-spacing:.02em !important;color:transparent !important;
+  background:linear-gradient(100deg,#ffffff 8%,#f4ecff 34%,#d6c2ff 66%,#c4a1ff 100%) !important;
+  -webkit-background-clip:text !important;background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;
+  filter:drop-shadow(0 14px 34px rgba(88,40,190,.28)) !important
+}
+html body #content .hero.hero-v11 h1 em{
+  background:linear-gradient(96deg,#f0d9ff 4%,#c4b5fd 42%,#a78bfa 72%,#d8b4fe 100%) !important;
+  -webkit-background-clip:text !important;background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;color:transparent !important;text-shadow:none !important
+}
+html body #content .hero.hero-v11 p{font-size:13.5px !important;line-height:1.95 !important;color:rgba(206,193,234,.95) !important}
+html body #content .hero.hero-v11 .hstats span{
+  background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.015)) !important;
+  border:1px solid rgba(196,170,255,.14) !important;border-radius:14px !important;color:rgba(196,181,253,.66) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045) !important
+}
+html body #content .hero.hero-v11 .hstats b{
+  font-size:24px !important;color:transparent !important;
+  background:linear-gradient(120deg,#ffffff,#dcc6ff) !important;
+  -webkit-background-clip:text !important;background-clip:text !important;-webkit-text-fill-color:transparent !important
+}
+html body #content .hero.hero-v11 .hacts{display:flex !important;flex-wrap:wrap !important;gap:11px !important;margin-top:28px !important}
+html body #content .hero.hero-v11 .hacts .pri{
+  border:1px solid rgba(255,255,255,.24) !important;
+  background:linear-gradient(135deg,#9a6bff 0%,#b78cff 46%,#e0a8ff 100%) !important;
+  background-image:linear-gradient(135deg,#9a6bff 0%,#b78cff 46%,#e0a8ff 100%) !important;
+  color:#160a30 !important;
+  box-shadow:0 18px 40px -16px rgba(139,92,246,.95),inset 0 1px 0 rgba(255,255,255,.5) !important;
+  border-radius:14px !important;height:48px !important;font-size:13px !important;font-weight:800 !important;
+  -webkit-text-fill-color:currentColor !important
+}
+html body #content .hero.hero-v11 .hacts a:not(.pri),
+html body #content .hero.hero-v11 .hacts button:not(.pri){
+  border:1px solid rgba(196,170,255,.22) !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025)) !important;
+  color:#f0e9ff !important;border-radius:14px !important;height:48px !important;font-size:13px !important;font-weight:700 !important
+}
+
+html body #content .card,
+html body #content .card.hero{
+  border-radius:18px !important;
+  border:1px solid rgba(196,170,255,.14) !important;
+  background:linear-gradient(165deg,rgba(42,26,74,.62),rgba(18,11,36,.82)) !important;
+  background-image:linear-gradient(165deg,rgba(42,26,74,.62),rgba(18,11,36,.82)) !important;
+  box-shadow:0 20px 50px -44px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.035) !important;
+  padding:17px !important;transform:none
+}
+html body #content .card.hero{
+  background:
+    radial-gradient(300px 180px at 100% 0%,rgba(224,176,255,.16) 0%,rgba(224,176,255,0) 70%),
+    linear-gradient(160deg,rgba(56,32,98,.78),rgba(20,12,40,.9)) !important;
+  background-image:
+    radial-gradient(300px 180px at 100% 0%,rgba(224,176,255,.16) 0%,rgba(224,176,255,0) 70%),
+    linear-gradient(160deg,rgba(56,32,98,.78),rgba(20,12,40,.9)) !important
+}
