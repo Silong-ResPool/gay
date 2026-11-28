@@ -18,20 +18,10 @@ jobs:
           p='index.html'
           s=open(p,encoding='utf-8').read()
           pairs=[
-          ('''<meta name="theme-color" content="#08050f">''','''<meta name="theme-color" content="#0d0820">''',1),
-          ('''<link rel="stylesheet" href="assets/ui/theme-lock.css?v=13">
-<link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23">
-<link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23-late">
-<script src="assets/ui/obsidian-violet.js?v=23"></script>
-</body>''','''<link rel="stylesheet" href="assets/ui/theme-lock.css?v=13">
-<link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23">
-<link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23-late">
-<link rel="stylesheet" href="assets/ui/dream-violet.css?v=20261128f">
-<script src="assets/ui/dream-violet.js?v=20261128m" defer></script>
-</body>''',1),
-          ('''<script src="assets/ui/obsidian-violet.js?v=23"></script>''','''<script src="assets/ui/obsidian-violet.js?v=23"><\\/script>''',1),
-          ('''var b=el('navSearchBtn'); if(b)b.onclick=function(){openTop()};''','''var b=el('navSearchBtn'); if(b)b.onclick=function(){openTop()};
-  document.addEventListener('click',function(e){var t=e.target&&e.target.closest&&e.target.closest('#slNavSearch'); if(t){e.preventDefault();e.stopPropagation();openTop();}},true);''',1),
+          ('<meta name="theme-color" content="#08050f">','<meta name="theme-color" content="#0d0820">',1),
+          ('<link rel="stylesheet" href="assets/ui/theme-lock.css?v=13">\n<link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23">\n<link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23-late">\n<script src="assets/ui/obsidian-violet.js?v=23"></script>\n</body>','<link rel="stylesheet" href="assets/ui/theme-lock.css?v=13">\n<link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23">\n<link rel="stylesheet" href="assets/ui/obsidian-violet.css?v=23-late">\n<link rel="stylesheet" href="assets/ui/dream-violet.css?v=20261128f">\n<script src="assets/ui/dream-violet.js?v=20261128m" defer></script>\n</body>',1),
+          ('<script src="assets/ui/obsidian-violet.js?v=23"></script>','<script src="assets/ui/obsidian-violet.js?v=23"><\\/script>',1),
+          ("var b=el('navSearchBtn'); if(b)b.onclick=function(){openTop()};","var b=el('navSearchBtn'); if(b)b.onclick=function(){openTop()};\n  document.addEventListener('click',function(e){var t=e.target&&e.target.closest&&e.target.closest('#slNavSearch'); if(t){e.preventDefault();e.stopPropagation();openTop();}},true);",1),
           ]
           for old,new,n in pairs:
               c=s.count(old)
@@ -48,5 +38,5 @@ jobs:
           git config user.name 'Silong-ResPool'
           git config user.email 'xz35238345yun@163.com'
           git add index.html
-          git commit -m 'fix(home): 修复防盗版脚本内联 </script> 导致的解析错误；首页静态加载梦幻紫罗兰皮肤'
+          git commit -m 'fix(home): 修复防盗版脚本解析错误；首页静态加载梦幻紫罗兰皮肤'
           git push
