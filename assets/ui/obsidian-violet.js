@@ -26,12 +26,14 @@
     if(!document.body)return;
     for(var i=document.body.childNodes.length-1;i>=0;i--){
       var n=document.body.childNodes[i];
-      if(n.nodeType===3&&/unauthorized host|throw new Error/.test(n.nodeValue))document.body.removeChild(n);
+      if(n.nodeType===3&&/unauthorized host|throw new Error|^\s*\};\s*$/.test(n.nodeValue)){
+        if(/unauthorized host|throw new Error/.test(n.nodeValue))document.body.removeChild(n);
+      }
     }
   }
   function progress(){
     if(document.getElementById('dvProgress'))return;
-    var d=document.createElement('div');d.id='dvProgress';document.body.appendChild(d);
+    var d=document.createElement('div');d.id='dvProgress';d.style.width='100%';document.body.appendChild(d);
     var tick=function(){
       var h=document.documentElement;
       var max=h.scrollHeight-h.clientHeight;
