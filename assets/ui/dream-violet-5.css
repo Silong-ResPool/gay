@@ -1,0 +1,141 @@
+/* ============================================================
+   dream-violet-5 · 手机/平板紧凑重排 + 防闪烁（2026-11-28）
+   依据 thedaviddias/Front-End-Checklist（74.8k★）CSS/HTML 规则：
+   无横向滚动、相对单位、min-width:0、可读字号、CSS 顺序、触控不依赖 hover。
+   ============================================================ */
+
+/* 收窄旧层“transition: all”造成的换肤动画，只保留交互反馈 */
+html body #content .card,
+html body #content .hero,
+html body .nav,
+html body .side,
+html body .quick-links a,
+html body .greet-track{
+  transition:background-color .22s ease,background .22s ease,border-color .22s ease,
+             box-shadow .22s ease,transform .22s ease,opacity .22s ease !important
+}
+
+/* ---------- 手机端（≤760） ---------- */
+@media (max-width:760px){
+  html body #content .main{padding:14px 12px 96px !important}
+
+  /* 问候条紧凑化 */
+  html body #content .greet-bar{margin:0 0 12px !important}
+  html body #content .greet-track{
+    font-size:11.5px !important;line-height:1.6 !important;letter-spacing:.3px !important;
+    padding:9px 14px !important;border-radius:14px !important
+  }
+
+  /* Hero 压缩 */
+  html body #content .hero.hero-v11{
+    padding:16px 16px 18px !important;border-radius:22px !important;gap:14px !important;margin-bottom:14px !important
+  }
+  html body #content .hero.hero-v11 .hk{font-size:8px !important;letter-spacing:2px !important;margin-bottom:8px !important}
+  html body #content .hero.hero-v11 h1{
+    font-size:clamp(23px,6.8vw,30px) !important;line-height:1.18 !important;margin-bottom:8px !important
+  }
+  html body #content .hero.hero-v11 p{
+    font-size:11.5px !important;line-height:1.7 !important;margin:0 0 12px !important
+  }
+  html body #content .hero.hero-v11 .hstats{gap:7px !important;margin-top:0 !important}
+  html body #content .hero.hero-v11 .hstats span{
+    padding:8px 6px !important;border-radius:10px !important
+  }
+  html body #content .hero.hero-v11 .hstats b{font-size:16px !important;display:block !important;line-height:1.2 !important}
+  html body #content .hero.hero-v11 .hstats span{font-size:8.5px !important;letter-spacing:.3px !important}
+  html body #content .hero.hero-v11 .hacts{
+    display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px !important;margin-top:14px !important
+  }
+  html body #content .hero.hero-v11 .hacts .pri{grid-column:1 / -1 !important}
+  html body #content .hero.hero-v11 .hacts a,
+  html body #content .hero.hero-v11 .hacts button{
+    width:100% !important;height:42px !important;font-size:12px !important;padding:0 10px !important
+  }
+  html body #content .hero.hero-v11 .hero-meta{display:none !important}
+  html body #content .hero.hero-v11 .hero-art{
+    height:clamp(160px,44vw,220px) !important;border-radius:16px !important
+  }
+  html body #content .hero.hero-v11 .art-tag{
+    font-size:8.5px !important;padding:5px 10px !important;border-radius:9px !important;left:10px !important;bottom:10px !important
+  }
+
+  /* 板块标题 */
+  html body #content .hd{margin:20px 0 10px !important}
+  html body #content .hd h2{font-size:15.5px !important;letter-spacing:.5px !important}
+  html body #content .hd .cnt{font-size:9.5px !important;padding:3px 9px !important;border-radius:999px !important}
+
+  /* 卡片紧凑横排 */
+  html body #content .grid{gap:10px !important}
+  html body #content .card{
+    grid-template-columns:40px minmax(0,1fr) !important;gap:10px !important;
+    padding:11px 12px !important;border-radius:15px !important;position:relative !important
+  }
+  html body #content .card .av{
+    width:40px !important;height:40px !important;border-radius:11px !important;font-size:15px !important
+  }
+  html body #content .card .bd{min-width:0 !important}
+  html body #content .card .tt{font-size:13.5px !important;line-height:1.35 !important}
+  html body #content .card .ds{
+    font-size:11px !important;line-height:1.55 !important;margin-top:2px !important;
+    display:-webkit-box !important;-webkit-line-clamp:2 !important;-webkit-box-orient:vertical !important;overflow:hidden !important
+  }
+  html body #content .card .hs{
+    font-size:9.5px !important;line-height:1.4 !important;margin-top:4px !important;
+    white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important;
+    color:rgba(196,181,253,.55) !important
+  }
+  /* 功能卡：去掉“进入板块”文字，右侧 chevron */
+  html body #content .card.hero .hs{display:none !important}
+  html body #content .card.hero::after{
+    content:'';position:absolute;right:12px;top:50%;width:7px;height:7px;
+    border-top:1.6px solid rgba(212,190,255,.65);border-right:1.6px solid rgba(212,190,255,.65);
+    transform:translateY(-50%) rotate(45deg);background:none !important
+  }
+
+  /* 快捷链接行：允许换行、不撑高 */
+  html body #content .quick-links{gap:8px !important}
+  html body #content .quick-links a,
+  html body #content .ql-more{font-size:11px !important;padding:7px 12px !important}
+}
+
+/* ---------- 超窄屏（≤360） ---------- */
+@media (max-width:360px){
+  html body #content .main{padding:12px 10px 92px !important}
+  html body #content .hero.hero-v11{padding:14px 13px 16px !important}
+  html body #content .hero.hero-v11 .hstats{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:6px !important}
+  html body #content .hero.hero-v11 .hstats span{padding:7px 4px !important}
+  html body #content .card{grid-template-columns:38px minmax(0,1fr) !important;padding:10px 11px !important}
+  html body #content .card .av{width:38px !important;height:38px !important}
+  html body .nav{padding:0 10px !important}
+}
+
+/* ---------- 平板（761–940） ---------- */
+@media (min-width:761px) and (max-width:940px){
+  html body #content .grid{
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:12px !important
+  }
+  html body #content .card{padding:13px 14px !important}
+  html body #content .hero.hero-v11 .hacts{
+    display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:10px !important
+  }
+  html body #content .hero.hero-v11 .hacts a,
+  html body #content .hero.hero-v11 .hacts button{width:100% !important}
+  html body #content .hero.hero-v11 .hacts .pri{grid-column:auto !important}
+}
+
+/* 平板卡片内部防溢出 */
+@media (min-width:761px) and (max-width:940px){
+  html body #content .card .bd{min-width:0 !important}
+  html body #content .card .ds{
+    display:-webkit-box !important;-webkit-line-clamp:2 !important;-webkit-box-orient:vertical !important;overflow:hidden !important
+  }
+}
+
+/* 横屏矮屏：恢复三列 CTA，避免全宽堆叠 */
+@media (max-height:520px) and (orientation:landscape){
+  html body #content .hero.hero-v11 .hacts{
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important
+  }
+  html body #content .hero.hero-v11 .hacts .pri{grid-column:auto !important}
+}
