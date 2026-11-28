@@ -1,0 +1,320 @@
+.hero h1 em,.hero.hero-v11 h1 em{
+  font-style:normal !important;
+  background:linear-gradient(96deg,#f0d9ff 4%,#c4b5fd 42%,#a78bfa 72%,#d8b4fe 100%) !important;
+  -webkit-background-clip:text !important;background-clip:text !important;color:transparent !important
+}
+.hero p{
+  margin:0 !important;font-size:13.5px !important;line-height:1.95 !important;
+  color:rgba(206,193,234,.95) !important;max-width:560px !important
+}
+.hero .hstats,.hero.hero-v11 .hstats{
+  display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:10px !important;margin:26px 0 0 !important;max-width:600px !important
+}
+.hero .hstats span,.hero.hero-v11 .hstats span{
+  display:flex !important;flex-direction:column !important;gap:5px !important;
+  padding:13px 15px !important;border-radius:14px !important;
+  border:1px solid rgba(196,170,255,.14) !important;
+  background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.015)) !important;
+  font-size:10px !important;letter-spacing:1px !important;
+  color:rgba(196,181,253,.66) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045) !important;
+  transition:border-color .25s var(--ease),background .25s var(--ease),transform .25s var(--ease)
+}
+.hero .hstats span:hover{
+  border-color:rgba(212,190,255,.32) !important;
+  background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.02)) !important;
+  transform:translateY(-2px)
+}
+.hero .hstats b,.hero.hero-v11 .hstats b{
+  font-size:24px !important;font-weight:800 !important;letter-spacing:.4px !important;
+  line-height:1.05 !important;
+  background:linear-gradient(120deg,#ffffff,#dcc6ff) !important;
+  -webkit-background-clip:text !important;background-clip:text !important;color:transparent !important
+}
+.hero .hacts,.hero.hero-v11 .hacts{margin-top:28px !important;gap:11px !important}
+.hero .hacts button,.hero .hacts a{
+  height:48px !important;padding:0 24px !important;border-radius:14px !important;
+  font-size:13px !important;font-weight:700 !important;letter-spacing:.4px !important;
+  border:1px solid rgba(196,170,255,.22) !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025)) !important;
+  color:#f0e9ff !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06) !important;
+  transition:transform .22s var(--ease),box-shadow .22s var(--ease),border-color .22s var(--ease),background .22s var(--ease) !important
+}
+.hero .hacts button.pri,.hero .hacts a.pri{
+  border:1px solid rgba(255,255,255,.24) !important;
+  background:linear-gradient(135deg,#9a6bff 0%,#b78cff 46%,#e0a8ff 100%) !important;
+  color:#160a30 !important;
+  box-shadow:0 18px 40px -16px rgba(139,92,246,.95),inset 0 1px 0 rgba(255,255,255,.5) !important
+}
+.hero .hacts button:hover,.hero .hacts a:hover{
+  transform:translateY(-2px) !important;
+  border-color:rgba(212,190,255,.45) !important;
+  box-shadow:0 18px 34px -20px rgba(139,92,246,.8) !important
+}
+.hero .hacts button.pri:hover,.hero .hacts a.pri:hover{
+  box-shadow:0 24px 52px -18px rgba(167,139,250,1) !important;filter:brightness(1.05)
+}
+.hero-meta{
+  color:rgba(196,181,253,.5) !important;font-size:10px !important;letter-spacing:.9px !important;margin-top:22px !important
+}
+.hero-meta i{background:rgba(196,181,253,.22) !important}
+
+/* 主视觉图 */
+.hero-art{
+  position:relative !important;
+  height:clamp(240px,26vw,360px) !important;
+  max-height:380px !important;
+  width:100% !important;
+  border-radius:24px !important;
+  border:1px solid rgba(212,190,255,.28) !important;
+  overflow:hidden !important;
+  box-shadow:
+    0 40px 90px -40px rgba(0,0,0,.95),
+    0 0 0 1px rgba(255,255,255,.05) inset,
+    0 0 70px -24px rgba(167,139,250,.55) !important;
+  z-index:2 !important
+}
+.hero-art img{width:100% !important;height:100% !important;object-fit:cover !important;display:block !important}
+.hero-art::after{
+  background:
+    linear-gradient(180deg,rgba(10,4,22,0) 46%,rgba(10,4,22,.62)),
+    linear-gradient(100deg,rgba(19,7,40,.42) 0%,rgba(19,7,40,0) 46%) !important
+}
+.hero-art .art-tag{
+  left:16px !important;right:auto !important;bottom:16px !important;
+  padding:7px 13px !important;border-radius:999px !important;
+  font-size:9.5px !important;letter-spacing:2.2px !important;
+  color:#f0e2ff !important;
+  border:1px solid rgba(212,190,255,.3) !important;
+  background:rgba(18,8,34,.55) !important;
+  backdrop-filter:blur(10px) !important;
+  box-shadow:0 10px 24px -18px rgba(0,0,0,.9) !important
+}
+
+/* ---------- 7. 快捷磁贴 ---------- */
+.quick-links{margin:0 0 10px !important}
+.ql-line{gap:9px !important;padding:2px 2px 12px !important}
+.quick-links a,.ql-more{
+  height:42px !important;padding:0 17px !important;border-radius:999px !important;
+  font-size:12.5px !important;font-weight:600 !important;
+  border:1px solid rgba(196,170,255,.16) !important;
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015)) !important;
+  color:rgba(226,214,250,.9) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05) !important
+}
+.quick-links a i{color:#c4a3ff !important}
+.quick-links a:hover,.ql-more:hover{
+  border-color:rgba(212,190,255,.42) !important;
+  background:linear-gradient(180deg,rgba(167,139,250,.26),rgba(139,92,246,.14)) !important;
+  color:#fff !important;
+  box-shadow:0 16px 30px -20px rgba(139,92,246,.95) !important
+}
+.ql-more{
+  background:linear-gradient(135deg,rgba(167,139,250,.32),rgba(224,176,255,.16)) !important;
+  border-color:rgba(196,170,255,.4) !important
+}
+
+/* ---------- 8. 板块标题 ---------- */
+.hd{
+  margin:44px 0 18px !important;gap:13px !important;
+  padding-left:0 !important;align-items:center !important
+}
+.hd::before{
+  width:4px !important;height:24px !important;border-radius:4px !important;
+  background:linear-gradient(180deg,#e6c8ff,#a78bfa) !important;
+  box-shadow:0 0 18px rgba(167,139,250,.85) !important
+}
+.hd h2{
+  font-size:17.5px !important;letter-spacing:.6px !important;font-weight:800 !important;
+  color:#fbf7ff !important;gap:9px !important
+}
+.hd h2 i{color:#c9a9ff !important;font-size:15px !important}
+.hd .cnt{
+  font-size:10px !important;letter-spacing:1.4px !important;
+  color:rgba(196,181,253,.6) !important;
+  padding:4px 11px !important;border-radius:999px !important;
+  border:1px solid rgba(196,170,255,.16) !important;
+  background:rgba(255,255,255,.035) !important
+}
+.hd .more{
+  height:32px !important;padding:0 15px !important;border-radius:999px !important;
+  font-size:11px !important;color:#d5c4f7 !important;
+  border:1px solid rgba(196,170,255,.22) !important;
+  background:rgba(167,139,250,.10) !important
+}
+.hd .more:hover{
+  background:rgba(167,139,250,.26) !important;color:#fff !important;
+  border-color:rgba(212,190,255,.45) !important
+}
+
+/* ---------- 9. 资源卡片 ---------- */
+.grid{gap:14px !important;grid-template-columns:repeat(auto-fill,minmax(296px,1fr)) !important}
+.card{
+  padding:17px 17px !important;border-radius:18px !important;gap:13px !important;
+  border:1px solid rgba(196,170,255,.14) !important;
+  background:linear-gradient(165deg,rgba(42,26,74,.62),rgba(18,11,36,.82)) !important;
+  box-shadow:0 20px 50px -44px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.035) !important;
+  transition:transform .28s var(--ease),border-color .28s var(--ease),box-shadow .28s var(--ease),background .28s var(--ease) !important
+}
+.card:hover{
+  transform:translateY(-4px) !important;
+  border-color:rgba(212,190,255,.42) !important;
+  background:linear-gradient(165deg,rgba(58,36,100,.72),rgba(22,13,42,.88)) !important;
+  box-shadow:
+    0 30px 70px -40px rgba(0,0,0,1),
+    0 0 46px -22px rgba(167,139,250,.55),
+    inset 0 1px 0 rgba(255,255,255,.06) !important
+}
+.card:active{transform:translateY(-1px) scale(.995) !important}
+.card .av{
+  width:46px !important;height:46px !important;border-radius:13px !important;
+  font-size:19px !important;
+  background:linear-gradient(140deg,rgba(167,139,250,.34),rgba(224,176,255,.16)) !important;
+  border:1px solid rgba(212,190,255,.24) !important;
+  color:#f0e4ff !important;
+  box-shadow:0 12px 26px -20px rgba(139,92,246,.9),inset 0 1px 0 rgba(255,255,255,.14) !important
+}
+.card .tt{
+  font-size:14.5px !important;font-weight:700 !important;letter-spacing:.4px !important;color:#faf6ff !important
+}
+.card .ds{
+  margin-top:6px !important;font-size:11.5px !important;line-height:1.75 !important;
+  color:rgba(196,184,222,.82) !important
+}
+.card .hs{
+  margin-top:9px !important;font-size:10px !important;letter-spacing:1px !important;
+  color:rgba(224,176,255,.78) !important
+}
+.card.hero{
+  background:
+    radial-gradient(300px 180px at 100% 0%,rgba(224,176,255,.16) 0%,rgba(224,176,255,0) 70%),
+    linear-gradient(160deg,rgba(56,32,98,.78),rgba(20,12,40,.9)) !important
+}
+.card.hero .av{
+  background:linear-gradient(140deg,#e0b0ff,#a78bfa 60%,#8b5cf6) !important;
+  border-color:rgba(255,255,255,.28) !important;color:#1a0a30 !important
+}
+.card.hit{border-color:rgba(224,176,255,.55) !important}
+
+/* 图片卡（相册/格子） */
+.rcell{
+  border-radius:16px !important;border:1px solid rgba(196,170,255,.14) !important;
+  background:linear-gradient(160deg,rgba(40,25,72,.6),rgba(16,10,32,.84)) !important;
+  box-shadow:0 18px 44px -40px rgba(0,0,0,.95) !important
+}
+.rcell:hover{
+  border-color:rgba(212,190,255,.4) !important;
+  box-shadow:0 26px 60px -36px rgba(0,0,0,1),0 0 34px -18px rgba(167,139,250,.5) !important
+}
+.rcell .cap .t{font-size:12.5px !important;color:#f5efff !important}
+.rcell .cap .s{color:rgba(196,181,253,.55) !important}
+.rcell .th{background:linear-gradient(150deg,#2a1a4e,#120a24) !important}
+
+/* ---------- 10. 搜索结果页 ---------- */
+#srView{
+  background:
+    radial-gradient(900px 600px at 80% -10%,rgba(150,102,255,.16) 0%,rgba(150,102,255,0) 60%),
+    linear-gradient(180deg,rgba(12,7,26,.985),rgba(7,5,16,.995)) !important
+}
+.sr-top{
+  padding:18px clamp(14px,3vw,32px) 14px !important;
+  background:linear-gradient(180deg,rgba(16,10,33,.97),rgba(12,8,26,.82)) !important;
+  border-bottom:1px solid rgba(196,170,255,.14) !important;
+  backdrop-filter:blur(24px) !important;gap:12px !important
+}
+.sr-tab{
+  height:34px !important;padding:0 16px !important;border-radius:999px !important;
+  font-size:11.5px !important;border:1px solid rgba(196,170,255,.16) !important;
+  background:rgba(255,255,255,.035) !important
+}
+.sr-tab.on{
+  background:var(--dv-grad) !important;color:#170a2e !important;
+  box-shadow:0 12px 26px -14px rgba(139,92,246,.95) !important
+}
+.sr-back{width:34px !important;height:34px !important;border-radius:50% !important;border:1px solid rgba(196,170,255,.18) !important;background:rgba(255,255,255,.04) !important}
+.sr-search input{
+  height:46px !important;border-radius:14px !important;
+  border:1px solid rgba(196,170,255,.22) !important;
+  background:rgba(255,255,255,.05) !important
+}
+.sr-search input:focus{border-color:rgba(212,190,255,.6) !important;box-shadow:0 0 0 4px rgba(139,92,246,.14) !important}
+.sr-search button{
+  height:46px !important;border-radius:14px !important;background:var(--dv-grad) !important;
+  color:#170a2e !important;box-shadow:0 24px 52px -16px rgba(139,92,246,.9) !important
+}
+.rrow{
+  border-radius:16px !important;padding:14px 16px !important;
+  border:1px solid rgba(196,170,255,.14) !important;
+  background:linear-gradient(160deg,rgba(40,25,72,.5),rgba(16,10,32,.8)) !important
+}
+.rrow:hover{
+  border-color:rgba(212,190,255,.38) !important;
+  background:rgba(167,139,250,.12) !important;
+  box-shadow:0 20px 44px -36px rgba(0,0,0,1) !important
+}
+.rrow .rt{color:#f7f1ff !important}
+.rrow .ru{color:rgba(224,176,255,.85) !important}
+.rrow .rd{color:rgba(203,191,228,.82) !important}
+.rrow .rm .tag{border-color:rgba(196,170,255,.26) !important;background:rgba(167,139,250,.12) !important}
+.rrow .rm .mini{border-color:rgba(196,170,255,.24) !important;background:rgba(255,255,255,.05) !important}
+
+/* ---------- 11. 详情抽屉 / 弹窗 / 设置 ---------- */
+#detail{
+  background:linear-gradient(180deg,rgba(24,15,46,.985),rgba(11,7,24,.995)) !important;
+  border-left:1px solid rgba(196,170,255,.2) !important;
+  box-shadow:-40px 0 110px -50px rgba(0,0,0,.95) !important;
+  width:min(480px,94vw) !important
+}
+#detail .dt-head{padding:18px 20px !important;border-bottom:1px solid rgba(196,170,255,.14) !important}
+#detail .dt-tt{font-size:15.5px !important;font-weight:800 !important;letter-spacing:.5px !important}
+#detail .dt-x{width:34px !important;height:34px !important;border-radius:50% !important;border:1px solid rgba(196,170,255,.18) !important;background:rgba(255,255,255,.04) !important}
+
+.ov{background:rgba(5,3,12,.72) !important;backdrop-filter:blur(10px) !important}
+.modal{
+  border-radius:24px !important;
+  border:1px solid rgba(196,170,255,.24) !important;
+  background:linear-gradient(170deg,rgba(34,21,62,.98),rgba(14,9,29,.995)) !important;
+  box-shadow:0 60px 140px -50px rgba(0,0,0,1),0 0 70px -30px rgba(139,92,246,.5) !important
+}
+.modal h3{font-size:18px !important;letter-spacing:.6px !important}
+.modal .blk{border-radius:14px !important;border:1px solid rgba(196,170,255,.12) !important;background:rgba(255,255,255,.035) !important}
+.modal .go{
+  border-radius:14px !important;
+  background:linear-gradient(135deg,rgba(167,139,250,.36),rgba(224,176,255,.18)) !important;
+  border:1px solid rgba(196,170,255,.3) !important;color:#f6efff !important
+}
+
+#setSheet{
+  border-radius:26px 26px 0 0 !important;
+  border:1px solid rgba(196,170,255,.24) !important;
+  background:linear-gradient(180deg,rgba(30,18,56,.99),rgba(11,7,24,1)) !important;
+  box-shadow:0 -40px 110px -40px rgba(0,0,0,1) !important
+}
+#setSheet .row{border-bottom:1px solid rgba(196,170,255,.1) !important}
+#setSheet select,#setSheet input[type=text]{
+  border-radius:12px !important;border:1px solid rgba(196,170,255,.2) !important;
+  background:rgba(255,255,255,.05) !important;height:44px !important
+}
+#setSheet .chips span{
+  border-radius:999px !important;border:1px solid rgba(196,170,255,.18) !important;
+  background:rgba(255,255,255,.04) !important
+}
+#setSheet .chips span.on{background:var(--dv-grad) !important;color:#170a2e !important;border-color:transparent !important}
+
+/* ---------- 12. 资源管家 Dock / 球 ---------- */
+#aiPop .ap{
+  border-radius:24px !important;border:1px solid rgba(196,170,255,.26) !important;
+  background:linear-gradient(170deg,rgba(34,21,62,.99),rgba(13,8,28,1)) !important;
+  box-shadow:0 50px 120px -40px rgba(0,0,0,1),0 0 60px -30px rgba(139,92,246,.55) !important
+}
+#aiPop .ap-b button{border-radius:12px !important}
+#aiPop .ap-b button.pri{background:var(--dv-grad) !important;color:#170a2e !important}
+
+#slOrb{
+  width:60px !important;height:60px !important;
+  right:clamp(14px,2vw,22px) !important;
+  bottom:calc(18px + env(safe-area-inset-bottom,0px)) !important;
+  filter:drop-shadow(0 18px 34px rgba(88,40,190,.55))
+}
