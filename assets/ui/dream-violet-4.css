@@ -1,0 +1,282 @@
+html body #content .card:hover,
+html body #content .card.hero:hover{
+  transform:translateY(-4px) !important;
+  border-color:rgba(212,190,255,.42) !important;
+  background:linear-gradient(165deg,rgba(58,36,100,.72),rgba(22,13,42,.88)) !important;
+  background-image:linear-gradient(165deg,rgba(58,36,100,.72),rgba(22,13,42,.88)) !important;
+  box-shadow:0 30px 70px -40px rgba(0,0,0,1),0 0 46px -22px rgba(167,139,250,.55),inset 0 1px 0 rgba(255,255,255,.06) !important
+}
+html body #content .card .av{
+  width:46px !important;height:46px !important;border-radius:13px !important;font-size:19px !important;
+  background:linear-gradient(140deg,rgba(167,139,250,.34),rgba(224,176,255,.16)) !important;
+  border:1px solid rgba(212,190,255,.24) !important;color:#f0e4ff !important;
+  box-shadow:0 12px 26px -20px rgba(139,92,246,.9),inset 0 1px 0 rgba(255,255,255,.14) !important
+}
+html body #content .card.hero .av{background:linear-gradient(140deg,#e0b0ff,#a78bfa 60%,#8b5cf6) !important;color:#1a0a30 !important}
+html body #content .card .tt{font-size:14.5px !important;font-weight:700 !important;color:#faf6ff !important}
+html body #content .card .ds{font-size:11.5px !important;line-height:1.75 !important;color:rgba(196,184,222,.82) !important}
+html body #content .card .hs{font-size:10px !important;color:rgba(224,176,255,.78) !important}
+html body #content .grid{grid-template-columns:repeat(auto-fill,minmax(296px,1fr)) !important;gap:14px !important}
+
+html body #content .hd h2{font-size:17.5px !important;font-weight:800 !important;color:#fbf7ff !important;letter-spacing:.6px !important}
+html body #content .hd .cnt{font-size:10px !important;color:rgba(196,181,253,.6) !important;border:1px solid rgba(196,170,255,.16) !important;background:rgba(255,255,255,.035) !important}
+html body #content .quick-links a,
+html body #content .ql-more{
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.015)) !important;
+  border:1px solid rgba(196,170,255,.16) !important;color:rgba(226,214,250,.9) !important;border-radius:999px !important
+}
+html body #content .quick-links a:hover,
+html body #content .ql-more:hover{background:linear-gradient(180deg,rgba(167,139,250,.26),rgba(139,92,246,.14)) !important;border-color:rgba(212,190,255,.42) !important;color:#fff !important}
+
+html body #content .greet-bar{border:0 !important;border-radius:0 !important;background:none !important;padding:0 !important;margin:2px 0 20px !important}
+html body #content .greet-track{
+  color:rgba(233,217,255,.92) !important;font-size:12.5px !important;letter-spacing:.5px !important;
+  padding:12px 18px !important;border-radius:16px !important;
+  border:1px solid rgba(196,170,255,.20) !important;
+  background:linear-gradient(90deg,rgba(167,139,250,.14),rgba(224,176,255,.04)) !important;
+  background-image:linear-gradient(90deg,rgba(167,139,250,.14),rgba(224,176,255,.04)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 18px 40px -38px rgba(0,0,0,.9) !important
+}
+
+html body #content .sr-tab.on{background:linear-gradient(135deg,#8b5cf6,#b07cff,#e6a8ff) !important;color:#170a2e !important;border-color:transparent !important}
+html body #content .sl-grid-tile{background:linear-gradient(160deg,rgba(42,26,74,.6),rgba(18,11,36,.84)) !important;border-color:rgba(196,170,255,.14) !important}
+html body #content .sl-grid-tile:hover{background:rgba(167,139,250,.16) !important;border-color:rgba(212,190,255,.4) !important}
+
+/* 顶部窄屏搜索按钮 */
+.slNavSearch{
+  width:44px !important;height:44px !important;border-radius:14px !important;
+  border:1px solid var(--dv-line) !important;background:rgba(255,255,255,.04) !important;
+  color:var(--dv-lilac) !important
+}
+.slNavSearch:hover{border-color:var(--dv-line-3) !important;background:rgba(167,139,250,.16) !important}
+
+html body #content .hero.hero-v11 .hacts a,
+html body #content .hero.hero-v11 .hacts button{
+  width:auto !important;min-width:0 !important;flex:0 0 auto !important;
+  display:inline-flex !important;align-items:center !important;justify-content:center !important;gap:8px !important
+}
+@media (max-width:760px){
+  html body #content .hero.hero-v11 .hacts{display:grid !important;grid-template-columns:1fr 1fr !important;gap:9px !important}
+  html body #content .hero.hero-v11 .hacts a,
+  html body #content .hero.hero-v11 .hacts button{width:100% !important}
+  html body #content .hero.hero-v11 .hacts .pri{grid-column:1 / -1 !important}
+  html body #content .hero.hero-v11 h1{font-size:clamp(25px,7vw,34px) !important;line-height:1.16 !important}
+  html body #content .hero.hero-v11 .hstats{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:8px !important}
+  html body #content .hero.hero-v11 .hstats b{font-size:18px !important}
+  html body #content .hero.hero-v11 .hstats span{padding:10px 11px !important;border-radius:12px !important;font-size:9px !important}
+  html body #content .hero.hero-v11 .hacts .pri,
+  html body #content .hero.hero-v11 .hacts a,
+  html body #content .hero.hero-v11 .hacts button{height:44px !important;font-size:12px !important;padding:0 12px !important}
+}
+@media (max-width:430px){
+  html body #content .hero.hero-v11 .hstats{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+  html body #content .hero.hero-v11 .hacts{grid-template-columns:1fr !important}
+  html body #content .hero.hero-v11 .hacts .pri{grid-column:auto !important}
+}
+
+/* ---------- 17. 窄屏溢出修复（覆盖桌面端固定宽度） ---------- */
+@media (max-width:940px){
+  html body #content .hero.hero-v11{grid-template-columns:1fr !important;gap:22px !important}
+  html body #content .hero.hero-v11 .hstats{max-width:100% !important;width:100% !important}
+  html body #content .hero.hero-v11 p{max-width:100% !important}
+  html body #content .hero.hero-v11 .hero-art{width:100% !important;max-width:100% !important}
+  html body #content .hero.hero-v11 .hero-copy{min-width:0 !important;width:100% !important}
+}
+@media (max-width:760px){
+  html body #content .hero.hero-v11 .hstats{grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+  html body #content .hero.hero-v11 .hero-art{height:clamp(170px,46vw,240px) !important}
+}
+@media (max-width:360px){
+  html body #content .hero.hero-v11 .hstats{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+}
+
+/* 手机端卡片：图标与文字并排，压缩高度 */
+@media (max-width:760px){
+  html body #content .card{
+    display:grid !important;grid-template-columns:46px minmax(0,1fr) !important;
+    gap:12px !important;align-items:start !important;padding:15px !important
+  }
+  html body #content .card .bd{min-width:0 !important}
+  html body #content .card .ds{
+    display:-webkit-box !important;-webkit-line-clamp:2 !important;-webkit-box-orient:vertical !important;
+    overflow:hidden !important
+  }
+  html body #content .card .av{width:42px !important;height:42px !important}
+}
+
+/* 手机端品牌字与统计三列 */
+@media (max-width:760px){
+  html body .nav-txt{display:flex !important}
+  html body .nav-txt b{font-size:14px !important;letter-spacing:1.2px !important}
+  html body .nav-txt em{display:none !important}
+  html body #content .hero.hero-v11 .hstats{grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+  html body #content .hero.hero-v11 .hstats span{padding:9px 8px !important}
+  html body #content .hero.hero-v11 .hstats b{font-size:17px !important}
+}
+
+/* 打赏卡说明文字统一为冷紫 */
+html body #content .card.hero .ds,
+html body #content .card.hero .hs{color:rgba(206,190,236,.86) !important}
+html body #content .card.hero .hs{color:rgba(224,176,255,.8) !important}
+html body #content .card.hero::after{
+  background:linear-gradient(90deg,rgba(196,170,255,0),rgba(196,170,255,.22),rgba(196,170,255,0)) !important
+}
+
+/* ---------- 18. 末端特例（覆盖前面所有断点） ---------- */
+@media (max-width:360px){
+  html body #content .hero.hero-v11 .hstats{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+  html body #content .hero.hero-v11 .hstats span{padding:9px 10px !important}
+  html body #content .greet-track{font-size:11.5px !important;padding:10px 12px !important;line-height:1.75 !important}
+  html body .nav{padding:0 10px !important;gap:8px !important}
+  html body .nav-txt b{font-size:13px !important}
+}
+@media (max-height:520px) and (orientation:landscape){
+  html body #content .greet-bar{display:none !important}
+  html body #content .hero.hero-v11{
+    grid-template-columns:minmax(0,1.16fr) minmax(0,.84fr) !important;
+    gap:20px !important;padding:18px 22px !important;margin-bottom:16px !important;border-radius:24px !important
+  }
+  html body #content .hero.hero-v11 .hero-art{order:0 !important;height:200px !important;max-height:210px !important;border-radius:18px !important}
+  html body #content .hero.hero-v11 .hk{font-size:8.5px !important;margin-bottom:8px !important;letter-spacing:2.4px !important}
+  html body #content .hero.hero-v11 h1{font-size:26px !important;line-height:1.14 !important;margin-bottom:10px !important}
+  html body #content .hero.hero-v11 p{font-size:11.5px !important;line-height:1.7 !important}
+  html body #content .hero.hero-v11 .hstats{margin-top:14px !important;gap:7px !important}
+  html body #content .hero.hero-v11 .hstats span{padding:8px 10px !important;border-radius:10px !important}
+  html body #content .hero.hero-v11 .hstats b{font-size:16px !important}
+  html body #content .hero.hero-v11 .hacts{margin-top:14px !important}
+  html body #content .hero.hero-v11 .hacts .pri,
+  html body #content .hero.hero-v11 .hacts a,
+  html body #content .hero.hero-v11 .hacts button{height:40px !important;font-size:11.5px !important;padding:0 14px !important}
+  html body #content .main{padding-top:12px !important}
+}
+
+/* 桌面端顶部搜索绝对居中 */
+@media (min-width:1240px){
+  html body .nav{position:fixed !important}
+  html body .nav .nav-search{
+    position:absolute !important;left:50% !important;transform:translateX(-50%) !important;
+    width:min(560px,38vw) !important;max-width:560px !important;margin:0 !important
+  }
+  html body .nav .slNavSearch{margin-left:auto !important}
+}
+
+@media (max-width:760px){
+  #slTopSearch .box input{font-size:12.5px !important}
+  #slTopSearch .go{padding:0 14px !important;min-width:0 !important}
+  #slTopSearch .x{flex:0 0 auto !important}
+}
+
+@media (min-width:761px){
+  #slTopSearch .yhost select{min-width:150px !important;max-width:190px !important}
+}
+
+/* 19. 顶部搜索展开层：紫罗兰玻璃 */
+html body #slTopSearch .in{
+  max-width:1180px !important;margin:0 auto !important;
+  display:flex !important;align-items:center !important;gap:10px !important;
+}
+html body #slTopSearch .box{
+  flex:1 1 auto !important;min-width:0 !important;
+  background:linear-gradient(135deg,rgba(52,32,100,.90),rgba(23,13,50,.96)) !important;
+  border:1px solid rgba(167,139,250,.36) !important;
+  border-radius:16px !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 30px rgba(6,3,16,.55) !important;
+  padding:0 14px !important;height:46px !important;
+}
+html body #slTopSearch .box:focus-within{
+  border-color:rgba(196,181,253,.72) !important;
+  box-shadow:0 0 0 3px rgba(139,92,246,.20),inset 0 1px 0 rgba(255,255,255,.10),0 12px 34px rgba(6,3,16,.6) !important;
+}
+html body #slTopSearch .box > i{color:#c4b5fd !important;font-size:14px !important;opacity:.95 !important}
+html body #slTopSearch .box input{
+  color:#fbf8ff !important;font-size:13.5px !important;
+  background:transparent !important;border:0 !important;height:100% !important;
+}
+html body #slTopSearch .box input::placeholder{color:rgba(206,193,234,.56) !important}
+html body #slTopSearch label.yhost{
+  display:inline-flex !important;align-items:center !important;gap:6px !important;
+  height:46px !important;padding:0 10px 0 14px !important;
+  background:linear-gradient(135deg,rgba(52,32,100,.86),rgba(23,13,50,.94)) !important;
+  border:1px solid rgba(167,139,250,.34) !important;border-radius:14px !important;
+  color:#e3d4ff !important;flex:0 0 auto !important;
+}
+html body #slTopSearch label.yhost i{color:#c4b5fd !important;opacity:.9 !important}
+html body #slTopSearch label.yhost select{
+  color:#f3eaff !important;background:transparent !important;border:0 !important;
+  font-size:12.5px !important;height:100% !important;outline:none !important;
+}
+html body #slTopSearch label.yhost option{background:#1a1030 !important;color:#f3eaff !important}
+html body #slTopSearch .go{
+  height:46px !important;padding:0 26px !important;flex:0 0 auto !important;
+  border:0 !important;border-radius:14px !important;
+  background:linear-gradient(135deg,#9a6bff 0%,#b78cff 46%,#e0a8ff 100%) !important;
+  color:#160a30 !important;font-size:13.5px !important;font-weight:700 !important;
+  letter-spacing:.4px !important;
+  box-shadow:0 8px 24px rgba(139,92,246,.38),inset 0 1px 0 rgba(255,255,255,.55) !important;
+}
+html body #slTopSearch .go:hover{filter:brightness(1.06) !important;transform:translateY(-1px) !important}
+html body #slTopSearch .x{
+  height:46px !important;width:46px !important;flex:0 0 auto !important;
+  border-radius:14px !important;border:1px solid rgba(167,139,250,.28) !important;
+  background:rgba(64,42,116,.32) !important;color:#d9c9fb !important;
+  font-size:16px !important;line-height:1 !important;
+}
+html body #slTopSearch .x:hover{background:rgba(92,62,158,.46) !important;color:#fff !important}
+@media (max-width:760px){
+  html body #slTopSearch .in{gap:7px !important}
+  html body #slTopSearch .box{height:44px !important;padding:0 10px !important}
+  html body #slTopSearch label.yhost{height:44px !important;padding:0 6px 0 8px !important}
+  html body #slTopSearch label.yhost select{min-width:0 !important;width:64px !important;font-size:11px !important}
+  html body #slTopSearch .go{height:44px !important;padding:0 12px !important;font-size:12.5px !important}
+  html body #slTopSearch .x{height:44px !important;width:38px !important}
+}
+
+/* ---------- 20. 移动端导航搜索入口（用可用的桌面按钮替代失效的挂载按钮） ---------- */
+@media (max-width:760px){
+  html body .nav .nav-search{
+    display:inline-flex !important;align-items:center !important;justify-content:center !important;
+    margin-left:auto !important;width:40px !important;min-width:40px !important;max-width:40px !important;
+    height:40px !important;padding:0 !important;border-radius:12px !important;
+    background:linear-gradient(135deg,rgba(58,36,108,.72),rgba(26,15,54,.86)) !important;
+    border:1px solid rgba(167,139,250,.34) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 6px 18px rgba(6,3,16,.45) !important;
+  }
+  html body .nav .nav-search i{font-size:16px !important;color:#d6c6ff !important}
+  html body .nav .nav-search span,
+  html body .nav .nav-search kbd{display:none !important}
+  html body .nav .slNavSearch{display:none !important}
+}
+
+/* ---------- 21. 统一搜索入口（隐藏动态挂载的重复按钮） ---------- */
+html body .nav .slNavSearch{display:none !important}
+@media (max-width:760px){
+  html body .nav #navSearchBtn{height:44px !important}
+}
+
+/* 搜索入口（ID 级覆盖） */
+html body #slNavSearch{display:none !important}
+@media (max-width:760px){
+  html body #navSearchBtn{height:44px !important;min-height:44px !important;max-height:44px !important}
+}
+
+/* 761–940：让搜索框吃掉右侧空位，避免导航失衡 */
+@media (min-width:761px) and (max-width:940px){
+  html body .nav .nav-search{
+    flex:1 1 auto !important;width:auto !important;max-width:none !important;
+    margin-left:14px !important;margin-right:8px !important;
+  }
+}
+
+/* 手机端搜索层：下移到导航之下，避免压住品牌 */
+@media (max-width:760px){
+  html body #slTopSearch{top:60px !important}
+  html body #slTopSearch .in{padding-top:6px !important}
+}
+
+/* 旧版图标替换脚本的降级保护：即使命中旧缓存，也保留 Font Awesome 图标 */
+html body .ov-svg{display:none !important}
+html body i.fa[style*="font-size: 0"],
+html body i.fas[style*="font-size: 0"],
+html body i.far[style*="font-size: 0"],
+html body i.fab[style*="font-size: 0"],
+html body span.fa[style*="font-size: 0"]{font-size:1em !important}
